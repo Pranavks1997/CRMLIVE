@@ -2,6 +2,7 @@ $(document).ready(function(){
     //console.log('checking');
     // $('.actionmenulinks').first().hide();
     // $('.actionmenulinks').first().hide();
+   
      $.ajax({
         url : 'index.php?module=Opportunities&action=sales_create_opportunity',
         type : 'POST',
@@ -20,5 +21,8 @@ $(document).ready(function(){
             }
         }
     });
+//-----------------------------------------------------------------------------------------------------------------------------    
    
+    
+   //-----------------------Write Code above this--------------------------
 });

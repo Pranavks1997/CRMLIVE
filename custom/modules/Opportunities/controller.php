@@ -5,10 +5,9 @@ require_once('include/MVC/Controller/SugarController.php');
 
 
 
-
 class OpportunitiesController extends SugarController
 {
-     
+    
     
       public function action_sales_create_opportunity()
     {
@@ -37,7 +36,7 @@ class OpportunitiesController extends SugarController
         }
         // $fields = unencodeMultienum($this->bean->report_vars);
         $team_func_array = explode(',', $check_sales);
-        if(in_array("^sales^", $team_func_array) || $current_user->is_admin ==1 || $check_mc =="yes" || $check_team_lead =="teamLead" ) {
+        if(in_array("^sales^", $team_func_array) || $current_user->is_admin ==1 || $check_mc =="yes" || $check_team_lead =="team_lead" ) {
         // if(in_array("$team_func_array !== 'sales')){
             $can_create = 'yes';
         } else {
@@ -45,7 +44,7 @@ class OpportunitiesController extends SugarController
         }
         
         
-        echo json_encode(array("status"=> true, 'view'=>$can_create));
+        echo json_encode(array("status"=> true, 'view'=>$can_create,"c"=>$check_team_lead));
         
       } catch(Exception $e) {
           echo json_encode(array("status"=>false, "message"=>"some error occured"));
@@ -76,7 +75,7 @@ class OpportunitiesController extends SugarController
       $sector_list[]=$row;
        
     }
-   echo json_encode( $sector_list);
+   echo json_encode($sector_list);
         
       
      }catch(Exception $e){
@@ -653,9 +652,146 @@ public function action_bid_bidchecklist(){
 }
 
 //-------------------- saving the data to database bid-bidcheckliist--end ---------------------------------
+//---------------Detail View Opportunity creation checking----------------------------------------
+public function action_detailView_check(){
+    
+    $opportunity_id=$_POST['opp_id'];
+    
+     try{ 
+         
+         global $current_user;
+       
+    	$log_in_user_id = $current_user->id;
+    	
+    //	echo $log_in_user_id;
+    	
+    	$db = \DBManagerFactory::getInstance();
+	    	$GLOBALS['db'];
+          
+          $sql ='SELECT * FROM opportunities WHERE id="'. $opportunity_id.'"';
+			$result = $GLOBALS['db']->query($sql);
+			
+			while($row = $GLOBALS['db']->fetchByAssoc($result) )
+				{
+				    $created_by=$row['created_by'];
+				    
+				}
+				
+			 if(  $log_in_user_id == $created_by || $log_in_user_id == 1 ) {
+
+           	echo json_encode ("true");
+                
+            }else{
+                echo json_encode ("false");
+            }
+        
+				
+    
+  }catch(Exception $e){
+    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    	}
+		die();
+}
+   
+
+//---------------Detail View Opportunity creation checking--------END--------------------------------
 
 
+//------------------------untag users check in detailview-------------------------- 
+public function action_untag_users_check(){
+    
+    $opportunity_id=$_POST['opp_id'];
+    
+     try{ 
+         
+         global $current_user;
+       
+    	$log_in_user_id = $current_user->id;
+    	
+    //	echo $log_in_user_id;
+    	
+    	$db = \DBManagerFactory::getInstance();
+	    	$GLOBALS['db'];
+          
+           $sql='SELECT * FROM opportunities_users_2_c WHERE opportunities_users_2opportunities_ida="'.$opportunity_id.'" AND opportunities_users_2_c.deleted = 0';
+			$result = $GLOBALS['db']->query($sql);
+			
+			while($row = $GLOBALS['db']->fetchByAssoc($result) )
+				{
+				    $untag_user=$row['opportunities_users_2users_idb'];
+				    
+				}
+				
+			 if(  $log_in_user_id == $untag_user  ) {
 
+           	echo json_encode ("true");
+                
+            }else{
+                echo json_encode ("false");
+            }
+        
+				
+    
+  }catch(Exception $e){
+    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    	}
+		die();
+}
+
+//------------------------untag users check in detailview-----END--------------------- 
+
+
+//--------------------------approver selection checking process ------------------------   
+    public function action_aprover_check(){
+        
+        $aprover_id=$_POST['aprover_id'];
+        
+        //echo json_encode($aprover_id);
+        
+         try{ 
+         
+       
+    	
+    	$db = \DBManagerFactory::getInstance();
+	    	$GLOBALS['db'];
+          
+          $sql="SELECT * FROM users_cstm WHERE id_c = '".$aprover_id."'";
+          
+			$result = $GLOBALS['db']->query($sql);
+			
+			while($row = $GLOBALS['db']->fetchByAssoc($result) )
+				{
+				   
+				    $check_sales = $row['teamfunction_c'];
+                    $check_mc = $row['mc_c'];
+                    $check_team_lead = $row['teamheirarchy_c'];
+				}
+				
+			
+			 $team_func_array = explode(',', $check_sales);
+			 
+			 //echo json_encode(array("check1"=>$check_sales,"check2"=>$check_team_lead,"check3"=>$check_mc));
+			 
+        if((in_array("^sales^", $team_func_array)  && $check_team_lead =="team_lead")||  $check_mc =="yes" ) {
+        // if(in_array("$team_func_array !== 'sales')){
+            $can_approve = 'yes';
+            $message = "";
+        } else {
+            $can_approve = 'no';
+            $message = "Select Team Lead from sales for approval.";
+        }
+        
+        
+        echo json_encode(array("status"=> true, "check2"=>$check_team_lead,'approver'=>$can_approve, 'message'=>$message));
+        
+      } catch(Exception $e) {
+          echo json_encode(array("status"=>false, "message"=>"Error Occurred"));
+      }
+        die();
+				
+    }
+    
+//--------------------------approver selection checking process ------END------------------       
     
 //===========================Write code above this line=========================================    
 }

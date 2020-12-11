@@ -216,6 +216,12 @@ $dictionary['Opportunity']['fields']['rfp_eoi_summary_c']['labelValue']='RFP/EOI
 
  
 
+ // created: 2020-12-08 06:53:59
+$dictionary['Opportunity']['fields']['select_approver_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['select_approver_c']['labelValue']='Select Approver';
+
+ 
+
  // created: 2020-10-20 12:27:17
 $dictionary['Opportunity']['fields']['amount']['required']=false;
 $dictionary['Opportunity']['fields']['amount']['inline_edit']=true;
@@ -324,6 +330,11 @@ $dictionary['Opportunity']['fields']['add_new_product_service_c']['labelValue']=
 
  // created: 2020-10-20 07:46:31
 $dictionary['Opportunity']['fields']['jjwg_maps_lng_c']['inline_edit']=1;
+
+ 
+
+ // created: 2020-12-08 06:53:59
+$dictionary['Opportunity']['fields']['user_id2_c']['inline_edit']=1;
 
  
 
