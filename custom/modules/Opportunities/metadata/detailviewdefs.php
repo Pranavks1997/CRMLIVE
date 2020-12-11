@@ -77,11 +77,6 @@ array (
           'newTab' => false,
           'panelDefault' => 'expanded',
         ),
-        'LBL_DETAILVIEW_PANEL11' => 
-        array (
-          'newTab' => false,
-          'panelDefault' => 'expanded',
-        ),
       ),
     ),
     'panels' => 
@@ -396,18 +391,6 @@ array (
             'name' => 'comments_c',
             'studio' => 'visible',
             'label' => 'LBL_COMMENTS',
-          ),
-        ),
-      ),
-      'lbl_detailview_panel11' => 
-      array (
-        0 => 
-        array (
-          0 => 
-          array (
-            'name' => 'comment_c',
-            'studio' => 'visible',
-            'label' => 'LBL_COMMENT',
           ),
         ),
       ),

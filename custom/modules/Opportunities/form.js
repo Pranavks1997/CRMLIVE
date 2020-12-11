@@ -482,6 +482,9 @@ $(document).on('click', '#open_bidChecklist', function(){
   });
   
   //----------------------------------------------------------------------------------------------------------
+ 
+ //---------------expense and income for Dynamic rows-----------------------------
+ 
    $(document).on('change', '.row_add', function() {  
       //Get the clicked row ID
         var input_row_position = $(this).val();
@@ -516,6 +519,10 @@ $(document).on('click', '#open_bidChecklist', function(){
      
      
    });
+   
+   
+   //---------------expense and income for Dynamic rows------------END-----------------
+   
   //*******************************/adding rows in bidchecklist form  ***********************************
   $('.add_rows_cls1').click(function(){
     // console.log();
@@ -800,8 +807,123 @@ $(document).on('click', '#open_bidChecklist', function(){
      
      
  });
+ 
  //---------------------------------------------------------------
+ 
+  //---------------changing the value of expense ----------------------------------------------
+   $(document).on('change','#cash_flow  .row_add,#two  .row_add,#six .row_add,#seven .row_add,#nine .row_add',function(){
+       
+       
+       var input_row_position = $(this).val();
+       
+       if(input_row_position!=""){
+           
+           input_row_position=-(input_row_position);
+           
+           $(this).css('background','#FFB6C1');
+           
+       }else{
+           input_row_position="";
+           
+            $(this).css('background','#d8f5ee');
+       }
+       
+       $(this).val(input_row_position);
+   });
+   
+ //---------------changing the value of expense ---------------------------------------------- 
+ 
+   //---------------changing the color of income ----------------------------------------------
+   $(document).on('change','#10 .row_add,#eight .row_add',function(){
+       
+       
+        var input_row_position = $(this).val();
+       
+       if(input_row_position!=""){
+           
+          
+           
+           $(this).css('background','#90EE90');
+           
+       }else{
+           input_row_position="";
+           
+            $(this).css('background','#d8f5ee');
+       }
+       
+       $(this).val(input_row_position);
+   });
+        //---------------changing the value of income ----------------------------------------------
   
+  //--------------for EMD row 3------------------------------------------ 
+  $(document).on('change','#three .row_add',function(){
+      
+      var input_pos_rev = $(this).closest('td').index();
+    //   console.log("hi");
+      var input_row_position = $(this).val();
+       
+      if(input_row_position!=""){
+          
+          input_row_position=-(input_row_position);
+           
+          $(this).css('background','#FFB6C1');
+           
+         var k=input_pos_rev+1;
+         
+         $('#three td:eq('+k+') input').css("background",'#90EE90').val(-(input_row_position));
+         
+      //console.log(k);
+       
+      }else{
+          input_row_position="";
+           
+            $(this).css('background','#d8f5ee');
+      }
+       
+      $(this).val(input_row_position);
+      
+      
+  });
+  
+  //--------------for EMD row 3------------------------------------------ 
+  
+   //--------------for EMD row 4------------------------------------------ 
+  $(document).on('change','#four .row_add',function(){
+      
+     
+      
+     
+        var input_row_position = $(this).val();
+       
+      if(input_row_position!=""){
+          
+          input_row_position=-(input_row_position);
+           
+          $(this).css('background','#FFB6C1');
+           
+          
+          $('#four  td:nth-last-child(2) input').css("background",'#90EE90').val(-(input_row_position));
+          
+     
+      
+      }else{
+          input_row_position="";
+           
+            $(this).css('background','#d8f5ee');
+      }
+       
+      $(this).val(input_row_position);
+      
+      
+  });
+  
+  //--------------for EMD row 4------------------------------------------ 
+ 
+ 
+ 
+ 
+ 
+ 
   // adding total and cumalitive total  logic==================================================================
   
   $(document).on('change', '#mtenth .row_add', function(){
@@ -833,6 +955,8 @@ $(document).on('click', '#open_bidChecklist', function(){
          count_row = count_row + row_inputs;
       }
     });
+    console.log('my');
+    console.log(count_row);
     $('#mtenth tbody tr:eq('+input_row_position+') td:last-child input').val(count_row);
     
     //-----------vertical total column color change---------------------------  
@@ -966,113 +1090,11 @@ $(document).on('click', '#open_bidChecklist', function(){
   
   //-------------------------------------------------------------------------------------------------
   
-  //---------------changing the value of expense ----------------------------------------------
-   $(document).on('change','#cash_flow  .row_add,#two  .row_add,#six .row_add,#seven .row_add,#nine .row_add',function(){
-       
-       
-       var input_row_position = $(this).val();
-       
-       if(input_row_position!=""){
-           
-           input_row_position=-(input_row_position);
-           
-           $(this).css('background','#FFB6C1');
-           
-       }else{
-           input_row_position="";
-           
-            $(this).css('background','#d8f5ee');
-       }
-       
-       $(this).val(input_row_position);
-   });
+ 
+  
    
-  //---------------changing the value of expense ----------------------------------------------
-    //---------------changing the color of income ----------------------------------------------
-   $(document).on('change','#10 .row_add,#eight .row_add',function(){
-       
-       
-        var input_row_position = $(this).val();
-       
-       if(input_row_position!=""){
-           
-          
-           
-           $(this).css('background','#90EE90');
-           
-       }else{
-           input_row_position="";
-           
-            $(this).css('background','#d8f5ee');
-       }
-       
-       $(this).val(input_row_position);
-   });
-        //---------------changing the value of income ----------------------------------------------
   
-  //--------------for EMD row 3------------------------------------------ 
-  $(document).on('change','#three .row_add',function(){
-      
-      var input_pos_rev = $(this).closest('td').index();
-    //   console.log("hi");
-      var input_row_position = $(this).val();
-       
-      if(input_row_position!=""){
-          
-          input_row_position=-(input_row_position);
-           
-          $(this).css('background','#FFB6C1');
-           
-         var k=input_pos_rev+1;
-         
-         $('#three td:eq('+k+') input').css("background",'#90EE90').val(-(input_row_position));
-         
-      //console.log(k);
-       
-      }else{
-          input_row_position="";
-           
-            $(this).css('background','#d8f5ee');
-      }
-       
-      $(this).val(input_row_position);
-      
-      
-  });
   
-  //--------------for EMD row 3------------------------------------------ 
-  
-   //--------------for EMD row 4------------------------------------------ 
-  $(document).on('change','#four .row_add',function(){
-      
-     
-      
-     
-        var input_row_position = $(this).val();
-       
-      if(input_row_position!=""){
-          
-          input_row_position=-(input_row_position);
-           
-          $(this).css('background','#FFB6C1');
-           
-          
-          $('#four  td:nth-last-child(2) input').css("background",'#90EE90').val(-(input_row_position));
-          
-     
-      
-      }else{
-          input_row_position="";
-           
-            $(this).css('background','#d8f5ee');
-      }
-       
-      $(this).val(input_row_position);
-      
-      
-  });
-  
-  //--------------for EMD row 4------------------------------------------ 
   
   
   

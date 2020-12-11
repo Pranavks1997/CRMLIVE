@@ -1,5 +1,5 @@
 <?php
-// created: 2020-12-05 07:25:28
+// created: 2020-12-08 06:53:59
 $mod_strings = array (
   'LBL_ACCOUNT_NAME' => 'Department ',
   'LBL_ACCOUNTS' => 'Departments',
@@ -87,4 +87,6 @@ $mod_strings = array (
   'LBL_PROJECT_SCOPE' => 'Project Scope',
   'LBL_COMMENT' => 'Comment',
   'LBL_DETAILVIEW_PANEL11' => 'Comment',
+  'LBL_SELECT_APPROVER_USER_ID' => 'Select Approver (related User ID)',
+  'LBL_SELECT_APPROVER' => 'Select Approver',
 );

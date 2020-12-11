@@ -1,7 +1,6 @@
 $(document).ready(function(){
     
-    //------------- hiding the username field -----------------
-    //------------- hiding the username field--end ------------
+   
     
    $.get("index.php?module=Users&action=remove_arrow", function (data, status) {
       // alert("Data: " + data + "\nStatus: " + status);

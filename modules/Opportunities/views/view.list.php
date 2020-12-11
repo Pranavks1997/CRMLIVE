@@ -26,6 +26,7 @@ class OpportunitiesViewList extends ViewList
 
     public function preDisplay()
     {
+       
         $this->lv = new OpportunitiesListViewSmarty();
     }
 }

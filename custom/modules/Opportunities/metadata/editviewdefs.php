@@ -110,7 +110,6 @@ array (
         1 => 
         array (
           0 => 'opportunity_type',
-          1 => '',
         ),
         2 => 
         array (
@@ -136,7 +135,12 @@ array (
           array (
             'name' => 'name',
           ),
-          1 => 'assigned_user_name',
+          1 => 
+          array (
+            'name' => 'select_approver_c',
+            'studio' => 'visible',
+            'label' => 'LBL_SELECT_APPROVER',
+          ),
         ),
         1 => 
         array (
@@ -170,6 +174,7 @@ array (
             'studio' => 'visible',
             'label' => 'LBL_NON_FINANCIAL_CONSIDERATION',
           ),
+          1 => 'assigned_user_name',
         ),
         4 => 
         array (
@@ -237,11 +242,7 @@ array (
             'name' => 'financial_feasibility_l3_c',
             'label' => 'LBL_FINANCIAL_FEASIBILITY_L3',
           ),
-          1 => 
-          array (
-            'name' => 'cash_flow_c',
-            'label' => 'LBL_CASH_FLOW',
-          ),
+          1 => '',
         ),
       ),
       'lbl_editview_panel7' => 
