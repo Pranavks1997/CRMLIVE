@@ -1,0 +1,794 @@
+
+2020-10-20 06:58:35...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 06:58:39...Begin System Check Process *************
+2020-10-20 06:58:39...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 06:58:39...XML Parsing Support Found
+2020-10-20 06:58:39...MBString Support Found
+2020-10-20 06:58:39...ZIP Support Found
+2020-10-20 06:58:39.../custom directory and subdirectory check passed
+2020-10-20 06:58:39...cache directory and subdirectory check passed
+2020-10-20 06:58:39.../module  directory and subdirectory check passed
+2020-10-20 06:58:39.../upload directory check passed
+2020-10-20 06:58:39.../zip check passed
+2020-10-20 06:58:39...PCRE version check passed
+2020-10-20 06:58:39...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 06:58:39...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 06:58:39...Outputting HTML for System check
+2020-10-20 06:58:39...Errors were found *************
+2020-10-20 07:02:59...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:03:03...Begin System Check Process *************
+2020-10-20 07:03:03...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:03:03...XML Parsing Support Found
+2020-10-20 07:03:03...MBString Support Found
+2020-10-20 07:03:03...ZIP Support Found
+2020-10-20 07:03:03.../custom directory and subdirectory check passed
+2020-10-20 07:03:03...cache directory and subdirectory check passed
+2020-10-20 07:03:03.../module  directory and subdirectory check passed
+2020-10-20 07:03:03.../upload directory check passed
+2020-10-20 07:03:03.../zip check passed
+2020-10-20 07:03:03...PCRE version check passed
+2020-10-20 07:03:03...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:03:03...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:03:03...Outputting HTML for System check
+2020-10-20 07:03:03...Errors were found *************
+2020-10-20 07:05:12...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:05:16...Begin System Check Process *************
+2020-10-20 07:05:16...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:05:16...XML Parsing Support Found
+2020-10-20 07:05:16...MBString Support Found
+2020-10-20 07:05:16...ZIP Support Found
+2020-10-20 07:05:16.../custom directory and subdirectory check passed
+2020-10-20 07:05:16...cache directory and subdirectory check passed
+2020-10-20 07:05:16.../module  directory and subdirectory check passed
+2020-10-20 07:05:16.../upload directory check passed
+2020-10-20 07:05:16.../zip check passed
+2020-10-20 07:05:16...PCRE version check passed
+2020-10-20 07:05:16...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:05:16...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:05:16...Outputting HTML for System check
+2020-10-20 07:05:16...Errors were found *************
+2020-10-20 07:08:43...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:08:47...Begin System Check Process *************
+2020-10-20 07:08:47...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:08:47...XML Parsing Support Found
+2020-10-20 07:08:47...MBString Support Found
+2020-10-20 07:08:47...ZIP Support Found
+2020-10-20 07:08:47.../custom directory and subdirectory check passed
+2020-10-20 07:08:47...cache directory and subdirectory check passed
+2020-10-20 07:08:47.../module  directory and subdirectory check passed
+2020-10-20 07:08:47.../upload directory check passed
+2020-10-20 07:08:47.../zip check passed
+2020-10-20 07:08:47...PCRE version check passed
+2020-10-20 07:08:47...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:08:47...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:08:47...Outputting HTML for System check
+2020-10-20 07:08:47...Errors were found *************
+2020-10-20 07:10:06...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:10:09...Begin System Check Process *************
+2020-10-20 07:10:09...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:10:09...XML Parsing Support Found
+2020-10-20 07:10:09...MBString Support Found
+2020-10-20 07:10:09...ZIP Support Found
+2020-10-20 07:10:09.../custom directory and subdirectory check passed
+2020-10-20 07:10:09...cache directory and subdirectory check passed
+2020-10-20 07:10:09.../module  directory and subdirectory check passed
+2020-10-20 07:10:09.../upload directory check passed
+2020-10-20 07:10:09.../zip check passed
+2020-10-20 07:10:09...PCRE version check passed
+2020-10-20 07:10:09...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:10:09...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:10:09...Outputting HTML for System check
+2020-10-20 07:10:09...Errors were found *************
+2020-10-20 07:10:23...Begin System Check Process *************
+2020-10-20 07:10:23...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:10:23...XML Parsing Support Found
+2020-10-20 07:10:23...MBString Support Found
+2020-10-20 07:10:23...ZIP Support Found
+2020-10-20 07:10:23.../custom directory and subdirectory check passed
+2020-10-20 07:10:23...cache directory and subdirectory check passed
+2020-10-20 07:10:23.../module  directory and subdirectory check passed
+2020-10-20 07:10:23.../upload directory check passed
+2020-10-20 07:10:23.../zip check passed
+2020-10-20 07:10:23...PCRE version check passed
+2020-10-20 07:10:23...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:10:23...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:10:23...Outputting HTML for System check
+2020-10-20 07:10:23...Errors were found *************
+2020-10-20 07:10:33...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:10:37...Begin System Check Process *************
+2020-10-20 07:10:37...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:10:37...XML Parsing Support Found
+2020-10-20 07:10:37...MBString Support Found
+2020-10-20 07:10:37...ZIP Support Found
+2020-10-20 07:10:37.../custom directory and subdirectory check passed
+2020-10-20 07:10:37...cache directory and subdirectory check passed
+2020-10-20 07:10:37.../module  directory and subdirectory check passed
+2020-10-20 07:10:37.../upload directory check passed
+2020-10-20 07:10:37.../zip check passed
+2020-10-20 07:10:37...PCRE version check passed
+2020-10-20 07:10:37...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:10:37...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:10:37...Outputting HTML for System check
+2020-10-20 07:10:37...Errors were found *************
+2020-10-20 07:11:00...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:11:07...Begin System Check Process *************
+2020-10-20 07:11:07...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:11:07...XML Parsing Support Found
+2020-10-20 07:11:07...MBString Support Found
+2020-10-20 07:11:07...ZIP Support Found
+2020-10-20 07:11:07.../custom directory and subdirectory check passed
+2020-10-20 07:11:07...cache directory and subdirectory check passed
+2020-10-20 07:11:07.../module  directory and subdirectory check passed
+2020-10-20 07:11:07.../upload directory check passed
+2020-10-20 07:11:07.../zip check passed
+2020-10-20 07:11:07...PCRE version check passed
+2020-10-20 07:11:07...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:11:07...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:11:07...Outputting HTML for System check
+2020-10-20 07:11:07...Errors were found *************
+2020-10-20 07:12:53...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:12:59...Begin System Check Process *************
+2020-10-20 07:12:59...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:12:59...XML Parsing Support Found
+2020-10-20 07:12:59...MBString Support Found
+2020-10-20 07:12:59...ZIP Support Found
+2020-10-20 07:12:59.../custom directory and subdirectory check passed
+2020-10-20 07:12:59...cache directory and subdirectory check passed
+2020-10-20 07:12:59.../module  directory and subdirectory check passed
+2020-10-20 07:12:59.../upload directory check passed
+2020-10-20 07:12:59.../zip check passed
+2020-10-20 07:12:59...PCRE version check passed
+2020-10-20 07:12:59...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:12:59...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:12:59...Outputting HTML for System check
+2020-10-20 07:12:59...Errors were found *************
+2020-10-20 07:13:35...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:13:40...Begin System Check Process *************
+2020-10-20 07:13:40...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:13:40...XML Parsing Support Found
+2020-10-20 07:13:40...MBString Support Found
+2020-10-20 07:13:40...ZIP Support Found
+2020-10-20 07:13:40.../custom directory and subdirectory check passed
+2020-10-20 07:13:40...cache directory and subdirectory check passed
+2020-10-20 07:13:40.../module  directory and subdirectory check passed
+2020-10-20 07:13:40.../upload directory check passed
+2020-10-20 07:13:40.../zip check passed
+2020-10-20 07:13:40...PCRE version check passed
+2020-10-20 07:13:40...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:13:40...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:13:40...Outputting HTML for System check
+2020-10-20 07:13:40...Errors were found *************
+2020-10-20 07:14:49...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:14:52...Begin System Check Process *************
+2020-10-20 07:14:52...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:14:52...XML Parsing Support Found
+2020-10-20 07:14:52...MBString Support Found
+2020-10-20 07:14:52...ZIP Support Found
+2020-10-20 07:14:52.../custom directory and subdirectory check passed
+2020-10-20 07:14:52...cache directory and subdirectory check passed
+2020-10-20 07:14:52.../module  directory and subdirectory check passed
+2020-10-20 07:14:52.../upload directory check passed
+2020-10-20 07:14:52.../zip check passed
+2020-10-20 07:14:52...PCRE version check passed
+2020-10-20 07:14:52...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:14:52...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:14:52...Outputting HTML for System check
+2020-10-20 07:14:52...Errors were found *************
+2020-10-20 07:17:06...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:17:09...Begin System Check Process *************
+2020-10-20 07:17:09...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:17:09...XML Parsing Support Found
+2020-10-20 07:17:09...MBString Support Found
+2020-10-20 07:17:09...ZIP Support Found
+2020-10-20 07:17:09.../custom directory and subdirectory check passed
+2020-10-20 07:17:09...cache directory and subdirectory check passed
+2020-10-20 07:17:09.../module  directory and subdirectory check passed
+2020-10-20 07:17:09.../upload directory check passed
+2020-10-20 07:17:09.../zip check passed
+2020-10-20 07:17:09...PCRE version check passed
+2020-10-20 07:17:09...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:17:09...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:17:09...Outputting HTML for System check
+2020-10-20 07:17:09...Errors were found *************
+2020-10-20 07:17:16...Begin System Check Process *************
+2020-10-20 07:17:16...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:17:16...XML Parsing Support Found
+2020-10-20 07:17:16...MBString Support Found
+2020-10-20 07:17:16...ZIP Support Found
+2020-10-20 07:17:16.../custom directory and subdirectory check passed
+2020-10-20 07:17:16...cache directory and subdirectory check passed
+2020-10-20 07:17:16.../module  directory and subdirectory check passed
+2020-10-20 07:17:16.../upload directory check passed
+2020-10-20 07:17:16.../zip check passed
+2020-10-20 07:17:16...PCRE version check passed
+2020-10-20 07:17:16...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:17:16...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:17:16...Outputting HTML for System check
+2020-10-20 07:17:16...Errors were found *************
+2020-10-20 07:17:17...Begin System Check Process *************
+2020-10-20 07:17:17...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:17:17...XML Parsing Support Found
+2020-10-20 07:17:17...MBString Support Found
+2020-10-20 07:17:17...ZIP Support Found
+2020-10-20 07:17:17.../custom directory and subdirectory check passed
+2020-10-20 07:17:17...cache directory and subdirectory check passed
+2020-10-20 07:17:17.../module  directory and subdirectory check passed
+2020-10-20 07:17:17.../upload directory check passed
+2020-10-20 07:17:17.../zip check passed
+2020-10-20 07:17:17...PCRE version check passed
+2020-10-20 07:17:17...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:17:17...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:17:17...Outputting HTML for System check
+2020-10-20 07:17:17...Errors were found *************
+2020-10-20 07:20:45...Begin System Check Process *************
+2020-10-20 07:20:45...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:20:45...XML Parsing Support Found
+2020-10-20 07:20:45...MBString Support Found
+2020-10-20 07:20:45...ZIP Support Found
+2020-10-20 07:20:45.../custom directory and subdirectory check passed
+2020-10-20 07:20:45...cache directory and subdirectory check passed
+2020-10-20 07:20:45.../module  directory and subdirectory check passed
+2020-10-20 07:20:45.../upload directory check passed
+2020-10-20 07:20:45.../zip check passed
+2020-10-20 07:20:45...PCRE version check passed
+2020-10-20 07:20:45...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:20:45...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:20:45...Outputting HTML for System check
+2020-10-20 07:20:45...Errors were found *************
+2020-10-20 07:21:11...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:21:12...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:21:14...Begin System Check Process *************
+2020-10-20 07:21:14...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:21:14...XML Parsing Support Found
+2020-10-20 07:21:14...MBString Support Found
+2020-10-20 07:21:14...ZIP Support Found
+2020-10-20 07:21:14.../custom directory and subdirectory check passed
+2020-10-20 07:21:14...cache directory and subdirectory check passed
+2020-10-20 07:21:14.../module  directory and subdirectory check passed
+2020-10-20 07:21:14.../upload directory check passed
+2020-10-20 07:21:14.../zip check passed
+2020-10-20 07:21:14...PCRE version check passed
+2020-10-20 07:21:14...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:21:14...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:21:14...Outputting HTML for System check
+2020-10-20 07:21:14...Errors were found *************
+2020-10-20 07:21:15...Begin System Check Process *************
+2020-10-20 07:21:15...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:21:15...XML Parsing Support Found
+2020-10-20 07:21:15...MBString Support Found
+2020-10-20 07:21:15...ZIP Support Found
+2020-10-20 07:21:15.../custom directory and subdirectory check passed
+2020-10-20 07:21:15...cache directory and subdirectory check passed
+2020-10-20 07:21:15.../module  directory and subdirectory check passed
+2020-10-20 07:21:15.../upload directory check passed
+2020-10-20 07:21:15.../zip check passed
+2020-10-20 07:21:15...PCRE version check passed
+2020-10-20 07:21:15...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:21:15...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:21:15...Outputting HTML for System check
+2020-10-20 07:21:15...Errors were found *************
+2020-10-20 07:23:18...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:23:21...Begin System Check Process *************
+2020-10-20 07:23:21...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:23:21...XML Parsing Support Found
+2020-10-20 07:23:21...MBString Support Found
+2020-10-20 07:23:21...ZIP Support Found
+2020-10-20 07:23:21.../custom directory and subdirectory check passed
+2020-10-20 07:23:21...cache directory and subdirectory check passed
+2020-10-20 07:23:21.../module  directory and subdirectory check passed
+2020-10-20 07:23:21.../upload directory check passed
+2020-10-20 07:23:21.../zip check passed
+2020-10-20 07:23:21...PCRE version check passed
+2020-10-20 07:23:21...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:23:21...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:23:21...Outputting HTML for System check
+2020-10-20 07:23:21...Errors were found *************
+2020-10-20 07:23:35...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:23:38...Begin System Check Process *************
+2020-10-20 07:23:38...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:23:38...XML Parsing Support Found
+2020-10-20 07:23:38...MBString Support Found
+2020-10-20 07:23:38...ZIP Support Found
+2020-10-20 07:23:38.../custom directory and subdirectory check passed
+2020-10-20 07:23:38...cache directory and subdirectory check passed
+2020-10-20 07:23:38.../module  directory and subdirectory check passed
+2020-10-20 07:23:38.../upload directory check passed
+2020-10-20 07:23:38.../zip check passed
+2020-10-20 07:23:38...PCRE version check passed
+2020-10-20 07:23:38...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:23:38...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:23:38...Outputting HTML for System check
+2020-10-20 07:23:38...Errors were found *************
+2020-10-20 07:24:11...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:24:14...Begin System Check Process *************
+2020-10-20 07:24:14...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:24:14...XML Parsing Support Found
+2020-10-20 07:24:14...MBString Support Found
+2020-10-20 07:24:14...ZIP Support Found
+2020-10-20 07:24:14.../custom directory and subdirectory check passed
+2020-10-20 07:24:14...cache directory and subdirectory check passed
+2020-10-20 07:24:14.../module  directory and subdirectory check passed
+2020-10-20 07:24:14.../upload directory check passed
+2020-10-20 07:24:14.../zip check passed
+2020-10-20 07:24:14...PCRE version check passed
+2020-10-20 07:24:14...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:24:14...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:24:14...Outputting HTML for System check
+2020-10-20 07:24:14...Errors were found *************
+2020-10-20 07:24:31...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:24:36...Begin System Check Process *************
+2020-10-20 07:24:36...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:24:36...XML Parsing Support Found
+2020-10-20 07:24:36...MBString Support Found
+2020-10-20 07:24:36...ZIP Support Found
+2020-10-20 07:24:36.../custom directory and subdirectory check passed
+2020-10-20 07:24:36...cache directory and subdirectory check passed
+2020-10-20 07:24:36.../module  directory and subdirectory check passed
+2020-10-20 07:24:36.../upload directory check passed
+2020-10-20 07:24:36.../zip check passed
+2020-10-20 07:24:36...PCRE version check passed
+2020-10-20 07:24:36...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:24:36...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:24:36...Outputting HTML for System check
+2020-10-20 07:24:36...Errors were found *************
+2020-10-20 07:29:31...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:29:34...Begin System Check Process *************
+2020-10-20 07:29:34...ERROR:: Database Support was not found. Please make sure you have the necessary drivers for one of the following supported Database Types: MySQL or MS SQLServer. You might need to uncomment the extension in the php.ini file, or recompile with the right binary file, depending on your version of PHP. Please refer to your PHP Manual for more information on how to enable Database Support.
+2020-10-20 07:29:34...XML Parsing Support Found
+2020-10-20 07:29:34...MBString Support Found
+2020-10-20 07:29:34...ZIP Support Found
+2020-10-20 07:29:34.../custom directory and subdirectory check passed
+2020-10-20 07:29:34...cache directory and subdirectory check passed
+2020-10-20 07:29:34.../module  directory and subdirectory check passed
+2020-10-20 07:29:34.../upload directory check passed
+2020-10-20 07:29:34.../zip check passed
+2020-10-20 07:29:34...PCRE version check passed
+2020-10-20 07:29:34...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:29:34...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:29:34...Outputting HTML for System check
+2020-10-20 07:29:34...Errors were found *************
+2020-10-20 07:37:49...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:37:52...Begin System Check Process *************
+2020-10-20 07:37:52...XML Parsing Support Found
+2020-10-20 07:37:52...MBString Support Found
+2020-10-20 07:37:52...ZIP Support Found
+2020-10-20 07:37:52.../custom directory and subdirectory check passed
+2020-10-20 07:37:52...cache directory and subdirectory check passed
+2020-10-20 07:37:52.../module  directory and subdirectory check passed
+2020-10-20 07:37:52.../upload directory check passed
+2020-10-20 07:37:52.../zip check passed
+2020-10-20 07:37:52...PCRE version check passed
+2020-10-20 07:37:52...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:37:52...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:37:52...Outputting HTML for System check
+2020-10-20 07:37:52...No Errors were found *************
+2020-10-20 07:37:52...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:37:57...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:38:00...Begin System Check Process *************
+2020-10-20 07:38:00...XML Parsing Support Found
+2020-10-20 07:38:00...MBString Support Found
+2020-10-20 07:38:00...ZIP Support Found
+2020-10-20 07:38:00.../custom directory and subdirectory check passed
+2020-10-20 07:38:00...cache directory and subdirectory check passed
+2020-10-20 07:38:00.../module  directory and subdirectory check passed
+2020-10-20 07:38:00.../upload directory check passed
+2020-10-20 07:38:00.../zip check passed
+2020-10-20 07:38:00...PCRE version check passed
+2020-10-20 07:38:00...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:38:00...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:38:00...Outputting HTML for System check
+2020-10-20 07:38:00...No Errors were found *************
+2020-10-20 07:38:00...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:39:00...Begin System Check Process *************
+2020-10-20 07:39:00...XML Parsing Support Found
+2020-10-20 07:39:00...MBString Support Found
+2020-10-20 07:39:00...ZIP Support Found
+2020-10-20 07:39:00.../custom directory and subdirectory check passed
+2020-10-20 07:39:00...cache directory and subdirectory check passed
+2020-10-20 07:39:00.../module  directory and subdirectory check passed
+2020-10-20 07:39:00.../upload directory check passed
+2020-10-20 07:39:00.../zip check passed
+2020-10-20 07:39:00...PCRE version check passed
+2020-10-20 07:39:00...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:39:00...php.ini location found. /etc/php/7.3/apache2/php.ini
+2020-10-20 07:39:00...Outputting HTML for System check
+2020-10-20 07:39:00...No Errors were found *************
+2020-10-20 07:39:01...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:39:09...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:39:35...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:39:36...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:39:42...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:40:54...Begin DB Check Process *************
+2020-10-20 07:40:54...testing with mysql:mysqli
+2020-10-20 07:40:54...Basic form info is valid, continuing Process.
+2020-10-20 07:40:54...Testing user account...
+2020-10-20 07:40:54...ERROR::  The provided database host, username, and/or password is invalid, and a connection to the database could not be established. Please enter a valid host, username and password
+2020-10-20 07:40:54...FATAL:: errors have been detected!  User will not be allowed to continue.  Errors are as follow:
+2020-10-20 07:40:54..... The provided database host, username, and/or password is invalid, and a connection to the database could not be established. Please enter a valid host, username and password
+2020-10-20 07:40:54...End DB Check Process *************
+2020-10-20 07:41:37...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:41:48...Begin DB Check Process *************
+2020-10-20 07:41:48...testing with mysql:mysqli
+2020-10-20 07:41:48...Basic form info is valid, continuing Process.
+2020-10-20 07:41:48...Testing user account...
+2020-10-20 07:41:48...ERROR::  The provided database host, username, and/or password is invalid, and a connection to the database could not be established. Please enter a valid host, username and password
+2020-10-20 07:41:48...FATAL:: errors have been detected!  User will not be allowed to continue.  Errors are as follow:
+2020-10-20 07:41:48..... The provided database host, username, and/or password is invalid, and a connection to the database could not be established. Please enter a valid host, username and password
+2020-10-20 07:41:48...End DB Check Process *************
+2020-10-20 07:41:59...Begin DB Check Process *************
+2020-10-20 07:41:59...testing with mysql:mysqli
+2020-10-20 07:41:59...Basic form info is valid, continuing Process.
+2020-10-20 07:41:59...Testing user account...
+2020-10-20 07:41:59...ERROR::  The provided database host, username, and/or password is invalid, and a connection to the database could not be established. Please enter a valid host, username and password
+2020-10-20 07:41:59...FATAL:: errors have been detected!  User will not be allowed to continue.  Errors are as follow:
+2020-10-20 07:41:59..... The provided database host, username, and/or password is invalid, and a connection to the database could not be established. Please enter a valid host, username and password
+2020-10-20 07:41:59...End DB Check Process *************
+2020-10-20 07:42:22...Begin DB Check Process *************
+2020-10-20 07:42:22...testing with mysql:mysqli
+2020-10-20 07:42:22...Basic form info is valid, continuing Process.
+2020-10-20 07:42:22...Testing user account...
+2020-10-20 07:42:22...ERROR::  The provided database host, username, and/or password is invalid, and a connection to the database could not be established. Please enter a valid host, username and password
+2020-10-20 07:42:22...FATAL:: errors have been detected!  User will not be allowed to continue.  Errors are as follow:
+2020-10-20 07:42:22..... The provided database host, username, and/or password is invalid, and a connection to the database could not be established. Please enter a valid host, username and password
+2020-10-20 07:42:22...End DB Check Process *************
+2020-10-20 07:42:34...Begin DB Check Process *************
+2020-10-20 07:42:34...testing with mysql:mysqli
+2020-10-20 07:42:34...Basic form info is valid, continuing Process.
+2020-10-20 07:42:34...Testing user account...
+2020-10-20 07:42:34...ERROR::  The provided database host, username, and/or password is invalid, and a connection to the database could not be established. Please enter a valid host, username and password
+2020-10-20 07:42:34...FATAL:: errors have been detected!  User will not be allowed to continue.  Errors are as follow:
+2020-10-20 07:42:34..... The provided database host, username, and/or password is invalid, and a connection to the database could not be established. Please enter a valid host, username and password
+2020-10-20 07:42:34...End DB Check Process *************
+2020-10-20 07:43:11...Begin DB Check Process *************
+2020-10-20 07:43:11...testing with mysql:mysqli
+2020-10-20 07:43:11...Basic form info is valid, continuing Process.
+2020-10-20 07:43:11...Testing user account...
+2020-10-20 07:43:11...ERROR::  The provided database host, username, and/or password is invalid, and a connection to the database could not be established. Please enter a valid host, username and password
+2020-10-20 07:43:11...FATAL:: errors have been detected!  User will not be allowed to continue.  Errors are as follow:
+2020-10-20 07:43:11..... The provided database host, username, and/or password is invalid, and a connection to the database could not be established. Please enter a valid host, username and password
+2020-10-20 07:43:11...End DB Check Process *************
+2020-10-20 07:43:21...Begin DB Check Process *************
+2020-10-20 07:43:21...testing with mysql:mysqli
+2020-10-20 07:43:21...Basic form info is valid, continuing Process.
+2020-10-20 07:43:21...Testing user account...
+2020-10-20 07:43:21...ERROR::  The provided database host, username, and/or password is invalid, and a connection to the database could not be established. Please enter a valid host, username and password
+2020-10-20 07:43:21...FATAL:: errors have been detected!  User will not be allowed to continue.  Errors are as follow:
+2020-10-20 07:43:21..... The provided database host, username, and/or password is invalid, and a connection to the database could not be established. Please enter a valid host, username and password
+2020-10-20 07:43:21...End DB Check Process *************
+2020-10-20 07:43:41...Begin DB Check Process *************
+2020-10-20 07:43:41...testing with mysql:mysqli
+2020-10-20 07:43:41...Basic form info is valid, continuing Process.
+2020-10-20 07:43:41...Testing user account...
+2020-10-20 07:43:41...ERROR::  The provided database host, username, and/or password is invalid, and a connection to the database could not be established. Please enter a valid host, username and password
+2020-10-20 07:43:41...FATAL:: errors have been detected!  User will not be allowed to continue.  Errors are as follow:
+2020-10-20 07:43:41..... The provided database host, username, and/or password is invalid, and a connection to the database could not be established. Please enter a valid host, username and password
+2020-10-20 07:43:41...End DB Check Process *************
+2020-10-20 07:46:23...Begin DB Check Process *************
+2020-10-20 07:46:23...testing with mysql:mysqli
+2020-10-20 07:46:23...Basic form info is valid, continuing Process.
+2020-10-20 07:46:23...Testing user account...
+2020-10-20 07:46:23...Connection made using  host: localhost, usr: xelp
+2020-10-20 07:46:23...SUCCESS:: no errors detected!
+2020-10-20 07:46:23...End DB Check Process *************
+2020-10-20 07:46:23...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2020-10-20 07:46:23...calling handleSugarConfig()
+2020-10-20 07:46:23...calling handleHtaccess()
+2020-10-20 07:46:23...calling handleDbCreateDatabase()
+2020-10-20 07:46:23...looping through all the Beans and create their tables
+2020-10-20 07:46:23...processing table acl_actions
+2020-10-20 07:46:23...creating table acl_actions
+2020-10-20 07:46:23...creating Relationship Meta for ACLAction
+2020-10-20 07:46:23...processing table acl_roles
+2020-10-20 07:46:23...creating table acl_roles
+2020-10-20 07:46:23...creating Relationship Meta for ACLRole
+2020-10-20 07:46:23...processing table relationships
+2020-10-20 07:46:23...creating table relationships
+2020-10-20 07:46:23...creating Relationship Meta for Relationship
+2020-10-20 07:46:23...processing table leads
+2020-10-20 07:46:23...creating table leads
+2020-10-20 07:46:23...creating Relationship Meta for Lead
+2020-10-20 07:46:23...processing table cases
+2020-10-20 07:46:23...creating table cases
+2020-10-20 07:46:23...creating Relationship Meta for Case
+2020-10-20 07:46:23...processing table bugs
+2020-10-20 07:46:23...creating table bugs
+2020-10-20 07:46:23...creating Relationship Meta for Bug
+2020-10-20 07:46:23...processing table users
+2020-10-20 07:46:23...creating table users
+2020-10-20 07:46:23...creating Relationship Meta for User
+2020-10-20 07:46:23...processing table campaign_log
+2020-10-20 07:46:24...creating table campaign_log
+2020-10-20 07:46:24...creating Relationship Meta for CampaignLog
+2020-10-20 07:46:24...processing table project
+2020-10-20 07:46:24...creating table project
+2020-10-20 07:46:24...creating Relationship Meta for Project
+2020-10-20 07:46:24...processing table project_task
+2020-10-20 07:46:24...creating table project_task
+2020-10-20 07:46:24...creating Relationship Meta for ProjectTask
+2020-10-20 07:46:24...processing table campaigns
+2020-10-20 07:46:24...creating table campaigns
+2020-10-20 07:46:24...creating Relationship Meta for Campaign
+2020-10-20 07:46:24...processing table prospect_lists
+2020-10-20 07:46:24...creating table prospect_lists
+2020-10-20 07:46:24...creating Relationship Meta for ProspectList
+2020-10-20 07:46:24...processing table prospects
+2020-10-20 07:46:24...creating table prospects
+2020-10-20 07:46:24...creating Relationship Meta for Prospect
+2020-10-20 07:46:24...processing table email_marketing
+2020-10-20 07:46:24...creating table email_marketing
+2020-10-20 07:46:24...creating Relationship Meta for EmailMarketing
+2020-10-20 07:46:24...processing table campaign_trkrs
+2020-10-20 07:46:24...creating table campaign_trkrs
+2020-10-20 07:46:24...creating Relationship Meta for CampaignTracker
+2020-10-20 07:46:24...processing table releases
+2020-10-20 07:46:24...creating table releases
+2020-10-20 07:46:24...creating Relationship Meta for Release
+2020-10-20 07:46:24...processing table emailman
+2020-10-20 07:46:24...creating table emailman
+2020-10-20 07:46:24...creating Relationship Meta for EmailMan
+2020-10-20 07:46:24...processing table schedulers
+2020-10-20 07:46:24...creating table schedulers
+2020-10-20 07:46:24...creating Relationship Meta for Scheduler
+2020-10-20 07:46:24...processing table job_queue
+2020-10-20 07:46:24...creating table job_queue
+2020-10-20 07:46:24...creating Relationship Meta for SchedulersJob
+2020-10-20 07:46:24...processing table contacts
+2020-10-20 07:46:24...creating table contacts
+2020-10-20 07:46:24...creating Relationship Meta for Contact
+2020-10-20 07:46:24...processing table accounts
+2020-10-20 07:46:24...creating table accounts
+2020-10-20 07:46:24...creating Relationship Meta for Account
+2020-10-20 07:46:24...processing table opportunities
+2020-10-20 07:46:24...creating table opportunities
+2020-10-20 07:46:24...creating Relationship Meta for Opportunity
+2020-10-20 07:46:24...processing table email_templates
+2020-10-20 07:46:24...creating table email_templates
+2020-10-20 07:46:24...creating Relationship Meta for EmailTemplate
+2020-10-20 07:46:24...processing table notes
+2020-10-20 07:46:24...creating table notes
+2020-10-20 07:46:24...creating Relationship Meta for Note
+2020-10-20 07:46:24...processing table calls
+2020-10-20 07:46:25...creating table calls
+2020-10-20 07:46:25...creating Relationship Meta for Call
+2020-10-20 07:46:25...processing table emails
+2020-10-20 07:46:25...creating table emails
+2020-10-20 07:46:25...creating Relationship Meta for Email
+2020-10-20 07:46:25...processing table meetings
+2020-10-20 07:46:25...creating table meetings
+2020-10-20 07:46:25...creating Relationship Meta for Meeting
+2020-10-20 07:46:25...processing table tasks
+2020-10-20 07:46:25...creating table tasks
+2020-10-20 07:46:25...creating Relationship Meta for Task
+2020-10-20 07:46:25...processing table users
+2020-10-20 07:46:25...processing table users
+2020-10-20 07:46:25...processing table currencies
+2020-10-20 07:46:25...creating table currencies
+2020-10-20 07:46:25...creating Relationship Meta for Currency
+2020-10-20 07:46:25...processing table tracker
+2020-10-20 07:46:25...creating table tracker
+2020-10-20 07:46:25...creating Relationship Meta for Tracker
+2020-10-20 07:46:25...processing table import_maps
+2020-10-20 07:46:25...creating table import_maps
+2020-10-20 07:46:25...creating Relationship Meta for ImportMap
+2020-10-20 07:46:25...processing table users_last_import
+2020-10-20 07:46:25...creating table users_last_import
+2020-10-20 07:46:25...creating Relationship Meta for UsersLastImport
+2020-10-20 07:46:25...processing table config
+2020-10-20 07:46:25...creating table config
+2020-10-20 07:46:25...creating Relationship Meta for Administration
+2020-10-20 07:46:25...processing table upgrade_history
+2020-10-20 07:46:25...creating table upgrade_history
+2020-10-20 07:46:25...creating Relationship Meta for UpgradeHistory
+2020-10-20 07:46:25...processing table vcals
+2020-10-20 07:46:25...creating table vcals
+2020-10-20 07:46:25...creating Relationship Meta for vCal
+2020-10-20 07:46:25...processing table alerts
+2020-10-20 07:46:25...creating table alerts
+2020-10-20 07:46:25...creating Relationship Meta for Alert
+2020-10-20 07:46:25...processing table roles
+2020-10-20 07:46:25...creating table roles
+2020-10-20 07:46:25...creating Relationship Meta for Role
+2020-10-20 07:46:25...processing table documents
+2020-10-20 07:46:25...creating table documents
+2020-10-20 07:46:25...creating Relationship Meta for Document
+2020-10-20 07:46:25...processing table document_revisions
+2020-10-20 07:46:25...creating table document_revisions
+2020-10-20 07:46:25...creating Relationship Meta for DocumentRevision
+2020-10-20 07:46:25...processing table fields_meta_data
+2020-10-20 07:46:25...creating table fields_meta_data
+2020-10-20 07:46:25...creating Relationship Meta for FieldsMetaData
+2020-10-20 07:46:25...processing table 
+2020-10-20 07:46:25...creating Relationship Meta for Audit
+2020-10-20 07:46:25...processing table inbound_email
+2020-10-20 07:46:25...creating table inbound_email
+2020-10-20 07:46:25...creating Relationship Meta for InboundEmail
+2020-10-20 07:46:25...processing table saved_search
+2020-10-20 07:46:25...creating table saved_search
+2020-10-20 07:46:25...creating Relationship Meta for SavedSearch
+2020-10-20 07:46:25...processing table user_preferences
+2020-10-20 07:46:25...creating table user_preferences
+2020-10-20 07:46:25...creating Relationship Meta for UserPreference
+2020-10-20 07:46:25...processing table 
+2020-10-20 07:46:25...processing table email_addresses
+2020-10-20 07:46:25...creating table email_addresses
+2020-10-20 07:46:25...creating Relationship Meta for EmailAddress
+2020-10-20 07:46:25...processing table emails_text
+2020-10-20 07:46:25...creating table emails_text
+2020-10-20 07:46:25...creating Relationship Meta for EmailText
+2020-10-20 07:46:25...processing table spots
+2020-10-20 07:46:25...creating table spots
+2020-10-20 07:46:25...creating Relationship Meta for Spots
+2020-10-20 07:46:25...processing table aobh_businesshours
+2020-10-20 07:46:25...creating table aobh_businesshours
+2020-10-20 07:46:25...creating Relationship Meta for AOBH_BusinessHours
+2020-10-20 07:46:25...processing table sugarfeed
+2020-10-20 07:46:25...creating table sugarfeed
+2020-10-20 07:46:25...creating Relationship Meta for SugarFeed
+2020-10-20 07:46:25...processing table eapm
+2020-10-20 07:46:25...creating table eapm
+2020-10-20 07:46:25...creating Relationship Meta for EAPM
+2020-10-20 07:46:25...processing table oauth_consumer
+2020-10-20 07:46:25...creating table oauth_consumer
+2020-10-20 07:46:25...creating Relationship Meta for OAuthKey
+2020-10-20 07:46:25...processing table oauth_tokens
+2020-10-20 07:46:25...creating table oauth_tokens
+2020-10-20 07:46:25...creating Relationship Meta for OAuthToken
+2020-10-20 07:46:25...processing table am_projecttemplates
+2020-10-20 07:46:25...creating table am_projecttemplates
+2020-10-20 07:46:25...creating Relationship Meta for AM_ProjectTemplates
+2020-10-20 07:46:25...processing table am_tasktemplates
+2020-10-20 07:46:25...creating table am_tasktemplates
+2020-10-20 07:46:25...creating Relationship Meta for AM_TaskTemplates
+2020-10-20 07:46:25...processing table favorites
+2020-10-20 07:46:25...creating table favorites
+2020-10-20 07:46:25...creating Relationship Meta for Favorites
+2020-10-20 07:46:25...processing table aok_knowledge_base_categories
+2020-10-20 07:46:25...creating table aok_knowledge_base_categories
+2020-10-20 07:46:25...creating Relationship Meta for AOK_Knowledge_Base_Categories
+2020-10-20 07:46:25...processing table aok_knowledgebase
+2020-10-20 07:46:26...creating table aok_knowledgebase
+2020-10-20 07:46:26...creating Relationship Meta for AOK_KnowledgeBase
+2020-10-20 07:46:26...processing table reminders
+2020-10-20 07:46:26...creating table reminders
+2020-10-20 07:46:26...creating Relationship Meta for Reminder
+2020-10-20 07:46:26...processing table reminders_invitees
+2020-10-20 07:46:26...creating table reminders_invitees
+2020-10-20 07:46:26...creating Relationship Meta for Reminder_Invitee
+2020-10-20 07:46:26...processing table fp_events
+2020-10-20 07:46:26...creating table fp_events
+2020-10-20 07:46:26...creating Relationship Meta for FP_events
+2020-10-20 07:46:26...processing table fp_event_locations
+2020-10-20 07:46:26...creating table fp_event_locations
+2020-10-20 07:46:26...creating Relationship Meta for FP_Event_Locations
+2020-10-20 07:46:26...processing table aod_indexevent
+2020-10-20 07:46:26...creating table aod_indexevent
+2020-10-20 07:46:26...creating Relationship Meta for AOD_IndexEvent
+2020-10-20 07:46:26...processing table aod_index
+2020-10-20 07:46:26...creating table aod_index
+2020-10-20 07:46:26...creating Relationship Meta for AOD_Index
+2020-10-20 07:46:26...processing table aop_case_events
+2020-10-20 07:46:26...creating table aop_case_events
+2020-10-20 07:46:26...creating Relationship Meta for AOP_Case_Events
+2020-10-20 07:46:26...processing table aop_case_updates
+2020-10-20 07:46:26...creating table aop_case_updates
+2020-10-20 07:46:26...creating Relationship Meta for AOP_Case_Updates
+2020-10-20 07:46:26...processing table aor_reports
+2020-10-20 07:46:26...creating table aor_reports
+2020-10-20 07:46:26...creating Relationship Meta for AOR_Report
+2020-10-20 07:46:26...processing table aor_fields
+2020-10-20 07:46:26...creating table aor_fields
+2020-10-20 07:46:26...creating Relationship Meta for AOR_Field
+2020-10-20 07:46:26...processing table aor_charts
+2020-10-20 07:46:26...creating table aor_charts
+2020-10-20 07:46:26...creating Relationship Meta for AOR_Chart
+2020-10-20 07:46:26...processing table aor_conditions
+2020-10-20 07:46:26...creating table aor_conditions
+2020-10-20 07:46:26...creating Relationship Meta for AOR_Condition
+2020-10-20 07:46:26...processing table aor_scheduled_reports
+2020-10-20 07:46:26...creating table aor_scheduled_reports
+2020-10-20 07:46:26...creating Relationship Meta for AOR_Scheduled_Reports
+2020-10-20 07:46:26...processing table aos_contracts
+2020-10-20 07:46:26...creating table aos_contracts
+2020-10-20 07:46:26...creating Relationship Meta for AOS_Contracts
+2020-10-20 07:46:26...processing table aos_invoices
+2020-10-20 07:46:26...creating table aos_invoices
+2020-10-20 07:46:26...creating Relationship Meta for AOS_Invoices
+2020-10-20 07:46:26...processing table aos_pdf_templates
+2020-10-20 07:46:26...creating table aos_pdf_templates
+2020-10-20 07:46:26...creating Relationship Meta for AOS_PDF_Templates
+2020-10-20 07:46:26...processing table aos_product_categories
+2020-10-20 07:46:26...creating table aos_product_categories
+2020-10-20 07:46:26...creating Relationship Meta for AOS_Product_Categories
+2020-10-20 07:46:26...processing table aos_products
+2020-10-20 07:46:26...creating table aos_products
+2020-10-20 07:46:26...creating Relationship Meta for AOS_Products
+2020-10-20 07:46:26...processing table aos_products_quotes
+2020-10-20 07:46:27...creating table aos_products_quotes
+2020-10-20 07:46:27...creating Relationship Meta for AOS_Products_Quotes
+2020-10-20 07:46:27...processing table aos_line_item_groups
+2020-10-20 07:46:27...creating table aos_line_item_groups
+2020-10-20 07:46:27...creating Relationship Meta for AOS_Line_Item_Groups
+2020-10-20 07:46:27...processing table aos_quotes
+2020-10-20 07:46:27...creating table aos_quotes
+2020-10-20 07:46:27...creating Relationship Meta for AOS_Quotes
+2020-10-20 07:46:27...processing table aow_actions
+2020-10-20 07:46:27...creating table aow_actions
+2020-10-20 07:46:27...creating Relationship Meta for AOW_Action
+2020-10-20 07:46:27...processing table aow_workflow
+2020-10-20 07:46:27...creating table aow_workflow
+2020-10-20 07:46:27...creating Relationship Meta for AOW_WorkFlow
+2020-10-20 07:46:27...processing table aow_processed
+2020-10-20 07:46:27...creating table aow_processed
+2020-10-20 07:46:27...creating Relationship Meta for AOW_Processed
+2020-10-20 07:46:27...processing table aow_conditions
+2020-10-20 07:46:27...creating table aow_conditions
+2020-10-20 07:46:27...creating Relationship Meta for AOW_Condition
+2020-10-20 07:46:27...processing table jjwg_maps
+2020-10-20 07:46:27...creating table jjwg_maps
+2020-10-20 07:46:27...creating Relationship Meta for jjwg_Maps
+2020-10-20 07:46:27...processing table jjwg_markers
+2020-10-20 07:46:27...creating table jjwg_markers
+2020-10-20 07:46:27...creating Relationship Meta for jjwg_Markers
+2020-10-20 07:46:27...processing table jjwg_areas
+2020-10-20 07:46:27...creating table jjwg_areas
+2020-10-20 07:46:27...creating Relationship Meta for jjwg_Areas
+2020-10-20 07:46:27...processing table jjwg_address_cache
+2020-10-20 07:46:27...creating table jjwg_address_cache
+2020-10-20 07:46:27...creating Relationship Meta for jjwg_Address_Cache
+2020-10-20 07:46:27...processing table calls_reschedule
+2020-10-20 07:46:27...creating table calls_reschedule
+2020-10-20 07:46:27...creating Relationship Meta for Calls_Reschedule
+2020-10-20 07:46:27...processing table securitygroups
+2020-10-20 07:46:27...creating table securitygroups
+2020-10-20 07:46:27...creating Relationship Meta for SecurityGroup
+2020-10-20 07:46:27...processing table outbound_email
+2020-10-20 07:46:27...creating table outbound_email
+2020-10-20 07:46:27...creating Relationship Meta for OutboundEmailAccounts
+2020-10-20 07:46:27...processing table templatesectionline
+2020-10-20 07:46:27...creating table templatesectionline
+2020-10-20 07:46:27...creating Relationship Meta for TemplateSectionLine
+2020-10-20 07:46:27...processing table oauth2tokens
+2020-10-20 07:46:27...creating table oauth2tokens
+2020-10-20 07:46:27...creating Relationship Meta for OAuth2Tokens
+2020-10-20 07:46:27...processing table oauth2clients
+2020-10-20 07:46:27...creating table oauth2clients
+2020-10-20 07:46:27...creating Relationship Meta for OAuth2Clients
+2020-10-20 07:46:27...processing table surveyresponses
+2020-10-20 07:46:27...creating table surveyresponses
+2020-10-20 07:46:27...creating Relationship Meta for SurveyResponses
+2020-10-20 07:46:27...processing table surveys
+2020-10-20 07:46:27...creating table surveys
+2020-10-20 07:46:27...creating Relationship Meta for Surveys
+2020-10-20 07:46:27...processing table surveyquestionresponses
+2020-10-20 07:46:28...creating table surveyquestionresponses
+2020-10-20 07:46:28...creating Relationship Meta for SurveyQuestionResponses
+2020-10-20 07:46:28...processing table surveyquestions
+2020-10-20 07:46:28...creating table surveyquestions
+2020-10-20 07:46:28...creating Relationship Meta for SurveyQuestions
+2020-10-20 07:46:28...processing table surveyquestionoptions
+2020-10-20 07:46:28...creating table surveyquestionoptions
+2020-10-20 07:46:28...creating Relationship Meta for SurveyQuestionOptions
+2020-10-20 07:46:29...Begin creating Defaults
+2020-10-20 07:46:29...insert defaults into config table
+2020-10-20 07:46:29...Creating default users
+2020-10-20 07:46:29...Creating default scheduler jobs
+2020-10-20 07:46:29...Enable SugarFeeds
+2020-10-20 07:46:29...Installation has completed *********
+2020-10-20 07:46:32...populating the db with seed data
+2020-10-20 07:46:32...Save configuration settings..
+2020-10-20 07:46:32...save locale
+2020-10-20 07:46:32...new Administration
+2020-10-20 07:46:32...retrieveSettings
+2020-10-20 07:46:32...AdminWizard OFF
+2020-10-20 07:46:32...saveConfig
+2020-10-20 07:46:32...new Configurator
+2020-10-20 07:46:32...populateFromPost
+2020-10-20 07:46:32...handleOverride
+2020-10-20 07:46:32...addCronAllowedUser
+2020-10-20 07:46:32...saveConfig
+2020-10-20 07:46:32...new Currency
+2020-10-20 07:46:32...retrieve
+2020-10-20 07:46:32...DBG: save currency
+2020-10-20 07:46:32...Save user settings..
+2020-10-20 07:46:32...DBG: SugarThemeRegistry::getDefault
+2020-10-20 07:46:43...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
