@@ -39,13 +39,13 @@ array (
           'panelDefault' => 'expanded',
         ),
       ),
-        'includes' => 
+      'includes' => 
       array (
         0 => 
         array (
           'file' => 'custom/modules/Users/detail_view.js',
         ),
-        ),
+      ),
       'syncDetailEditViews' => true,
     ),
     'useTabs' => true,
@@ -122,14 +122,9 @@ array (
             'studio' => 'visible',
             'label' => 'LBL_MC',
           ),
-          1 => '',
-        ),
-        4 => 
-        array (
-          0 => 'reports_to_name',
           1 => 'phone_other',
         ),
-        5 => 
+        4 => 
         array (
           0 => 
           array (
@@ -139,7 +134,22 @@ array (
           ),
           1 => 'phone_fax',
         ),
+        5 => 
+        array (
+          0 => 'reports_to_name',
+          1 => 'phone_home',
+        ),
         6 => 
+        array (
+          0 => 
+          array (
+            'name' => 'bid_commercial_head_c',
+            'studio' => 'visible',
+            'label' => 'LBL_BID_COMMERCIAL_HEAD',
+          ),
+          1 => 'address_city',
+        ),
+        7 => 
         array (
           0 => 
           array (
@@ -147,12 +157,7 @@ array (
             'studio' => 'visible',
             'label' => 'LBL_TEAMFUNCTION',
           ),
-          1 => 'phone_home',
-        ),
-        7 => 
-        array (
-          0 => 'address_street',
-          1 => 'address_city',
+          1 => 'address_street',
         ),
         8 => 
         array (
@@ -162,6 +167,7 @@ array (
         9 => 
         array (
           0 => 'address_country',
+          1 => '',
         ),
         10 => 
         array (

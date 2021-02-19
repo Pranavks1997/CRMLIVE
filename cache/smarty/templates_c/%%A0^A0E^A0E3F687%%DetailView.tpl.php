@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-01-31 16:16:34
+<?php /* Smarty version 2.6.31, created on 2021-02-15 13:35:33
          compiled from cache/themes/SuiteP/modules/Users/DetailView.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 39, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 91, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 121, false),array('function', 'sugar_phone', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 447, false),array('function', 'multienum_to_array', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 720, false),array('function', 'sugar_getjspath', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 978, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 114, false),array('modifier', 'escape', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 957, false),array('modifier', 'url2html', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 957, false),array('modifier', 'nl2br', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 957, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 41, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 95, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 125, false),array('function', 'sugar_phone', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 451, false),array('function', 'multienum_to_array', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 818, false),array('function', 'sugar_getjspath', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 1016, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 118, false),array('modifier', 'escape', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 995, false),array('modifier', 'url2html', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 995, false),array('modifier', 'nl2br', 'cache/themes/SuiteP/modules/Users/DetailView.tpl', 995, false),)), $this); ?>
 
 
 <script language="javascript">
@@ -34,6 +34,8 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_inclu
 <div class="buttons">
 <input title="Edit" accessKey="i" name="Edit" id="edit_button" value="Edit" onclick="var _form = document.getElementById('formDetailView');_form.return_module.value='Users'; _form.return_action.value='DetailView'; _form.return_id.value='<?php echo $this->_tpl_vars['fields']['id']['value']; ?>
 '; _form.action.value='EditView';_form.submit();" type="button"/>
+<input id="duplicate_button" title="Duplicate" accessKey="u" class="button" onclick="var _form = document.getElementById('formDetailView');_form.return_module.value='Users'; _form.return_action.value='DetailView'; _form.isDuplicate.value=true; _form.action.value='EditView';_form.submit();" type="button" name="Duplicate" value="Duplicate"/>
+<input id="delete_button" title="Delete" type="button" class="button" onclick="confirmDelete();" value="Delete" //>
 <input title="Reset User Preferences" class="button" LANGUAGE="javascript" onclick="if(confirm('Are you sure you want reset all of the preferences for this user?')) window.location='index.php?module=Users&action=resetPreferences&reset_preferences=true&record=<?php echo $this->_tpl_vars['fields']['id']['value']; ?>
 ';" type="button" name="password" value="Reset User Preferences"/>
 <input title="Reset Homepage" class="button" LANGUAGE="javascript" onclick="if(confirm('Are you sure you want reset your Homepage?')) window.location='index.php?module=Users&action=DetailView&reset_homepage=true&record=<?php echo $this->_tpl_vars['fields']['id']['value']; ?>
@@ -85,6 +87,8 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_inclu
 <ul class="dropdown-menu">
 <li><input title="Edit" accessKey="i" name="Edit" id="edit_button" value="Edit" onclick="var _form = document.getElementById('formDetailView');_form.return_module.value='Users'; _form.return_action.value='DetailView'; _form.return_id.value='<?php echo $this->_tpl_vars['fields']['id']['value']; ?>
 '; _form.action.value='EditView';_form.submit();" type="button"/></li>
+<li><input id="duplicate_button" title="Duplicate" accessKey="u" class="button" onclick="var _form = document.getElementById('formDetailView');_form.return_module.value='Users'; _form.return_action.value='DetailView'; _form.isDuplicate.value=true; _form.action.value='EditView';_form.submit();" type="button" name="Duplicate" value="Duplicate"/></li>
+<li><input id="delete_button" title="Delete" type="button" class="button" onclick="confirmDelete();" value="Delete" //></li>
 <li><input title="Reset User Preferences" class="button" LANGUAGE="javascript" onclick="if(confirm('Are you sure you want reset all of the preferences for this user?')) window.location='index.php?module=Users&action=resetPreferences&reset_preferences=true&record=<?php echo $this->_tpl_vars['fields']['id']['value']; ?>
 ';" type="button" name="password" value="Reset User Preferences"/></li>
 <li><input title="Reset Homepage" class="button" LANGUAGE="javascript" onclick="if(confirm('Are you sure you want reset your Homepage?')) window.location='index.php?module=Users&action=DetailView&reset_homepage=true&record=<?php echo $this->_tpl_vars['fields']['id']['value']; ?>
@@ -661,48 +665,6 @@ _<?php echo $this->_tpl_vars['fields']['photo']['name']; ?>
 
 
 <div class="col-xs-12 col-sm-6 detail-view-row-item">
-</div>
-
-</div>
-
-
-<div class="row detail-view-row">
-
-
-
-<div class="col-xs-12 col-sm-6 detail-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label col-1-label">
-
-
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_REPORTS_TO_NAME','module' => 'Users'), $this);?>
-<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
-<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
-:
-</div>
-
-
-<div class="col-xs-12 col-sm-8 detail-view-field" type="relate" field="reports_to_name" >
-
-<?php if (! $this->_tpl_vars['fields']['reports_to_name']['hidden']): ?>
-<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
-
-
-<span id="reports_to_id" class="sugar_field" data-id-value="<?php echo $this->_tpl_vars['fields']['reports_to_id']['value']; ?>
-"><?php echo $this->_tpl_vars['fields']['reports_to_name']['value']; ?>
-</span>
-<?php endif; ?>
-
-</div>
-
-
-</div>
-
-
-
-
-<div class="col-xs-12 col-sm-6 detail-view-row-item">
 
 
 <div class="col-xs-12 col-sm-4 label col-2-label">
@@ -827,32 +789,22 @@ _<?php echo $this->_tpl_vars['fields']['photo']['name']; ?>
 <div class="col-xs-12 col-sm-4 label col-1-label">
 
 
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_TEAMFUNCTION','module' => 'Users'), $this);?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_REPORTS_TO_NAME','module' => 'Users'), $this);?>
 <?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
 <?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
 :
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="multienum" field="teamfunction_c" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="relate" field="reports_to_name" >
 
-<?php if (! $this->_tpl_vars['fields']['teamfunction_c']['hidden']): ?>
+<?php if (! $this->_tpl_vars['fields']['reports_to_name']['hidden']): ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
 
-<?php if (! empty ( $this->_tpl_vars['fields']['teamfunction_c']['value'] ) && ( $this->_tpl_vars['fields']['teamfunction_c']['value'] != '^^' )): ?>
-<input type="hidden" class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['teamfunction_c']['name']; ?>
-" value="<?php echo $this->_tpl_vars['fields']['teamfunction_c']['value']; ?>
-">
-<?php echo smarty_function_multienum_to_array(array('string' => $this->_tpl_vars['fields']['teamfunction_c']['value'],'assign' => 'vals'), $this);?>
-
-<?php $_from = $this->_tpl_vars['vals']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }if (count($_from)):
-    foreach ($_from as $this->_tpl_vars['item']):
-?>
-<li style="margin-left:10px;"><?php echo $this->_tpl_vars['fields']['teamfunction_c']['options'][$this->_tpl_vars['item']]; ?>
-</li>
-<?php endforeach; endif; unset($_from); ?>
-<?php endif; ?>
+<span id="reports_to_id" class="sugar_field" data-id-value="<?php echo $this->_tpl_vars['fields']['reports_to_id']['value']; ?>
+"><?php echo $this->_tpl_vars['fields']['reports_to_name']['value']; ?>
+</span>
 <?php endif; ?>
 
 </div>
@@ -907,27 +859,33 @@ _<?php echo $this->_tpl_vars['fields']['photo']['name']; ?>
 <div class="col-xs-12 col-sm-4 label col-1-label">
 
 
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_ADDRESS_STREET','module' => 'Users'), $this);?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_BID_COMMERCIAL_HEAD','module' => 'Users'), $this);?>
 <?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
 <?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
 :
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="address_street" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="enum" field="bid_commercial_head_c" >
 
-<?php if (! $this->_tpl_vars['fields']['address_street']['hidden']): ?>
+<?php if (! $this->_tpl_vars['fields']['bid_commercial_head_c']['hidden']): ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
 
-<?php if (strlen ( $this->_tpl_vars['fields']['address_street']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['address_street']['default_value']); ?>
+
+<?php if (is_string ( $this->_tpl_vars['fields']['bid_commercial_head_c']['options'] )): ?>
+<input type="hidden" class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['bid_commercial_head_c']['name']; ?>
+" value="<?php echo $this->_tpl_vars['fields']['bid_commercial_head_c']['options']; ?>
+">
+<?php echo $this->_tpl_vars['fields']['bid_commercial_head_c']['options']; ?>
+
 <?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['address_street']['value']); ?>
-<?php endif; ?> 
-<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['address_street']['name']; ?>
-"><?php echo $this->_tpl_vars['fields']['address_street']['value']; ?>
-</span>
+<input type="hidden" class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['bid_commercial_head_c']['name']; ?>
+" value="<?php echo $this->_tpl_vars['fields']['bid_commercial_head_c']['value']; ?>
+">
+<?php echo $this->_tpl_vars['fields']['bid_commercial_head_c']['options'][$this->_tpl_vars['fields']['bid_commercial_head_c']['value']]; ?>
+
+<?php endif; ?>
 <?php endif; ?>
 
 </div>
@@ -964,6 +922,89 @@ _<?php echo $this->_tpl_vars['fields']['photo']['name']; ?>
 <?php endif; ?> 
 <span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['address_city']['name']; ?>
 "><?php echo $this->_tpl_vars['fields']['address_city']['value']; ?>
+</span>
+<?php endif; ?>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label col-1-label">
+
+
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_TEAMFUNCTION','module' => 'Users'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+</div>
+
+
+<div class="col-xs-12 col-sm-8 detail-view-field" type="multienum" field="teamfunction_c" >
+
+<?php if (! $this->_tpl_vars['fields']['teamfunction_c']['hidden']): ?>
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<?php if (! empty ( $this->_tpl_vars['fields']['teamfunction_c']['value'] ) && ( $this->_tpl_vars['fields']['teamfunction_c']['value'] != '^^' )): ?>
+<input type="hidden" class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['teamfunction_c']['name']; ?>
+" value="<?php echo $this->_tpl_vars['fields']['teamfunction_c']['value']; ?>
+">
+<?php echo smarty_function_multienum_to_array(array('string' => $this->_tpl_vars['fields']['teamfunction_c']['value'],'assign' => 'vals'), $this);?>
+
+<?php $_from = $this->_tpl_vars['vals']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }if (count($_from)):
+    foreach ($_from as $this->_tpl_vars['item']):
+?>
+<li style="margin-left:10px;"><?php echo $this->_tpl_vars['fields']['teamfunction_c']['options'][$this->_tpl_vars['item']]; ?>
+</li>
+<?php endforeach; endif; unset($_from); ?>
+<?php endif; ?>
+<?php endif; ?>
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label col-2-label">
+
+
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_ADDRESS_STREET','module' => 'Users'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+</div>
+
+
+<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="address_street" >
+
+<?php if (! $this->_tpl_vars['fields']['address_street']['hidden']): ?>
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<?php if (strlen ( $this->_tpl_vars['fields']['address_street']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['address_street']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['address_street']['value']); ?>
+<?php endif; ?> 
+<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['address_street']['name']; ?>
+"><?php echo $this->_tpl_vars['fields']['address_street']['value']; ?>
 </span>
 <?php endif; ?>
 
@@ -1057,10 +1098,10 @@ _<?php echo $this->_tpl_vars['fields']['photo']['name']; ?>
 
 
 
-<div class="col-xs-12 col-sm-12 detail-view-row-item">
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
 
 
-<div class="col-xs-12 col-sm-2 label col-1-label">
+<div class="col-xs-12 col-sm-4 label col-1-label">
 
 
 <?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_ADDRESS_COUNTRY','module' => 'Users'), $this);?>
@@ -1070,7 +1111,7 @@ _<?php echo $this->_tpl_vars['fields']['photo']['name']; ?>
 </div>
 
 
-<div class="col-xs-12 col-sm-10 detail-view-field" type="varchar" field="address_country" colspan='3'>
+<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="address_country" >
 
 <?php if (! $this->_tpl_vars['fields']['address_country']['hidden']): ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
@@ -1089,6 +1130,12 @@ _<?php echo $this->_tpl_vars['fields']['photo']['name']; ?>
 </div>
 
 
+</div>
+
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
 </div>
 
 </div>

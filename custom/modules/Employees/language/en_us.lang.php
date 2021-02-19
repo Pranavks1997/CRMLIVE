@@ -1,5 +1,5 @@
 <?php
-// created: 2020-12-28 10:23:10
+// created: 2021-02-04 10:52:20
 $mod_strings = array (
   'LBL_TEAMFUNCTION' => 'Team Function',
   'LBL_SECURITYGROUPS' => 'Security Groups',
@@ -8,4 +8,5 @@ $mod_strings = array (
   'LBL_FIRST_NAME' => 'First Name',
   'LBL_LAST_NAME' => 'Last Name',
   'LBL_CALLS' => 'Activities',
+  'LBL_BID_COMMERCIAL_HEAD' => 'Bid/Commercial Head',
 );

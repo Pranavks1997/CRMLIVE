@@ -308,6 +308,29 @@
                             
                         </li>
                     {/foreach}
+                      {foreach from=$groupTabs item=modules key=group name=groupList}
+                        {capture name=extraparams assign=extraparams}parentTab={$group}{/capture}
+                        <li class="topnav {if $smarty.foreach.groupList.last}all{/if}">
+                            <span class="notCurrentTabLeft">&nbsp;</span><span  class="notCurrentTab">
+                            <a href="#" id="grouptab_{$smarty.foreach.groupList.index}" class="dropdown-toggle grouptab opp_hide">Departments</a>
+                            <span class="notCurrentTabRight">&nbsp;</span>
+                            <ul class="dropdown-menu" role="menu"  {if $smarty.foreach.groupList.last} class="All"{/if}>
+                          
+                                    <li>
+                                       <a href="index.php?module=Accounts&action=index">View Departments</a>
+                                    </li>
+                                    <li>
+                                       <a  href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DAccounts%26action%3DEditView%26return_module%3DAccounts%26return_action%3Dindex">Create Departments</a>
+                                    </li>
+                              
+                                {foreach from=$modules.extra item=submodulename key=submodule}
+                                    <li>
+                                        <a href="{sugar_link module=$submodule link_only=1 extraparams=$extraparams}">{$submodulename}</a>
+                                    </li>
+                                {/foreach}
+                            </ul>
+                        </li>
+                    {/foreach}
                     
 <li><button class="button" id="feed" href="#">Report Issue</button></li>
                 </ul>

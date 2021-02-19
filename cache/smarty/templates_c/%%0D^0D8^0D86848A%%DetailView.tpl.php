@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-01-31 06:09:06
+<?php /* Smarty version 2.6.31, created on 2021-02-19 04:36:24
          compiled from cache/themes/SuiteP/modules/Calls/DetailView.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Calls/DetailView.tpl', 51, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Calls/DetailView.tpl', 60, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Calls/DetailView.tpl', 144, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Calls/DetailView.tpl', 113, false),array('modifier', 'escape', 'cache/themes/SuiteP/modules/Calls/DetailView.tpl', 474, false),array('modifier', 'url2html', 'cache/themes/SuiteP/modules/Calls/DetailView.tpl', 474, false),array('modifier', 'nl2br', 'cache/themes/SuiteP/modules/Calls/DetailView.tpl', 474, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Calls/DetailView.tpl', 51, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Calls/DetailView.tpl', 60, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Calls/DetailView.tpl', 126, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Calls/DetailView.tpl', 119, false),array('modifier', 'escape', 'cache/themes/SuiteP/modules/Calls/DetailView.tpl', 456, false),array('modifier', 'url2html', 'cache/themes/SuiteP/modules/Calls/DetailView.tpl', 456, false),array('modifier', 'nl2br', 'cache/themes/SuiteP/modules/Calls/DetailView.tpl', 456, false),)), $this); ?>
 
 
 <?php if ($this->_tpl_vars['fields']['recurring_source']['value'] != '' && $this->_tpl_vars['fields']['recurring_source']['value'] != 'Sugar'): ?>
@@ -167,26 +167,6 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_inclu
 
 
 <div class="col-xs-12 col-sm-6 detail-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label col-1-label">
-
-
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_ACTIVITY_TYPE','module' => 'Calls'), $this);?>
-<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
-<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
-:
-</div>
-
-
-<div class="col-xs-12 col-sm-8 detail-view-field" type="" field="" >
-
-<?php if (! $this->_tpl_vars['fields']['activity_type_c']['hidden']): ?>
-<?php endif; ?>
-
-</div>
-
-
 </div>
 
 
@@ -717,26 +697,6 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_inclu
 
 
 <div class="col-xs-12 col-sm-6 detail-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label col-1-label">
-
-
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_ACTIVITY_TYPE','module' => 'Calls'), $this);?>
-<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
-<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
-:
-</div>
-
-
-<div class="col-xs-12 col-sm-8 detail-view-field" type="" field="" >
-
-<?php if (! $this->_tpl_vars['fields']['activity_type_c']['hidden']): ?>
-<?php endif; ?>
-
-</div>
-
-
 </div>
 
 

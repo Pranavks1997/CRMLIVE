@@ -25,6 +25,8 @@
 {if !$config.enable_action_menu}
 <div class="buttons">
 <input title="Edit" accessKey="i" name="Edit" id="edit_button" value="Edit" onclick="var _form = document.getElementById('formDetailView');_form.return_module.value='Users'; _form.return_action.value='DetailView'; _form.return_id.value='{$fields.id.value}'; _form.action.value='EditView';_form.submit();" type="button"/>
+<input id="duplicate_button" title="Duplicate" accessKey="u" class="button" onclick="var _form = document.getElementById('formDetailView');_form.return_module.value='Users'; _form.return_action.value='DetailView'; _form.isDuplicate.value=true; _form.action.value='EditView';_form.submit();" type="button" name="Duplicate" value="Duplicate"/>
+<input id="delete_button" title="Delete" type="button" class="button" onclick="confirmDelete();" value="Delete" //>
 <input title="Reset User Preferences" class="button" LANGUAGE="javascript" onclick="if(confirm('Are you sure you want reset all of the preferences for this user?')) window.location='index.php?module=Users&action=resetPreferences&reset_preferences=true&record={$fields.id.value}';" type="button" name="password" value="Reset User Preferences"/>
 <input title="Reset Homepage" class="button" LANGUAGE="javascript" onclick="if(confirm('Are you sure you want reset your Homepage?')) window.location='index.php?module=Users&action=DetailView&reset_homepage=true&record={$fields.id.value}';" type="button" name="password" value="Reset Homepage"/>
 {if $bean->aclAccess("detail")}{if !empty($fields.id.value) && $isAuditEnabled}<input id="btn_view_change_log" title="{$APP.LNK_VIEW_CHANGE_LOG}" class="button" onclick='open_popup("Audit", "600", "400", "&record={$fields.id.value}&module_name=Users", true, false,  {ldelim} "call_back_function":"set_return","form_name":"EditView","field_to_name_array":[] {rdelim} ); return false;' type="button" value="{$APP.LNK_VIEW_CHANGE_LOG}">{/if}{/if}
@@ -65,6 +67,8 @@
 <a class="dropdown-toggle" data-toggle="dropdown" href="#">ACTIONS<span class="suitepicon suitepicon-action-caret"></span></a>
 <ul class="dropdown-menu">
 <li><input title="Edit" accessKey="i" name="Edit" id="edit_button" value="Edit" onclick="var _form = document.getElementById('formDetailView');_form.return_module.value='Users'; _form.return_action.value='DetailView'; _form.return_id.value='{$fields.id.value}'; _form.action.value='EditView';_form.submit();" type="button"/></li>
+<li><input id="duplicate_button" title="Duplicate" accessKey="u" class="button" onclick="var _form = document.getElementById('formDetailView');_form.return_module.value='Users'; _form.return_action.value='DetailView'; _form.isDuplicate.value=true; _form.action.value='EditView';_form.submit();" type="button" name="Duplicate" value="Duplicate"/></li>
+<li><input id="delete_button" title="Delete" type="button" class="button" onclick="confirmDelete();" value="Delete" //></li>
 <li><input title="Reset User Preferences" class="button" LANGUAGE="javascript" onclick="if(confirm('Are you sure you want reset all of the preferences for this user?')) window.location='index.php?module=Users&action=resetPreferences&reset_preferences=true&record={$fields.id.value}';" type="button" name="password" value="Reset User Preferences"/></li>
 <li><input title="Reset Homepage" class="button" LANGUAGE="javascript" onclick="if(confirm('Are you sure you want reset your Homepage?')) window.location='index.php?module=Users&action=DetailView&reset_homepage=true&record={$fields.id.value}';" type="button" name="password" value="Reset Homepage"/></li>
 <li>{if $bean->aclAccess("detail")}{if !empty($fields.id.value) && $isAuditEnabled}<input id="btn_view_change_log" title="{$APP.LNK_VIEW_CHANGE_LOG}" class="button" onclick='open_popup("Audit", "600", "400", "&record={$fields.id.value}&module_name=Users", true, false,  {ldelim} "call_back_function":"set_return","form_name":"EditView","field_to_name_array":[] {rdelim} ); return false;' type="button" value="{$APP.LNK_VIEW_CHANGE_LOG}">{/if}{/if}</li>
@@ -561,43 +565,6 @@
 
 
 <div class="col-xs-12 col-sm-6 detail-view-row-item">
-</div>
-
-</div>
-
-
-<div class="row detail-view-row">
-
-
-
-<div class="col-xs-12 col-sm-6 detail-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label col-1-label">
-
-
-{capture name="label" assign="label"}{sugar_translate label='LBL_REPORTS_TO_NAME' module='Users'}{/capture}
-{$label|strip_semicolon}:
-</div>
-
-
-<div class="col-xs-12 col-sm-8 detail-view-field" type="relate" field="reports_to_name" >
-
-{if !$fields.reports_to_name.hidden}
-{counter name="panelFieldCount" print=false}
-
-<span id="reports_to_id" class="sugar_field" data-id-value="{$fields.reports_to_id.value}">{$fields.reports_to_name.value}</span>
-{/if}
-
-</div>
-
-
-</div>
-
-
-
-
-<div class="col-xs-12 col-sm-6 detail-view-row-item">
 
 
 <div class="col-xs-12 col-sm-4 label col-2-label">
@@ -705,23 +672,17 @@
 <div class="col-xs-12 col-sm-4 label col-1-label">
 
 
-{capture name="label" assign="label"}{sugar_translate label='LBL_TEAMFUNCTION' module='Users'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_REPORTS_TO_NAME' module='Users'}{/capture}
 {$label|strip_semicolon}:
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="multienum" field="teamfunction_c" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="relate" field="reports_to_name" >
 
-{if !$fields.teamfunction_c.hidden}
+{if !$fields.reports_to_name.hidden}
 {counter name="panelFieldCount" print=false}
 
-{if !empty($fields.teamfunction_c.value) && ($fields.teamfunction_c.value != '^^')}
-<input type="hidden" class="sugar_field" id="{$fields.teamfunction_c.name}" value="{$fields.teamfunction_c.value}">
-{multienum_to_array string=$fields.teamfunction_c.value assign="vals"}
-{foreach from=$vals item=item}
-<li style="margin-left:10px;">{ $fields.teamfunction_c.options.$item }</li>
-{/foreach}
-{/if}
+<span id="reports_to_id" class="sugar_field" data-id-value="{$fields.reports_to_id.value}">{$fields.reports_to_name.value}</span>
 {/if}
 
 </div>
@@ -772,22 +733,24 @@
 <div class="col-xs-12 col-sm-4 label col-1-label">
 
 
-{capture name="label" assign="label"}{sugar_translate label='LBL_ADDRESS_STREET' module='Users'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_BID_COMMERCIAL_HEAD' module='Users'}{/capture}
 {$label|strip_semicolon}:
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="address_street" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="enum" field="bid_commercial_head_c" >
 
-{if !$fields.address_street.hidden}
+{if !$fields.bid_commercial_head_c.hidden}
 {counter name="panelFieldCount" print=false}
 
-{if strlen($fields.address_street.value) <= 0}
-{assign var="value" value=$fields.address_street.default_value }
+
+{if is_string($fields.bid_commercial_head_c.options)}
+<input type="hidden" class="sugar_field" id="{$fields.bid_commercial_head_c.name}" value="{ $fields.bid_commercial_head_c.options }">
+{ $fields.bid_commercial_head_c.options }
 {else}
-{assign var="value" value=$fields.address_street.value }
-{/if} 
-<span class="sugar_field" id="{$fields.address_street.name}">{$fields.address_street.value}</span>
+<input type="hidden" class="sugar_field" id="{$fields.bid_commercial_head_c.name}" value="{ $fields.bid_commercial_head_c.value }">
+{ $fields.bid_commercial_head_c.options[$fields.bid_commercial_head_c.value]}
+{/if}
 {/if}
 
 </div>
@@ -820,6 +783,75 @@
 {assign var="value" value=$fields.address_city.value }
 {/if} 
 <span class="sugar_field" id="{$fields.address_city.name}">{$fields.address_city.value}</span>
+{/if}
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label col-1-label">
+
+
+{capture name="label" assign="label"}{sugar_translate label='LBL_TEAMFUNCTION' module='Users'}{/capture}
+{$label|strip_semicolon}:
+</div>
+
+
+<div class="col-xs-12 col-sm-8 detail-view-field" type="multienum" field="teamfunction_c" >
+
+{if !$fields.teamfunction_c.hidden}
+{counter name="panelFieldCount" print=false}
+
+{if !empty($fields.teamfunction_c.value) && ($fields.teamfunction_c.value != '^^')}
+<input type="hidden" class="sugar_field" id="{$fields.teamfunction_c.name}" value="{$fields.teamfunction_c.value}">
+{multienum_to_array string=$fields.teamfunction_c.value assign="vals"}
+{foreach from=$vals item=item}
+<li style="margin-left:10px;">{ $fields.teamfunction_c.options.$item }</li>
+{/foreach}
+{/if}
+{/if}
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label col-2-label">
+
+
+{capture name="label" assign="label"}{sugar_translate label='LBL_ADDRESS_STREET' module='Users'}{/capture}
+{$label|strip_semicolon}:
+</div>
+
+
+<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="address_street" >
+
+{if !$fields.address_street.hidden}
+{counter name="panelFieldCount" print=false}
+
+{if strlen($fields.address_street.value) <= 0}
+{assign var="value" value=$fields.address_street.default_value }
+{else}
+{assign var="value" value=$fields.address_street.value }
+{/if} 
+<span class="sugar_field" id="{$fields.address_street.name}">{$fields.address_street.value}</span>
 {/if}
 
 </div>
@@ -902,10 +934,10 @@
 
 
 
-<div class="col-xs-12 col-sm-12 detail-view-row-item">
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
 
 
-<div class="col-xs-12 col-sm-2 label col-1-label">
+<div class="col-xs-12 col-sm-4 label col-1-label">
 
 
 {capture name="label" assign="label"}{sugar_translate label='LBL_ADDRESS_COUNTRY' module='Users'}{/capture}
@@ -913,7 +945,7 @@
 </div>
 
 
-<div class="col-xs-12 col-sm-10 detail-view-field" type="varchar" field="address_country" colspan='3'>
+<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="address_country" >
 
 {if !$fields.address_country.hidden}
 {counter name="panelFieldCount" print=false}
@@ -929,6 +961,12 @@
 </div>
 
 
+</div>
+
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
 </div>
 
 </div>

@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-01-30 16:55:04
+<?php /* Smarty version 2.6.31, created on 2021-02-18 13:18:34
          compiled from cache/themes/SuiteP/modules/Users/SearchForm_advanced.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', 'cache/themes/SuiteP/modules/Users/SearchForm_advanced.tpl', 27, false),array('function', 'math', 'cache/themes/SuiteP/modules/Users/SearchForm_advanced.tpl', 28, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Users/SearchForm_advanced.tpl', 34, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Users/SearchForm_advanced.tpl', 94, false),array('function', 'sugar_getimage', 'cache/themes/SuiteP/modules/Users/SearchForm_advanced.tpl', 485, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Users/SearchForm_advanced.tpl', 566, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', 'cache/themes/SuiteP/modules/Users/SearchForm_advanced.tpl', 27, false),array('function', 'math', 'cache/themes/SuiteP/modules/Users/SearchForm_advanced.tpl', 28, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Users/SearchForm_advanced.tpl', 34, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Users/SearchForm_advanced.tpl', 119, false),array('function', 'sugar_getimage', 'cache/themes/SuiteP/modules/Users/SearchForm_advanced.tpl', 216, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Users/SearchForm_advanced.tpl', 297, false),)), $this); ?>
 
 <script>
     <?php echo '
@@ -35,21 +35,21 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', '
 
 
             <div class="col-xs-12">
-                                <label for='first_name_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_FIRST_NAME','module' => 'Users'), $this);?>
+                                <label for='full_name_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_NAME','module' => 'Users'), $this);?>
 </label>
                             </div>
             <div class="form-item">
                                 
-<?php if (strlen ( $this->_tpl_vars['fields']['first_name_advanced']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['first_name_advanced']['default_value']); ?>
+<?php if (strlen ( $this->_tpl_vars['fields']['full_name_advanced']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['full_name_advanced']['default_value']); ?>
 <?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['first_name_advanced']['value']); ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['full_name_advanced']['value']); ?>
 <?php endif; ?>  
-<input type='text' name='<?php echo $this->_tpl_vars['fields']['first_name_advanced']['name']; ?>
+<input type='text' name='<?php echo $this->_tpl_vars['fields']['full_name_advanced']['name']; ?>
 ' 
-    id='<?php echo $this->_tpl_vars['fields']['first_name_advanced']['name']; ?>
+    id='<?php echo $this->_tpl_vars['fields']['full_name_advanced']['name']; ?>
 ' size='30' 
-    maxlength='255' 
+    maxlength='510' 
     value='<?php echo $this->_tpl_vars['value']; ?>
 ' title=''      accesskey='9'  >
                             </div>
@@ -66,43 +66,31 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', '
 
 
             <div class="col-xs-12">
-                                <label for='last_name_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_LAST_NAME','module' => 'Users'), $this);?>
+                                <label for='reports_to_name_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_REPORTS_TO_NAME','module' => 'Users'), $this);?>
 </label>
                             </div>
             <div class="form-item">
                                 
-<?php if (strlen ( $this->_tpl_vars['fields']['last_name_advanced']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['last_name_advanced']['default_value']); ?>
-<?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['last_name_advanced']['value']); ?>
-<?php endif; ?>  
-<input type='text' name='<?php echo $this->_tpl_vars['fields']['last_name_advanced']['name']; ?>
-' 
-    id='<?php echo $this->_tpl_vars['fields']['last_name_advanced']['name']; ?>
-' size='30' 
-    maxlength='255' 
-    value='<?php echo $this->_tpl_vars['value']; ?>
-' title=''      >
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
-
-            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
-
-
-            <div class="col-xs-12">
-                                <label for='teamheirarchy_c_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_TEAMHEIRARCHY','module' => 'Users'), $this);?>
-</label>
-                            </div>
-            <div class="form-item">
-                                
-<?php echo smarty_function_html_options(array('id' => 'teamheirarchy_c_advanced','name' => 'teamheirarchy_c_advanced[]','options' => $this->_tpl_vars['fields']['teamheirarchy_c_advanced']['options'],'size' => '6','class' => 'templateGroupChooser','multiple' => '1','selected' => $this->_tpl_vars['fields']['teamheirarchy_c_advanced']['value']), $this);?>
+<input type="text" name="<?php echo $this->_tpl_vars['fields']['reports_to_name_advanced']['name']; ?>
+"  class="sqsEnabled"   id="<?php echo $this->_tpl_vars['fields']['reports_to_name_advanced']['name']; ?>
+" size="" value="<?php echo $this->_tpl_vars['fields']['reports_to_name_advanced']['value']; ?>
+" title='' autocomplete="off"  >
+<input type="hidden"  id="<?php echo $this->_tpl_vars['fields']['reports_to_id_advanced']['name']; ?>
+" value="<?php echo $this->_tpl_vars['fields']['reports_to_id_advanced']['value']; ?>
+">
+<span class="id-ff multiple">
+<button type="button" name="btn_<?php echo $this->_tpl_vars['fields']['reports_to_name_advanced']['name']; ?>
+"   title="<?php echo $this->_tpl_vars['APP']['LBL_SELECT_BUTTON_TITLE']; ?>
+" class="button firstChild" value="<?php echo $this->_tpl_vars['APP']['LBL_SELECT_BUTTON_LABEL']; ?>
+" onclick='open_popup("<?php echo $this->_tpl_vars['fields']['reports_to_name_advanced']['module']; ?>
+", 600, 400, "", true, false, <?php echo '{"call_back_function":"set_return","form_name":"search_form","field_to_name_array":{"id":"reports_to_id_advanced","full_name":"reports_to_name_advanced"}}'; ?>
+, "single", true);'><span class="suitepicon suitepicon-action-select"></span></button><button type="button" name="btn_clr_<?php echo $this->_tpl_vars['fields']['reports_to_name_advanced']['name']; ?>
+"   title="<?php echo $this->_tpl_vars['APP']['LBL_CLEAR_BUTTON_TITLE']; ?>
+" class="button lastChild" onclick="this.form.<?php echo $this->_tpl_vars['fields']['reports_to_name_advanced']['name']; ?>
+.value = ''; this.form.<?php echo $this->_tpl_vars['fields']['reports_to_id_advanced']['name']; ?>
+.value = '';" value="<?php echo $this->_tpl_vars['APP']['LBL_CLEAR_BUTTON_LABEL']; ?>
+"><span class="suitepicon suitepicon-action-clear"></span></button>
+</span>
 
                             </div>
         </div>
@@ -170,35 +158,12 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', '
 
 
             <div class="col-xs-12">
-                                <label for='is_admin_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_IS_ADMIN','module' => 'Users'), $this);?>
+                                <label for='teamheirarchy_c_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_TEAMHEIRARCHY','module' => 'Users'), $this);?>
 </label>
                             </div>
             <div class="form-item">
                                 
-<?php $this->assign('yes', ""); ?>
-<?php $this->assign('no', ""); ?>
-<?php $this->assign('default', ""); ?>
-
-<?php if (strval ( $this->_tpl_vars['fields']['is_admin_advanced']['value'] ) == '1'): ?>
-	<?php $this->assign('yes', 'SELECTED'); ?>
-<?php elseif (strval ( $this->_tpl_vars['fields']['is_admin_advanced']['value'] ) == '0'): ?>
-	<?php $this->assign('no', 'SELECTED'); ?>
-<?php else: ?>
-	<?php $this->assign('default', 'SELECTED'); ?>
-<?php endif; ?>
-
-<select id="<?php echo $this->_tpl_vars['fields']['is_admin_advanced']['name']; ?>
-" name="<?php echo $this->_tpl_vars['fields']['is_admin_advanced']['name']; ?>
-"   >
- <option value="" <?php echo $this->_tpl_vars['default']; ?>
-></option>
- <option value = "0" <?php echo $this->_tpl_vars['no']; ?>
-> <?php echo $this->_tpl_vars['APP']['LBL_SEARCH_DROPDOWN_NO']; ?>
-</option>
- <option value = "1" <?php echo $this->_tpl_vars['yes']; ?>
-> <?php echo $this->_tpl_vars['APP']['LBL_SEARCH_DROPDOWN_YES']; ?>
-</option>
-</select>
+<?php echo smarty_function_html_options(array('id' => 'teamheirarchy_c_advanced','name' => 'teamheirarchy_c_advanced[]','options' => $this->_tpl_vars['fields']['teamheirarchy_c_advanced']['options'],'size' => '6','class' => 'templateGroupChooser','multiple' => '1','selected' => $this->_tpl_vars['fields']['teamheirarchy_c_advanced']['value']), $this);?>
 
                             </div>
         </div>
@@ -214,66 +179,12 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', '
 
 
             <div class="col-xs-12">
-                                <label for='title_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_TITLE','module' => 'Users'), $this);?>
+                                <label for='teamfunction_c_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_TEAMFUNCTION','module' => 'Users'), $this);?>
 </label>
                             </div>
             <div class="form-item">
                                 
-<?php if (strlen ( $this->_tpl_vars['fields']['title_advanced']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['title_advanced']['default_value']); ?>
-<?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['title_advanced']['value']); ?>
-<?php endif; ?>  
-<input type='text' name='<?php echo $this->_tpl_vars['fields']['title_advanced']['name']; ?>
-' 
-    id='<?php echo $this->_tpl_vars['fields']['title_advanced']['name']; ?>
-' size='30' 
-    maxlength='50' 
-    value='<?php echo $this->_tpl_vars['value']; ?>
-' title=''      >
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
-
-            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
-
-
-            <div class="col-xs-12">
-                                <label for='is_group_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_GROUP_USER','module' => 'Users'), $this);?>
-</label>
-                            </div>
-            <div class="form-item">
-                                
-<?php $this->assign('yes', ""); ?>
-<?php $this->assign('no', ""); ?>
-<?php $this->assign('default', ""); ?>
-
-<?php if (strval ( $this->_tpl_vars['fields']['is_group_advanced']['value'] ) == '1'): ?>
-	<?php $this->assign('yes', 'SELECTED'); ?>
-<?php elseif (strval ( $this->_tpl_vars['fields']['is_group_advanced']['value'] ) == '0'): ?>
-	<?php $this->assign('no', 'SELECTED'); ?>
-<?php else: ?>
-	<?php $this->assign('default', 'SELECTED'); ?>
-<?php endif; ?>
-
-<select id="<?php echo $this->_tpl_vars['fields']['is_group_advanced']['name']; ?>
-" name="<?php echo $this->_tpl_vars['fields']['is_group_advanced']['name']; ?>
-"   >
- <option value="" <?php echo $this->_tpl_vars['default']; ?>
-></option>
- <option value = "0" <?php echo $this->_tpl_vars['no']; ?>
-> <?php echo $this->_tpl_vars['APP']['LBL_SEARCH_DROPDOWN_NO']; ?>
-</option>
- <option value = "1" <?php echo $this->_tpl_vars['yes']; ?>
-> <?php echo $this->_tpl_vars['APP']['LBL_SEARCH_DROPDOWN_YES']; ?>
-</option>
-</select>
+<?php echo smarty_function_html_options(array('name' => 'teamfunction_c_advanced[]','options' => $this->_tpl_vars['fields']['teamfunction_c_advanced']['options'],'size' => '6','class' => 'templateGroupChooser','multiple' => 1,'selected' => $this->_tpl_vars['fields']['teamfunction_c_advanced']['value']), $this);?>
 
                             </div>
         </div>
@@ -289,23 +200,13 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', '
 
 
             <div class="col-xs-12">
-                                <label for='department_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_DEPARTMENT','module' => 'Users'), $this);?>
+                                <label for='bid_commercial_head_c_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_BID_COMMERCIAL_HEAD','module' => 'Users'), $this);?>
 </label>
                             </div>
             <div class="form-item">
                                 
-<?php if (strlen ( $this->_tpl_vars['fields']['department_advanced']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['department_advanced']['default_value']); ?>
-<?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['department_advanced']['value']); ?>
-<?php endif; ?>  
-<input type='text' name='<?php echo $this->_tpl_vars['fields']['department_advanced']['name']; ?>
-' 
-    id='<?php echo $this->_tpl_vars['fields']['department_advanced']['name']; ?>
-' size='30' 
-    maxlength='50' 
-    value='<?php echo $this->_tpl_vars['value']; ?>
-' title=''      >
+<?php echo smarty_function_html_options(array('id' => 'bid_commercial_head_c_advanced','name' => 'bid_commercial_head_c_advanced[]','options' => $this->_tpl_vars['fields']['bid_commercial_head_c_advanced']['options'],'size' => '6','class' => 'templateGroupChooser','multiple' => '1','selected' => $this->_tpl_vars['fields']['bid_commercial_head_c_advanced']['value']), $this);?>
+
                             </div>
         </div>
     </div>
@@ -320,209 +221,13 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', '
 
 
             <div class="col-xs-12">
-                                <label for='phone_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_ANY_PHONE','module' => 'Users'), $this);?>
+                                <label for='mc_c_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_MC','module' => 'Users'), $this);?>
 </label>
                             </div>
             <div class="form-item">
                                 
-<?php if (strlen ( $this->_tpl_vars['fields']['phone_advanced']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['phone_advanced']['default_value']); ?>
-<?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['phone_advanced']['value']); ?>
-<?php endif; ?>  
-<input type='text' name='<?php echo $this->_tpl_vars['fields']['phone_advanced']['name']; ?>
-' 
-    id='<?php echo $this->_tpl_vars['fields']['phone_advanced']['name']; ?>
-' size='30' 
-     
-    value='<?php echo $this->_tpl_vars['value']; ?>
-' title=''      >
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
+<?php echo smarty_function_html_options(array('id' => 'mc_c_advanced','name' => 'mc_c_advanced[]','options' => $this->_tpl_vars['fields']['mc_c_advanced']['options'],'size' => '6','class' => 'templateGroupChooser','multiple' => '1','selected' => $this->_tpl_vars['fields']['mc_c_advanced']['value']), $this);?>
 
-            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
-
-            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
-
-
-            <div class="col-xs-12">
-                                <label for='address_street_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_ANY_ADDRESS','module' => 'Users'), $this);?>
-</label>
-                            </div>
-            <div class="form-item">
-                                
-<?php if (strlen ( $this->_tpl_vars['fields']['address_street_advanced']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['address_street_advanced']['default_value']); ?>
-<?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['address_street_advanced']['value']); ?>
-<?php endif; ?>  
-<input type='text' name='<?php echo $this->_tpl_vars['fields']['address_street_advanced']['name']; ?>
-' 
-    id='<?php echo $this->_tpl_vars['fields']['address_street_advanced']['name']; ?>
-' size='30' 
-    maxlength='150' 
-    value='<?php echo $this->_tpl_vars['value']; ?>
-' title=''      >
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
-
-            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
-
-
-            <div class="col-xs-12">
-                                <label for='email_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_ANY_EMAIL','module' => 'Users'), $this);?>
-</label>
-                            </div>
-            <div class="form-item">
-                                
-<?php if (strlen ( $this->_tpl_vars['fields']['email_advanced']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['email_advanced']['default_value']); ?>
-<?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['email_advanced']['value']); ?>
-<?php endif; ?>  
-<input type='text' name='<?php echo $this->_tpl_vars['fields']['email_advanced']['name']; ?>
-' 
-    id='<?php echo $this->_tpl_vars['fields']['email_advanced']['name']; ?>
-' size='30' 
-     
-    value='<?php echo $this->_tpl_vars['value']; ?>
-' title=''      >
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
-
-            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
-
-
-            <div class="col-xs-12">
-                                <label for='address_city_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_CITY','module' => 'Users'), $this);?>
-</label>
-                            </div>
-            <div class="form-item">
-                                
-<?php if (strlen ( $this->_tpl_vars['fields']['address_city_advanced']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['address_city_advanced']['default_value']); ?>
-<?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['address_city_advanced']['value']); ?>
-<?php endif; ?>  
-<input type='text' name='<?php echo $this->_tpl_vars['fields']['address_city_advanced']['name']; ?>
-' 
-    id='<?php echo $this->_tpl_vars['fields']['address_city_advanced']['name']; ?>
-' size='30' 
-    maxlength='100' 
-    value='<?php echo $this->_tpl_vars['value']; ?>
-' title=''      >
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
-
-            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
-
-
-            <div class="col-xs-12">
-                                <label for='address_state_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_STATE','module' => 'Users'), $this);?>
-</label>
-                            </div>
-            <div class="form-item">
-                                
-<?php if (strlen ( $this->_tpl_vars['fields']['address_state_advanced']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['address_state_advanced']['default_value']); ?>
-<?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['address_state_advanced']['value']); ?>
-<?php endif; ?>  
-<input type='text' name='<?php echo $this->_tpl_vars['fields']['address_state_advanced']['name']; ?>
-' 
-    id='<?php echo $this->_tpl_vars['fields']['address_state_advanced']['name']; ?>
-' size='30' 
-    maxlength='100' 
-    value='<?php echo $this->_tpl_vars['value']; ?>
-' title=''      >
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
-
-            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
-
-
-            <div class="col-xs-12">
-                                <label for='address_postalcode_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_POSTAL_CODE','module' => 'Users'), $this);?>
-</label>
-                            </div>
-            <div class="form-item">
-                                
-<?php if (strlen ( $this->_tpl_vars['fields']['address_postalcode_advanced']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['address_postalcode_advanced']['default_value']); ?>
-<?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['address_postalcode_advanced']['value']); ?>
-<?php endif; ?>  
-<input type='text' name='<?php echo $this->_tpl_vars['fields']['address_postalcode_advanced']['name']; ?>
-' 
-    id='<?php echo $this->_tpl_vars['fields']['address_postalcode_advanced']['name']; ?>
-' size='30' 
-    maxlength='20' 
-    value='<?php echo $this->_tpl_vars['value']; ?>
-' title=''      >
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
-
-            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
-
-
-            <div class="col-xs-12">
-                                <label for='address_country_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_COUNTRY','module' => 'Users'), $this);?>
-</label>
-                            </div>
-            <div class="form-item">
-                                
-<?php if (strlen ( $this->_tpl_vars['fields']['address_country_advanced']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['address_country_advanced']['default_value']); ?>
-<?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['address_country_advanced']['value']); ?>
-<?php endif; ?>  
-<input type='text' name='<?php echo $this->_tpl_vars['fields']['address_country_advanced']['name']; ?>
-' 
-    id='<?php echo $this->_tpl_vars['fields']['address_country_advanced']['name']; ?>
-' size='30' 
-    maxlength='100' 
-    value='<?php echo $this->_tpl_vars['value']; ?>
-' title=''      >
                             </div>
         </div>
     </div>

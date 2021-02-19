@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-01-22 14:00:33
+<?php /* Smarty version 2.6.31, created on 2021-02-15 13:35:16
          compiled from modules/Emails/templates/emailSettingsAccounts.tpl */ ?>
 <table cellpadding="4" cellspacing="0" border="0" width="100%" class="view">
 	<tr>

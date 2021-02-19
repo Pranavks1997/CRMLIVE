@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-01-27 15:55:37
+<?php /* Smarty version 2.6.31, created on 2021-02-15 12:07:57
          compiled from modules/DynamicFields/templates/Fields/Forms/varchar.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_translate', 'modules/DynamicFields/templates/Fields/Forms/varchar.tpl', 50, false),array('modifier', 'default', 'modules/DynamicFields/templates/Fields/Forms/varchar.tpl', 53, false),)), $this); ?>

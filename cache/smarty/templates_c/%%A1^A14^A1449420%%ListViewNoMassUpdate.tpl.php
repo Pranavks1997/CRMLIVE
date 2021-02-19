@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-01-27 10:06:09
+<?php /* Smarty version 2.6.31, created on 2021-02-15 13:32:22
          compiled from themes/SuiteP/include/ListView/ListViewNoMassUpdate.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', 'themes/SuiteP/include/ListView/ListViewNoMassUpdate.tpl', 52, false),array('function', 'sugar_translate', 'themes/SuiteP/include/ListView/ListViewNoMassUpdate.tpl', 58, false),array('function', 'sugar_getimage', 'themes/SuiteP/include/ListView/ListViewNoMassUpdate.tpl', 63, false),array('function', 'sugar_evalcolumn_old', 'themes/SuiteP/include/ListView/ListViewNoMassUpdate.tpl', 106, false),array('function', 'sugar_field', 'themes/SuiteP/include/ListView/ListViewNoMassUpdate.tpl', 108, false),array('modifier', 'default', 'themes/SuiteP/include/ListView/ListViewNoMassUpdate.tpl', 56, false),array('modifier', 'lower', 'themes/SuiteP/include/ListView/ListViewNoMassUpdate.tpl', 58, false),)), $this); ?>

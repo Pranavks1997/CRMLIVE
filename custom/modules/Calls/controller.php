@@ -8,17 +8,31 @@ class CallsController extends SugarController
     function action_oppurtunity_status(){
         try{
             $opp_id = $_POST['opp_id'];
+            
+            
+             $name = array();
+    		    $date=array();
+    		    $description=array();
+            
+            
             $db = \DBManagerFactory::getInstance();
         	$GLOBALS['db'];
-        	$sql = 'SELECT description FROM opportunities WHERE id="'.$opp_id.'"';
+        	$sql = 'SELECT CONCAT(users.first_name," ",users.last_name) as name,DATE_FORMAT(description_activity.date_time, "%d/%m/%Y %H:%i:%s") as "date_time",description_activity.description   FROM description_activity INNER JOIN users on users.id=description_activity.user_id WHERE description_activity.opp_id="'.$opp_id.'" ORDER BY `date_time` DESC';
     		
     		$result = $GLOBALS['db']->query($sql);
     		
     		while($row = $GLOBALS['db']->fetchByAssoc($result) )
     		{
-    		    $opp_status = $row['description'];
+    		  array_push($name, $row['name']);
+    		  array_push($date,$row['date_time']);
+    		  array_push($description,$row['description']);
     		}
-    			echo json_encode(array("status"=>true, "opp_status" => $opp_status));
+    		
+    		 $combined = array_map(function($b,$c,$d) { return  '['.$b.' : '.$c.' ] :- '.$d; }, $name,$date, $description);
+    		
+    		
+    		
+    			echo json_encode(array("status"=>true, "opp_status" => $combined));
     	}catch(Exception $e){
     		echo json_encode(array("status"=>false, "message" => "Some error occured"));
     	}

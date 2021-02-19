@@ -1,5 +1,6 @@
 <?php
 
+
 require_once('modules/Opportunities/OpportunitiesListViewSmarty.php');
 
 class OpportunitiesViewList extends ViewList

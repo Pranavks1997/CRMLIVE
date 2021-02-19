@@ -72,9 +72,11 @@ array (
         array (
           0 => 
           array (
-            'name' => 'activity_type_c',
-            'studio' => 'visible',
-            'label' => 'LBL_ACTIVITY_TYPE',
+            'name' => 'name',
+            'displayParams' => 
+            array (
+              'required' => true,
+            ),
           ),
           1 => 
           array (
@@ -96,11 +98,9 @@ array (
         array (
           0 => 
           array (
-            'name' => 'name',
-            'displayParams' => 
-            array (
-              'required' => true,
-            ),
+            'name' => 'type_of_interaction_c',
+            'studio' => 'visible',
+            'label' => 'LBL_TYPE_OF_INTERACTION',
           ),
           1 => 
           array (
@@ -109,16 +109,6 @@ array (
           ),
         ),
         2 => 
-        array (
-          0 => 
-          array (
-            'name' => 'type_of_interaction_c',
-            'studio' => 'visible',
-            'label' => 'LBL_TYPE_OF_INTERACTION',
-          ),
-          1 => '',
-        ),
-        3 => 
         array (
           0 => 
           array (
@@ -131,7 +121,7 @@ array (
             'label' => 'LBL_NEXT_DATE',
           ),
         ),
-        4 => 
+        3 => 
         array (
           0 => 
           array (
@@ -144,7 +134,7 @@ array (
             'label' => 'LBL_NAME_OF_PERSON',
           ),
         ),
-        5 => 
+        4 => 
         array (
           0 => 
           array (
@@ -153,7 +143,7 @@ array (
           ),
           1 => '',
         ),
-        6 => 
+        5 => 
         array (
           0 => 
           array (
@@ -162,7 +152,7 @@ array (
             'label' => 'LBL_NEW_CURRENT_STATUS',
           ),
         ),
-        7 => 
+        6 => 
         array (
           0 => 
           array (
@@ -171,7 +161,7 @@ array (
             'label' => 'LBL_DESCRIPTION',
           ),
         ),
-        8 => 
+        7 => 
         array (
           0 => 
           array (

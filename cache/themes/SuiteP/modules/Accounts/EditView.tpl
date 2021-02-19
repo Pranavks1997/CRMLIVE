@@ -156,6 +156,36 @@ value='{$value}' title=''      >
 <div class="col-xs-12 col-sm-6 edit-view-row-item">
 
 
+<div class="col-xs-12 col-sm-4 label" data-label="LBL_COUNTRY_C">
+
+{minify}
+{capture name="label" assign="label"}{sugar_translate label='LBL_COUNTRY' module='Accounts'}{/capture}
+{$label|strip_semicolon}:
+
+{/minify}
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="varchar" field="country_c"  >
+{counter name="panelFieldCount" print=false}
+
+{if strlen($fields.country_c.value) <= 0}
+{assign var="value" value=$fields.country_c.default_value }
+{else}
+{assign var="value" value=$fields.country_c.value }
+{/if}  
+<input type='text' name='{$fields.country_c.name}' 
+id='{$fields.country_c.name}' size='30' 
+maxlength='255' 
+value='{$value}' title=''      >
+</div>
+
+<!-- [/hide] -->
+</div>
+
+
+<div class="col-xs-12 col-sm-6 edit-view-row-item">
+
+
 <div class="col-xs-12 col-sm-4 label" data-label="LBL_WEBSITE">
 
 {minify}
@@ -180,928 +210,34 @@ title='' tabindex='0'  >
 
 <!-- [/hide] -->
 </div>
+<div class="clear"></div>
+<div class="clear"></div>
+
 
 
 <div class="col-xs-12 col-sm-6 edit-view-row-item">
 
 
-<div class="col-xs-12 col-sm-4 label" data-label="LBL_FAX">
+<div class="col-xs-12 col-sm-4 label" data-label="LBL_STATE_C">
 
 {minify}
-{capture name="label" assign="label"}{sugar_translate label='LBL_FAX' module='Accounts'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_STATE' module='Accounts'}{/capture}
 {$label|strip_semicolon}:
 
 {/minify}
 </div>
 
-<div class="col-xs-12 col-sm-8 edit-view-field " type="phone" field="phone_fax"  class="phone">
+<div class="col-xs-12 col-sm-8 edit-view-field " type="varchar" field="state_c"  >
 {counter name="panelFieldCount" print=false}
 
-{if strlen($fields.phone_fax.value) <= 0}
-{assign var="value" value=$fields.phone_fax.default_value }
+{if strlen($fields.state_c.value) <= 0}
+{assign var="value" value=$fields.state_c.default_value }
 {else}
-{assign var="value" value=$fields.phone_fax.value }
+{assign var="value" value=$fields.state_c.value }
 {/if}  
-<input type='text' name='{$fields.phone_fax.name}' id='{$fields.phone_fax.name}' size='30' maxlength='100' value='{$value}' title='' tabindex='0'	  class="phone" >
-</div>
-
-<!-- [/hide] -->
-</div>
-<div class="clear"></div>
-<div class="clear"></div>
-
-
-
-<div class="col-xs-12 col-sm-12 edit-view-row-item">
-
-
-<div class="col-xs-12 col-sm-2 label" data-label="LBL_EMAIL">
-
-{minify}
-{capture name="label" assign="label"}{sugar_translate label='LBL_EMAIL' module='Accounts'}{/capture}
-{$label|strip_semicolon}:
-
-{/minify}
-</div>
-
-<div class="col-xs-12 col-sm-8 edit-view-field " type="varchar" field="email1" colspan='3' >
-{counter name="panelFieldCount" print=false}
-<span id='email1_span'>
-{$fields.email1.value}</span>
-</div>
-
-<!-- [/hide] -->
-</div>
-<div class="clear"></div>
-
-
-
-<div class="col-xs-12 col-sm-6 edit-view-row-item">
-
-
-
-<div class="col-xs-12 col-sm-12 edit-view-field " type="varchar" field="billing_address_street" colspan='2' >
-{counter name="panelFieldCount" print=false}
-
-<script src='{sugar_getjspath file="include/SugarFields/Fields/Address/SugarFieldAddress.js"}'></script>
-<fieldset id='BILLING_address_fieldset'>
-<legend>{sugar_translate label='LBL_BILLING_ADDRESS' module=''}</legend>
-<table border="0" cellspacing="1" cellpadding="0" class="edit" width="100%">
-<tr>
-<td valign="top" id="billing_address_street_label" width='25%' scope='row'>
-<label for="billing_address_street">{sugar_translate label='LBL_BILLING_STREET' module=''}:</label>
-{if $fields.billing_address_street.required || false}
-<span class="required">{$APP.LBL_REQUIRED_SYMBOL}</span>
-{/if}
-</td>
-<td width="*">
-<textarea id="billing_address_street" name="billing_address_street" title='' maxlength="150"
-                          rows="2" cols="30"
-                          tabindex="0">{$fields.billing_address_street.value}</textarea>
-</td>
-</tr>
-<tr>
-<td id="billing_address_city_label" width='%'
-scope='row'>
-<label for="billing_address_city">{sugar_translate label='LBL_CITY' module=''}:
-{if $fields.billing_address_city.required || false}
-<span class="required">{$APP.LBL_REQUIRED_SYMBOL}</span>
-{/if}
-</td>
-<td>
-<input type="text" name="billing_address_city" id="billing_address_city" title='{$fields.billing_address_city.help}' size="30"
-maxlength='150' value='{$fields.billing_address_city.value}'
-tabindex="0">
-</td>
-</tr>
-<tr>
-<td id="billing_address_state_label" width='%'
-scope='row'>
-<label for="billing_address_state">{sugar_translate label='LBL_STATE' module=''}:</label>
-{if $fields.billing_address_state.required || false}
-<span class="required">{$APP.LBL_REQUIRED_SYMBOL}</span>
-{/if}
-</td>
-<td>
-<input type="text" name="billing_address_state" id="billing_address_state" title='{$fields.billing_address_state.help}' size="30"
-maxlength='150' value='{$fields.billing_address_state.value}'
-tabindex="0">
-</td>
-</tr>
-<tr>
-<td id="billing_address_postalcode_label"
-width='%' scope='row'>
-<label for="billing_address_postalcode">{sugar_translate label='LBL_POSTAL_CODE' module=''}:</label>
-{if $fields.billing_address_postalcode.required || false}
-<span class="required">{$APP.LBL_REQUIRED_SYMBOL}</span>
-{/if}
-</td>
-<td>
-<input type="text" name="billing_address_postalcode" id="billing_address_postalcode" title='{$fields.billing_address_postalcode.help}' size="30"
-maxlength='150'                       value='{$fields.billing_address_postalcode.value}' tabindex="0">
-</td>
-</tr>
-<tr>
-<td id="billing_address_country_label" width='%'
-scope='row'>
-<label for="billing_address_country">{sugar_translate label='LBL_COUNTRY' module=''}:</label>
-{if $fields.billing_address_country.required || false}
-<span class="required">{$APP.LBL_REQUIRED_SYMBOL}</span>
-{/if}
-</td>
-<td>
-<input type="text" name="billing_address_country" id="billing_address_country" title='{$fields.billing_address_country.help}' size="30"
-maxlength='150' value='{$fields.billing_address_country.value}'
-tabindex="0">
-</td>
-</tr>
-<tr>
-<td colspan='2' NOWRAP>&nbsp;</td>
-</tr>
-</table>
-</fieldset>
-<script type="text/javascript">
-  SUGAR.util.doWhen("typeof(SUGAR.AddressField) != 'undefined'", function () {ldelim}
-      billing_address = new SUGAR.AddressField("billing_checkbox", '', 'billing');
-      {rdelim});
-</script>
-</div>
-
-<!-- [/hide] -->
-</div>
-
-
-<div class="col-xs-12 col-sm-6 edit-view-row-item">
-
-
-
-<div class="col-xs-12 col-sm-12 edit-view-field " type="varchar" field="shipping_address_street" colspan='2' >
-{counter name="panelFieldCount" print=false}
-
-<script src='{sugar_getjspath file="include/SugarFields/Fields/Address/SugarFieldAddress.js"}'></script>
-<fieldset id='SHIPPING_address_fieldset'>
-<legend>{sugar_translate label='LBL_SHIPPING_ADDRESS' module=''}</legend>
-<table border="0" cellspacing="1" cellpadding="0" class="edit" width="100%">
-<tr>
-<td valign="top" id="shipping_address_street_label" width='25%' scope='row'>
-<label for="shipping_address_street">{sugar_translate label='LBL_SHIPPING_STREET' module=''}:</label>
-{if $fields.shipping_address_street.required || false}
-<span class="required">{$APP.LBL_REQUIRED_SYMBOL}</span>
-{/if}
-</td>
-<td width="*">
-<textarea id="shipping_address_street" name="shipping_address_street" title='' maxlength="150"
-                          rows="2" cols="30"
-                          tabindex="0">{$fields.shipping_address_street.value}</textarea>
-</td>
-</tr>
-<tr>
-<td id="shipping_address_city_label" width='%'
-scope='row'>
-<label for="shipping_address_city">{sugar_translate label='LBL_CITY' module=''}:
-{if $fields.shipping_address_city.required || false}
-<span class="required">{$APP.LBL_REQUIRED_SYMBOL}</span>
-{/if}
-</td>
-<td>
-<input type="text" name="shipping_address_city" id="shipping_address_city" title='{$fields.shipping_address_city.help}' size="30"
-maxlength='150' value='{$fields.shipping_address_city.value}'
-tabindex="0">
-</td>
-</tr>
-<tr>
-<td id="shipping_address_state_label" width='%'
-scope='row'>
-<label for="shipping_address_state">{sugar_translate label='LBL_STATE' module=''}:</label>
-{if $fields.shipping_address_state.required || false}
-<span class="required">{$APP.LBL_REQUIRED_SYMBOL}</span>
-{/if}
-</td>
-<td>
-<input type="text" name="shipping_address_state" id="shipping_address_state" title='{$fields.shipping_address_state.help}' size="30"
-maxlength='150' value='{$fields.shipping_address_state.value}'
-tabindex="0">
-</td>
-</tr>
-<tr>
-<td id="shipping_address_postalcode_label"
-width='%' scope='row'>
-<label for="shipping_address_postalcode">{sugar_translate label='LBL_POSTAL_CODE' module=''}:</label>
-{if $fields.shipping_address_postalcode.required || false}
-<span class="required">{$APP.LBL_REQUIRED_SYMBOL}</span>
-{/if}
-</td>
-<td>
-<input type="text" name="shipping_address_postalcode" id="shipping_address_postalcode" title='{$fields.shipping_address_postalcode.help}' size="30"
-maxlength='150'                       value='{$fields.shipping_address_postalcode.value}' tabindex="0">
-</td>
-</tr>
-<tr>
-<td id="shipping_address_country_label" width='%'
-scope='row'>
-<label for="shipping_address_country">{sugar_translate label='LBL_COUNTRY' module=''}:</label>
-{if $fields.shipping_address_country.required || false}
-<span class="required">{$APP.LBL_REQUIRED_SYMBOL}</span>
-{/if}
-</td>
-<td>
-<input type="text" name="shipping_address_country" id="shipping_address_country" title='{$fields.shipping_address_country.help}' size="30"
-maxlength='150' value='{$fields.shipping_address_country.value}'
-tabindex="0">
-</td>
-</tr>
-<tr>
-<td scope='row' NOWRAP>
-{sugar_translate label='LBL_COPY_ADDRESS_FROM_LEFT' module=''}:
-</td>
-<td>
-<input id="shipping_checkbox" name="shipping_checkbox" type="checkbox"
-onclick="shipping_address.syncFields();">
-</td>
-</tr>
-</table>
-</fieldset>
-<script type="text/javascript">
-  SUGAR.util.doWhen("typeof(SUGAR.AddressField) != 'undefined'", function () {ldelim}
-      shipping_address = new SUGAR.AddressField("shipping_checkbox", 'billing', 'shipping');
-      {rdelim});
-</script>
-</div>
-
-<!-- [/hide] -->
-</div>
-<div class="clear"></div>
-<div class="clear"></div>
-
-
-
-<div class="col-xs-12 col-sm-12 edit-view-row-item">
-
-
-<div class="col-xs-12 col-sm-2 label" data-label="LBL_DESCRIPTION">
-
-{minify}
-{capture name="label" assign="label"}{sugar_translate label='LBL_DESCRIPTION' module='Accounts'}{/capture}
-{$label|strip_semicolon}:
-
-{/minify}
-</div>
-
-<div class="col-xs-12 col-sm-8 edit-view-field " type="text" field="description" colspan='3' >
-{counter name="panelFieldCount" print=false}
-
-{if empty($fields.description.value)}
-{assign var="value" value=$fields.description.default_value }
-{else}
-{assign var="value" value=$fields.description.value }
-{/if}
-<textarea  id='{$fields.description.name}' name='{$fields.description.name}'
-rows="6"
-cols="80"
-title='' tabindex="0" 
- >{$value}</textarea>
-{literal}{/literal}
-</div>
-
-<!-- [/hide] -->
-</div>
-<div class="clear"></div>
-
-
-
-<div class="col-xs-12 col-sm-12 edit-view-row-item">
-
-
-<div class="col-xs-12 col-sm-2 label" data-label="LBL_ASSIGNED_TO_NAME">
-
-{minify}
-{capture name="label" assign="label"}{sugar_translate label='LBL_ASSIGNED_TO' module='Accounts'}{/capture}
-{$label|strip_semicolon}:
-
-{/minify}
-</div>
-
-<div class="col-xs-12 col-sm-8 edit-view-field " type="relate" field="assigned_user_name" colspan='3' >
-{counter name="panelFieldCount" print=false}
-
-<input type="text" name="{$fields.assigned_user_name.name}" class="sqsEnabled" tabindex="0" id="{$fields.assigned_user_name.name}" size="" value="{$fields.assigned_user_name.value}" title='' autocomplete="off"  	 >
-<input type="hidden" name="{$fields.assigned_user_name.id_name}" 
-id="{$fields.assigned_user_name.id_name}" 
-value="{$fields.assigned_user_id.value}">
-<span class="id-ff multiple">
-<button type="button" name="btn_{$fields.assigned_user_name.name}" id="btn_{$fields.assigned_user_name.name}" tabindex="0" title="{sugar_translate label="LBL_ACCESSKEY_SELECT_USERS_TITLE"}" class="button firstChild" value="{sugar_translate label="LBL_ACCESSKEY_SELECT_USERS_LABEL"}"
-onclick='open_popup(
-"{$fields.assigned_user_name.module}", 
-600, 
-395,
-"", 
-true, 
-false, 
-{literal}{"call_back_function":"set_return","form_name":"EditView","field_to_name_array":{"id":"assigned_user_id","user_name":"assigned_user_name"}}{/literal}, 
-"single", 
-true
-);' ><span class="suitepicon suitepicon-action-select"></span></button><button type="button" name="btn_clr_{$fields.assigned_user_name.name}" id="btn_clr_{$fields.assigned_user_name.name}" tabindex="0" title="{sugar_translate label="LBL_ACCESSKEY_CLEAR_USERS_TITLE"}"  class="button lastChild"
-onclick="SUGAR.clearRelateField(this.form, '{$fields.assigned_user_name.name}', '{$fields.assigned_user_name.id_name}');"  value="{sugar_translate label="LBL_ACCESSKEY_CLEAR_USERS_LABEL"}" ><span class="suitepicon suitepicon-action-clear"></span></button>
-</span>
-<script type="text/javascript">
-SUGAR.util.doWhen(
-		"typeof(sqs_objects) != 'undefined' && typeof(sqs_objects['{$form_name}_{$fields.assigned_user_name.name}']) != 'undefined'",
-		enableQS
-);
-</script>
-</div>
-
-<!-- [/hide] -->
-</div>
-<div class="clear"></div>
-</div>                    </div>
-</div>
-</div>
-
-
-
-
-<div class="panel panel-default">
-<div class="panel-heading ">
-<a class="" role="button" data-toggle="collapse-edit" aria-expanded="false">
-<div class="col-xs-10 col-sm-11 col-md-11">
-{sugar_translate label='LBL_PANEL_ADVANCED' module='Accounts'}
-</div>
-</a>
-</div>
-<div class="panel-body panel-collapse collapse in panelContainer" id="detailpanel_0" data-id="LBL_PANEL_ADVANCED">
-<div class="tab-content">
-<!-- tab_panel_content.tpl -->
-<div class="row edit-view-row">
-
-
-
-<div class="col-xs-12 col-sm-6 edit-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label" data-label="LBL_TYPE">
-
-{minify}
-{capture name="label" assign="label"}{sugar_translate label='LBL_TYPE' module='Accounts'}{/capture}
-{$label|strip_semicolon}:
-
-{/minify}
-</div>
-
-<div class="col-xs-12 col-sm-8 edit-view-field " type="enum" field="account_type"  >
-{counter name="panelFieldCount" print=false}
-
-{if !isset($config.enable_autocomplete) || $config.enable_autocomplete==false}
-<select name="{$fields.account_type.name}" 
-id="{$fields.account_type.name}" 
-title=''       
->
-{if isset($fields.account_type.value) && $fields.account_type.value != ''}
-{html_options options=$fields.account_type.options selected=$fields.account_type.value}
-{else}
-{html_options options=$fields.account_type.options selected=$fields.account_type.default}
-{/if}
-</select>
-{else}
-{assign var="field_options" value=$fields.account_type.options }
-{capture name="field_val"}{$fields.account_type.value}{/capture}
-{assign var="field_val" value=$smarty.capture.field_val}
-{capture name="ac_key"}{$fields.account_type.name}{/capture}
-{assign var="ac_key" value=$smarty.capture.ac_key}
-<select style='display:none' name="{$fields.account_type.name}" 
-id="{$fields.account_type.name}" 
-title=''          
->
-{if isset($fields.account_type.value) && $fields.account_type.value != ''}
-{html_options options=$fields.account_type.options selected=$fields.account_type.value}
-{else}
-{html_options options=$fields.account_type.options selected=$fields.account_type.default}
-{/if}
-</select>
-<input
-id="{$fields.account_type.name}-input"
-name="{$fields.account_type.name}-input"
-size="30"
-value="{$field_val|lookup:$field_options}"
-type="text" style="vertical-align: top;">
-<span class="id-ff multiple">
-<button type="button"><img src="{sugar_getimagepath file="id-ff-down.png"}" id="{$fields.account_type.name}-image"></button><button type="button"
-id="btn-clear-{$fields.account_type.name}-input"
-title="Clear"
-onclick="SUGAR.clearRelateField(this.form, '{$fields.account_type.name}-input', '{$fields.account_type.name}');sync_{$fields.account_type.name}()"><span class="suitepicon suitepicon-action-clear"></span></button>
-</span>
-{literal}
-<script>
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal} = [];
-	{/literal}
-
-			{literal}
-		(function (){
-			var selectElem = document.getElementById("{/literal}{$fields.account_type.name}{literal}");
-			
-			if (typeof select_defaults =="undefined")
-				select_defaults = [];
-			
-			select_defaults[selectElem.id] = {key:selectElem.value,text:''};
-
-			//get default
-			for (i=0;i<selectElem.options.length;i++){
-				if (selectElem.options[i].value==selectElem.value)
-					select_defaults[selectElem.id].text = selectElem.options[i].innerHTML;
-			}
-
-			//SUGAR.AutoComplete.{$ac_key}.ds = 
-			//get options array from vardefs
-			var options = SUGAR.AutoComplete.getOptionsArray("");
-
-			YUI().use('datasource', 'datasource-jsonschema',function (Y) {
-				SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.ds = new Y.DataSource.Function({
-				    source: function (request) {
-				    	var ret = [];
-				    	for (i=0;i<selectElem.options.length;i++)
-				    		if (!(selectElem.options[i].value=='' && selectElem.options[i].innerHTML==''))
-				    			ret.push({'key':selectElem.options[i].value,'text':selectElem.options[i].innerHTML});
-				    	return ret;
-				    }
-				});
-			});
-		})();
-		{/literal}
-	
-	{literal}
-		YUI().use("autocomplete", "autocomplete-filters", "autocomplete-highlighters", "node","node-event-simulate", function (Y) {
-	{/literal}
-			
-	SUGAR.AutoComplete.{$ac_key}.inputNode = Y.one('#{$fields.account_type.name}-input');
-	SUGAR.AutoComplete.{$ac_key}.inputImage = Y.one('#{$fields.account_type.name}-image');
-	SUGAR.AutoComplete.{$ac_key}.inputHidden = Y.one('#{$fields.account_type.name}');
-	
-			{literal}
-			function SyncToHidden(selectme){
-				var selectElem = document.getElementById("{/literal}{$fields.account_type.name}{literal}");
-				var doSimulateChange = false;
-				
-				if (selectElem.value!=selectme)
-					doSimulateChange=true;
-				
-				selectElem.value=selectme;
-
-				for (i=0;i<selectElem.options.length;i++){
-					selectElem.options[i].selected=false;
-					if (selectElem.options[i].value==selectme)
-						selectElem.options[i].selected=true;
-				}
-
-				if (doSimulateChange)
-					SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('change');
-			}
-
-			//global variable 
-			sync_{/literal}{$fields.account_type.name}{literal} = function(){
-				SyncToHidden();
-			}
-			function syncFromHiddenToWidget(){
-
-				var selectElem = document.getElementById("{/literal}{$fields.account_type.name}{literal}");
-
-				//if select no longer on page, kill timer
-				if (selectElem==null || selectElem.options == null)
-					return;
-
-				var currentvalue = SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.get('value');
-
-				SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.simulate('keyup');
-
-				for (i=0;i<selectElem.options.length;i++){
-
-					if (selectElem.options[i].value==selectElem.value && document.activeElement != document.getElementById('{/literal}{$fields.account_type.name}-input{literal}'))
-						SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.set('value',selectElem.options[i].innerHTML);
-				}
-			}
-
-            YAHOO.util.Event.onAvailable("{/literal}{$fields.account_type.name}{literal}", syncFromHiddenToWidget);
-		{/literal}
-
-		SUGAR.AutoComplete.{$ac_key}.minQLen = 0;
-		SUGAR.AutoComplete.{$ac_key}.queryDelay = 0;
-		SUGAR.AutoComplete.{$ac_key}.numOptions = {$field_options|@count};
-		if(SUGAR.AutoComplete.{$ac_key}.numOptions >= 300) {literal}{
-			{/literal}
-			SUGAR.AutoComplete.{$ac_key}.minQLen = 1;
-			SUGAR.AutoComplete.{$ac_key}.queryDelay = 200;
-			{literal}
-		}
-		{/literal}
-		if(SUGAR.AutoComplete.{$ac_key}.numOptions >= 3000) {literal}{
-			{/literal}
-			SUGAR.AutoComplete.{$ac_key}.minQLen = 1;
-			SUGAR.AutoComplete.{$ac_key}.queryDelay = 500;
-			{literal}
-		}
-		{/literal}
-		
-	SUGAR.AutoComplete.{$ac_key}.optionsVisible = false;
-	
-	{literal}
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.plug(Y.Plugin.AutoComplete, {
-		activateFirstItem: true,
-		{/literal}
-		minQueryLength: SUGAR.AutoComplete.{$ac_key}.minQLen,
-		queryDelay: SUGAR.AutoComplete.{$ac_key}.queryDelay,
-		zIndex: 99999,
-
-				
-		{literal}
-		source: SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.ds,
-		
-		resultTextLocator: 'text',
-		resultHighlighter: 'phraseMatch',
-		resultFilters: 'phraseMatch',
-	});
-
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.expandHover = function(ex){
-		var hover = YAHOO.util.Dom.getElementsByClassName('dccontent');
-		if(hover[0] != null){
-			if (ex) {
-				var h = '1000px';
-				hover[0].style.height = h;
-			}
-			else{
-				hover[0].style.height = '';
-			}
-		}
-	}
-		
-	if({/literal}SUGAR.AutoComplete.{$ac_key}.minQLen{literal} == 0){
-		// expand the dropdown options upon focus
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('focus', function () {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.ac.sendRequest('');
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.optionsVisible = true;
-		});
-	}
-
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('click', function(e) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('click');
-		});
-		
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('dblclick', function(e) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('dblclick');
-		});
-
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('focus', function(e) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('focus');
-		});
-
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('mouseup', function(e) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('mouseup');
-		});
-
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('mousedown', function(e) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('mousedown');
-		});
-
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('blur', function(e) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('blur');
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.optionsVisible = false;
-			var selectElem = document.getElementById("{/literal}{$fields.account_type.name}{literal}");
-			//if typed value is a valid option, do nothing
-			for (i=0;i<selectElem.options.length;i++)
-				if (selectElem.options[i].innerHTML==SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.get('value'))
-					return;
-			
-			//typed value is invalid, so set the text and the hidden to blank
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.set('value', select_defaults[selectElem.id].text);
-			SyncToHidden(select_defaults[selectElem.id].key);
-		});
-	
-	// when they click on the arrow image, toggle the visibility of the options
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputImage.ancestor().on('click', function () {
-		if (SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.optionsVisible) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.blur();
-		} else {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.focus();
-		}
-	});
-
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.ac.on('query', function () {
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.set('value', '');
-	});
-
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.ac.on('visibleChange', function (e) {
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.expandHover(e.newVal); // expand
-	});
-
-	// when they select an option, set the hidden input with the KEY, to be saved
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.ac.on('select', function(e) {
-		SyncToHidden(e.result.raw.key);
-	});
- 
-});
-</script> 
-{/literal}
-{/if}
-</div>
-
-<!-- [/hide] -->
-</div>
-
-
-<div class="col-xs-12 col-sm-6 edit-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label" data-label="LBL_INDUSTRY">
-
-{minify}
-{capture name="label" assign="label"}{sugar_translate label='LBL_INDUSTRY' module='Accounts'}{/capture}
-{$label|strip_semicolon}:
-
-{/minify}
-</div>
-
-<div class="col-xs-12 col-sm-8 edit-view-field " type="enum" field="industry"  >
-{counter name="panelFieldCount" print=false}
-
-{if !isset($config.enable_autocomplete) || $config.enable_autocomplete==false}
-<select name="{$fields.industry.name}" 
-id="{$fields.industry.name}" 
-title=''       
->
-{if isset($fields.industry.value) && $fields.industry.value != ''}
-{html_options options=$fields.industry.options selected=$fields.industry.value}
-{else}
-{html_options options=$fields.industry.options selected=$fields.industry.default}
-{/if}
-</select>
-{else}
-{assign var="field_options" value=$fields.industry.options }
-{capture name="field_val"}{$fields.industry.value}{/capture}
-{assign var="field_val" value=$smarty.capture.field_val}
-{capture name="ac_key"}{$fields.industry.name}{/capture}
-{assign var="ac_key" value=$smarty.capture.ac_key}
-<select style='display:none' name="{$fields.industry.name}" 
-id="{$fields.industry.name}" 
-title=''          
->
-{if isset($fields.industry.value) && $fields.industry.value != ''}
-{html_options options=$fields.industry.options selected=$fields.industry.value}
-{else}
-{html_options options=$fields.industry.options selected=$fields.industry.default}
-{/if}
-</select>
-<input
-id="{$fields.industry.name}-input"
-name="{$fields.industry.name}-input"
-size="30"
-value="{$field_val|lookup:$field_options}"
-type="text" style="vertical-align: top;">
-<span class="id-ff multiple">
-<button type="button"><img src="{sugar_getimagepath file="id-ff-down.png"}" id="{$fields.industry.name}-image"></button><button type="button"
-id="btn-clear-{$fields.industry.name}-input"
-title="Clear"
-onclick="SUGAR.clearRelateField(this.form, '{$fields.industry.name}-input', '{$fields.industry.name}');sync_{$fields.industry.name}()"><span class="suitepicon suitepicon-action-clear"></span></button>
-</span>
-{literal}
-<script>
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal} = [];
-	{/literal}
-
-			{literal}
-		(function (){
-			var selectElem = document.getElementById("{/literal}{$fields.industry.name}{literal}");
-			
-			if (typeof select_defaults =="undefined")
-				select_defaults = [];
-			
-			select_defaults[selectElem.id] = {key:selectElem.value,text:''};
-
-			//get default
-			for (i=0;i<selectElem.options.length;i++){
-				if (selectElem.options[i].value==selectElem.value)
-					select_defaults[selectElem.id].text = selectElem.options[i].innerHTML;
-			}
-
-			//SUGAR.AutoComplete.{$ac_key}.ds = 
-			//get options array from vardefs
-			var options = SUGAR.AutoComplete.getOptionsArray("");
-
-			YUI().use('datasource', 'datasource-jsonschema',function (Y) {
-				SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.ds = new Y.DataSource.Function({
-				    source: function (request) {
-				    	var ret = [];
-				    	for (i=0;i<selectElem.options.length;i++)
-				    		if (!(selectElem.options[i].value=='' && selectElem.options[i].innerHTML==''))
-				    			ret.push({'key':selectElem.options[i].value,'text':selectElem.options[i].innerHTML});
-				    	return ret;
-				    }
-				});
-			});
-		})();
-		{/literal}
-	
-	{literal}
-		YUI().use("autocomplete", "autocomplete-filters", "autocomplete-highlighters", "node","node-event-simulate", function (Y) {
-	{/literal}
-			
-	SUGAR.AutoComplete.{$ac_key}.inputNode = Y.one('#{$fields.industry.name}-input');
-	SUGAR.AutoComplete.{$ac_key}.inputImage = Y.one('#{$fields.industry.name}-image');
-	SUGAR.AutoComplete.{$ac_key}.inputHidden = Y.one('#{$fields.industry.name}');
-	
-			{literal}
-			function SyncToHidden(selectme){
-				var selectElem = document.getElementById("{/literal}{$fields.industry.name}{literal}");
-				var doSimulateChange = false;
-				
-				if (selectElem.value!=selectme)
-					doSimulateChange=true;
-				
-				selectElem.value=selectme;
-
-				for (i=0;i<selectElem.options.length;i++){
-					selectElem.options[i].selected=false;
-					if (selectElem.options[i].value==selectme)
-						selectElem.options[i].selected=true;
-				}
-
-				if (doSimulateChange)
-					SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('change');
-			}
-
-			//global variable 
-			sync_{/literal}{$fields.industry.name}{literal} = function(){
-				SyncToHidden();
-			}
-			function syncFromHiddenToWidget(){
-
-				var selectElem = document.getElementById("{/literal}{$fields.industry.name}{literal}");
-
-				//if select no longer on page, kill timer
-				if (selectElem==null || selectElem.options == null)
-					return;
-
-				var currentvalue = SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.get('value');
-
-				SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.simulate('keyup');
-
-				for (i=0;i<selectElem.options.length;i++){
-
-					if (selectElem.options[i].value==selectElem.value && document.activeElement != document.getElementById('{/literal}{$fields.industry.name}-input{literal}'))
-						SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.set('value',selectElem.options[i].innerHTML);
-				}
-			}
-
-            YAHOO.util.Event.onAvailable("{/literal}{$fields.industry.name}{literal}", syncFromHiddenToWidget);
-		{/literal}
-
-		SUGAR.AutoComplete.{$ac_key}.minQLen = 0;
-		SUGAR.AutoComplete.{$ac_key}.queryDelay = 0;
-		SUGAR.AutoComplete.{$ac_key}.numOptions = {$field_options|@count};
-		if(SUGAR.AutoComplete.{$ac_key}.numOptions >= 300) {literal}{
-			{/literal}
-			SUGAR.AutoComplete.{$ac_key}.minQLen = 1;
-			SUGAR.AutoComplete.{$ac_key}.queryDelay = 200;
-			{literal}
-		}
-		{/literal}
-		if(SUGAR.AutoComplete.{$ac_key}.numOptions >= 3000) {literal}{
-			{/literal}
-			SUGAR.AutoComplete.{$ac_key}.minQLen = 1;
-			SUGAR.AutoComplete.{$ac_key}.queryDelay = 500;
-			{literal}
-		}
-		{/literal}
-		
-	SUGAR.AutoComplete.{$ac_key}.optionsVisible = false;
-	
-	{literal}
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.plug(Y.Plugin.AutoComplete, {
-		activateFirstItem: true,
-		{/literal}
-		minQueryLength: SUGAR.AutoComplete.{$ac_key}.minQLen,
-		queryDelay: SUGAR.AutoComplete.{$ac_key}.queryDelay,
-		zIndex: 99999,
-
-				
-		{literal}
-		source: SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.ds,
-		
-		resultTextLocator: 'text',
-		resultHighlighter: 'phraseMatch',
-		resultFilters: 'phraseMatch',
-	});
-
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.expandHover = function(ex){
-		var hover = YAHOO.util.Dom.getElementsByClassName('dccontent');
-		if(hover[0] != null){
-			if (ex) {
-				var h = '1000px';
-				hover[0].style.height = h;
-			}
-			else{
-				hover[0].style.height = '';
-			}
-		}
-	}
-		
-	if({/literal}SUGAR.AutoComplete.{$ac_key}.minQLen{literal} == 0){
-		// expand the dropdown options upon focus
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('focus', function () {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.ac.sendRequest('');
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.optionsVisible = true;
-		});
-	}
-
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('click', function(e) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('click');
-		});
-		
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('dblclick', function(e) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('dblclick');
-		});
-
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('focus', function(e) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('focus');
-		});
-
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('mouseup', function(e) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('mouseup');
-		});
-
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('mousedown', function(e) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('mousedown');
-		});
-
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('blur', function(e) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('blur');
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.optionsVisible = false;
-			var selectElem = document.getElementById("{/literal}{$fields.industry.name}{literal}");
-			//if typed value is a valid option, do nothing
-			for (i=0;i<selectElem.options.length;i++)
-				if (selectElem.options[i].innerHTML==SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.get('value'))
-					return;
-			
-			//typed value is invalid, so set the text and the hidden to blank
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.set('value', select_defaults[selectElem.id].text);
-			SyncToHidden(select_defaults[selectElem.id].key);
-		});
-	
-	// when they click on the arrow image, toggle the visibility of the options
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputImage.ancestor().on('click', function () {
-		if (SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.optionsVisible) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.blur();
-		} else {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.focus();
-		}
-	});
-
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.ac.on('query', function () {
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.set('value', '');
-	});
-
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.ac.on('visibleChange', function (e) {
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.expandHover(e.newVal); // expand
-	});
-
-	// when they select an option, set the hidden input with the KEY, to be saved
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.ac.on('select', function(e) {
-		SyncToHidden(e.result.raw.key);
-	});
- 
-});
-</script> 
-{/literal}
-{/if}
-</div>
-
-<!-- [/hide] -->
-</div>
-<div class="clear"></div>
-<div class="clear"></div>
-
-
-
-<div class="col-xs-12 col-sm-6 edit-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label" data-label="LBL_ANNUAL_REVENUE">
-
-{minify}
-{capture name="label" assign="label"}{sugar_translate label='LBL_ANNUAL_REVENUE' module='Accounts'}{/capture}
-{$label|strip_semicolon}:
-
-{/minify}
-</div>
-
-<div class="col-xs-12 col-sm-8 edit-view-field " type="varchar" field="annual_revenue"  >
-{counter name="panelFieldCount" print=false}
-
-{if strlen($fields.annual_revenue.value) <= 0}
-{assign var="value" value=$fields.annual_revenue.default_value }
-{else}
-{assign var="value" value=$fields.annual_revenue.value }
-{/if}  
-<input type='text' name='{$fields.annual_revenue.name}' 
-id='{$fields.annual_revenue.name}' size='30' 
-maxlength='100' 
+<input type='text' name='{$fields.state_c.name}' 
+id='{$fields.state_c.name}' size='30' 
+maxlength='255' 
 value='{$value}' title=''      >
 </div>
 
@@ -1112,128 +248,32 @@ value='{$value}' title=''      >
 <div class="col-xs-12 col-sm-6 edit-view-row-item">
 
 
-<div class="col-xs-12 col-sm-4 label" data-label="LBL_EMPLOYEES">
+<div class="col-xs-12 col-sm-4 label" data-label="LBL_CITY_C">
 
 {minify}
-{capture name="label" assign="label"}{sugar_translate label='LBL_EMPLOYEES' module='Accounts'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_CITY' module='Accounts'}{/capture}
 {$label|strip_semicolon}:
 
 {/minify}
 </div>
 
-<div class="col-xs-12 col-sm-8 edit-view-field " type="varchar" field="employees"  >
+<div class="col-xs-12 col-sm-8 edit-view-field " type="varchar" field="city_c"  >
 {counter name="panelFieldCount" print=false}
 
-{if strlen($fields.employees.value) <= 0}
-{assign var="value" value=$fields.employees.default_value }
+{if strlen($fields.city_c.value) <= 0}
+{assign var="value" value=$fields.city_c.default_value }
 {else}
-{assign var="value" value=$fields.employees.value }
+{assign var="value" value=$fields.city_c.value }
 {/if}  
-<input type='text' name='{$fields.employees.name}' 
-id='{$fields.employees.name}' size='30' 
-maxlength='10' 
+<input type='text' name='{$fields.city_c.name}' 
+id='{$fields.city_c.name}' size='30' 
+maxlength='255' 
 value='{$value}' title=''      >
 </div>
 
 <!-- [/hide] -->
 </div>
 <div class="clear"></div>
-<div class="clear"></div>
-
-
-
-<div class="col-xs-12 col-sm-12 edit-view-row-item">
-
-
-<div class="col-xs-12 col-sm-2 label" data-label="LBL_MEMBER_OF">
-
-{minify}
-{capture name="label" assign="label"}{sugar_translate label='LBL_MEMBER_OF' module='Accounts'}{/capture}
-{$label|strip_semicolon}:
-
-{/minify}
-</div>
-
-<div class="col-xs-12 col-sm-8 edit-view-field " type="relate" field="parent_name" colspan='3' >
-{counter name="panelFieldCount" print=false}
-
-<input type="text" name="{$fields.parent_name.name}" class="sqsEnabled" tabindex="0" id="{$fields.parent_name.name}" size="" value="{$fields.parent_name.value}" title='' autocomplete="off"  	 >
-<input type="hidden" name="{$fields.parent_name.id_name}" 
-id="{$fields.parent_name.id_name}" 
-value="{$fields.parent_id.value}">
-<span class="id-ff multiple">
-<button type="button" name="btn_{$fields.parent_name.name}" id="btn_{$fields.parent_name.name}" tabindex="0" title="{sugar_translate label="LBL_ACCESSKEY_SELECT_ACCOUNTS_TITLE"}" class="button firstChild" value="{sugar_translate label="LBL_ACCESSKEY_SELECT_ACCOUNTS_LABEL"}"
-onclick='open_popup(
-"{$fields.parent_name.module}", 
-600, 
-395,
-"", 
-true, 
-false, 
-{literal}{"call_back_function":"set_return","form_name":"EditView","field_to_name_array":{"id":"parent_id","name":"parent_name"}}{/literal}, 
-"single", 
-true
-);' ><span class="suitepicon suitepicon-action-select"></span></button><button type="button" name="btn_clr_{$fields.parent_name.name}" id="btn_clr_{$fields.parent_name.name}" tabindex="0" title="{sugar_translate label="LBL_ACCESSKEY_CLEAR_ACCOUNTS_TITLE"}"  class="button lastChild"
-onclick="SUGAR.clearRelateField(this.form, '{$fields.parent_name.name}', '{$fields.parent_name.id_name}');"  value="{sugar_translate label="LBL_ACCESSKEY_CLEAR_ACCOUNTS_LABEL"}" ><span class="suitepicon suitepicon-action-clear"></span></button>
-</span>
-<script type="text/javascript">
-SUGAR.util.doWhen(
-		"typeof(sqs_objects) != 'undefined' && typeof(sqs_objects['{$form_name}_{$fields.parent_name.name}']) != 'undefined'",
-		enableQS
-);
-</script>
-</div>
-
-<!-- [/hide] -->
-</div>
-<div class="clear"></div>
-
-
-
-<div class="col-xs-12 col-sm-12 edit-view-row-item">
-
-
-<div class="col-xs-12 col-sm-2 label" data-label="LBL_CAMPAIGN">
-
-{minify}
-{capture name="label" assign="label"}{sugar_translate label='LBL_CAMPAIGN' module='Accounts'}{/capture}
-{$label|strip_semicolon}:
-
-{/minify}
-</div>
-
-<div class="col-xs-12 col-sm-8 edit-view-field " type="relate" field="campaign_name" colspan='3' >
-{counter name="panelFieldCount" print=false}
-
-<input type="text" name="{$fields.campaign_name.name}" class="sqsEnabled" tabindex="0" id="{$fields.campaign_name.name}" size="" value="{$fields.campaign_name.value}" title='' autocomplete="off"  	 >
-<input type="hidden" name="{$fields.campaign_name.id_name}" 
-id="{$fields.campaign_name.id_name}" 
-value="{$fields.campaign_id.value}">
-<span class="id-ff multiple">
-<button type="button" name="btn_{$fields.campaign_name.name}" id="btn_{$fields.campaign_name.name}" tabindex="0" title="{sugar_translate label="LBL_ACCESSKEY_SELECT_CAMPAIGNS_TITLE"}" class="button firstChild" value="{sugar_translate label="LBL_ACCESSKEY_SELECT_CAMPAIGNS_LABEL"}"
-onclick='open_popup(
-"{$fields.campaign_name.module}", 
-600, 
-395,
-"", 
-true, 
-false, 
-{literal}{"call_back_function":"set_return","form_name":"EditView","field_to_name_array":{"id":"campaign_id","name":"campaign_name"}}{/literal}, 
-"single", 
-true
-);' ><span class="suitepicon suitepicon-action-select"></span></button><button type="button" name="btn_clr_{$fields.campaign_name.name}" id="btn_clr_{$fields.campaign_name.name}" tabindex="0" title="{sugar_translate label="LBL_ACCESSKEY_CLEAR_CAMPAIGNS_TITLE"}"  class="button lastChild"
-onclick="SUGAR.clearRelateField(this.form, '{$fields.campaign_name.name}', '{$fields.campaign_name.id_name}');"  value="{sugar_translate label="LBL_ACCESSKEY_CLEAR_CAMPAIGNS_LABEL"}" ><span class="suitepicon suitepicon-action-clear"></span></button>
-</span>
-<script type="text/javascript">
-SUGAR.util.doWhen(
-		"typeof(sqs_objects) != 'undefined' && typeof(sqs_objects['{$form_name}_{$fields.campaign_name.name}']) != 'undefined'",
-		enableQS
-);
-</script>
-</div>
-
-<!-- [/hide] -->
-</div>
 <div class="clear"></div>
 </div>                    </div>
 </div>
@@ -1382,9 +422,10 @@ addToValidate('EditView', 'campaign_id', 'id', false,'{/literal}{sugar_translate
 addToValidate('EditView', 'campaign_name', 'relate', false,'{/literal}{sugar_translate label='LBL_CAMPAIGN' module='Accounts' for_js=true}{literal}' );
 addToValidate('EditView', 'jjwg_maps_lat_c', 'float', false,'{/literal}{sugar_translate label='LBL_JJWG_MAPS_LAT' module='Accounts' for_js=true}{literal}' );
 addToValidate('EditView', 'jjwg_maps_address_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_JJWG_MAPS_ADDRESS' module='Accounts' for_js=true}{literal}' );
+addToValidate('EditView', 'country_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_COUNTRY_C' module='Accounts' for_js=true}{literal}' );
+addToValidate('EditView', 'city_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_CITY_C' module='Accounts' for_js=true}{literal}' );
 addToValidate('EditView', 'jjwg_maps_lng_c', 'float', false,'{/literal}{sugar_translate label='LBL_JJWG_MAPS_LNG' module='Accounts' for_js=true}{literal}' );
 addToValidate('EditView', 'jjwg_maps_geocode_status_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_JJWG_MAPS_GEOCODE_STATUS' module='Accounts' for_js=true}{literal}' );
+addToValidate('EditView', 'state_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_STATE_C' module='Accounts' for_js=true}{literal}' );
 addToValidateBinaryDependency('EditView', 'assigned_user_name', 'alpha', false,'{/literal}{sugar_translate label='ERR_SQS_NO_MATCH_FIELD' module='Accounts' for_js=true}{literal}: {/literal}{sugar_translate label='LBL_ASSIGNED_TO' module='Accounts' for_js=true}{literal}', 'assigned_user_id' );
-addToValidateBinaryDependency('EditView', 'parent_name', 'alpha', false,'{/literal}{sugar_translate label='ERR_SQS_NO_MATCH_FIELD' module='Accounts' for_js=true}{literal}: {/literal}{sugar_translate label='LBL_MEMBER_OF' module='Accounts' for_js=true}{literal}', 'parent_id' );
-addToValidateBinaryDependency('EditView', 'campaign_name', 'alpha', false,'{/literal}{sugar_translate label='ERR_SQS_NO_MATCH_FIELD' module='Accounts' for_js=true}{literal}: {/literal}{sugar_translate label='LBL_CAMPAIGN' module='Accounts' for_js=true}{literal}', 'campaign_id' );
-</script><script language="javascript">if(typeof sqs_objects == 'undefined'){var sqs_objects = new Array;}sqs_objects['EditView_assigned_user_name']={"form":"EditView","method":"get_user_array","field_list":["user_name","id"],"populate_list":["assigned_user_name","assigned_user_id"],"required_list":["assigned_user_id"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};sqs_objects['EditView_parent_name']={"form":"EditView","method":"query","modules":["Accounts"],"group":"or","field_list":["name","id"],"populate_list":["EditView_parent_name","parent_id"],"conditions":[{"name":"name","op":"like_custom","end":"%","value":""}],"required_list":["parent_id"],"order":"name","limit":"30","no_match_text":"No Match"};sqs_objects['EditView_campaign_name']={"form":"EditView","method":"query","modules":["Campaigns"],"group":"or","field_list":["name","id"],"populate_list":["campaign_id","campaign_id"],"conditions":[{"name":"name","op":"like_custom","end":"%","value":""}],"required_list":["campaign_id"],"order":"name","limit":"30","no_match_text":"No Match"};</script>{/literal}
+</script>{/literal}

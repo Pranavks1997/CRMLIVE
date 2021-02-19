@@ -9,17 +9,31 @@ require_once('include/MVC/Controller/SugarController.php');
     <title> Dashboard </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <!-- <script src="https://code.jquery.com/jquery-migrate-3.3.2.min.js" integrity="sha256-Ap4KLoCf1rXb52q+i3p0k2vjBsmownyBTE1EqlRiMwA=" crossorigin="anonymous"></script> -->
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        var jq = jQuery.noConflict();
+    </script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script> -->
-    <link rel="stylesheet" type="text/css" href="index.css">
+    <!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
+    <!-- <link rel="stylesheet" type="text/css" href="index.css"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script> -->
     <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script> -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
 </head>
 <style>
@@ -242,7 +256,7 @@ require_once('include/MVC/Controller/SugarController.php');
     }
 
     .cog {
-        margin-top: 5px;
+        margin-top: 12px;
         margin-right: 10px;
         background-color: transparent;
         justify-content: center;
@@ -256,7 +270,9 @@ require_once('include/MVC/Controller/SugarController.php');
         margin: 0 5px;
     }
 
-    .cog>.fa-list {
+    .download{ border: none!important; }
+    .cog>.fa-list,
+    .download .fa {
         font-size: 2rem !important;
         background-color: transparent !important;
         color: white;
@@ -392,7 +408,6 @@ require_once('include/MVC/Controller/SugarController.php');
         padding: 0px 3px;
         cursor: pointer;
         height: 20px;
-        transition: 1s;
         display: inline-block;
         font-weight: 900;
         color: #c2c2c2;
@@ -403,15 +418,15 @@ require_once('include/MVC/Controller/SugarController.php');
         color: black;
         font-weight: bolder !important;
     }
-    .btn-30-days:focus {
-        color: black !important;
+    /*.btn-30-days:focus {*/
+    /*    color: black !important;*/
         /* font-size: 1.6rem !important; */
-    }
+    /*}*/
 
-    .btn-30-days:active {
-        color: black !important;
-        font-size: 1.6rem !important;
-    }
+    /*.btn-30-days:active {*/
+    /*    color: black !important;*/
+    /*    font-size: 1.6rem !important;*/
+    /*}*/
 
     /* checkbox fix  if it works then its  amazing*/
 
@@ -830,7 +845,7 @@ card-status-end */
     span {
         font-family: Arial;
     }
-    #deselectBtn {
+    #deselectBtn, #reassignmentBtn {
         border: none !important;
         margin: 0;
     }
@@ -1113,6 +1128,10 @@ card-status-end */
         vertical-align: middle;
         padding: 5px;
     }
+    #graph > .graph-bar-each {
+        min-width: 7px;
+        max-width: 210px;
+    }
 
     .graph-bar1 {
         width: 50px;
@@ -1247,6 +1266,32 @@ card-status-end */
         font-family: arial;
         font-weight: bolder;
         color: #000;
+    }
+    .search-column-container {
+        display: flex;
+        width: 100%;
+        justify-content: flex-end;
+        align-items: center;
+        padding-right: 50px;
+    }
+    #search-column1, #search-column2 {
+        padding: 12px 5px;
+        background-color: #FCAFA8;
+        border-color: #FCAFA8;
+    }
+    .search-column-container i{
+        margin-left: -22px;
+        font-size: 17px;
+        color: #333;
+    }
+    .search-column-heading-container {
+        display: flex;
+        justify-content: space-around;
+    }
+    .search-column-heading {
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
     }
 
 .delegate-item-button button{
@@ -1437,6 +1482,13 @@ card-status-end */
         justify-content: space-between;
         width: 55%;
     }
+    .filterchecklist input {
+        background: none !important;
+    }
+    .filter-name {
+        background-color: white !important;
+        border: 1px solid #aaa !important;
+    }
 
     .filter-checkbox-container {
         display: flex;
@@ -1621,9 +1673,24 @@ card-status-end */
         margin: 8% auto;
         /* 15% from the top and centered */
         border-radius: 5px;
-        width: 25%;
+        width: 50%;
         /* Could be more or less, depending on screen size */
     }
+    .setting-modal-content .section{ padding: 10px 20px; max-height: 320px; overflow: scroll; }
+    .setting-modal-content .section .opportunity-settings{ display: flex; }
+    .setting-modal-content .sort-column{ width: 45%; padding-right: 0px; display: inline-block; vertical-align: top; }
+    .setting-modal-content .section form ul{ height: 100%; }
+    .setting-modal-content .section li{ display: block; float: none; }
+    .setting-modal-content .sortable1 li,
+    .setting-modal-content #sortable2 li,
+    .nondrag{ background: #CDE8E2; color: #333333; padding: 5px; margin-bottom: 5px; cursor: pointer; }
+    .setting-modal-content #sortable2 li{ background: #FCAFA8; color: #111111; }
+    .setting-modal-content #sortable2{ position: relative; }
+    .setting-modal-content #sortable2:before{ content: ''; width: 3px; height: 100%; position: absolute; left: -30px; background: #FCAFA8; }
+    .setting-modal-content .divider{ width: 10%; }
+    .setting-modal-content li,
+    .setting-modal-content li label{ cursor: pointer; user-select: none; }
+
 
     /* The Close Button */
     .closeSetting {
@@ -1632,6 +1699,10 @@ card-status-end */
         font-size: 28px;
         margin-top: 25px;
         padding-right: 20px;
+    }
+    .action-item-space {
+        margin-right: 15px;
+        width: 18px;
     }
 
     .closeSetting:hover,
@@ -1810,7 +1881,7 @@ card-status-end */
         margin-top: 10px !important;
     }
 
-    .desModal {
+    .desModal, .raModal {
         display: none;
         /* Hidden by default */
         position: fixed;
@@ -1830,9 +1901,15 @@ card-status-end */
         background-color: rgba(0, 0, 0, 0.4);
         /* Black w/ opacity */
     }
+    
+    
+    #size{
+            width: 42% !important;
+    }
 
     /* Modal Content/Box */
-    .deselect-modal-content {
+    .deselect-modal-content, .ra-modal-content {
+        
         background-color: #fefefe;
         margin: 5% auto;
         /* 15% from the top and centered */
@@ -1840,6 +1917,9 @@ card-status-end */
         border-radius: 5px;
         width: 55%;
         /* Could be more or less, depending on screen size */
+    }
+    .ra-modal-content {
+        width: 30%;
     }
 
     /* The Close Button */
@@ -1950,6 +2030,8 @@ card-status-end */
     .status-display .status-badge{position: relative; display: inline-block; width: 22px; height: 22px; border-radius: 50%; margin-left: 8px; font-size: 8px; vertical-align: middle; line-height: 22px; text-align: center;}
     .status-display .status-badge-green-b{position: relative; display: inline-block; width: 22px; height: 22px; border-radius: 50%; margin-right: 8px; font-size: 8px; vertical-align: middle; line-height: 22px; text-align: center; border: solid 1px #86a085; background-color: #e9fce6; color: #86a085;}
     .status-display .status-badge-red-b{position: relative; display: inline-block; width: 22px; height: 22px; border-radius: 50%; margin-right: 8px; font-size: 8px; vertical-align: middle; line-height: 22px; text-align: center; border: solid 1px #e91e63; background-color: #ffe3e3; color: #e91e63;}
+    .status-display .status-badge-yellow-b{position: relative; display: inline-block; width: 22px; height: 22px; border-radius: 50%; margin-right: 8px; font-size: 8px; vertical-align: middle; line-height: 22px; text-align: center; border: solid 1px #e91e63; background-color: #ffea00; color: #e91e63;}
+    .status-display .status-badge-blue-b{position: relative; display: inline-block; width: 22px; height: 22px; border-radius: 50%; margin-right: 8px; font-size: 8px; vertical-align: middle; line-height: 22px; text-align: center; border: solid 1px #0000ff; background-color: #ccccff; color: #0000ff;}
     .status-display .status-badge-gray-b{position: relative; display: inline-block; width: 22px; height: 22px; border-radius: 50%; margin-right: 8px; font-size: 8px; vertical-align: middle; line-height: 22px; text-align: center; border: solid 1px #999999; background-color: #e1e1e1; color: #999999;}
     .status-display .red-bg{background-color: #ffe3e3;}
     .status-display .green-bg{background-color: #e9fce6;}
@@ -1967,6 +2049,13 @@ card-status-end */
     .status-display .line-bottom.red:before{background-color: #e91e63;}
     .status-display .line-bottom.red:after{background-color: #e91e63;}
 
+    .status-display .line-bottom.yellow{background-color: #ffbf00;}
+    .status-display .line-bottom.yellow:before{background-color: #ffbf00;}
+    .status-display .line-bottom.yellow:after{background-color: #ffbf00;}
+    .status-display .line-bottom.blue{background-color: #ccccff;}
+    .status-display .line-bottom.blue:before{background-color: #ccccff;}
+    .status-display .line-bottom.blue:after{background-color: #e5e5ff;}
+
     .status-display .line-up{position: absolute; top: -19px; left: 10px; height: 18.5px; width: 1px; background-color:#e91e63; }
     .status-display .line-up:before{content: ''; position: absolute; top: -2px; right: -2px; width: 1px; height: 7px; transform: rotate(-45deg); background-color: #e91e63;}
     .status-display .line-up:after{content: ''; position: absolute; top: -2px; left: -2px; width: 1px; height: 7px; transform: rotate(45deg); background-color: #e91e63;}
@@ -1980,6 +2069,31 @@ card-status-end */
 
     .close-sequence-flow{ cursor: pointer; position: absolute; top: 0px; right: 5px; font-size: 34px; z-index: 999999; }
 
+    .form-group{ display: block; }
+    .form-group span{ display: block; }
+    .form-control,
+    .form-group select{ display: block; width: 100%; }
+
+    .select2-results__option{ float: none!important; }
+
+    .color-red{ color: red; }
+
+    .color-palette{ width: 20px; height: 20px; border-radius: 50%; display: inline-block; margin: 0 10px; }
+    .bg-red{ background: red; }
+    .bg-yellow{ background: green; }
+    .bg-green{ background: yellow; }
+    .bg-default{ background-color: white; border: 1px solid; }
+    
+    /* reassignment */
+    .ui-autocomplete.ui-menu{width:341px !important; position: fixed; max-height:350px; overflow-y:auto;}
+    .ui-autocomplete.ui-menu li:first-child a{
+        color:blue !important;
+    }
+    #assigned_to_new_c{
+        width: 341px !important;
+    padding: 15px 5px;
+    }
+    
 </style>
 
 <body onload="dateBetween(event, '30')">
@@ -2016,8 +2130,8 @@ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         <div class="tab_30_days">
 
             <button onclick="dateBetween(event, '30')" id="btn-30-days" class="btn-30-days">Last 30 days </button>
-            <button onclick="dateBetween(event, '60')" class="btn-30-days">/ Last 60 days </button>
-            <button onclick="dateBetween(event, '1200')" class="btn-30-days">/ All </button>
+            <button onclick="dateBetween(event, '60')" id="btn-60-days" class="btn-30-days">/ Last 60 days </button>
+            <button onclick="dateBetween(event, '1200')" id="btn-90-days" class="btn-30-days">/ All </button>
 
         </div>
 
@@ -2049,17 +2163,12 @@ border-radius: 5px;
 padding: 10px;
 width: 170px;
 ">
-                                            <p style="color: grey; padding: 5px">
-                                                <a id="approvalBtn" style="
-                                                                        text-decoration: none;
-                                                                        color: black;
-                                                                        font-size: 14px;
-                                                                        font-weight: 700;
-                                                                        ">
+                                            <div style="color: grey; padding: 5px" id="click-pending-request">
+                                                <b id="click-here-text" style="float: left; padding-right: 5px;">
                                                         Click here
-                                                </a>
-                                                to Approve Pending request
-                                            </p>
+                                                </b>
+                                                <p id="approve-pending-text">No Requests Pending For Approval</p>
+                                            </div>
 
                                             <div style="
                                                         display: flex;
@@ -2194,11 +2303,11 @@ cursor: pointer;
                                             </div>
                                         </div>
                                         <div style="display: flex; align-items: center;">
-                                            <div style="display: flex; min-width: 265px;">
+                                            <div style="display: flex; min-width: 210px;">
                                                 <div>
                                                     <ul style="list-style: none; display: flex;
                                                                 flex-direction: column;">
-                                                        <li style="font-size: 14px; padding: 2px;">
+                                                        <li style="font-size: 11px; padding: 2px;">
                                                             <span style="
                                                                         background-color: #DDA0DD;
                                                                         color: #DDA0DD;
@@ -2209,7 +2318,7 @@ cursor: pointer;
                                                                         ">1</span>
                                                             Lead
                                                         </li>             
-                                                        <li style="font-size: 14px; padding: 2px;">
+                                                        <li style="font-size: 11px; padding: 2px;">
                                                             <span style="
                                                                         background-color: #4B0082;
                                                                         color: #4B0082;
@@ -2220,7 +2329,7 @@ cursor: pointer;
                                                                         ">1</span>
                                                             Qualified Lead
                                                         </li>
-                                                        <li style="font-size: 14px; padding: 2px;">
+                                                        <li style="font-size: 11px; padding: 2px;">
                                                             <span style="
                                                                         background-color: #0000FF;
                                                                         color: #0000FF;
@@ -2231,7 +2340,7 @@ cursor: pointer;
                                                                         ">1</span>
                                                             Qualified Opportunity
                                                         </li>
-                                                        <li style="font-size: 14px; padding: 2px;">
+                                                        <li style="font-size: 11px; padding: 2px;">
                                                             <span style="
                                                                         background-color: #FFFF00;
                                                                         color: #FFFF00;
@@ -2247,7 +2356,7 @@ cursor: pointer;
                                                 <div>
                                                     <ul style="list-style: none;  display: flex;
                                                                 flex-direction: column; margin-left: 10px;">
-                                                        <li style="font-size: 14px; padding: 2px;">
+                                                        <li style="font-size: 11px; padding: 2px;">
                                                             <span style="
                                                                         background-color: #00FF00;
                                                                         color: #00FF00;
@@ -2258,7 +2367,7 @@ cursor: pointer;
                                                                         ">1</span>
                                                             Qualified Bid
                                                         </li>
-                                                        <li style="font-size: 14px; padding: 2px;">
+                                                        <li style="font-size: 11px; padding: 2px;">
                                                             <span style="
                                                                         background-color: #006400;
                                                                         color: #006400;
@@ -2269,7 +2378,7 @@ cursor: pointer;
                                                                         ">1</span>
                                                             Closed Won
                                                         </li>
-                                                        <li style="font-size: 14px; padding: 2px;">
+                                                        <li style="font-size: 11px; padding: 2px;">
                                                             <span style="
                                                                         background-color: #FF7F00;
                                                                         color: #FF7F00;
@@ -2280,7 +2389,7 @@ cursor: pointer;
                                                                         ">1</span>
                                                             Closed Lost
                                                         </li>
-                                                        <li style="font-size: 14px; padding: 2px;">
+                                                        <li style="font-size: 11px; padding: 2px;">
                                                             <span style="
                                                                         background-color: #FF0000;
                                                                         color: #FF0000;
@@ -2295,7 +2404,7 @@ cursor: pointer;
                                                 </div>
                                             </div>
                                             <div id="graph-container">
-                                                <div id="graph" style="min-width: 290px; min-height: 100px; display: flex; margin-left: 10px; margin-right: 10px;align-items: center;">No Data</div>
+                                                <div id="graph" style="min-width: 360px; min-height: 100px; display: flex; margin-left: 10px; margin-right: 10px;align-items: center;">No Data</div>
                                             </div>
                                         </div>
                                     </div>
@@ -2353,6 +2462,8 @@ table end -->
         </div>
     </div>
 
+    <?php /* 
+        * Old Settings Form *
     <div id="setting_myModal" class="setting-modal">
         <!-- Modal content -->
         <div class="setting-modal-content">
@@ -2426,7 +2537,193 @@ table end -->
             </form>
         </div>
     </div>
+    */ ?>
 
+    <?php /* New Settings Form */ ?>
+    <div id="setting_myModal" class="setting-modal">
+        <!-- Modal content -->
+        <div class="setting-modal-content">
+            <span class="closeSetting" onclick="openSettingDialog('close')">&times;</span>
+            
+            <h2 class="setting_heading">Drag / Drop Columns to be Displayed / Hidden</h2>
+            <p class="setting_subhead">Select 7 columns for the table</p>
+            <!-- <hr style="color: #D1D0CE"> -->
+            <div class="search-column-container">
+                <input type="text" id="search-column1" placeholder="Search here" />
+                <i class="fa fa-search"></i>
+            </div>
+            <div class="search-column-heading-container">
+                <h2 class="search-column-heading">Displayed</h2>
+                <h2 class="search-column-heading">Hidden</h2>
+            </div>
+            <section class="section">
+                <div class="opportunity-settings" id="opportunity-settings">
+                    <form class="settings-form sort-column">
+                        <input type="hidden" name="settings-section" class="settings-section" value="">
+                        <input type="hidden" name="settings-type" class="settings-type" value="">
+                        <input type="hidden" name="settings-type-value" class="settings-type-value" value="">
+                        <ul id="sortable1" class="sortable1 connectedSortable ui-sortable">
+                            <li style="pointer-events:none;" class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="name" value="name" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Opportunity Name</label>
+                            </li>
+                            <li style="pointer-events:none;" class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Primary-Responsbility" value="Primary-Responsbility" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Primary Responsibility</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Amount" value="Amount" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Amount (in Cr)</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="REP-EOI-Published" value="REP-EOI-Published" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> RFP/EOI Published</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Closed-Date" value="Closed-Date" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified date</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Closed-by" value="Closed-by" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified by</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Date-Created" value="Date-Created" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Created Date</label>
+                            </li>
+                        </ul>
+                    </form>
+                    <ul id="sortable2" class="sortable2 connectedSortable">
+                        <li style="pointer-events:none;" class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="name" value="name" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Opportunity Name</label>
+                            </li>
+                            <li style="pointer-events:none;" class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Primary-Responsbility" value="Primary-Responsbility" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Primary Responsibility</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Amount" value="Amount" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Amount (in Cr)</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="REP-EOI-Published" value="REP-EOI-Published" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> RFP/EOI Published</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Closed-Date" value="Closed-Date" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified date</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Closed-by" value="Closed-by" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified by</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Date-Created" value="Date-Created" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Created Date</label>
+                            </li>
+                    </ul>
+                </div>
+            </section>
+            <div style=" padding-top: 10px;padding-bottom: 20px;padding-left: 20px;">
+                <button class="settings_btn1" type="button" onclick="commitFilter();">Save</button>
+                <button style="margin-left: 10px;" class="settings_btn2" type="button" onclick="openSettingDialog('discard')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pending_setting_myModal" class="setting-modal">
+        <!-- Modal content -->
+        <div class="setting-modal-content">
+            <span class="closeSetting" onclick="openPendingSettingsDialog('close')">&times;</span>
+            
+            <h2 class="setting_heading">Drag / Drop Columns to be Displayed / Hidden</h2>
+            <p class="setting_subhead">Select 7 columns for the table</p>
+            <div class="search-column-container">
+                <input type="text" id="search-column2" placeholder="Search here" />
+                <i class="fa fa-search"></i>
+            </div>
+            <div class="search-column-heading-container">
+                <h2 class="search-column-heading">Displayed</h2>
+                <h2 class="search-column-heading">Hidden</h2>
+            </div>
+            <!-- <hr style="color: #D1D0CE"> -->
+            <section class="section">
+                <div class="opportunity-settings" id="pending-settings">
+                    <form class="pending-settings-form sort-column">
+                        <input type="hidden" name="settings-section" class="pending-settings-section" value="">
+                        <input type="hidden" name="settings-type" class="pending-settings-type" value="">
+                        <input type="hidden" name="settings-type-value" class="pending-settings-type-value" value="">
+                        <ul id="sortable1" class="sortable1 connectedSortable ui-sortable">
+                            <li style="pointer-events:none;" class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="name" value="name" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Opportunity Name</label>
+                            </li>
+                            <li style="pointer-events:none;" class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Primary-Responsbility" value="Primary-Responsbility" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Primary Responsibility</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Amount" value="Amount" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Amount (in Cr)</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="REP-EOI-Published" value="REP-EOI-Published" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> RFP/EOI Published</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Closed-Date" value="Closed-Date" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified date</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Closed-by" value="Closed-by" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified by</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Date-Created" value="Date-Created" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Created Date</label>
+                            </li>
+                        </ul>
+                    </form>
+                    <ul id="sortable2" class="sortable2 connectedSortable ui-sortable">
+                        <li style="pointer-events:none;" class="ui-sortable-handle">
+                            <input class="settingInputs" type="checkbox" id="name-select" name="name" value="name" checked="True" style="display: none">
+                            <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Opportunity Name</label>
+                        </li>
+                        <li style="pointer-events:none;" class="ui-sortable-handle">
+                            <input class="settingInputs" type="checkbox" id="name-select" name="Primary-Responsbility" value="Primary-Responsbility" checked="True" style="display: none">
+                            <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Primary Responsibility</label>
+                        </li>
+                        <li class="ui-sortable-handle">
+                            <input class="settingInputs" type="checkbox" id="name-select" name="Amount" value="Amount" checked="True" style="display: none">
+                            <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Amount (in Cr)</label>
+                        </li>
+                        <li class="ui-sortable-handle">
+                            <input class="settingInputs" type="checkbox" id="name-select" name="REP-EOI-Published" value="REP-EOI-Published" checked="True" style="display: none">
+                            <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> RFP/EOI Published</label>
+                        </li>
+                        <li class="ui-sortable-handle">
+                            <input class="settingInputs" type="checkbox" id="name-select" name="Closed-Date" value="Closed-Date" checked="True" style="display: none">
+                            <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified date</label>
+                        </li>
+                        <li class="ui-sortable-handle">
+                            <input class="settingInputs" type="checkbox" id="name-select" name="Closed-by" value="Closed-by" checked="True" style="display: none">
+                            <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified by</label>
+                        </li>
+                        <li class="ui-sortable-handle">
+                            <input class="settingInputs" type="checkbox" id="name-select" name="Date-Created" value="Date-Created" checked="True" style="display: none">
+                            <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Created Date</label>
+                        </li>
+                    </ul>
+                </div>
+
+            </section>
+            <div style=" padding-top: 10px;padding-bottom: 20px;padding-left: 20px;">
+                <button class="settings_btn1" type="button" onclick="commitPendingFilter();">Save</button>
+                <button style="margin-left: 10px;" class="settings_btn2" type="button" onclick="openPendingSettingsDialog('discard')">Close</button>
+            </div>
+        </div>
+    </div>
 
     <div id="filter_myModal" class="filter_modal">
         <!-- Modal content -->
@@ -2442,49 +2739,12 @@ table end -->
                 <p class="filtersubhead">Fill out the following details</p>
                 <hr class="filtersolid">
                 <section class="filtersection" style="margin-top: 10px;">
-                    <span class="primary-responsibilty-filter-head">Primary responsibility</span><br>
-                    <div style="padding-top: 10px; padding-bottom: 10px;">
-                        <select class="responsibility" name="filter-responsibility" id="responsibility">
-                        </select>
-                        <i class="fa fa-caret-down icon-dropdown-filter"></i>
-                        <div class="amount-range-container">
-                            <div class="amount-range">
-                                <span class="primary-responsibilty-filter-head">Amount Range</span>
-                            </div>
-                            <div class="rangeslider">
-                                <input class="min lowerVal" name="filter-min-price" id="lowerVal" type="range" min="0" max="200" value="0" step="10"/>
-                                <input class="max upperVal" name="filter-max-price" id="upperVal" type="range" min="0" max="200" value="200" step="10"/>
-                                <span class="range_min light left">0 Cr</span>
-                                <span class="range_max light right">200 Cr</span>
-                            </div>
-                        </div>
-                        <SPAN>RFP/EOI Published</SPAN><br>
-                        <div class="filterchecklist">
-
-                            <input type="checkbox" id="required_field" class="rfp-checkbox" name="filter-rfp-eoi-status" value="yes">
-                            <label for="yes"> Yes</label>
-                            <input type="checkbox" id="required_field" class="rfp-checkbox" name="filter-rfp-eoi-status" value="no">
-                            <label for="No"> No</label>
-                            <input type="checkbox" id="required_field" class="rfp-checkbox" name="filter-rfp-eoi-status" value="not_required">
-                            <label for="Not-Required"> Not required</label><br>
-
-                        </div>
-                        <div class="filtercontainer1">
-                            <label>Modified date range</label><br>
-                            <input class="filterdatebox" name="filter-closed-date-from" id="closed_date_from" width="300" />
-                            -> <input class="filterdatebox" name="filter-closed-date-to" id="closed_date_to" width="300" />
-                        </div>
-                        <div class="filtercontainer2">
-                            <label>Created date range</label><br>
-                            <input class="filterdatebox" name="filter-created-date-from" id="date_from" width="300" />
-                            -> <input class="filterdatebox" name="filter-created-date-to" id="date_to" width="300" /><br>
-                        </div>
-
-                        <div>
-                            <button class="btn1" type="button" id="filter_submit" onclick="openFilterDialog('submit')">Filter</button>
-                            <button class="btn2" type="button" id="filter_discard" onclick="openFilterDialog('close')" style="border-color: #8a8a8a">Close</button>
-                            <a id="filter_clear" class="filter_clear">Clear Filter</a>
-                        </div>
+                    <div class="filter-body" style="padding-top: 10px; padding-right: 15px; margin-bottom: 20px; display: block; max-height: 350px; overflow: hidden; overflow-y: scroll"></div>
+                    <div>
+                        <button class="btn1" type="button" id="filter_submit" onclick="openFilterDialog('submit')">Filter</button>
+                        <button class="btn2" type="button" id="filter_discard" onclick="openFilterDialog('close')" style="border-color: #8a8a8a">Close</button>
+                        <a id="filter_clear" class="filter_clear">Clear Filter</a>
+                    </div>
                 </section>
             </form>
         </div>
@@ -2506,49 +2766,41 @@ table end -->
                 <p class="filtersubhead">Fill out the following details</p>
                 <hr class="filtersolid">
                 <section class="filtersection" style="margin-top: 10px;">
-                    <span class="primary-responsibilty-filter-head">Primary responsibility</span><br>
-                    <div style="padding-top: 10px; padding-bottom: 10px;">
-                        <select class="responsibility" name="filter-responsibility" id="responsibility1">
-                        </select>
-                        <i class="fa fa-caret-down icon-dropdown-filter"></i>
-                        <div class="amount-range-container">
-                            <div class="amount-range">
-                                <span class="primary-responsibilty-filter-head">Amount Range</span>
-                            </div>
-                            <div class="rangeslider">
-                                <input class="min lowerVal" name="filter-min-price" id="lowerVal" type="range" min="0" max="200" value="0" step="10"/>
-                                <input class="max upperVal" name="filter-max-price" id="upperVal" type="range" min="0" max="200" value="200" step="10"/>
-                                <span class="range_min light left">0 Cr</span>
-                                <span class="range_max light right">200 Cr</span>
-                            </div>
-                        </div>
-                        <SPAN>RFP/EOI Published</SPAN><br>
-                        <div class="filterchecklist">
+                    <div class="filter-body" style="padding-top: 10px; padding-right: 15px; margin-bottom: 20px; display: block; max-height: 350px; overflow: hidden; overflow-y: scroll"></div>
 
-                            <input type="checkbox" id="required_field" class="rfp-checkbox" name="filter-rfp-eoi-status" value="yes">
-                            <label for="yes"> Yes</label>
-                            <input type="checkbox" id="required_field" class="rfp-checkbox" name="filter-rfp-eoi-status" value="no">
-                            <label for="No"> No</label>
-                            <input type="checkbox" id="required_field" class="rfp-checkbox" name="filter-rfp-eoi-status" value="not_required">
-                            <label for="Not-Required"> Not required</label><br>
+                    <div>
+                        <button class="btn1" type="button" id="filter_submit" onclick="openPendingFilterDialog('submit')">Filter</button>
+                        <button class="btn2" type="button" id="filter_discard" onclick="openPendingFilterDialog('close')" style="border-color: #8a8a8a">Close</button>
+                        <a id="filter_clear" class="filter_clear">Clear Filter</a>
+                    </div>
+                </section>
+            </form>
+        </div>
 
-                        </div>
-                        <div class="filtercontainer1">
-                            <label>Modified date range</label><br>
-                            <input class="filterdatebox" name="filter-closed-date-from" id="closed_date_from" width="300" />
-                            -> <input class="filterdatebox" name="filter-closed-date-to" id="closed_date_to" width="300" />
-                        </div>
-                        <div class="filtercontainer2">
-                            <label>Created date range</label><br>
-                            <input class="filterdatebox" name="filter-created-date-from" id="date_from" width="300" />
-                            -> <input class="filterdatebox" name="filter-created-date-to" id="date_to" width="300" /><br>
-                        </div>
+    </div>
 
-                        <div>
-                            <button class="btn1" type="button" id="filter_submit" onclick="openPendingFilterDialog('submit')">Filter</button>
-                            <button class="btn2" type="button" id="filter_discard" onclick="openPendingFilterDialog('close')" style="border-color: #8a8a8a">Close</button>
-                            <a id="filter_clear" class="filter_clear">Clear Filter</a>
-                        </div>
+    <!-- RA Modal Container -->
+    <div id="reassignmentModal" class="raModal">
+        <!-- Modal content -->
+        <div class="ra-modal-content" id="size">
+            <span class="deselectclose" onclick="handleReassignmentDialog('close')">&times;</span>
+           <form>
+                    <!-- <input type="hidden" id="hidden_multi_select" value="" />
+                    <input name="hidden_user" id="hidden_user" style="cursor: pointer;padding-right: 40px;" onclick="deselectDropDownClicked()" readonly/> -->
+                    <input name="hidden_user" type="hidden" id="assigned_opp_id"/>
+                    <div class="reassignmentModal-header" style="margin-bottom: 30px;">
+                        <h3 style="margin:0; padding: 0;font-size: 20px;">Change the Assigned User</h3></br>
+                        <h4 id="ra_op_name" style="margin:0; font-size: 15px;">Opportunity Name</h4> </br>
+                        <h4 id="ass_name" style="margin:0; font-size: 15px;">Assigned User Name</h4> 
+                    </div>
+                    
+                    <h5 style="padding: 0">Re-assign User:</h5>
+                    <input type="text" id="assigned_to_new_c" style="width: 250px; padding: 15px 5px;"/>
+                    <br><div style="height: 20px;"></div>
+                    <div>
+                        <button class="saveBtnDeselect" type="button" onclick="handleReassignmentDialog('submit')">Save</button>
+                        <button class="submitBtnDeselect" type="button" onclick="handleReassignmentDialog('discard')">Close</button>
+                    </div>
                 </section>
             </form>
         </div>
@@ -2673,35 +2925,46 @@ table end -->
                 var rangeGroup = $(this).attr('range_1'),
                     minBtn = $(this).parent().children('.min'),
                     maxBtn = $(this).parent().children('.max'),
-                    range_min = $(this).parent().children('.range_min'),
-                    range_max = $(this).parent().children('.range_max'),
+                    isUSD = $(this).parent()[0].classList.contains('usd'),
+                    currency = isUSD ? ' Mn' : ' Cr';
+                    difference = isUSD ? 5 : 10;
+                    range_min = $(this).parent().parent().find('.range_min'),
+                    range_max = $(this).parent().parent().find('.range_max'),
+
                     minVal = parseInt($(minBtn).val()),
                     maxVal = parseInt($(maxBtn).val()),
                     origin = $(this).context.className;
-                if (origin === 'min lowerVal' && minVal >= (maxVal - 10)) {
-                    $(minBtn).val(maxVal - 10);
+                    debugger;
+                if (origin === 'min lowerVal' && minVal >= (maxVal - difference)) {
+                    $(minBtn).val(maxVal - difference);
                 }
                 var minVal = parseInt($(minBtn).val());
-                $(range_min).html(addSeparator(minVal * 1) + ' Cr');
+                $(range_min).html(addSeparator(minVal * 1) + currency);
 
 
-                if (origin === 'max upperVal' && (maxVal - 10) < minVal) {
-                    $(maxBtn).val(10 + minVal);
+                if (origin === 'max upperVal' && (maxVal - difference) < minVal) {
+                    $(maxBtn).val(difference + minVal);
                 }
                 var maxVal = parseInt($(maxBtn).val());
-                $(range_max).html(addSeparator(maxVal * 1) + ' Cr');
+                $(range_max).html(addSeparator(maxVal * 1) + currency);
             }
 
-            $('input[type="range"]').on('input', rangeInputChangeEventHandler);
+            $(document).on('input', 'input[type="range"]', rangeInputChangeEventHandler);
+
+            //$('input[type="range"]').on('input', rangeInputChangeEventHandler);
         })();
     </script>
 
 
     <!--date picker start date -->
     <script>
-        $(function() {
-            // $('input[name="datepicker"]').daterangepicker({
-            $('.filterdatebox').daterangepicker({
+        $(function(){
+            $('body').on('focus',".filterdatebox", function(){
+                
+            });
+        });
+        function initDatePicker(){
+            jq('.filterdatebox').daterangepicker({
                 singleDatePicker: true,
                 showDropdowns: true,
                 autoApply: true,
@@ -2716,15 +2979,67 @@ table end -->
                 var difference = moment().diff(start, 'years');
             });
 
-            $('.filterdatebox').on('apply.daterangepicker', function (ev, picker) {
+            jq('.filterdatebox').on('apply.daterangepicker', function (ev, picker) {
                 $(this).val(picker.startDate.format('DD/MM/YYYY'));
             });
 
-            $('.filterdatebox').on('cancel.daterangepicker', function (ev, picker) {
+            jq('.filterdatebox').on('cancel.daterangepicker', function (ev, picker) {
                 $(this).val('');
             });
-            
+        }
+
+        function initRangeSlider(){
+            // $('.select2').select2();
+        }
+
+        function initSelect2(){
+            jq('.select2').select2();
+            initDatePicker();
+        }
+
+        $(document).ready(function() {
+            // $('input[name="datepicker"]').daterangepicker({
+            initDatePicker();
+            initSelect2();
+            /* Download Button Click */
+            $(document).on('click', '.download', function(){
+                var type    = $(this).data('type');
+                var value   = $(this).data('value');
+                var action  = $(this).data('action');
+                var formData = '';
+                var dropped = '';
+
+                if(action == 'dayFilter'){
+                    formData = { day: value, filter: 1 };
+                }else if(action == 'type'){
+                    formData = { csvtype: value, filter: 1 }
+                }else{
+                    dropped = $(this).data('dropped') ? $(this).data('dropped') : '';
+                    formData = { status_c: value, dropped: dropped, filter: 1 }
+                }
+
+                if(type == 'opportunity')
+                    var url = "index.php?module=Home&action=export&"+$('.opportunity-filter').serialize();
+                else
+                    var url = "index.php?module=Home&action=export&"+$('.pending-filter').serialize();
+
+                $.ajax({
+                    url: url,
+                    method: "GET",
+                    data: formData,
+                    success: function(data) {
+                        data = JSON.parse(data);
+                        console.log(data);
+                        if(data.status == 'success'){
+                            window.location.href = 'index.php?module=Home&action=downloadCSV';
+                        }else{
+                            alert('Somthing went wrong. Please try again');
+                        }
+                    }
+                });
+            });
         });
+
     </script>
     <!--- date picker end -->
 
@@ -2761,8 +3076,10 @@ table end -->
                     $('#Select_Proxy').html(parsed_data.members);
                     $('#Select_Proxy').val('');
                     $('.responsibility').html(parsed_data.members);
-                    document.getElementById('responsibility1').value = null;
-                    document.getElementById('responsibility').value = null;
+                    if (document.getElementById('responsibility1') && document.getElementById('responsibility')) {
+                        document.getElementById('responsibility1').value = null;
+                        document.getElementById('responsibility').value = null;
+                    }
                 }
             });
             $.ajax({
@@ -2792,6 +3109,8 @@ table end -->
         function openSettingDialog(event, type = null, value = null) {
 
             var dialog = document.getElementById('setting_myModal');
+            $('#search-column1').val('');
+            searchColumns('');
             if (event === "discard") {
                 dialog.style.display = "none";
             } else if (event === "close") {
@@ -2817,6 +3136,29 @@ table end -->
 
         }
 
+        function openPendingSettingsDialog(event, type = null, value = null) {
+            var dialog = document.getElementById('pending_setting_myModal');
+            $('#search-column2').val('');
+            searchColumns('');
+            if (event === "discard") {
+                dialog.style.display = "none";
+            } else if (event === "close") {
+                dialog.style.display = "none";
+            } else if (event === "submit") {
+
+            } else {
+                dialog.style.display = "block"
+            }
+
+            $('.pending-settings-section').val('pendings');
+            if(type){
+                $('.pending-settings-type').val(type);
+            }
+            if(value){
+                $('.pending-settings-type-value').val(value);
+            }
+        }
+
 
         function openFilterDialog(event) {
 
@@ -2835,6 +3177,7 @@ table end -->
         }
 
         function openPendingFilterDialog(event){
+            console.log(event);
             var dialog = document.getElementById('pending_filter_myModal');
             if (event === "discard") {
                 dialog.style.display = "none";
@@ -2849,15 +3192,65 @@ table end -->
         }
 
         function openPendingRequestTable(event) {
+            var temp = document.getElementsByClassName('pending-request-count');
+            var pendingReqCount = temp[0].innerText;
             var dialog = document.getElementById('pending-request-table-container');
-            if (dialog.style.display === "block") {
-                dialog.style.display = "none";
-            } else if (event === "discard") {
-                dialog.style.display = "none";
-            } else if (event === "close") {
-                dialog.style.display = "none";
-            } else {
-                dialog.style.display = "block"
+            if (pendingReqCount != '0') {
+                if (dialog.style.display === "block") {
+                    dialog.style.display = "none";
+                } else {
+                    dialog.style.display = "block"
+                }
+            }
+        }
+
+        function handleReassignmentDialog(event) {
+            var dialog = document.getElementById('reassignmentModal');
+            switch (event) {
+                case "discard":
+                case "close":
+                    dialog.style.display = "none";
+                    break;
+                case "submit":
+                    if (document.getElementById('hidden_value') && document.getElementById('hidden_multi_select')) {
+                        var assigned_opportunity_id = document.getElementById('assigned_opp_id').value;
+                        var assigned_name = document.getElementById('assigned_to_new_c').value;
+                        
+                    }
+                    $.ajax({
+                        url: 'index.php?module=Home&action=update_home_assigned_id',
+                        type: 'POST',
+                        data: {
+                            opp_id: assigned_opportunity_id,
+                            assigned_name: assigned_name
+                        },
+                        success: function(data) {
+                            dat=JSON.parse(data)
+                            if(dat.message == "false"){
+                                alert("Please check assigned user name");
+                            }
+                            
+                            else{
+                                
+                                $.ajax({
+                                url: 'index.php?module=Home&action=assigned_history',
+                                type: 'POST',
+                                data: {
+                                    opp_id: assigned_opportunity_id,
+                                    assigned_name: assigned_name
+                                },
+                                success: function(data) {
+                                }
+                                });
+                                
+                                dialog.style.display = "none";
+                                location.reload();
+                            }
+                        }
+                    });
+                    break;
+                default:
+                    dialog.style.display = "block";
             }
         }
 
@@ -2870,10 +3263,10 @@ table end -->
             } else if (event === "close") {
                 dialog.style.display = "none";
             } else if (event === "submit") {
-                var hidden_id = document.getElementById('hidden_value').value;
-                var user_id = document.getElementById('hidden_multi_select').value;
-                console.log(hidden_id);
-                console.log(user_id);
+                if (document.getElementById('hidden_value') && document.getElementById('hidden_multi_select')) {
+                    var hidden_id = document.getElementById('hidden_value').value;
+                    var user_id = document.getElementById('hidden_multi_select').value;
+                }
                 $.ajax({
                     url: 'index.php?module=Home&action=deselect_members_from_global_opportunity',
                     type: 'POST',
@@ -2891,9 +3284,68 @@ table end -->
             }
 
         }
-        function helperDeselectList(each) {
+        function fetchReassignmentDialog(oppID) {
+            var dialog = document.getElementById('reassignmentModal');
+            dialog.style.display = "block";
+            var res1;
+            var oppss_id = oppID;
+            $.ajax({
+                    url : 'index.php?module=Home&action=new_assigned_list',
+                    type : 'POST',
+                     data: {
+                         oppss_id,
+                    },
+                    
+                    success : function(data1){
+                         datw=JSON.parse(data1);
+                          res1=datw.a;
+                          op_name = datw.op_name;
+                          var user_list= []; 
+                          $('#ra_op_name').html("Opportunity Name: "+op_name);
+                          $('#assigned_opp_id').val(datw.id);
+                          $('#ass_name').html("Assigned User Name: "+datw.present_assigned_user);
+                          
+                          for(var z in res1){
+                              res1[z]=res1[z].replace(/\^/g,' ');
+                              res1[z]=res1[z].replace('team_lead','TL');
+                              res1[z]=res1[z].replace('team_member_l1','TM L1');
+                              res1[z]=res1[z].replace('team_member_l2','TM L2');
+                              res1[z]=res1[z].replace('team_member_l3','TM L3');
+                              
+                          }
+                              
+                            for(var i in res1) {
+                                user_list.push(res1[i])
+                            };
 
-        }
+                           
+                          
+                          $('#assigned_to_new_c').autocomplete({
+                            source: user_list,
+                            minLength: 0,
+                            scroll: true
+                        }).keydown(function() {
+                            $(this).autocomplete("search", "");
+                        });
+                         
+                    }
+                 
+             });
+    }
+    $(document).on('click','.ui-autocomplete',function(){
+        var f=$('#assigned_to_new_c').val();
+        
+        var e=f.length;
+        
+        var s=f.indexOf("/");
+    
+        f = f.slice(0,s);
+        
+        f=f.replace(/[^ \, a-zA-Z]+/g,'');
+        
+        f=f.replace(/^\s+/g, '');
+        $('#assigned_to_new_c').val(f);
+    });
 
         function fetchDeselectDialog(id) {
             var dialog = document.getElementById('deSelectModal');
@@ -2907,7 +3359,9 @@ table end -->
                 success: function(data) {
                     var parsed_data = JSON.parse(data);
                     $('#opportunity_info').html(parsed_data.opportunity_info);
-                    document.getElementById('hidden_value').value = parsed_data.opportunity_id;
+                    if (document.getElementById('hidden_value')) {
+                        document.getElementById('hidden_value').value = parsed_data.opportunity_id;
+                    }
                     dialog.style.display = "block";
                     $('#hidden_user').val(parsed_data.msuname);
                     var temp = parsed_data.msuid.split(',');
@@ -2919,8 +3373,12 @@ table end -->
 
 
 
-        function dateBetween(evt, dateBetween, searchTerm = null, page = null, filter = 0) {
+        function dateBetween(evt, dateBetween, searchTerm = null, page = null, filter = 0, changeColumns = 1) {
             console.log(dateBetween);
+            Cookies.set('day', dateBetween, { expires: 1 });
+            if(changeColumns) // reset columns
+                getDefaultColumns('opportunity');
+
             var tabContent = document.getElementById('tab_30days_content');
             document.getElementById('btn-30-days').style.color = "black";
             $.ajax({
@@ -2950,7 +3408,18 @@ table end -->
                         $('#delegateBtn').remove();
                     }
 
+                    if(changeColumns){
+                        $('#opportunity-settings').html(data.columnFilter);
+                        initSortable();
+                    }                  
+                    
+                    if(!filter){
+                        $('.opportunity-filter .filter-body').html(data.filters);
+                        initSelect2();
+                    }
+
                     if (dateBetween === '30') {
+                        document.getElementById('btn-30-days').style.color = "#000";
                         $('#tableContent').html(data.data);
                         $('#orgCount').html(data.total);
                         $('#myTeamCount').html(data.team_count);
@@ -2961,13 +3430,17 @@ table end -->
                             $('#delegateCount').html(data.delegated_count);
                         }*/
                         $('#fetchedByStatus').html(data.fetched_by_status);
+                        
 
                         /* Filter Values */
                         $('.opportunity-filter .filter-type').val('show_data_between_date');
                         $('.opportunity-filter .filter-value').val('30');
+                        document.getElementById('btn-60-days').style.color = "#c2c2c2";
+                        document.getElementById('btn-90-days').style.color = "#c2c2c2";
 
                         tabContent.style.display = 'block';
                     } else if (dateBetween === '60') {
+                        document.getElementById('btn-60-days').style.color = "#000";
                         $('#tableContent').html(data.data);
                         $('#orgCount').html(data.total);
                         $('#selfCount').html(data.self_count);
@@ -2983,7 +3456,9 @@ table end -->
                         $('.opportunity-filter .filter-type').val('show_data_between_date');
                         $('.opportunity-filter .filter-value').val('60');
                         document.getElementById('btn-30-days').style.color = "#c2c2c2";
+                        document.getElementById('btn-90-days').style.color = "#c2c2c2";
                     } else {
+                        document.getElementById('btn-90-days').style.color = "#000";
                         $('#tableContent').html(data.data);
                         $('#orgCount').html(data.total);
                         $('#selfCount').html(data.self_count);
@@ -2999,6 +3474,7 @@ table end -->
                         $('.opportunity-filter .filter-type').val('show_data_between_date');
                         $('.opportunity-filter .filter-value').val('90');
                         document.getElementById('btn-30-days').style.color = "#c2c2c2";
+                        document.getElementById('btn-60-days').style.color = "#c2c2c2";
 
                     }
                     getGraph(dateBetween);
@@ -3029,7 +3505,11 @@ table end -->
             });
         }
 
-        function fetchRecordByStatus_C(status_c, day, searchTerm = null, page = null, filter = 0, dropped = null) {
+        function fetchRecordByStatus_C(status_c, day, searchTerm = null, page = null, filter = 0, dropped = null, changeColumns = 1) {
+            
+            if(changeColumns)
+                getDefaultColumns('opportunity');
+
             $("#Dropped span").click(function(e) {
                 e.stopPropagation();
             });
@@ -3044,12 +3524,25 @@ table end -->
                     dropped: dropped
                 },
                 success: function(data) {
+
+                    data = JSON.parse(data);
+                    
+                    if(changeColumns){
+                        $('#opportunity-settings').html(data.columnFilter);
+                        initSortable();
+                    }
+
+                    if(!filter){
+                        $('.opportunity-filter .filter-body').html(data.filters);
+                        initSelect2();
+                    }
+
                     if (day === '30') {
-                        $('#tableContent').html(data);
+                        $('#tableContent').html(data.data);
                     } else if (day === '60') {
-                        $('#tableContent').html(data);
+                        $('#tableContent').html(data.data);
                     } else {
-                        $('#tableContent').html(data);
+                        $('#tableContent').html(data.data);
                     }
                     
                     reinitializeCardColors();
@@ -3068,6 +3561,19 @@ table end -->
 
         }
 
+        function getDefaultColumns(type){
+            if(type == 'opportunity'){
+                var html = $('#opportunity-settings');
+                var DefaultColumns = '<form class="settings-form sort-column">';
+            }else if(type == 'pending'){
+                var html = $('#pending-settings');
+                var DefaultColumns = '<form class="pending-settings-form sort-column">';
+            }
+            DefaultColumns += '<input type="hidden" name="settings-section" class="settings-section" value=""> <input type="hidden" name="settings-type" class="settings-type" value=""> <input type="hidden" name="settings-type-value" class="settings-type-value" value=""> <ul id="sortable1" class="sortable1 connectedSortable ui-sortable"> <li style="pointer-events:none;" class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="name" value="name" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Opportunity Name</label> </li><li style="pointer-events:none;" class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="Primary-Responsbility" value="Primary-Responsbility" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Primary Responsibility</label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="new_department_c" value="new_department_c" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Department </label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="REP-EOI-Published" value="REP-EOI-Published" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> RFP/EOI Published</label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="Closed-Date" value="Closed-Date" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified date</label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="Closed-by" value="Closed-by" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified by</label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="Date-Created" value="Date-Created" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Created Date</label> </li></ul> </form>';
+            html.html(DefaultColumns);
+            initSortable();
+        }
+
         function reinitializeCardColors() {
             var temp = document.getElementsByClassName('card-status');
             for (let index = 0; index < temp.length; index++) {
@@ -3077,8 +3583,12 @@ table end -->
         }
         
 
-        function filter_by_type(type, day, searchTerm = null, page = null, filter = 0) {
+        function filter_by_type(type, day, searchTerm = null, page = null, filter = 0, changeColumns = 1) {
             console.log(type, day);
+
+            if(changeColumns) // reset columns
+                getDefaultColumns('opportunity');
+
             $.ajax({
                 url: 'index.php?module=Home&action=filter_by_opportunity_type&'+$('.settings-form').serialize()+'&'+$('.opportunity-filter').serialize()+'&filter='+filter,
                 type: 'GET',
@@ -3089,12 +3599,25 @@ table end -->
                     page: page
                 },
                 success: function(data) {
+
+                    data = JSON.parse(data);
+
+                    if(changeColumns){
+                        $('#opportunity-settings').html(data.columnFilter);
+                        initSortable();
+                    }
+
+                    if(!filter){
+                        $('.opportunity-filter .filter-body').html(data.filters);
+                        initSelect2();
+                    }
+
                     if (day === '30') {
-                        $('#tableContent').html(data);
+                        $('#tableContent').html(data.data);
                     } else if (day === '60') {
-                        $('#tableContent').html(data);
+                        $('#tableContent').html(data.data);
                     } else {
-                        $('#tableContent').html(data);
+                        $('#tableContent').html(data.data);
                     }
                     reinitializeCardColors();
                     if (type === 'global') {
@@ -3137,16 +3660,33 @@ table end -->
         //     }
         // }
 
-        function fetchByStatus(status, filter = 0, page = null){
+        function fetchByStatus(status, filter = 0, page = null, changeColumns = 1){
+
+            if(changeColumns) // reset columns
+                getDefaultColumns('pending');
+
             $.ajax({
-                url: 'index.php?module=Home&action=filter_by_opportunity_status&'+$('.settings-form').serialize()+$('.pending-filter').serialize()+'&filter='+filter,
+                url: 'index.php?module=Home&action=filter_by_opportunity_status&'+$('.pending-settings-form').serialize()+'&'+$('.pending-filter').serialize()+'&filter='+filter,
                 type: 'GET',
                 data: {
                     status: status,
                     page: page
                 },
                 success: function(data) {
-                    $('#pending-requests').html(data);
+
+                    data = JSON.parse(data);
+
+                    if(changeColumns){
+                        $('#pending-settings').html(data.columnFilter);
+                        initSortable();
+                    }
+                    if(!filter){
+                        $('.pending-filter .filter-body').html(data.filters);
+                        initSelect2();
+                    }
+
+
+                    $('#pending-requests').html(data.data);
                     document.getElementById(status).style.background = "black";
                     document.getElementById(status).style.borderRadius = "4px";
                     $('.pending-filter .filter-type').val('filter_by_opportunity_status');
@@ -3189,12 +3729,13 @@ table end -->
                 type: 'POST',
                 data: $('.approval-form').serialize(),
                 success: function(data) {
+                    var day = Cookies.get('day');
                     data = JSON.parse(data);
                     if(data.status){
                         fetchByStatus(Status);
                         getPendingRequestCount();
                         openApprovalDialog('close');
-                        dateBetween(event, '30')
+                        dateBetween(event, day)
                     }else{
                         alert(data.message);
                     }
@@ -3209,7 +3750,15 @@ table end -->
                 type: 'POST',
                 data: $('.approval-form').serialize(),
                 success: function(data) {
-                    $('.pending-request-count').html(data);
+                    data = JSON.parse(data)
+                    $('.pending-request-count').html(data.data);                    
+                    if (data && data.count == 0) {
+                        $('#click-here-text').html('');
+                        $('#approve-pending-text').html('No Requests Pending For Approval');
+                    } else {
+                        $('#click-here-text').html('Click here');
+                        $('#approve-pending-text').html('to Approve Pending request');
+                    }
                 }
             });
         }
@@ -3245,10 +3794,51 @@ table end -->
                     }
                 });
             }
+        });        
+
+        $('#search-column1').keyup(function(){
+            var text = $(this).val().toUpperCase();
+            searchColumns(text);
+        });
+        $('#search-column2').keyup(function(){
+            var text = $(this).val().toUpperCase();
+            searchColumns(text);
         });
 
-        $('#filter_clear').click(function(event) {
+        function searchColumns(text) {
+            // Search text
+            //case-insensitive
+            debugger;
+            class1 = "opportunity-settings";
+            class2 = "pending-settings";
+            jQuery.expr[':'].contains = function(a, i, m) {
+            return jQuery(a).text().toUpperCase()
+                .indexOf(m[3].toUpperCase()) >= 0;
+            };
+            //hiding other that matching
+            if(text!=''){
+                $("#" + class1 + " #sortable2 li")
+                    .hide()
+                    .filter(':contains("' + text + '")')
+                    .show();
+                $("#" + class2 + " #sortable2 li")
+                    .hide()
+                    .filter(':contains("' + text + '")')
+                    .show();
+            }
+            else{
+                $("#" + class1 + " li").show();
+                $("#" + class2 + " li").show();
+            }
+        }
+
+        $('.filter_clear').click(function(event) {
             event.preventDefault();
+            $('.opportunity-filter input:not([type=hidden]').val('');
+            $('.opportunity-filter select').val('');
+            $('.pending-filter input:not([type=hidden]').val('');
+            $('.pending-filter select').val('');
+            $('.select2-selection__rendered').html('');
             $('.responsibility').val('');
             $('.filterdatebox').val('');
             $('.rfp-checkbox').each(function(index) {
@@ -3264,8 +3854,7 @@ table end -->
                 rangeMin[index].innerHTML = '0 Cr';
                 rangeMax[index].innerHTML = '200 Cr';
             }
-        }
-        )
+        })
 
         /*$('#filter_submit').click(function(event) {
             event.preventDefault();
@@ -3309,17 +3898,36 @@ table end -->
             var settingsSection = $('.settings-section').val();
             var settingsType = $('.settings-type').val();
             var settingsValue = $('.settings-type-value').val();
+            var day = Cookies.get('day');
+            $('#search-column1').val('');
+            searchColumns('');
             if(settingsSection == 'opportunities' && settingsType == 'action_show_data_between_date'){
-                dateBetween(event, '30');
+                dateBetween(event, day, '', '', '', 0);
             }else if(settingsSection == 'opportunities' && settingsType == 'action_filter_by_opportunity_type' && settingsValue){
-                filter_by_type(settingsValue, 30);
+                filter_by_type(settingsValue, day, '', '', '', 0);
             }else if(settingsSection == 'opportunities' && settingsType == 'action_filter_opportunities_by_status' && settingsValue){
-                fetchRecordByStatus_C(settingsValue, 30);
+                var closedLost = '';
+                if (document.getElementById("ClosedLost").style.background == "black") {
+                    closedLost = 'ClosedLost';
+                }
+                fetchRecordByStatus_C(settingsValue, day, '', '', '', closedLost, 0);
             }else if(settingsSection == 'pendings' && settingsType == 'action_filter_by_opportunity_status' && settingsValue){
                 settingsValue = settingsValue.replace('-', ' ');
-                fetchByStatus(settingsValue);
+                fetchByStatus(settingsValue, '', '', 0);
             }
             openSettingDialog('close');
+        }
+
+        function commitPendingFilter(){
+            var settingsSection = $('.pending-settings-section').val();
+            var settingsType = $('.pending-settings-type').val();
+            var settingsValue = $('.pending-settings-type-value').val();
+            $('#search-column1').val('');
+            searchColumns('');
+            settingsValue = settingsValue.replace('-', ' ');
+            fetchByStatus(settingsValue, '', '', 0);
+            
+            openPendingSettingsDialog('close');
         }
 
 
@@ -3341,14 +3949,21 @@ table end -->
         });
 
         function paginate(page, type, value, searchTerm = null, filter = 0){
+            var day = Cookies.get('day');
             if(type == 'show_data_between_date'){
-                dateBetween(event, value, searchTerm, page, filter);
+                dateBetween(event, value, searchTerm, page, filter, 0);
             }else if(type == 'filter_opportunities_by_status'){
-                fetchRecordByStatus_C(value, 30, searchTerm, page, filter);
+                var closedLost = '';
+                if (document.getElementById("ClosedLost").style.background == "black") {
+                    closedLost = 'ClosedLost';
+                }
+                fetchRecordByStatus_C(value, day, searchTerm, page, filter, closedLost, 0);
+                
             }else if(type == 'filter_by_opportunity_type'){
-                filter_by_type(value, '30', searchTerm, page, filter);
+                filter_by_type(value, day, searchTerm, page, filter, 0);
+                
             }else if(type == 'filter_by_opportunity_status'){
-                fetchByStatus(value, filter, page);
+                fetchByStatus(value, filter, page, 0);
             }
         }
 
@@ -3384,20 +3999,26 @@ table end -->
         });
 
         function searchHelper () {
+            var day = Cookies.get('day');
             var $this = $('#opportunity-search');
             var searchTerm = $this.val();
             var type = $this.data('type');
             var value = $this.data('value');
             if(type == 'filter_opportunities_by_status'){
-                fetchRecordByStatus_C(value, 30, searchTerm);
+                var closedLost = '';
+                if (document.getElementById("ClosedLost").style.background == "black") {
+                    closedLost = 'ClosedLost';
+                }
+                fetchRecordByStatus_C(value, day, searchTerm, '', '', closedLost, 0);
             }else if(type == 'show_data_between_date'){
-                dateBetween(value, '30', searchTerm);
+                dateBetween(value, day, searchTerm, '', '', 0);
             }else if(type == 'filter_by_opportunity_type'){
-                filter_by_type(value, '3', searchTerm);
+                filter_by_type(value, day, searchTerm, '', '', 0);
             }
         }
 
         function filterHelper(ref){
+            var day = Cookies.get('day');
             if(ref == 'opportunity-filter'){
                 var filterType = $('.opportunity-filter .filter-type').val();
                 var filterValue = $('.opportunity-filter .filter-value').val();
@@ -3406,13 +4027,17 @@ table end -->
                 var filterValue = $('.pending-filter .filter-value').val();
             }
             if(filterType == 'show_data_between_date'){
-                dateBetween('', filterValue, '', '', 1);
+                dateBetween('', filterValue, '', '', 1, 0);
             }else if(filterType == 'filter_by_opportunity_type'){
-                filter_by_type(filterValue, '30', '', '', 1);
+                filter_by_type(filterValue, day, '', '', 1, 0);
             }else if(filterType == 'filter_opportunities_by_status'){
-                fetchRecordByStatus_C(filterValue, 30, '', '', 1);
+                var closedLost = '';
+                if (document.getElementById("ClosedLost").style.background == "black") {
+                    closedLost = 'ClosedLost';
+                }
+                fetchRecordByStatus_C(filterValue, day, '', '', 1, closedLost, 0);
             }else if(filterType == 'filter_by_opportunity_status'){
-                fetchByStatus(filterValue, 1);
+                fetchByStatus(filterValue, 1, '', 0);
             }
         }
 
@@ -3433,6 +4058,8 @@ table end -->
         $(document).ready(function(){
 
             load_data();
+
+            initSortable();
             
             function load_data(query='')
             {
@@ -3493,6 +4120,197 @@ table end -->
                 }
             });
         }
+
+        function initSortable(){
+            
+            $('.sortable1, .sortable2').sortable({
+                connectWith: ".connectedSortable",
+                receive: function(event, ui){
+                    if( $(this).children('li').length > 5 && $(this).attr('id') != "sortable2" ){
+                        $(ui.sender).sortable('cancel');
+                        alert('Maximum allowed columns are already selected');
+                    }
+                }
+            });
+            
+            $( ".sortable1 .nondrag" ).disableSelection();
+        }
+        
+//-------------------------------for reassignment-------------------------------//
+
+
+// var res1;
+// var oppss_id = $('[name=record]').val();
+// var rfp = $("#rfporeoipublished_c").val();
+// var p_status=$("#status_c").val();
+// $.ajax({
+//         url : 'index.php?module=Opportunities&action=new_assigned_list',
+//         type : 'POST',
+//          data: {
+//              oppss_id,
+//              rfp,
+//             p_status
+//         },
+        
+//         success : function(data1){
+           
+           
+//              datw=JSON.parse(data1);
+           
+          
+           
+//           if(datw=='block'){
+//           $('#assigned_to_new_c').attr('disabled',true);
+             
+//           }
+           
+//           res1=datw.a;
+//           var user_list= []; 
+          
+//           for(var z in res1){
+//               res1[z]=res1[z].replace(/\^/g,' ');
+//               res1[z]=res1[z].replace('team_lead','Team Lead');
+//               res1[z]=res1[z].replace('team_member_l1','Team Memeber L1');
+//               res1[z]=res1[z].replace('team_member_l2','Team Memeber L2');
+//               res1[z]=res1[z].replace('team_member_l3','Team Member L3');
+              
+//           }
+              
+//             for(var i in res1) {
+//                 user_list.push(res1[i])
+                
+//             }; 
+            
+           
+          
+//           $('#assigned_to_new_c').autocomplete({
+//             source: user_list,
+//             minLength: 0,
+//             scroll: true
+//         }).keydown(function() {
+//             $(this).autocomplete("search", "");
+//         });
+             
+//         }
+     
+//  });
+
+// $('#assigned_to_new_c').on('change',function(){
+    
+    
+//     var f=$('#assigned_to_new_c').val();
+    
+//     var e=f.length;
+    
+//   var s=f.indexOf("/");
+
+// f = f.slice(0,s);
+
+// f=f.replace(/[^ \, a-zA-Z]+/g,'');
+
+// f=f.replace(/^\s+/g, '');
+
+
+
+// $('#assigned_to_new_c').val(f);
+
+
+// var a_name= f.split(/\s+/);
+
+// var f_name=a_name[0];
+// var l_name=a_name[1];
+
+// $.ajax({
+//         url : 'index.php?module=Opportunities&action=fetch_assigned_id',
+//         type : 'POST',
+//          data: {
+           
+//             f,
+//             f_name,
+//             l_name
+//         },
+        
+//         success : function(data){
+           
+//           $('#assigned_user_id').val(data);
+//           $('[name=assigned_user_name]').val(f);
+          
+//              var assigned_name = $("#assigned_to_new_c").val();
+//   var assigned_id = $("#assigned_user_id").val();
+//     var s=$('#status_c').val();
+//     var r=$('#rfporeoipublished_c').val(); 
+ 
+   
+//     $.ajax({
+//                 url : 'index.php?module=Opportunities&action=fetch_reporting_manager',
+//                 type : 'POST',
+//                 dataType: "json",
+//                  data:{
+//                   opps_id,
+//                  assigned_name,
+//                  assigned_id
+//                 },
+//                 success : function(data_approver){
+                 
+                  
+//               // data=JSON.parse(data_approver);
+                
+                
+//                  $("#select_approver_c").val(data_approver.reporting_name);
+//                  $("#user_id2_c").val(data_approver.reporting_id);
+//                 $('#multiple_approver_c').val(data_approver.reporting_id);
+                
+//                       if(r=="no")  {
+               
+//                 if (s=="Qualified"||s=="QualifiedDpr"){
+                  
+                  
+                   
+//                      $("#select_approver_c").val(data_approver.approvers_name);
+//                 // $("#user_id2_c").val(data.reporting_id);
+//                 $('#multiple_approver_c').val(data_approver.approvers_id);
+                  
+        
+//                 }
+                
+//                  }
+                 
+//                     else  if(r=="not_required"){
+                     
+//                   if (s=="Qualified"){
+                  
+//                         $("#select_approver_c").val(data_approver.approvers_name);
+//                 // $("#user_id2_c").val(data.reporting_id);
+//                 $('#multiple_approver_c').val(data_approver.approvers_id);
+                  
+                 
+                 
+//                  }
+                  
+//                     }
+                    
+//                       else  if(r=="yes")  {
+               
+//                 if (s=="QualifiedLead"){
+                 
+//                   $("#select_approver_c").val(data_approver.approvers_name);
+//                 // $("#user_id2_c").val(data.reporting_id);
+//                 $('#multiple_approver_c').val(data_approver.approvers_id);
+//                   }
+//                 }
+        
+//                 }
+//         })    
+//         }
+// //      })
+     
+     
+     
+// });
+        
+        
+        
+        
     </script>
 </body>
 

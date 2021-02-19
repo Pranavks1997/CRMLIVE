@@ -106,16 +106,29 @@ $app_list_strings['record_type_display_notes']['Calls']='Activity';
 $app_strings['LBL_GROUPTAB0_1610690303'] = 'Opportunities';
 
 $app_strings['LBL_GROUPTAB1_1610690321'] = 'Departments';
-
-$GLOBALS['app_list_strings']['Interaction_type']=array (
-  'Phone' => 'Phone',
-  'EMail' => 'E-Mail',
-  'Physical_Meeting' => 'Physical Meeting',
-  'Preparation' => 'Preparation',
-  'Phone_Email' => 'Phone & Email',
+$GLOBALS['app_list_strings']['international_list']=array (
+  'yes' => 'Yes',
+  'no' => 'No',
+);
+$GLOBALS['app_list_strings']['non_financial_radio_list']=array (
+  'NA' => 'NA',
+  'options' => 'Options',
+);
+$GLOBALS['app_list_strings']['bid_commercial_head_list']=array (
+  'na' => 'NA',
+  'bid_team_head' => 'Bid Team Head',
+  'commercial_team_head' => 'Commercial Team Head',
+);
+$GLOBALS['app_list_strings']['teamheirarchy_c_list']=array (
+  '' => '',
+  'team_lead' => 'Team Lead',
+  'team_member_l1' => 'Team Member(L1)',
+  'team_member_l2' => 'Team Member (L2)',
+  'team_member_l3' => 'Team Member(L3)',
+);
+$GLOBALS['app_list_strings']['non_financial_consideration_list']=array (
 );
 $GLOBALS['app_list_strings']['non_financial_consideration_c_list']=array (
-  'NA' => 'NA',
   'PilotforFutureOpportunity' => 'Pilot for Future Opportunity ',
   'NewServiceLine' => 'New Service Line',
   'BrandEstablishment' => 'Brand Establishment ',
@@ -123,7 +136,16 @@ $GLOBALS['app_list_strings']['non_financial_consideration_c_list']=array (
   'NewRegionalDevelopment' => 'New Regional Development',
   'Relationship' => 'Relationship',
 );
-$GLOBALS['app_list_strings']['international_list']=array (
-  'yes' => 'Yes',
-  'no' => 'No',
+$GLOBALS['app_list_strings']['Interaction_type']=array (
+  'Phone' => 'Phone',
+  'EMail' => 'E-Mail',
+  'Physical_Meeting' => 'Physical Meeting',
+  'EMeeting' => 'E-Meeting',
+  'Preparation' => 'Preparation',
+  'Phone_Email' => 'Phone & Email',
+);
+$GLOBALS['app_list_strings']['currency_list']=array (
+  '' => '',
+  'USD' => 'USD ( $ )',
+  'INR' => 'INR ( ₹ )',
 );

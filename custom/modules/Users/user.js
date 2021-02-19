@@ -2,6 +2,8 @@ $(document).ready(function(){
     
   $('#SAVE_HEADER').replaceWith('<input type="submit" value="Save" name="button" value="Save" id="SAVE_HEADER" onclick="var _form = document.getElementById(\'EditView\'); _form.return_id.value=\'\'; _form.action.value=\'Save\'; if(custom_check_form(\'EditView\'))SUGAR.ajaxUI.submitForm(_form);return false;" class="button" accesskey="{$APP.LBL_SAVE_BUTTON_KEY}" title="{$APP.LBL_SAVE_BUTTON_TITLE}"/>')
    
+  $('#SAVE_FOOTER').replaceWith('<input type="submit" value="Save" name="button" value="Save" id="SAVE_FOOTER" onclick="var _form = document.getElementById(\'EditView\'); _form.return_id.value=\'\'; _form.action.value=\'Save\'; if(custom_check_form(\'EditView\'))SUGAR.ajaxUI.submitForm(_form);return false;" class="button" accesskey="{$APP.LBL_SAVE_BUTTON_KEY}" title="{$APP.LBL_SAVE_BUTTON_TITLE}"/>')
+   
   
     custom_check_form=function(){
     //   alert('in');

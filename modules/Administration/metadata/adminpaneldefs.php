@@ -130,7 +130,7 @@ $admin_group_header[]= array('LBL_ADMINISTRATION_HOME_TITLE','',false,$admin_opt
 
 
 
-// //studio.
+// studio.
 // $admin_option_defs=array();
 // $admin_option_defs['studio']['studio']= array('Studio','LBL_STUDIO','LBL_STUDIO_DESC','./index.php?module=ModuleBuilder&action=index&type=studio', 'studio');
 // if (isset($GLOBALS['beanFiles']['iFrame'])) {
@@ -151,7 +151,7 @@ $admin_group_header[]= array('LBL_ADMINISTRATION_HOME_TITLE','',false,$admin_opt
 // //$admin_option_defs['migrate_custom_fields']= array('MigrateFields','LBL_EXTERNAL_DEV_TITLE','LBL_EXTERNAL_DEV_DESC','./index.php?module=Administration&action=Development');
 
 
-//$admin_group_header[]= array('LBL_STUDIO_TITLE','',false,$admin_option_defs, 'LBL_TOOLS_DESC');
+// $admin_group_header[]= array('LBL_STUDIO_TITLE','',false,$admin_option_defs, 'LBL_TOOLS_DESC');
 
 $admin_option_defs=array();
 

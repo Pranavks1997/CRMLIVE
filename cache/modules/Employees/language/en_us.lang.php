@@ -1,5 +1,5 @@
 <?php
-// created: 2021-01-25 05:25:47
+// created: 2021-02-15 13:32:21
 $mod_strings = array (
   'LBL_MODULE_NAME' => 'Employees',
   'LBL_MODULE_TITLE' => 'Employees: Home',
@@ -109,4 +109,5 @@ $mod_strings = array (
   'LBL_TEAMHEIRARCHY' => 'Team Heirarchy',
   'LBL_MC' => 'Management Committee',
   'LBL_CALLS' => 'Activities',
+  'LBL_BID_COMMERCIAL_HEAD' => 'Bid/Commercial Head',
 );

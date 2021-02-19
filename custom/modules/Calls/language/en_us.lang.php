@@ -1,5 +1,5 @@
 <?php
-// created: 2021-01-21 08:03:03
+// created: 2021-01-27 13:12:04
 $mod_strings = array (
   'LBL_ACCOUNT' => 'Department',
   'LNK_NEW_CALL' => 'Create Activity',
@@ -26,5 +26,4 @@ $mod_strings = array (
   'LBL_STATUS' => 'Status',
   'LBL_CREATED' => 'Assigned By',
   'LBL_FOR_QUICK_CREATE' => 'for quick create',
-  'LBL_ACTIVITY_TYPE' => 'Activity Type',
 );

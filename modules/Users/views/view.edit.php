@@ -70,7 +70,7 @@ class UsersViewEdit extends ViewEdit
 
     public function preDisplay()
     {
-         echo '<script type="text/javascript" src="custom/modules/Users/editview.js"></scripst>';
+         echo '<script type="text/javascript" src="custom/modules/Users/editview.js"></script>';
         $this->fieldHelper = new UserViewHelper($this->ss, $this->bean, 'EditView');
         $this->fieldHelper->setupAdditionalFields();
 

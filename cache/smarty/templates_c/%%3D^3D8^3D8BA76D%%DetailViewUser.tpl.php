@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-01-25 05:26:17
+<?php /* Smarty version 2.6.31, created on 2021-02-15 13:34:27
          compiled from modules/ACLRoles/DetailViewUser.tpl */ ?>
 
 

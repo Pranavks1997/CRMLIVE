@@ -99,16 +99,28 @@
 <div class="col-xs-12 col-sm-6 edit-view-row-item">
 
 
-<div class="col-xs-12 col-sm-4 label" data-label="">
+<div class="col-xs-12 col-sm-4 label" data-label="LBL_SUBJECT">
 
 {minify}
-{capture name="label" assign="label"}{sugar_translate label='LBL_ACTIVITY_TYPE' module='Calls'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_SUBJECT' module='Calls'}{/capture}
 {$label|strip_semicolon}:
 
+<span class="required">*</span>
 {/minify}
 </div>
 
-<div class="col-xs-12 col-sm-8 edit-view-field " type="" field=""  >
+<div class="col-xs-12 col-sm-8 edit-view-field " type="name" field="name"  >
+{counter name="panelFieldCount" print=false}
+
+{if strlen($fields.name.value) <= 0}
+{assign var="value" value=$fields.name.default_value }
+{else}
+{assign var="value" value=$fields.name.value }
+{/if}  
+<input type='text' name='{$fields.name.name}' 
+id='{$fields.name.name}' size='30' 
+maxlength='50' 
+value='{$value}' title=''      >
 </div>
 
 <!-- [/hide] -->
@@ -392,86 +404,6 @@ onclick="SUGAR.clearRelateField(this.form, '{$fields.status.name}-input', '{$fie
 <div class="col-xs-12 col-sm-6 edit-view-row-item">
 
 
-<div class="col-xs-12 col-sm-4 label" data-label="LBL_SUBJECT">
-
-{minify}
-{capture name="label" assign="label"}{sugar_translate label='LBL_SUBJECT' module='Calls'}{/capture}
-{$label|strip_semicolon}:
-
-<span class="required">*</span>
-{/minify}
-</div>
-
-<div class="col-xs-12 col-sm-8 edit-view-field " type="name" field="name"  >
-{counter name="panelFieldCount" print=false}
-
-{if strlen($fields.name.value) <= 0}
-{assign var="value" value=$fields.name.default_value }
-{else}
-{assign var="value" value=$fields.name.value }
-{/if}  
-<input type='text' name='{$fields.name.name}' 
-id='{$fields.name.name}' size='30' 
-maxlength='50' 
-value='{$value}' title=''      >
-</div>
-
-<!-- [/hide] -->
-</div>
-
-
-<div class="col-xs-12 col-sm-6 edit-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label" data-label="LBL_ASSIGNED_TO_NAME">
-
-{minify}
-{capture name="label" assign="label"}{sugar_translate label='LBL_ASSIGNED_TO_NAME' module='Calls'}{/capture}
-{$label|strip_semicolon}:
-
-{/minify}
-</div>
-
-<div class="col-xs-12 col-sm-8 edit-view-field " type="relate" field="assigned_user_name"  >
-{counter name="panelFieldCount" print=false}
-
-<input type="text" name="{$fields.assigned_user_name.name}" class="sqsEnabled" tabindex="0" id="{$fields.assigned_user_name.name}" size="" value="{$fields.assigned_user_name.value}" title='' autocomplete="off"  	 >
-<input type="hidden" name="{$fields.assigned_user_name.id_name}" 
-id="{$fields.assigned_user_name.id_name}" 
-value="{$fields.assigned_user_id.value}">
-<span class="id-ff multiple">
-<button type="button" name="btn_{$fields.assigned_user_name.name}" id="btn_{$fields.assigned_user_name.name}" tabindex="0" title="{sugar_translate label="LBL_ACCESSKEY_SELECT_USERS_TITLE"}" class="button firstChild" value="{sugar_translate label="LBL_ACCESSKEY_SELECT_USERS_LABEL"}"
-onclick='open_popup(
-"{$fields.assigned_user_name.module}", 
-600, 
-395,
-"", 
-true, 
-false, 
-{literal}{"call_back_function":"set_return","form_name":"form_SubpanelQuickCreate_Calls","field_to_name_array":{"id":"assigned_user_id","user_name":"assigned_user_name"}}{/literal}, 
-"single", 
-true
-);' ><span class="suitepicon suitepicon-action-select"></span></button><button type="button" name="btn_clr_{$fields.assigned_user_name.name}" id="btn_clr_{$fields.assigned_user_name.name}" tabindex="0" title="{sugar_translate label="LBL_ACCESSKEY_CLEAR_USERS_TITLE"}"  class="button lastChild"
-onclick="SUGAR.clearRelateField(this.form, '{$fields.assigned_user_name.name}', '{$fields.assigned_user_name.id_name}');"  value="{sugar_translate label="LBL_ACCESSKEY_CLEAR_USERS_LABEL"}" ><span class="suitepicon suitepicon-action-clear"></span></button>
-</span>
-<script type="text/javascript">
-SUGAR.util.doWhen(
-		"typeof(sqs_objects) != 'undefined' && typeof(sqs_objects['{$form_name}_{$fields.assigned_user_name.name}']) != 'undefined'",
-		enableQS
-);
-</script>
-</div>
-
-<!-- [/hide] -->
-</div>
-<div class="clear"></div>
-<div class="clear"></div>
-
-
-
-<div class="col-xs-12 col-sm-6 edit-view-row-item">
-
-
 <div class="col-xs-12 col-sm-4 label" data-label="LBL_TYPE_OF_INTERACTION">
 
 {minify}
@@ -741,6 +673,48 @@ onclick="SUGAR.clearRelateField(this.form, '{$fields.type_of_interaction_c.name}
 
 
 <div class="col-xs-12 col-sm-6 edit-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label" data-label="LBL_ASSIGNED_TO_NAME">
+
+{minify}
+{capture name="label" assign="label"}{sugar_translate label='LBL_ASSIGNED_TO_NAME' module='Calls'}{/capture}
+{$label|strip_semicolon}:
+
+{/minify}
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="relate" field="assigned_user_name"  >
+{counter name="panelFieldCount" print=false}
+
+<input type="text" name="{$fields.assigned_user_name.name}" class="sqsEnabled" tabindex="0" id="{$fields.assigned_user_name.name}" size="" value="{$fields.assigned_user_name.value}" title='' autocomplete="off"  	 >
+<input type="hidden" name="{$fields.assigned_user_name.id_name}" 
+id="{$fields.assigned_user_name.id_name}" 
+value="{$fields.assigned_user_id.value}">
+<span class="id-ff multiple">
+<button type="button" name="btn_{$fields.assigned_user_name.name}" id="btn_{$fields.assigned_user_name.name}" tabindex="0" title="{sugar_translate label="LBL_ACCESSKEY_SELECT_USERS_TITLE"}" class="button firstChild" value="{sugar_translate label="LBL_ACCESSKEY_SELECT_USERS_LABEL"}"
+onclick='open_popup(
+"{$fields.assigned_user_name.module}", 
+600, 
+395,
+"", 
+true, 
+false, 
+{literal}{"call_back_function":"set_return","form_name":"form_SubpanelQuickCreate_Calls","field_to_name_array":{"id":"assigned_user_id","user_name":"assigned_user_name"}}{/literal}, 
+"single", 
+true
+);' ><span class="suitepicon suitepicon-action-select"></span></button><button type="button" name="btn_clr_{$fields.assigned_user_name.name}" id="btn_clr_{$fields.assigned_user_name.name}" tabindex="0" title="{sugar_translate label="LBL_ACCESSKEY_CLEAR_USERS_TITLE"}"  class="button lastChild"
+onclick="SUGAR.clearRelateField(this.form, '{$fields.assigned_user_name.name}', '{$fields.assigned_user_name.id_name}');"  value="{sugar_translate label="LBL_ACCESSKEY_CLEAR_USERS_LABEL"}" ><span class="suitepicon suitepicon-action-clear"></span></button>
+</span>
+<script type="text/javascript">
+SUGAR.util.doWhen(
+		"typeof(sqs_objects) != 'undefined' && typeof(sqs_objects['{$form_name}_{$fields.assigned_user_name.name}']) != 'undefined'",
+		enableQS
+);
+</script>
+</div>
+
+<!-- [/hide] -->
 </div>
 <div class="clear"></div>
 <div class="clear"></div>
@@ -1227,6 +1201,7 @@ addToValidate('form_SubpanelQuickCreate_Calls', 'recurring_source', 'varchar', f
 addToValidate('form_SubpanelQuickCreate_Calls', 'reschedule_history', 'varchar', false,'{/literal}{sugar_translate label='LBL_RESCHEDULE_HISTORY' module='Calls' for_js=true}{literal}' );
 addToValidate('form_SubpanelQuickCreate_Calls', 'reschedule_count', 'varchar', false,'{/literal}{sugar_translate label='LBL_RESCHEDULE_COUNT' module='Calls' for_js=true}{literal}' );
 addToValidate('form_SubpanelQuickCreate_Calls', 'new_current_status_c', 'text', true,'{/literal}{sugar_translate label='LBL_NEW_CURRENT_STATUS' module='Calls' for_js=true}{literal}' );
+addToValidate('form_SubpanelQuickCreate_Calls', 'type_of_interaction_c', 'enum', true,'{/literal}{sugar_translate label='LBL_TYPE_OF_INTERACTION' module='Calls' for_js=true}{literal}' );
 addToValidate('form_SubpanelQuickCreate_Calls', 'activity_date_c', 'date', true,'{/literal}{sugar_translate label='LBL_ACTIVITY_DATE' module='Calls' for_js=true}{literal}' );
 addToValidate('form_SubpanelQuickCreate_Calls', 'edit_purpose_field_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_EDIT_PURPOSE_FIELD' module='Calls' for_js=true}{literal}' );
 addToValidate('form_SubpanelQuickCreate_Calls', 'for_quick_create_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_FOR_QUICK_CREATE' module='Calls' for_js=true}{literal}' );
@@ -1235,6 +1210,5 @@ addToValidate('form_SubpanelQuickCreate_Calls', 'name_of_person_c', 'varchar', f
 addToValidate('form_SubpanelQuickCreate_Calls', 'new_key_action_c', 'text', true,'{/literal}{sugar_translate label='LBL_NEW_KEY_ACTION' module='Calls' for_js=true}{literal}' );
 addToValidate('form_SubpanelQuickCreate_Calls', 'new_status_c', 'enum', false,'{/literal}{sugar_translate label='LBL_NEW_STATUS' module='Calls' for_js=true}{literal}' );
 addToValidate('form_SubpanelQuickCreate_Calls', 'next_date_c', 'date', true,'{/literal}{sugar_translate label='LBL_NEXT_DATE' module='Calls' for_js=true}{literal}' );
-addToValidate('form_SubpanelQuickCreate_Calls', 'type_of_interaction_c', 'enum', true,'{/literal}{sugar_translate label='LBL_TYPE_OF_INTERACTION' module='Calls' for_js=true}{literal}' );
 addToValidateBinaryDependency('form_SubpanelQuickCreate_Calls', 'assigned_user_name', 'alpha', false,'{/literal}{sugar_translate label='ERR_SQS_NO_MATCH_FIELD' module='Calls' for_js=true}{literal}: {/literal}{sugar_translate label='LBL_ASSIGNED_TO' module='Calls' for_js=true}{literal}', 'assigned_user_id' );
 </script><script language="javascript">if(typeof sqs_objects == 'undefined'){var sqs_objects = new Array;}sqs_objects['form_SubpanelQuickCreate_Calls_assigned_user_name']={"form":"form_SubpanelQuickCreate_Calls","method":"get_user_array","field_list":["user_name","id"],"populate_list":["assigned_user_name","assigned_user_id"],"required_list":["assigned_user_id"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};sqs_objects['form_SubpanelQuickCreate_Calls_parent_name']={"form":"form_SubpanelQuickCreate_Calls","method":"query","modules":["Accounts"],"group":"or","field_list":["name","id"],"populate_list":["parent_name","parent_id"],"required_list":["parent_id"],"conditions":[{"name":"name","op":"like_custom","end":"%","value":""}],"order":"name","limit":"30","no_match_text":"No Match"};</script>{/literal}

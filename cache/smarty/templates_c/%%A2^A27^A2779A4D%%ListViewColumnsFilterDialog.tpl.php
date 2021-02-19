@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-01-22 14:00:30
+<?php /* Smarty version 2.6.31, created on 2021-02-15 06:18:21
          compiled from include/ListView/ListViewColumnsFilterDialog.tpl */ ?>
 
 <?php if (! $this->_tpl_vars['columnsFilterDialogAdded']): ?>
@@ -11,8 +11,10 @@
                     <h4 class="modal-title"><?php echo $this->_tpl_vars['APP']['LBL_COLUMNS_FILTER_HEADER_TITLE']; ?>
 </h4>
                 </div>
-                <div class="modal-body" id="columnsFilterList">
-
+             <center><input type="text" id="search-term" style="margin:5px 0"placeholder="Search Here" /></center>  
+                
+                <div class="modal-body content" id="columnsFilterList">
+                
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn button purple btn-default"
@@ -179,7 +181,42 @@
             };
 
         }
+        
 
+     
+     
+ $(\'#search-term\').keyup(function(){
+ 
+  // Search text
+  var text = $(this).val();
+  
+ if(text!=\'\'){
+  // Hide all content class element
+ $(\'.red li\').hide();
+
+  // Search and show
+  $(\'ul li:contains("\'+text+\'")\').show();
+
+     
+ }
+ else{
+     $(\'.red li\').show();
+ }
+ 
+ 
+ 
+ 
+ });
+ 
+
+
+$.expr[":"].contains = $.expr.createPseudo(function(arg) {
+  return function( elem ) {
+  return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+  };
+  
+});
+ 
     </script>
 '; ?>
 

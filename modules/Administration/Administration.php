@@ -252,6 +252,9 @@ class Administration extends SugarBean
 
         return $this->db->getAffectedRowCount($result);
     }
+    
+    
+    
 
     public function get_config_prefix($str)
     {

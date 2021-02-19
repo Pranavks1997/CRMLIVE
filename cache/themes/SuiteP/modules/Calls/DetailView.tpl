@@ -104,24 +104,6 @@
 
 
 <div class="col-xs-12 col-sm-6 detail-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label col-1-label">
-
-
-{capture name="label" assign="label"}{sugar_translate label='LBL_ACTIVITY_TYPE' module='Calls'}{/capture}
-{$label|strip_semicolon}:
-</div>
-
-
-<div class="col-xs-12 col-sm-8 detail-view-field" type="" field="" >
-
-{if !$fields.activity_type_c.hidden}
-{/if}
-
-</div>
-
-
 </div>
 
 
@@ -581,24 +563,6 @@
 
 
 <div class="col-xs-12 col-sm-6 detail-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label col-1-label">
-
-
-{capture name="label" assign="label"}{sugar_translate label='LBL_ACTIVITY_TYPE' module='Calls'}{/capture}
-{$label|strip_semicolon}:
-</div>
-
-
-<div class="col-xs-12 col-sm-8 detail-view-field" type="" field="" >
-
-{if !$fields.activity_type_c.hidden}
-{/if}
-
-</div>
-
-
 </div>
 
 

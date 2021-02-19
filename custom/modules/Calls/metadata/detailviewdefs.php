@@ -101,12 +101,7 @@ array (
       array (
         0 => 
         array (
-          0 => 
-          array (
-            'name' => 'activity_type_c',
-            'studio' => 'visible',
-            'label' => 'LBL_ACTIVITY_TYPE',
-          ),
+          0 => '',
           1 => 
           array (
             'name' => 'status',

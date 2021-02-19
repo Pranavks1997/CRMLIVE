@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-01-22 14:00:15
+<?php /* Smarty version 2.6.31, created on 2021-02-15 06:18:21
          compiled from themes/SuiteP/modules/SavedSearch/SavedSearchForm.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_translate', 'themes/SuiteP/modules/SavedSearch/SavedSearchForm.tpl', 50, false),array('modifier', 'default', 'themes/SuiteP/modules/SavedSearch/SavedSearchForm.tpl', 81, false),)), $this); ?>
@@ -30,14 +30,12 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_trans
             <div><input id='sort_order_desc_radio' type='radio' name='sortOrder' value='DESC'
                         <?php if ($this->_tpl_vars['selectedSortOrder'] == 'DESC'): ?>checked<?php endif; ?>>&nbsp;<span
                         onclick='document.getElementById("sort_order_desc_radio").checked = true'
-                        style="cursor: pointer; cursor: hand"><?php echo $this->_tpl_vars['MOD']['LBL_DESCENDING']; ?>
-</span></div>
+                        style="cursor: pointer; cursor: hand">Descending</span></div>
 
             <div><input id='sort_order_asc_radio' type='radio' name='sortOrder' value='ASC'
                         <?php if ($this->_tpl_vars['selectedSortOrder'] == 'ASC'): ?>checked<?php endif; ?>>&nbsp;<span
                         onclick='document.getElementById("sort_order_asc_radio").checked = true'
-                        style="cursor: pointer; cursor: hand"><?php echo $this->_tpl_vars['MOD']['LBL_ASCENDING']; ?>
-</span>
+                        style="cursor: pointer; cursor: hand">Ascending</span>
             </div>
         </div>
     </div>

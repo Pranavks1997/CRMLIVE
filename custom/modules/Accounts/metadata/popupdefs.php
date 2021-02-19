@@ -36,41 +36,5 @@ $popupMeta = array (
     'default' => true,
     'name' => 'name',
   ),
-  'ACCOUNT_TYPE' => 
-  array (
-    'type' => 'enum',
-    'label' => 'LBL_TYPE',
-    'width' => '10%',
-    'default' => true,
-    'name' => 'account_type',
-  ),
-  'BILLING_ADDRESS_CITY' => 
-  array (
-    'width' => '10%',
-    'label' => 'LBL_LIST_CITY',
-    'default' => true,
-    'name' => 'billing_address_city',
-  ),
-  'BILLING_ADDRESS_STATE' => 
-  array (
-    'width' => '7%',
-    'label' => 'LBL_STATE',
-    'default' => true,
-    'name' => 'billing_address_state',
-  ),
-  'BILLING_ADDRESS_COUNTRY' => 
-  array (
-    'width' => '10%',
-    'label' => 'LBL_COUNTRY',
-    'default' => true,
-    'name' => 'billing_address_country',
-  ),
-  'ASSIGNED_USER_NAME' => 
-  array (
-    'width' => '2%',
-    'label' => 'LBL_LIST_ASSIGNED_USER',
-    'default' => true,
-    'name' => 'assigned_user_name',
-  ),
 ),
 );

@@ -127,18 +127,9 @@ array (
             'label' => 'LBL_MC',
             'customCode' => '{if $IS_ADMIN}@@FIELD@@{else}{$fields.mc_c.value}{/if}',
           ),
-          1 => '',
-        ),
-        4 => 
-        array (
-          0 => 
-          array (
-            'name' => 'reports_to_name',
-            'customCode' => '{if $IS_ADMIN}@@FIELD@@{else}{$REPORTS_TO_READONLY}{/if}',
-          ),
           1 => 'phone_other',
         ),
-        5 => 
+        4 => 
         array (
           0 => 
           array (
@@ -149,7 +140,26 @@ array (
           ),
           1 => 'phone_fax',
         ),
+        5 => 
+        array (
+          0 => 
+          array (
+            'name' => 'reports_to_name',
+            'customCode' => '{if $IS_ADMIN}@@FIELD@@{else}{$REPORTS_TO_READONLY}{/if}',
+          ),
+          1 => 'phone_home',
+        ),
         6 => 
+        array (
+          0 => 
+          array (
+            'name' => 'bid_commercial_head_c',
+            'studio' => 'visible',
+            'label' => 'LBL_BID_COMMERCIAL_HEAD',
+          ),
+          1 => 'address_city',
+        ),
+        7 => 
         array (
           0 => 
           array (
@@ -158,12 +168,7 @@ array (
             'label' => 'LBL_TEAMFUNCTION',
             'customCode' => '{if $IS_ADMIN}@@FIELD@@{else}{$fields.teamfunction_c.value}{/if}',
           ),
-          1 => 'phone_home',
-        ),
-        7 => 
-        array (
-          0 => 'address_street',
-          1 => 'address_city',
+          1 => 'address_street',
         ),
         8 => 
         array (
@@ -173,6 +178,7 @@ array (
         9 => 
         array (
           0 => 'address_country',
+          1 => '',
         ),
         10 => 
         array (

@@ -6,6 +6,7 @@ use Robo\Task\File\Concat;
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 require_once('include/MVC/Controller/SugarController.php');
+require_once('include/UploadStream.php');
 
 class HomeController extends SugarController
 {
@@ -94,7 +95,7 @@ public function action_pending_records()
         <div style="display: flex;">
         <div style="display: flex; margin-left: auto;">
         <button class="filter" id="filter_myBtn" onclick="openFilterDialog()" style="padding:10; border: none !important;">
-        <i class="fa fa-filter" aria-hidden="true"> </i>
+        <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
         </button>
         
         <button class="cog" id="setting_myBtn" onclick="openSettingDialog()" style="padding:10; border: none !important;">
@@ -111,7 +112,7 @@ public function action_pending_records()
         <tr class="table-header-row">
         <th class="table-header">Name</th>
         <th class="table-header">Primary Responsibility</th>
-        <th class="table-header">Amount ( in Cr )</th>
+        <th class="table-header">Amount ( in Cr/Mn )</th>
         <th class="table-header">RFP/EOI Published</th>
         <th class="table-header">Modified Date</th>
         <th class="table-header">Status</th>
@@ -127,14 +128,14 @@ public function action_pending_records()
 
         while($pending_data_opportunity_row =  $GLOBALS['db']->fetchByAssoc($fetch_result_pending_opportunity))
         {
-            $created_by_id = $pending_data_opportunity_row['created_by'];
+            $created_by_id = $pending_data_opportunity_row['assigned_user_id'];
             $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
             $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
             $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
             $user_name = $user_name_fetch_row['user_name'];
             $first_name = $user_name_fetch_row['first_name'];
             $last_name = $user_name_fetch_row['last_name'];
-            $full_name = $first_name . $last_name;
+            $full_name = $first_name .' '. $last_name;
             $data .= ' <tr class="tabvalue">
                     <td>'.$pending_data_opportunity_row['name'].'</td>
                     <td>'.$full_name.'</td>
@@ -168,13 +169,15 @@ public function action_pending_records()
             $intervalDate = date('y-m-d', strtotime( -$day." ".'days'));
             $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
+            $log_in_user_id = $current_user->id;
             $organiztion_global_count = "SELECT count(*) as org_global_count FROM opportunities WHERE opportunity_type = 'global' AND deleted != 1 AND date_entered >= now() - interval '$day' day";
             $organiztion_count_result = $GLOBALS['db']->query($organiztion_global_count);
             $fetch_organization_count = $GLOBALS['db']->fetchByAssoc($organiztion_count_result);
             $global_organization_count = $fetch_organization_count['org_global_count'];
 
             $columnFilter = @$_GET;
-            $columnAmount = @$columnFilter['Amount'];
+            //$columnAmount = @$columnFilter['Amount'];
+            $columnDepartment = @$columnFilter['new_department_c'];
             $columnREPEOI = @$columnFilter['REP-EOI-Published'];
             $columnClosedDate = @$columnFilter['Closed-Date'];
             $columnClosedBy = @$columnFilter['Closed-by'];
@@ -185,6 +188,7 @@ public function action_pending_records()
             $columnViewedBy = @$columnFilter['Viewed-by'];
             $columnPreviousResponsibility = @$columnFilter['Previous-Responsbility'];
             $columnAttachment = @$columnFilter['Attachment'];
+
 
             $non_global_organization_count = $this->get_non_global_op_count($day);
             $data = '<table class="bottomtable" style="font-family: Lato, Lato, Arial, sans-serif !important;
@@ -220,15 +224,21 @@ public function action_pending_records()
                             </div>
                             <div style="display: flex; margin-left: auto;">
                                 <button class="filter" id="filter_myBtn" onclick="openFilterDialog()" style="padding:10; border: none !important;">
-                                    <i class="fa fa-filter" aria-hidden="true"> </i>
+                                    <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
                                 </button>
                                
                                 <button class="cog" id="setting_myBtn" onclick=openSettingDialog("opportunities","action_filter_opportunities_by_status","'.$status_c.'") style="padding:10; border: none !important;">
                                     <i id="setting_myBtn" class="fa fa-list" aria-hidden="true"> </i>
-                                </button>
-                            </div>
-                        </div>
+                                </button>';
+            if ($log_in_user_id == '1') {
+                $data .='<button class="cog download" id="download_btn" class="download-btn" data-type="opportunity" data-action="status" data-value="'.$status_c.'" data-dropped="'.$dropped.'" style="padding:10; border: none !important;">
+                            <i class="fa fa-download" aria-hidden="true"> </i>
+                        </button>';
+            }
+            
+            $data .= '</div>
                     </div>
+                </div>
 
                 </li>
 
@@ -236,8 +246,13 @@ public function action_pending_records()
             <tr class="table-header-row">
             <th class="table-header">Name</th>
             <th class="table-header">Primary Responsibility</th>';
-            if($columnAmount){
+
+            if(!@$_GET['customColumns']):
+            /*if($columnAmount){
                 $data .= '<th class="table-header">Amount ( in Cr )</th>';
+            }*/
+            if($columnDepartment){
+                $data .= '<th class="table-header">Department</th>';
             }
             if($columnREPEOI){
                 $data .= '<th class="table-header">RFP/EOI Published</th>';
@@ -250,10 +265,10 @@ public function action_pending_records()
             }
             if($columnDateCreated){
                 $data .= '<th class="table-header">Created Date</th>';
-}
-if($columnDateClosed){
+            }
+            if($columnDateClosed){
                 $data .= '<th class="table-header">Closed Date</th>';
-}
+            }
             if($columnTaggedMembers){
                 $data .= '<th class="table-header">Tagged Members</th>';
             }
@@ -266,19 +281,35 @@ if($columnDateClosed){
             if($columnAttachment){
                 $data .= '<th class="table-header">Attachment</th>';
             }
-        $data .= '<th class="table-header">Action</th></tr>';
+            endif;
+
+            $data .= $this->getColumnFiltersHeader($columnFilter);
+            
+            $data .= '<th class="table-header">Action</th></tr>';
            //$fetch_by_status = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE status_c='$status_c' AND  date_entered BETWEEN '".$intervalDate."' AND '".$todayDate."'  AND deleted != 1";
-           if($searchTerm){
-            $fetch_by_status = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE status_c='$status_c' AND deleted != 1 AND date_entered >= now() - interval '$day' day AND name LIKE '%$searchTerm%' ";
-           }else{
-            $fetch_by_status = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE status_c='$status_c' AND deleted != 1 AND date_entered >= now() - interval '$day' day ";
-           }
+            if($searchTerm){
+                $fetch_by_status = "SELECT opportunities.*, opportunities_cstm.*, 
+                CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities 
+                LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
+                LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
+                WHERE opportunities_cstm.status_c='$status_c' AND opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day AND opportunities.name LIKE '%$searchTerm%' ";
+            }else{
+                $fetch_by_status = "SELECT opportunities.*, opportunities_cstm.*, 
+                CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities 
+                    LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
+                    LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
+                    WHERE opportunities_cstm.status_c='$status_c' AND opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day ";
+            }
 
             if($status_c == 'Closed'){
                 $fetch_by_status .= ' AND opportunities_cstm.closure_status_c = "won" ';
             }else if($status_c == 'Dropped' ){
-                $fetch_by_status = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE
-                deleted != 1 AND date_entered >= now() - interval '$day' day ";
+                $fetch_by_status = "SELECT opportunities.*, opportunities_cstm.*, 
+                CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value
+                FROM opportunities 
+                LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
+                LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
+                WHERE opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day ";
                 if ($dropped) {
                     if ($dropped == 'Dropped') {
                         $fetch_by_status .= "AND status_c='Dropped'";
@@ -286,12 +317,14 @@ if($columnDateClosed){
                         $fetch_by_status .= "AND (status_c='Closed' AND opportunities_cstm.closure_status_c = 'lost')";
                     }
                 } else {
-                    $fetch_by_status .= "AND (status_c='Dropped' OR (status_c='Closed' AND opportunities_cstm.closure_status_c = 'lost'))";
+                    $fetch_by_status .= "AND (status_c='Dropped')";
                 }
             }
 
+            if($_GET['filter'])
+                $fetch_by_status .= $this->getFilterQuery();
 
-            if($_GET['filter'] && @$_GET['filter-responsibility']){
+            /*if($_GET['filter'] && @$_GET['filter-responsibility']){
                 $responsibility = $_GET['filter-responsibility'];
                 $fetch_by_status .= " AND opportunities.created_by = '$responsibility' ";
             }
@@ -313,9 +346,11 @@ if($columnDateClosed){
                 $createdDateFrom = $_GET['filter-created-date-from'];
                 $createdDateTo = $_GET['filter-created-date-to'];
                 $fetch_by_status .= " AND DATE_FORMAT(opportunities.date_entered,'%d/%m/%Y') BETWEEN '$createdDateFrom' AND '$createdDateTo' ";
-            }
+            }*/
 
             $fetch_by_status .= "  ORDER BY `opportunities`.`date_modified` DESC";
+
+            // echo $fetch_by_status; die;
 
            //Pagination Count
            $limit = 5;
@@ -330,14 +365,20 @@ if($columnDateClosed){
             $fetch_by_status_result = $GLOBALS['db']->query($fetch_by_status);
             while($row = $GLOBALS['db']->fetchByAssoc($fetch_by_status_result))
             {
-                $created_by_id = $row['created_by'];
+                $created_by_id = $row['assigned_user_id'];
                 $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
                 $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
                 $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
                 $user_name = $user_name_fetch_row['user_name'];
                 $first_name = $user_name_fetch_row['first_name'];
                 $last_name = $user_name_fetch_row['last_name'];
-                $full_name = "$first_name  $last_name";
+                if ($user_name_fetch_row['reports_to_id']) {
+                    $reports_to = $this->get_user_details_by_id($user_name_fetch_row['reports_to_id']);
+                    $reports_to_full_name = ' <i class="fa fa-arrow-right"></i> ' . $reports_to['first_name'] .' '. $reports_to['last_name'];
+                } else {
+                    $reports_to_full_name = "";
+                }
+                $full_name = "$first_name  $last_name $reports_to_full_name";
                 $closed_by = '';
                 if (!empty($row['date_modified'])) {
                     $modified_user_id = $row['modified_user_id'];
@@ -349,13 +390,31 @@ if($columnDateClosed){
                     $closed_by = "$closed_by_first_name $closed_by_last_name";
                     // To Do: Find actual closed by
                 }
-                $data .='
-                     <tr>
-                        <td class="table-data">'.$row['name'].'</td>
-                        <td class="table-data">'.$full_name.'</td>';
-                if($columnAmount){
-                    $data .= '<td class="table-data">'.($this->beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>';
+                $oppID = $row['id'];
+                $data .='<tr>
+                            <td class="table-data">';
+                $tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
+                $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
+                $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
+                if($tagged_user_query_fetch_row)
+                    $tagged_users = $tagged_user_query_fetch_row['user_id'];
+                else
+                    $tagged_users = '';
+
+                if ((strpos($tagged_users, $log_in_user_id) !== false)) {
+                    $data .= $row['name']. ' <i class="fa fa-tag" style="font-size: 12px; color:green"></i>';
+                } else {
+                    $data .= $row['name'];
                 }
+                $data .='</td><td class="table-data">'.$full_name.'</td>';
+
+                if(!@$_GET['customColumns']):
+                /*if($columnAmount){
+                $data .= '<th class="table-header">Amount ( in Cr )</th>';
+            }*/
+            if($columnDepartment){
+                $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label($row['new_department_c'])))).'</td>';
+            }
                 if($columnREPEOI){
                     $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label($row['rfporeoipublished_c'])))).'</td>';
                 }
@@ -368,7 +427,7 @@ if($columnDateClosed){
                 if($columnDateCreated){
                     $data .= '<td class="table-data">'.date_format(date_create($row['date_entered']),'d/m/Y').'</td>';
                 }
-if($columnDateClosed){
+                if($columnDateClosed){
                     if($row['date_closed']){
                         $closedDate = date_format(date_create($row['date_closed']),'d/m/Y');
                     }else{
@@ -384,11 +443,14 @@ if($columnDateClosed){
                     $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['modified_user_id']) )))).'</td>';
                 }
                 if($columnPreviousResponsibility){
-                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['created_by']) )))).'</td>';
+                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['assigned_user_id']) )))).'</td>';
                 }
                 if($columnAttachment){
                     $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $row['file_url'] ? $row['file_url'] : '' )))).'</td>';
                 }
+                endif;
+
+                $data .= $this->getColumnFiltersBody($columnFilter, $row);
                         
                         
                         /*<td class="table-data">'.($this->beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>
@@ -398,20 +460,31 @@ if($columnDateClosed){
                                         <td class="table-data">'.date_format(date_create($row['date_entered']),'d/m/Y').'</td>*/;
                 $data .= '
                     <td class="table-data">
-                    <div style="display: flex; width: 80%; align-items: center; padding: 10px; justify-content: space-between; margin-left: 20px;">';
+                    <div style="display: flex; width: 150px; align-items: center; padding: 10px; justify-content: space-between; margin:0;">';
                 
-                $data .= '<button class="tag1" id="deselectBtn" style="margin-right: 15px; width: 18px;" onClick=getSequenceFlow("'.$row['id'].'")>';
+                $data .= '<button class="tag1" id="reassignmentBtn" style="margin-right: 0px;width: 18px;" onclick="fetchReassignmentDialog(\''.$row['id'].'\')">';
+                if ($this->is_reassignment_applicable($row['id'])):
+                    $data .= '<i id="reassignment-icon" title="Re-assign User" class="fa fa-user" aria-hidden="true" style="color:black; font-size: 1.8rem;"> </i>';
+                endif;
+                $data .= '</button>';
+                
+                $data .= '<button class="tag1" id="deselectBtn" style="margin-right: 0px; width: 18px;" onClick=getSequenceFlow("'.$row['id'].'")>';
                 if($this->checkRecentActivity($row['id'])):
-                    $data .= '<img id="search-icon" src="modules/Home/assets/Frame-12.svg" alt="svg" style="color: #333333;"/>';   
+                    $data .= '<img id="search-icon" title="Audit Trail" src="modules/Home/assets/Frame-12.svg" alt="svg" style="color: #333333;"/>';   
                 endif;
                 $data .= '</button>';
 
-                if ($this->is_tagging_applicable($row['id'])) {
-                    $data .='<button class="tag" id="deselectBtn" onclick="fetchDeselectDialog(\''.$row['id'].'\')">                                            <i id="search-icon" class="fa fa-tag" aria-hidden="true"> </i>
-                            </button>';
-                }
+                // if ($this->is_tagging_applicable($row['id'])) {
+                //     $data .='<button class="tag" id="deselectBtn" onclick="fetchDeselectDialog(\''.$row['id'].'\')">                                            <i id="search-icon" class="fa fa-tag" aria-hidden="true"> </i>
+                //             </button>';
+                // }
+                $data .= '<button class="tag1 action-item-space" id="deselectBtn" onclick="fetchDeselectDialog(\''.$row['id'].'\')">';
+                    if ($this->is_tagging_applicable($row['id'])) {
+                        $data .='<i id="search-icon" title="Tag/Untag Users" class="fa fa-tag" aria-hidden="true"> </i>';
+                    }
+                    $data .= '</button>';
                 $data .='<a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'" class="eye" id="search-btn">
-                        <i id="search-icon" class="fa fa-eye" aria-hidden="true"> </i>
+                        <i id="search-icon" title="View" class="fa fa-eye" aria-hidden="true"> </i>
                         </a>
                     </div>
                     </td>
@@ -452,7 +525,16 @@ if($columnDateClosed){
             $data .= $this->pagination($page, $numberOfPages, 'filter_opportunities_by_status', $status_c, $searchTerm, $_GET['filter']);
             $data .= '</div>';
 
-            echo $data;
+            $columnFilterHtml = $this->getColumnFilters($status_c);
+            $filters            = $this->getFilterHtml('opportunity', $columnFilter);
+
+            echo json_encode(array(
+                'data'          => $data,
+                'columnFilter'  => $columnFilterHtml,
+                'filters'       => $filters
+            ));
+
+            //echo $data;
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
@@ -483,18 +565,18 @@ if($columnDateClosed){
             $GLOBALS['db'];
 
             $columnFilter = @$_GET;
-            $columnAmount = @$columnFilter['Amount'];
+            //$columnAmount = @$columnFilter['Amount'];
+            $columnDepartment = @$columnFilter['new_department_c'];
             $columnREPEOI = @$columnFilter['REP-EOI-Published'];
             $columnClosedDate = @$columnFilter['Closed-Date'];
             $columnClosedBy = @$columnFilter['Closed-by'];
             $columnDateCreated = @$columnFilter['Date-Created'];
-$columnDateClosed = @$columnFilter['Date-Closed'];
+            $columnDateClosed = @$columnFilter['Date-Closed'];
 
             $columnTaggedMembers = @$columnFilter['Tagged-Members'];
             $columnViewedBy = @$columnFilter['Viewed-by'];
             $columnPreviousResponsibility = @$columnFilter['Previous-Responsbility'];
             $columnAttachment = @$columnFilter['Attachment'];
-
 
 
             $organiztion_global_count = "SELECT count(*) as org_global_count FROM opportunities WHERE opportunity_type = 'global' AND deleted != 1 AND date_entered >= now() - interval '$day' day";
@@ -537,13 +619,19 @@ $columnDateClosed = @$columnFilter['Date-Closed'];
                             </div>
                             <div style="display: flex; margin-left: auto;">
                                 <button class="filter" id="filter_myBtn" onclick="openFilterDialog()" style="padding:10; border: none !important;">
-                                    <i class="fa fa-filter" aria-hidden="true"> </i>
+                                    <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
                                 </button>
                                
                                 <button class="cog" id="setting_myBtn" onclick=openSettingDialog("opportunities","action_filter_by_opportunity_type","'.$type.'") style="padding:10; border: none !important;">
                                     <i id="setting_myBtn" class="fa fa-list" aria-hidden="true"> </i>
-                                </button>
-                            </div>
+                                </button>';
+                                if ($log_in_user_id == '1') {
+                                    $data .='<button class="cog download" id="download_btn" class="download-btn" data-type="opportunity" data-action="type" data-value="'.$type.'" style="padding:10; border: none !important;">
+                                                <i class="fa fa-download" aria-hidden="true"> </i>
+                                            </button>';
+                                }
+                                
+                                $data .= '</div>
                         </div>
                     </div>
 
@@ -553,8 +641,13 @@ $columnDateClosed = @$columnFilter['Date-Closed'];
             <tr class="table-header-row">
             <th class="table-header">Name</th>
             <th class="table-header">Primary Responsibility</th>';
-            if($columnAmount){
+
+            if(!@$_GET['customColumns']):
+            /*if($columnAmount){
                 $data .= '<th class="table-header">Amount ( in Cr )</th>';
+            }*/
+            if($columnDepartment){
+                $data .= '<th class="table-header">Department</th>';
             }
             if($columnREPEOI){
                 $data .= '<th class="table-header">RFP/EOI Published</th>';
@@ -567,10 +660,10 @@ $columnDateClosed = @$columnFilter['Date-Closed'];
             }
             if($columnDateCreated){
                 $data .= '<th class="table-header">Created Date</th>';
-}
-if($columnDateClosed){
+            }
+            if($columnDateClosed){
                 $data .= '<th class="table-header">Closed Date</th>';
-}
+            }
             if($columnTaggedMembers){
                 $data .= '<th class="table-header">Tagged Members</th>';
             }
@@ -583,6 +676,10 @@ if($columnDateClosed){
             if($columnAttachment){
                 $data .= '<th class="table-header">Attachment</th>';
             }
+            endif;
+
+            $data .= $this->getColumnFiltersHeader($columnFilter);
+
             $data .= '<th class="table-header">Action</th>
         </tr>';
             $type = $_GET['type'];
@@ -599,7 +696,7 @@ if($columnDateClosed){
             }
 
 
-            if($_GET['filter'] && @$_GET['filter-responsibility']){
+            /*if($_GET['filter'] && @$_GET['filter-responsibility']){
                 $responsibility = $_GET['filter-responsibility'];
                 $fetch_query .= " AND opportunities.created_by = '$responsibility' ";
             }
@@ -621,7 +718,10 @@ if($columnDateClosed){
                 $createdDateFrom = $_GET['filter-created-date-from'];
                 $createdDateTo = $_GET['filter-created-date-to'];
                 $fetch_query .= " AND DATE_FORMAT(opportunities.date_entered, '%d/%m/%Y') BETWEEN '$createdDateFrom' AND '$createdDateTo' ";
-            }
+            }*/
+            
+            if($_GET['filter'])
+                $fetch_query .= $this->getFilterQuery();
 
             $fetch_query .= " ORDER BY `opportunities`.`date_modified` DESC";
 
@@ -638,14 +738,20 @@ if($columnDateClosed){
             $result = $GLOBALS['db']->query($fetch_query);
             while($row = $GLOBALS['db']->fetchByAssoc($result))
             {
-                $created_by_id = $row['created_by'];
+                $created_by_id = $row['assigned_user_id'];
                 $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
                 $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
                 $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
                 $user_name = $user_name_fetch_row['user_name'];
                 $first_name = $user_name_fetch_row['first_name'];
                 $last_name = $user_name_fetch_row['last_name'];
-                $full_name = "$first_name  $last_name";
+                if ($user_name_fetch_row['reports_to_id']) {
+                    $reports_to = $this->get_user_details_by_id($user_name_fetch_row['reports_to_id']);
+                    $reports_to_full_name = ' <i class="fa fa-arrow-right"></i> ' . $reports_to['first_name'] .' '. $reports_to['last_name'];
+                } else {
+                    $reports_to_full_name = "";
+                }
+                $full_name = "$first_name  $last_name $reports_to_full_name";
                 $closed_by = '';
                 if (!empty($row['date_modified'])) {
                     $modified_user_id = $row['modified_user_id'];
@@ -657,13 +763,27 @@ if($columnDateClosed){
                     $closed_by = "$closed_by_first_name $closed_by_last_name";
                     // To Do: Find actual closed by
                 }
-                $data .='
-                     <tr>
-                        <td class="table-data">'.$row['name'].'</td>
-                        <td class="table-data">'.$full_name.'</td>';
-                if($columnAmount){
-                    $data .= '<td class="table-data">'.($this->beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>';
+                $oppID = $row['id'];
+                $data .='<tr>
+                            <td class="table-data">';
+                $tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
+                $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
+                $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
+                $tagged_users = $tagged_user_query_fetch_row['user_id'];
+                if ((strpos($tagged_users, $log_in_user_id) !== false)) {
+                    $data .= $row['name']. ' <i class="fa fa-tag" style="font-size: 12px; color:green"></i>';
+                } else {
+                    $data .= $row['name'];
                 }
+                $data .='</td><td class="table-data">'.$full_name.'</td>';
+
+                if(!@$_GET['customColumns']):
+                /*if($columnAmount){
+                $data .= '<th class="table-header">Amount ( in Cr )</th>';
+            }*/
+            if($columnDepartment){
+                $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label($row['new_department_c'])))).'</td>';
+            }
                 if($columnREPEOI){
                     $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label($row['rfporeoipublished_c'])))).'</td>';
                 }
@@ -676,7 +796,7 @@ if($columnDateClosed){
                 if($columnDateCreated){
                     $data .= '<td class="table-data">'.date_format(date_create($row['date_entered']),'d/m/Y').'</td>';
                 }
-if($columnDateClosed){
+                if($columnDateClosed){
                     if($row['date_closed']){
                         $closedDate = date_format(date_create($row['date_closed']),'d/m/Y');
                     }else{
@@ -692,35 +812,50 @@ if($columnDateClosed){
                     $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['modified_user_id']) )))).'</td>';
                 }
                 if($columnPreviousResponsibility){
-                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['created_by']) )))).'</td>';
+                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['assigned_user_id']) )))).'</td>';
                 }
                 if($columnAttachment){
                     $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $row['file_url'] ? $row['file_url'] : '' )))).'</td>';
                 }
+                endif;
+
+                $data .= $this->getColumnFiltersBody($columnFilter, $row);
                         
                         
-                        /*<td class="table-data">'.($this->beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>
-                                        <td class="table-data">'.($this->beautify_label($row['rfporeoipublished_c'])).'</td>
-                                        <td class="table-data">'.date_format(date_create($row['date_closed']),'d/m/Y').'</td>
-                                        <td class="table-data"  style="color: blue">'.$closed_by.'</td>
-                                        <td class="table-data">'.date_format(date_create($row['date_entered']),'d/m/Y').'</td>*/;
+                /*<td class="table-data">'.($this->beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>
+                    <td class="table-data">'.($this->beautify_label($row['rfporeoipublished_c'])).'</td>
+                    <td class="table-data">'.date_format(date_create($row['date_closed']),'d/m/Y').'</td>
+                    <td class="table-data"  style="color: blue">'.$closed_by.'</td>
+                    <td class="table-data">'.date_format(date_create($row['date_entered']),'d/m/Y').'</td>*/;
+
                 $data .= '
                     <td class="table-data">
-                    <div style="display: flex; width: 80%; align-items: center; padding: 10px; justify-content: space-between; margin-left: 20px;">';
+                    <div style="display: flex; width: 150px; align-items: center; padding: 10px; justify-content: space-between; margin: 0;">';
 
-                $data .= '<button class="tag1" id="deselectBtn" style="margin-right: 15px;width: 18px;" onClick=getSequenceFlow("'.$row['id'].'")>';
-                if($this->checkRecentActivity($row['id'])):
-                    $data .= '<img id="search-icon" src="modules/Home/assets/Frame-12.svg" alt="svg" style="color: #333333;"/>';   
+                $data .= '<button class="tag1" id="reassignmentBtn" style="margin-right: 0px;width: 18px;" onclick="fetchReassignmentDialog(\''.$row['id'].'\')">';
+                if ($this->is_reassignment_applicable($row['id'])):
+                    $data .= '<i id="reassignment-icon" title="Re-assign User" class="fa fa-user" aria-hidden="true" style="color:black; font-size: 1.8rem;"> </i>';
                 endif;
                 $data .= '</button>';
-                
+
+                $data .= '<button class="tag1" id="deselectBtn" style="margin-right: 0px;width: 18px;" onClick=getSequenceFlow("'.$row['id'].'")>';
+                if($this->checkRecentActivity($row['id'])):
+                    $data .= '<img id="search-icon" title="Audit Trail" src="modules/Home/assets/Frame-12.svg" alt="svg" style="color: #333333;"/>';   
+                endif;
+                $data .= '</button>';
+
+                // if ($this->is_tagging_applicable($row['id'])) {
+                //     $data .='<button class="tag" id="deselectBtn" onclick="fetchDeselectDialog(\''.$row['id'].'\')">                                            <i id="search-icon" class="fa fa-tag" aria-hidden="true"> </i>
+                //             </button>';
+                // }
+                $data .= '<button class="tag1 action-item-space" id="deselectBtn" onclick="fetchDeselectDialog(\''.$row['id'].'\')">';
                 if ($this->is_tagging_applicable($row['id'])) {
-                    $data .='<button class="tag" id="deselectBtn" onclick="fetchDeselectDialog(\''.$row['id'].'\')">                                            <i id="search-icon" class="fa fa-tag" aria-hidden="true"> </i>
-                            </button>';
+                    $data .='<i id="search-icon" title="Tag/Untag Users" class="fa fa-tag" aria-hidden="true"> </i>';
                 }
+                $data .= '</button>';
                 $data .='
                         <a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'" class="eye" id="search-btn">
-                        <i id="search-icon" class="fa fa-eye" aria-hidden="true"> </i>
+                        <i id="search-icon" title="View" class="fa fa-eye" aria-hidden="true"> </i>
                         </a>
                     </div>
                     </td>
@@ -740,7 +875,15 @@ if($columnDateClosed){
             $data .= $this->pagination($page, $numberOfPages, 'filter_by_opportunity_type', $type, $searchTerm, $_GET['filter']);
             $data .= '</div>';
 
-            echo $data;
+            $columnFilterHtml = $this->getColumnFilters();
+            $filters            = $this->getFilterHtml('opportunity', $columnFilter);
+            echo json_encode(array(
+                'data'          => $data,
+                'columnFilter'  => $columnFilterHtml,
+                'filters'       => $filters
+            ));
+
+            //echo $data;
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
@@ -794,8 +937,6 @@ if($columnDateClosed){
 
 
 
-
-
     public function action_show_data_between_date(){
         try
         {
@@ -804,12 +945,13 @@ if($columnDateClosed){
             $searchTerm = @$_GET['searchTerm'];
 
             $columnFilter = @$_GET;
-            $columnAmount = @$columnFilter['Amount'];
+            //$columnAmount = @$columnFilter['Amount'];
+            $columnDepartment = @$columnFilter['new_department_c'];
             $columnREPEOI = @$columnFilter['REP-EOI-Published'];
             $columnClosedDate = @$columnFilter['Closed-Date'];
             $columnClosedBy = @$columnFilter['Closed-by'];
             $columnDateCreated = @$columnFilter['Date-Created'];
-$columnDateClosed = @$columnFilter['Date-Closed'];
+            $columnDateClosed = @$columnFilter['Date-Closed'];
 
             $columnTaggedMembers = @$columnFilter['Tagged-Members'];
             $columnViewedBy = @$columnFilter['Viewed-by'];
@@ -828,10 +970,12 @@ $columnDateClosed = @$columnFilter['Date-Closed'];
 
             $db = \DBManagerFactory::getInstance();
             $day = $_GET['days'];
+
+            setcookie('day', $day, time() + (86400 * 30), '/');
+
             $GLOBALS['db'];
             
             // print_r($_GET['filter']); die;
-
 
             $check_user_team = "SELECT teamfunction_c from users LEFT JOIN users_cstm ON users.id = users_cstm.id_c WHERE id = '$log_in_user_id'";
             $check_user_team_result = $GLOBALS['db']->query($check_user_team);
@@ -855,7 +999,7 @@ $columnDateClosed = @$columnFilter['Date-Closed'];
 
             $non_global_organization_count = $this->get_non_global_op_count($day);
 
-           $fetch_self_count = "SELECT count(*) as self_count FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE  created_by='$log_in_user_id' AND deleted != 1 AND date_entered >= now() - interval '$day' day";
+           $fetch_self_count = "SELECT count(*) as self_count FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE  assigned_user_id='$log_in_user_id' AND deleted != 1 AND date_entered >= now() - interval '$day' day";
            $fetch_self_result = $GLOBALS['db']->query($fetch_self_count);
            $fetch_self = $GLOBALS['db']->fetchByAssoc($fetch_self_result);
            $self_count = $fetch_self['self_count'];
@@ -894,7 +1038,7 @@ $columnDateClosed = @$columnFilter['Date-Closed'];
                 $fetch_team_result_by_status = $GLOBALS['db']->fetchByAssoc($fetch_team_count_by_status_result);
                 $team_count_by_status = $fetch_team_result_by_status['team_count_by_status'];
 
-                $fetch_self_count_by_status = "SELECT count(*) as self_count_by_status FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE status_c= '".$row['status_c']."' AND created_by='$log_in_user_id' AND deleted != 1 AND date_entered >= now() - interval '$day' day";
+                $fetch_self_count_by_status = "SELECT count(*) as self_count_by_status FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE status_c= '".$row['status_c']."' AND assigned_user_id='$log_in_user_id' AND deleted != 1 AND date_entered >= now() - interval '$day' day";
                 $fetch_self_count_by_status_result = $GLOBALS['db']->query($fetch_self_count_by_status);
                 $fetch_self_result_by_status = $GLOBALS['db']->fetchByAssoc($fetch_self_count_by_status_result);
                 $self_count_by_status = $fetch_self_result_by_status['self_count_by_status'];
@@ -908,7 +1052,7 @@ $columnDateClosed = @$columnFilter['Date-Closed'];
                     $closed_lost_count_team_result = $GLOBALS['db']->query($closed_lost_count_team_query);
                     $closed_lost_count_team_res = $GLOBALS['db']->fetchByAssoc($closed_lost_count_team_result);
                     $closed_lost_count_team = $closed_lost_count_team_res['lost_count'];
-                    $closed_lost_count_self_query = "SELECT count(*) as lost_count FROM opportunities o LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c WHERE o.deleted != 1 AND o.date_entered >= now() - interval '$day' day AND oc.status_c='Closed' AND oc.closure_status_c ='lost' AND created_by='$log_in_user_id'";
+                    $closed_lost_count_self_query = "SELECT count(*) as lost_count FROM opportunities o LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c WHERE o.deleted != 1 AND o.date_entered >= now() - interval '$day' day AND oc.status_c='Closed' AND oc.closure_status_c ='lost' AND assigned_user_id='$log_in_user_id'";
                     $closed_lost_count_self_result = $GLOBALS['db']->query($closed_lost_count_self_query);
                     $closed_lost_count_self_res = $GLOBALS['db']->fetchByAssoc($closed_lost_count_self_result);
                     $closed_lost_count_self = $closed_lost_count_self_res['lost_count'];
@@ -1016,14 +1160,20 @@ $columnDateClosed = @$columnFilter['Date-Closed'];
                             <div style="display: flex; margin-left: auto;">
 
                                 <button class="filter" id="filter_myBtn" onclick="openFilterDialog()" style="padding:10; border: none !important;">
-                                    <i class="fa fa-filter" aria-hidden="true"> </i>
+                                    <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
                                 </button>
                              
 
                                 <button class="cog" id="setting_myBtn" onclick=openSettingDialog("opportunities","action_show_data_between_date") style="padding:10; border: none !important;">
                                     <i id="setting_myBtn" class="fa fa-list" aria-hidden="true"> </i>
-                                </button>
-                            </div>
+                                </button>';
+                                if ($log_in_user_id == '1') {
+                                    $data .='<button class="cog download" id="download_btn" class="download-btn" data-type="opportunity" data-action="dayFilter" data-value="'.$day.'" style="padding:10; border: none !important;">
+                                                <i class="fa fa-download" aria-hidden="true"> </i>
+                                            </button>';
+                                }
+                                
+                                $data .= '</div>
                         </div>
                     </div>
 
@@ -1033,8 +1183,14 @@ $columnDateClosed = @$columnFilter['Date-Closed'];
             <tr class="table-header-row">
                 <th class="table-header">Name</th>
                 <th class="table-header">Primary Responsibility</th>';
-            if($columnAmount){
+            
+            if(!@$_GET['customColumns']):
+
+            /*if($columnAmount){
                 $data .= '<th class="table-header">Amount ( in Cr )</th>';
+            }*/
+            if($columnDepartment){
+                $data .= '<th class="table-header">Department</th>';
             }
             if($columnREPEOI){
                 $data .= '<th class="table-header">RFP/EOI Published</th>';
@@ -1047,10 +1203,11 @@ $columnDateClosed = @$columnFilter['Date-Closed'];
             }
             if($columnDateCreated){
                 $data .= '<th class="table-header">Created Date</th>';
-}
-if($columnDateClosed){
+            }
+            if($columnDateClosed){
                 $data .= '<th class="table-header">Closed Date</th>';
-}
+            }
+            
             if($columnTaggedMembers){
                 $data .= '<th class="table-header">Tagged Members</th>';
             }
@@ -1064,44 +1221,34 @@ if($columnDateClosed){
                 $data .= '<th class="table-header">Attachment</th>';
             }
 
+            endif; 
+
+            $data .= $this->getColumnFiltersHeader($columnFilter);
+
+
             $data .= '<th class="table-header text-center">Action</th>
             </tr>';
 
             if($searchTerm){
-                $fetch_query = "SELECT opportunities.*, opportunities_cstm.* FROM opportunities
-                    LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day AND opportunities.name LIKE '%$searchTerm%' ";
+                $fetch_query = "SELECT opportunities.*, opportunities_cstm.*,
+                CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities
+                    LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
+                    LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
+                    WHERE opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day AND opportunities.name LIKE '%$searchTerm%' ";
             }else{
-                $fetch_query = "SELECT opportunities.*, opportunities_cstm.* FROM opportunities
-                    LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE deleted != 1 AND date_entered >= now() - interval '$day' day ";
+                $fetch_query = "SELECT opportunities.*, opportunities_cstm.*,
+                CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities
+                    LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
+                    LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
+                    WHERE deleted != 1 AND date_entered >= now() - interval '$day' day ";
             }
 
-            if($_GET['filter'] && @$_GET['filter-responsibility']){
-                $responsibility = $_GET['filter-responsibility'];
-                $fetch_query .= " AND opportunities.created_by = '$responsibility' ";
-            }
-            if($_GET['filter'] && @$_GET['filter-rfp-eoi-status']){
-                $rpfEOIStatus = $_GET['filter-rfp-eoi-status'];
-                $fetch_query .= " AND opportunities_cstm.rfporeoipublished_c = '$rpfEOIStatus' ";
-            }
-            if($_GET['filter'] && @$_GET['filter-min-price'] && @$_GET['filter-max-price']){
-                $minPrice = $_GET['filter-min-price'];
-                $maxPrice = $_GET['filter-max-price'];
-                $fetch_query .= " AND opportunities_cstm.budget_allocated_oppertunity_c BETWEEN '$minPrice' AND '$maxPrice' ";
-            }
-            if($_GET['filter'] && @$_GET['filter-closed-date-from'] && @$_GET['filter-closed-date-to']){
-                $closedDateFrom = $_GET['filter-closed-date-from'];
-                $closedDateTo = $_GET['filter-closed-date-to'];
-                $fetch_query .= " AND DATE_FORMAT(opportunities.date_modified,'%d/%m/%Y') BETWEEN '$closedDateFrom' AND '$closedDateTo' ";
-            }
-            if($_GET['filter'] && @$_GET['filter-created-date-from'] && @$_GET['filter-created-date-to']){
-                $createdDateFrom = $_GET['filter-created-date-from'];
-                $createdDateTo = $_GET['filter-created-date-to'];
-                $fetch_query .= " AND DATE_FORMAT(opportunities.date_entered,'%d/%m/%Y') BETWEEN '$createdDateFrom' AND '$createdDateTo' ";
-            }
+            if($_GET['filter'])
+                $fetch_query .= $this->getFilterQuery();
 
             $fetch_query .= " ORDER BY `opportunities`.`date_modified` DESC";
 
-            //echo $fetch_query; die;
+            // echo $fetch_query; die;
 
             //Pagination Count
             $limit = 5;
@@ -1116,14 +1263,20 @@ if($columnDateClosed){
             $result = $GLOBALS['db']->query($fetch_query);
             while($row = $GLOBALS['db']->fetchByAssoc($result))
             {
-                $created_by_id = $row['created_by'];
+                $created_by_id = $row['assigned_user_id'];
                 $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
                 $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
                 $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
                 $user_name = $user_name_fetch_row['user_name'];
                 $first_name = $user_name_fetch_row['first_name'];
                 $last_name = $user_name_fetch_row['last_name'];
-                $full_name = "$first_name  $last_name";
+                if ($user_name_fetch_row['reports_to_id']) {
+                    $reports_to = $this->get_user_details_by_id($user_name_fetch_row['reports_to_id']);
+                    $reports_to_full_name = ' <i class="fa fa-arrow-right"></i> ' . $reports_to['first_name'] .' '. $reports_to['last_name'];
+                } else {
+                    $reports_to_full_name = "";
+                }
+                $full_name = "$first_name  $last_name $reports_to_full_name";
                 $closed_by = '';
                 if (!empty(date_format(date_create($row['date_modified']),'d/m/Y'))) {
                     $modified_user_id = $row['modified_user_id'];
@@ -1135,13 +1288,31 @@ if($columnDateClosed){
                     $closed_by = "$closed_by_first_name $closed_by_last_name";
                     // To Do: Find actual closed by
                 }
-                $data .='
-                <tr>
-                    <td class="table-data">'.$row['name'].'</td>
-                    <td class="table-data">'.$full_name.'</td>';
-                if($columnAmount){
-                    $data .= '<td class="table-data">'.($this->beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>';
+                $oppID = $row['id'];
+                $data .='<tr>
+                            <td class="table-data">';
+                $tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
+                $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
+                $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
+                $tagged_users = '';
+                if($tagged_user_query_fetch_row)
+                    $tagged_users = $tagged_user_query_fetch_row['user_id'];
+
+                if ((strpos($tagged_users, $log_in_user_id) !== false)) {
+                    $data .= $row['name']. ' <i class="fa fa-tag" style="font-size: 12px; color:green"></i>';
+                } else {
+                    $data .= $row['name'];
                 }
+                $data .='</td><td class="table-data">'.$full_name.'</td>';
+
+                if(!@$_GET['customColumns']):
+
+                /*if($columnAmount){
+                $data .= '<th class="table-header">Amount ( in Cr )</th>';
+            }*/
+            if($columnDepartment){
+                $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label($row['new_department_c'])))).'</td>';
+            }
                 if($columnREPEOI){
                     $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label($row['rfporeoipublished_c'])))).'</td>';
                 }
@@ -1171,29 +1342,39 @@ if($columnDateClosed){
                     $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['modified_user_id']) )))).'</td>';
                 }
                 if($columnPreviousResponsibility){
-                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['created_by']) )))).'</td>';
+                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['assigned_user_id']) )))).'</td>';
                 }
                 if($columnAttachment){
                     $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $row['file_url'] ? $row['file_url'] : '' )))).'</td>';
                 }
+
+                endif; 
+
+                $data .= $this->getColumnFiltersBody($columnFilter, $row);
                 
                 $data .= '<td class="table-data">
-                        <div style="display: flex; width: 80%; align-items: center; padding: 10px; justify-content: space-between; margin-left: 20px;">';
+                        <div style="display: flex; width: 150px; align-items: center; padding: 10px; justify-content: space-between; margin: 0;">';
                 
-                $data .= '<button class="tag1" id="deselectBtn" style="margin-right: 15px;width: 18px;" onClick=getSequenceFlow("'.$row['id'].'")>';
-                if($this->checkRecentActivity($row['id'])):
-                    $data .= '<img id="search-icon" src="modules/Home/assets/Frame-12.svg" alt="svg" style="color: #333333;"/>';   
+                $data .= '<button class="tag1" id="reassignmentBtn" style="margin-right: 0px;width: 18px;" onclick="fetchReassignmentDialog(\''.$row['id'].'\')">';
+                if ($this->is_reassignment_applicable($row['id'])):
+                    $data .= '<i id="reassignment-icon" title="Re-assign User" class="fa fa-user" aria-hidden="true" style="color:black; font-size: 1.8rem;"> </i>';
                 endif;
                 $data .= '</button>';
-                
+
+                $data .= '<button class="tag1" id="deselectBtn" style="margin-right: 0px;width: 18px;" onClick=getSequenceFlow("'.$row['id'].'")>';
+                if($this->checkRecentActivity($row['id'])):
+                    $data .= '<img id="search-icon" title="Audit Trail" src="modules/Home/assets/Frame-12.svg" alt="svg" style="color: #333333;"/>';   
+                endif;
+                $data .= '</button>';
+
+                $data .= '<button class="tag1" id="deselectBtn" onclick="fetchDeselectDialog(\''.$row['id'].'\')" style="margin-right: 0px;width: 18px;">';
                 if ($this->is_tagging_applicable($row['id'])) {
-                    $data .='<button class="tag1" id="deselectBtn" onclick="fetchDeselectDialog(\''.$row['id'].'\')">
-                    <i id="search-icon" class="fa fa-tag" aria-hidden="true"> </i>
-                     </button>';
+                    $data .='<i id="search-icon" title="Tag/Untag Users" class="fa fa-tag" aria-hidden="true"> </i>';
                 }
+                $data .= '</button>';
                 $data .='
                       <a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'" class="eye" id="search-btn">
-                        <i id="search-icon" class="fa fa-eye" aria-hidden="true"> </i>
+                        <i id="search-icon" title="View" class="fa fa-eye" aria-hidden="true"> </i>
                       </a>
                     </div>
                   </td>
@@ -1221,6 +1402,10 @@ if($columnDateClosed){
             $data .= $this->pagination($page, $numberOfPages, 'show_data_between_date', $day, $searchTerm, $_GET['filter']);
             $data .= '</div>';
 
+
+            $columnFilterHtml   = $this->getColumnFilters();
+            $filters            = $this->getFilterHtml('opportunity', $columnFilter);
+
             echo json_encode(array(
                 'data'          => $data,
                 'total'         => $total,
@@ -1231,7 +1416,9 @@ if($columnDateClosed){
                 //'delegate_count' => $this->getDelegateCount(),
                 'global_organization_count' => $global_organization_count,
                 'non_global_organization'   =>  $non_global_organization_count,
-                'fetched_by_status'         =>  $fetch_by_status
+                'fetched_by_status'         =>  $fetch_by_status,
+                'columnFilter'              => $columnFilterHtml,
+                'filters'                   => $filters
             ));
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
@@ -1240,7 +1427,7 @@ if($columnDateClosed){
     }
 
     public function get_delegated_user($log_in_user_id) {
-        $fetch_query = "SELECT Count(*)as count,opportunities.created_by, opportunities_cstm.delegate as delegate FROM opportunities
+        $fetch_query = "SELECT Count(*)as count, opportunities_cstm.delegate as delegate FROM opportunities
         LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE deleted != 1 AND opportunities_cstm.user_id2_c = '$log_in_user_id' GROUP BY opportunities_cstm.delegate ORDER BY count DESC";
         $fetch_delegated_user = $GLOBALS['db']->query($fetch_query);
         $fetch_delegated_user_result = $GLOBALS['db']->fetchByAssoc($fetch_delegated_user);
@@ -1280,7 +1467,7 @@ if($columnDateClosed){
             $closed_lost_count_team_result = $GLOBALS['db']->query($closed_lost_count_team_query);
             $closed_lost_count_team_res = $GLOBALS['db']->fetchByAssoc($closed_lost_count_team_result);
             $closed_lost_count_team = $closed_lost_count_team_res['lost_count'];
-            $closed_lost_count_self_query = "SELECT count(*) as lost_count FROM opportunities o LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c WHERE o.deleted != 1 AND o.date_entered >= now() - interval '$day' day AND oc.status_c='Closed' AND oc.closure_status_c ='lost' AND created_by='$log_in_user_id'";
+            $closed_lost_count_self_query = "SELECT count(*) as lost_count FROM opportunities o LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c WHERE o.deleted != 1 AND o.date_entered >= now() - interval '$day' day AND oc.status_c='Closed' AND oc.closure_status_c ='lost' AND assigned_user_id='$log_in_user_id'";
             $closed_lost_count_self_result = $GLOBALS['db']->query($closed_lost_count_self_query);
             $closed_lost_count_self_res = $GLOBALS['db']->fetchByAssoc($closed_lost_count_self_result);
             $closed_lost_count_self = $closed_lost_count_self_res['lost_count'];
@@ -1372,14 +1559,20 @@ if($columnDateClosed){
             LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE id = '$opportunity_id'";
             $fetch_opportunity_info_result = $GLOBALS['db']->query($fetch_opportunity_info);
             $row = $GLOBALS['db']->fetchByAssoc($fetch_opportunity_info_result);
-            $created_by_id = $row['created_by'];
+            $created_by_id = $row['assigned_user_id'];
             $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
             $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
             $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
             $user_name = $user_name_fetch_row['user_name'];
             $first_name = $user_name_fetch_row['first_name'];
             $last_name = $user_name_fetch_row['last_name'];
-            $full_name = "$first_name  $last_name";
+            if ($user_name_fetch_row['reports_to_id']) {
+                    $reports_to = $this->get_user_details_by_id($user_name_fetch_row['reports_to_id']);
+                    $reports_to_full_name = ' <i class="fa fa-arrow-right"></i> ' . $reports_to['first_name'] .' '. $reports_to['last_name'];
+                } else {
+                    $reports_to_full_name = "";
+                }
+                $full_name = "$first_name  $last_name $reports_to_full_name";
 
             if($row['opportunity_type'] == 'global'){
                 $sub_head = 'Selected members will be able to view details or take action';
@@ -1398,7 +1591,7 @@ if($columnDateClosed){
                     <thead>
                     <tr class="tabname">
                         <th>Primary Responsibility</th>
-                        <th>Amount (in Cr)</th>
+                        <th>Amount (in Cr/Mn)</th>
                         <th>RFP/EOI Published</th>
                         <th>Modified Date</th>
                         <th>Modified By</th>
@@ -1408,7 +1601,7 @@ if($columnDateClosed){
                     <tbody>
                         <tr class="tabvalue">
                         <td>' . $full_name . '</td>
-                        <td>' . $this->beautify_amount($row["budget_allocated_oppertunity_c"]) . '</td>
+                        <td>' . $this->append_currency($row['currency_c'], $this->beautify_amount($row["budget_allocated_oppertunity_c"])) . '</td>
                         <td>' . $this->beautify_label($row["rfporeoipublished_c"]) . '</td>
                         <td>' . date_format(date_create($row['date_modified']), 'd/m/Y') . '</td>
                         <td>' . $this->get_closed_by($row) . '</td>
@@ -1465,12 +1658,15 @@ if($columnDateClosed){
         return $str;
     }
     public function multi_id_name_map_helper($v) {
+        $full_name = '';
         $query = "SELECT first_name,last_name FROM users WHERE id = '$v'";
         $result = $GLOBALS['db']->query($query);
         $result_row = $GLOBALS['db']->fetchByAssoc($result);
-        $first_name = $result_row['first_name'];
-        $last_name = $result_row['last_name'];
-        $full_name = "$first_name $last_name";
+        if($result_row){
+            $first_name = $result_row['first_name'];
+            $last_name = $result_row['last_name'];
+            $full_name = "$first_name $last_name";
+        }
         return $full_name;
     }
     public function action_delegated_dialog_info()
@@ -1489,7 +1685,7 @@ if($columnDateClosed){
             if (!empty(@$delegated_user) && @$delegated_user['first_name'] || @$delegated_user['last_name']) {
                 $delegated_user_name = $delegated_user['first_name'] . $delegated_user['last_name'];
             }
-            $data = '';
+            $data = $delegated_user_id;
             if(@$delegated_user_name):
             $data = ' <table class="delegatetable">
                         <thead>
@@ -1610,11 +1806,34 @@ if($columnDateClosed){
     }
 
     public function beautify_label($string) {
-        return ucwords(str_replace('_', ' ', $string));
+        $string = str_replace('_', ' ', $string);
+        $string = str_replace('^', '', $string);
+        $string = str_replace(',', ', ', $string);
+        $string = preg_replace('/(?<!\ )[A-Z]/', ' $0', $string);
+        return ucwords($string);
+    }
+    public function beautify_label_n_f($string) {
+        $string = str_replace('_', '', $string);
+        if (strpos($string, '^PilotforFutureOpportunity^') !== false) {
+            $string = str_replace('^PilotforFutureOpportunity^', '^PilotForFutureOpportunity^', $string);
+        }
+        if (strpos($string, '^StrategicAlignmentforFutureOpportunity^') !== false) {
+            $string = str_replace('^StrategicAlignmentforFutureOpportunity^', '^StrategicAlignmentForFutureOpportunity^', $string);
+        }
+        return $this->beautify_label($string);
     }
 
     public function beautify_amount($amount) {
         return preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amount);
+    }
+
+    public function append_currency($oppCurrency, $amount) {
+        if ($amount != '') {
+            $symbol = ($oppCurrency == 'USD') ? '$' : '₹';
+            $unit = ($oppCurrency == 'USD') ? ' Mn' : ' Cr';
+            $amount = $symbol . $amount . $unit;
+        }
+        return $amount;
     }
 
     public function split_camel_case($label) {
@@ -1630,7 +1849,8 @@ if($columnDateClosed){
         try{
             $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
-
+            global $current_user;
+            $log_in_user_id = $current_user->id;
 
             if($_POST['required_field'] == 'yes'){
                $required_field = 'yes'; 
@@ -1693,7 +1913,7 @@ if($columnDateClosed){
                             </div>
                             <div style="display: flex; margin-left: auto;">
                                 <button class="filter" id="filter_myBtn" onclick="openFilterDialog()" style="padding:10; border: none !important;">
-                                    <i class="fa fa-filter" aria-hidden="true"> </i>
+                                    <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
                                 </button>
                                
                                 <button class="cog" id="setting_myBtn" onclick="openSettingDialog(\'opportunities\')" style="padding:10; border: none !important;">
@@ -1709,7 +1929,7 @@ if($columnDateClosed){
             <tr class="table-header-row">
             <th class="table-header">Name</th>
             <th class="table-header">Primary Responsibility</th>
-            <th class="table-header">Amount ( in Cr )</th>
+            <th class="table-header">Amount ( in Cr/Mn )</th>
             <th class="table-header">RFP/EOI Published</th>
             <th class="table-header">Modified Date</th>
             <th class="table-header">Modified By</th>
@@ -1724,7 +1944,7 @@ if($columnDateClosed){
                     $custom_filter_query .= "rfporeoipublished_c = '$required_field'";
                 }
                 if (!empty($responsibility)) {
-                    $custom_filter_query .= " AND created_by = '$responsibility'";
+                    $custom_filter_query .= " AND assigned_user_id = '$responsibility'";
                 }
                 if (!(($lowerVal == 0) && ($upperVal == 0))) {
                     $custom_filter_query .= "AND amount BETWEEN '$upperVal' AND '$lowerVal'";
@@ -1740,14 +1960,20 @@ if($columnDateClosed){
                 $custom_filter_query_result = $GLOBALS['db']->query($custom_filter_query);
                 while($row = $GLOBALS['db']->fetchByAssoc($custom_filter_query_result))
                 {
-                    $created_by_id = $row['created_by'];
+                    $created_by_id = $row['assigned_user_id'];
                     $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
                     $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
                     $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
                     $user_name = $user_name_fetch_row['user_name'];
                     $first_name = $user_name_fetch_row['first_name'];
                     $last_name = $user_name_fetch_row['last_name'];
-                    $full_name = "$first_name  $last_name";
+                    if ($user_name_fetch_row['reports_to_id']) {
+                    $reports_to = $this->get_user_details_by_id($user_name_fetch_row['reports_to_id']);
+                    $reports_to_full_name = ' <i class="fa fa-arrow-right"></i> ' . $reports_to['first_name'] .' '. $reports_to['last_name'];
+                } else {
+                    $reports_to_full_name = "";
+                }
+                $full_name = "$first_name  $last_name $reports_to_full_name";
                     $closed_by = '';
                     if (!empty($row['date_modified'])) {
                         $modified_user_id = $row['modified_user_id'];
@@ -1758,26 +1984,42 @@ if($columnDateClosed){
                         $closed_by_last_name = $modified_user_query_fetch_row['last_name'];
                         $closed_by = "$closed_by_first_name $closed_by_last_name";
                     }
+                    $oppID = $row['id'];
+                    $data .='<tr>
+                                <td class="table-data">';
+                    $tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
+                    $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
+                    $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
+                    $tagged_users = $tagged_user_query_fetch_row['user_id'];
+                    if ((strpos($tagged_users, $log_in_user_id) !== false)) {
+                        $data .= $row['name']. ' <i class="fa fa-tag" style="font-size: 12px; color:green"></i>';
+                    } else {
+                        $data .= $row['name'];
+                    }
                     $data .='
-                    <tr>
-                    <td class="table-data">'.$row['name'].'</td>
-                    <td class="table-data">'.$full_name.'</td>
-                    <td class="table-data">'.($this->beautify_amount(($this->beautify_amount($row['budget_allocated_oppertunity_c'])))).'</td>
+                    </td><td class="table-data">'.$full_name.'</td>
+                    <td class="table-data">'.($this->append_currency( $row['currency_c'], $this->beautify_amount($row['budget_allocated_oppertunity_c']))).'</td>
                     <td class="table-data">'.($this->beautify_label($row['rfporeoipublished_c'])).'</td>
                     <td class="table-data">'.date_format(date_create($row['date_modified']),'d/m/Y').'</td>
                     <td class="table-data">'.$closed_by.'</td>
                     <td class="table-data">'.date_format(date_create($row['date_entered']),'d/m/Y').'</td>
                     <td class="table-data">
-                    <div style="display: flex; width: 80%; align-items: center; padding: 10px; justify-content: space-between; margin-left: 20px; margin-left: 20px;">';
+                    <div style="display: flex; width: 150px; align-items: center; padding: 10px; justify-content: space-between; margin:0;">';
                     
+                    $data .= '<button class="tag1" id="reassignmentBtn" style="margin-right: 0px;width: 18px;" onclick="fetchReassignmentDialog(\''.$row['id'].'\')">';
+                    if ($this->is_reassignment_applicable($row['id'])):
+                        $data .= '<i id="reassignment-icon" title="Re-assign User" class="fa fa-user" aria-hidden="true" style="color:black; font-size: 1.8rem;"> </i>';
+                    endif;
+                    $data .= '</button>';
+
+                    $data .= '<button class="tag1 action-item-space" id="deselectBtn" onclick="fetchDeselectDialog(\''.$row['id'].'\')">';
                     if ($this->is_tagging_applicable($row['id'])) {
-                        $data .='<button class="tag1" id="deselectBtn" onclick="fetchDeselectDialog(\''.$row['id'].'\')">
-                                        <i id="search-icon" class="fa fa-tag" aria-hidden="true"> </i>
-                                </button>';
+                        $data .='<i id="search-icon" title="Tag/Untag Users" class="fa fa-tag" aria-hidden="true"> </i>';
                     }
+                    $data .= '</button>';
                     $data .='
                       <a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'" class="eye" id="search-btn">
-                        <i id="search-icon" class="fa fa-eye" aria-hidden="true"> </i>
+                        <i id="search-icon" title="View" class="fa fa-eye" aria-hidden="true"> </i>
                       </a>
                     </div>
                   </td>
@@ -1912,7 +2154,7 @@ if($columnDateClosed){
                             </div>
                             <div style="display: flex; margin-left: auto;">
                                 <button class="filter" id="filter_myBtn" onclick="openFilterDialog()" style="padding:10; border: none !important;">
-                                    <i class="fa fa-filter" aria-hidden="true"> </i>
+                                    <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
                                 </button>
                                
                                 <button class="cog" id="setting_myBtn" onclick="openSettingDialog(\'opportunities\')" style="padding:10; border: none !important;">
@@ -1964,7 +2206,8 @@ if($columnDateClosed){
             $qlDroppedCount = $this->getOpportunityStatusCount('Dropping');
 
             $columnFilter = @$_GET;
-            $columnAmount = @$columnFilter['Amount'];
+            //$columnAmount = @$columnFilter['Amount'];
+            $columnDepartment = @$columnFilter['new_department_c'];
             $columnREPEOI = @$columnFilter['REP-EOI-Published'];
             //$columnStatus = @$columnFilter['status'];
             $columnClosedDate = @$columnFilter['Closed-Date'];
@@ -2022,10 +2265,10 @@ if($columnDateClosed){
                                     <div style="display: flex;">
                                         <div style="display: flex; margin-left: auto;">
                                             <button class="filter" id="filter_myBtn" onclick="openPendingFilterDialog()" style="padding:10; border: none !important;">
-                                                <i class="fa fa-filter" aria-hidden="true"> </i>
+                                                <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
                                             </button>
 
-                                            <button class="cog" id="setting_myBtn" onclick=openSettingDialog("pendings","action_filter_by_opportunity_status","'.$status.'") style="padding:10; border: none !important;">
+                                            <button class="cog" id="setting_myBtn" onclick=openPendingSettingsDialog("pendings","action_filter_by_opportunity_status","'.$status.'") style="padding:10; border: none !important;">
                                                 <i id="setting_myBtn" class="fa fa-list" aria-hidden="true"> </i>
                                             </button>
                                         </div>
@@ -2040,9 +2283,15 @@ if($columnDateClosed){
                         <th class="table-header">Name</th>
                         <th class="table-header">Primary Responsibility</th>';
                         $data .= '<th class="table-header" style="text-align: center">Status</th>';
-                        if($columnAmount){
-                            $data .= '<th class="table-header">Amount ( in Cr )</th>';
-                        }
+
+                        if(!@$_GET['customColumns']):
+
+                        /*if($columnAmount){
+                $data .= '<th class="table-header">Amount ( in Cr )</th>';
+            }*/
+            if($columnDepartment){
+                $data .= '<th class="table-header">Department</th>';
+            }
                         if($columnREPEOI){
                             $data .= '<th class="table-header">RFP/EOI Published</th>';
                         }
@@ -2071,6 +2320,10 @@ if($columnDateClosed){
                         if($columnAttachment){
                             $data .= '<th class="table-header">Attachment</th>';
                         }
+                        endif;
+
+                        $data .= $this->getColumnFiltersHeader($columnFilter);
+                        
                     $data .= '<th class="table-header">Action</th></tr>';
                 
             /* $fetch_query = "SELECT o.*, oc.* FROM opportunities AS o LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c JOIN (
@@ -2081,20 +2334,22 @@ if($columnDateClosed){
             /*$fetch_query = " SELECT o.*, oc.* FROM opportunities AS o JOIN opportunities_cstm oc ON o.id = oc.id_c
                 WHERE ( oc.user_id2_c = '$log_in_user_id' OR oc.delegate = '$log_in_user_id' ) AND o.deleted != 1 AND date_entered >= now() - interval '$day' day ";*/
             
-            $maxQuery = "SELECT row_count FROM approval_table WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '$log_in_user_id' OR ap.delegate_id = '$log_in_user_id' ) AND ap.apply_for = '$status' ORDER BY row_count DESC LIMIT 1";
+            $maxQuery = "SELECT row_count FROM approval_table ap WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '$log_in_user_id' OR ap.delegate_id = '$log_in_user_id' ) AND ap.apply_for = '$status' ORDER BY row_count DESC LIMIT 1";
             $result = $GLOBALS['db']->query($maxQuery);
             $rowCount = $GLOBALS['db']->fetchByAssoc($result);
             if($rowCount)
                 $rowCount = $rowCount['row_count'];
 
-            $fetch_query = "SELECT ap.id as approval_id, o.*, oc.* FROM approval_table ap";
-            $fetch_query .= " JOIN opportunities o ON o.id = ap.opp_id";
-            $fetch_query .= " JOIN opportunities_cstm oc ON oc.id_c = ap.opp_id";
-            $fetch_query .= " WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND o.deleted != 1 AND o.date_entered >= now() - interval '1200' day AND ( ap.approver_rejector = '$log_in_user_id' OR ap.delegate_id = '$log_in_user_id' ) AND ap.apply_for = '$status'";
+            $fetch_query = "SELECT ap.id as approval_id, ap.delegate_id as delegate_id, opportunities.*, opportunities_cstm.*, 
+            CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM approval_table ap";
+            $fetch_query .= " JOIN opportunities ON opportunities.id = ap.opp_id";
+            $fetch_query .= " JOIN opportunities_cstm ON opportunities_cstm.id_c = ap.opp_id";
+            $fetch_query .= " LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id";
+            $fetch_query .= " WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '1200' day AND ( ap.approver_rejector = '$log_in_user_id' OR ap.delegate_id = '$log_in_user_id' ) AND ap.apply_for = '$status'";
             if($rowCount)
                 $fetch_query .= " AND ap.row_count = '$rowCount'";
             
-            if($_GET['filter'] && @$_GET['filter-responsibility']){
+            /*if($_GET['filter'] && @$_GET['filter-responsibility']){
                 $responsibility = $_GET['filter-responsibility'];
                 $fetch_query .= " AND o.created_by = '$responsibility' ";
             }
@@ -2116,11 +2371,13 @@ if($columnDateClosed){
                 $createdDateFrom = $_GET['filter-created-date-from'];
                 $createdDateTo = $_GET['filter-created-date-to'];
                 $fetch_query .= " AND DATE_FORMAT(o.date_entered, '%d/%m/%Y') BETWEEN '$createdDateFrom' AND '$createdDateTo' ";
-            }
+            }*/
+            if($_GET['filter'])
+                $fetch_query .= $this->getFilterQuery();
 
-            $fetch_query .= "  ORDER BY `o`.`date_modified` DESC";
+            $fetch_query .= "  ORDER BY `opportunities`.`date_modified` DESC";
 
-            // echo $fetch_query;
+            // echo $fetch_query; die;
 
             //Pagination Count
             $limit = 5;
@@ -2136,7 +2393,7 @@ if($columnDateClosed){
             $result = $GLOBALS['db']->query($fetch_query);
             while($row = $GLOBALS['db']->fetchByAssoc($result))
             {
-                $created_by_id = $row['created_by'];
+                $created_by_id = $row['assigned_user_id'];
                 $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
                 $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
                 $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
@@ -2144,7 +2401,13 @@ if($columnDateClosed){
                 $user_name = $user_name_fetch_row['user_name'];
                 $first_name = $user_name_fetch_row['first_name'];
                 $last_name = $user_name_fetch_row['last_name'];
-                $full_name = "$first_name  $last_name";
+                if ($user_name_fetch_row['reports_to_id']) {
+                    $reports_to = $this->get_user_details_by_id($user_name_fetch_row['reports_to_id']);
+                    $reports_to_full_name = ' <i class="fa fa-arrow-right"></i> ' . $reports_to['first_name'] .' '. $reports_to['last_name'];
+                } else {
+                    $reports_to_full_name = "";
+                }
+                $full_name = "$first_name  $last_name $reports_to_full_name";
 
                 $id = $row['id'];
                 $closed_by = '';
@@ -2164,17 +2427,33 @@ if($columnDateClosed){
                 $result2 = $GLOBALS['db']->query($query2);
                 while($row2 = $GLOBALS['db']->fetchByAssoc($result2)){
                     if($row2['Approved'] == 0 && $row2['pending'] == 1){*/
-
+                        $oppID = $row['id'];
+                        $data .='<tr>
+                                    <td class="table-data">';
+                        $tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
+                        $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
+                        $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
+                        $tagged_users = $tagged_user_query_fetch_row['user_id'];
+                        $delegated_u_id = $row['delegate_id'];
+                        if ((strpos($tagged_users, $log_in_user_id) !== false)) {
+                            $data .= $row['name']. ' <i class="fa fa-tag" style="font-size: 12px; color:green"></i>';
+                        } else if (strpos($delegated_u_id, $log_in_user_id) !== false) {
+                            $data .= $row['name']. ' <img src="modules/Home/assets/Delegate-icon.svg" style="width: 25px; color:green" />';
+                        } else {
+                            $data .= $row['name'];
+                        }
                         $data .='
-                            <tr>
-                                <td class="table-data">'.$row['name'].'</td>
-                                <td class="table-data">'.$full_name.'</td>
+                                </td><td class="table-data">'.$full_name.'</td>
                                 
                                 <td class="table-data" style="text-align: center">'.$this->pendingApprovalStatus($row['id'], $status).'</td>';
 
-                                if($columnAmount){
-                                    $data .= '<td class="table-data">'.($this->beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>';
-                                }
+                                if(!@$_GET['customColumns']):
+                                /*if($columnAmount){
+                $data .= '<th class="table-header">Amount ( in Cr )</th>';
+            }*/
+            if($columnDepartment){
+                $data .= '<th class="table-header">Department</th>';
+            }
                                 if($columnREPEOI){
                                     $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label($row['rfporeoipublished_c'])))).'</td>';
                                 }
@@ -2204,11 +2483,14 @@ if($columnDateClosed){
                                     $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['modified_user_id']) )))).'</td>';
                                 }
                                 if($columnPreviousResponsibility){
-                                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['created_by']) )))).'</td>';
+                                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['assigned_user_id']) )))).'</td>';
                                 }
                                 if($columnAttachment){
                                     $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $row['file_url'] ? $row['file_url'] : '' )))).'</td>';
                                 }
+                                endif;
+
+                                $data .= $this->getColumnFiltersBody($columnFilter, $row);
                             
                         $data .= '<td class="table-data">
                             <div style="font-size: 20px;">
@@ -2238,7 +2520,16 @@ if($columnDateClosed){
             $data .= $this->pagination($page, $numberOfPages, 'filter_by_opportunity_status', $status, '', $_GET['filter']);
             $data .= '</div>';
 
-            echo $data;
+            $columnFilterHtml = $this->getColumnFilters($status, 'pending');
+            $filters          = $this->getFilterHtml('opportunity', $columnFilter);
+
+            echo json_encode(array(
+                'data'          => $data,
+                'columnFilter'  => $columnFilterHtml,
+                'filters'       => $filters
+            ));
+
+            //echo $data;
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
@@ -2365,7 +2656,7 @@ if($columnDateClosed){
             return $count['count'];
         }*/
 
-        $maxQuery = "SELECT row_count FROM approval_table WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '$log_in_user_id' OR ap.delegate_id = '$log_in_user_id' )";
+        $maxQuery = "SELECT row_count FROM approval_table ap WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '$log_in_user_id' OR ap.delegate_id = '$log_in_user_id' )";
         if($status)
             $maxQuery .= " AND ap.apply_for = '$status'";
 
@@ -2535,7 +2826,7 @@ if($columnDateClosed){
 
                 $ChangedStatus = $this->getChangeStatus($row['status_c'], $row['rfporeoipublished_c']);
 
-                $created_by_id = $row['created_by'];
+                $created_by_id = $row['assigned_user_id'];
                 $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
                 $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
                 $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
@@ -2543,7 +2834,13 @@ if($columnDateClosed){
                 $user_name = $user_name_fetch_row['user_name'];
                 $first_name = $user_name_fetch_row['first_name'];
                 $last_name = $user_name_fetch_row['last_name'];
-                $full_name = "$first_name  $last_name";
+                if ($user_name_fetch_row['reports_to_id']) {
+                    $reports_to = $this->get_user_details_by_id($user_name_fetch_row['reports_to_id']);
+                    $reports_to_full_name = ' <i class="fa fa-arrow-right"></i> ' . $reports_to['first_name'] .' '. $reports_to['last_name'];
+                } else {
+                    $reports_to_full_name = "";
+                }
+                $full_name = "$first_name  $last_name $reports_to_full_name";
                 $approver_first_name = $this->get_user_details_by_id($log_in_user_id)['first_name'];
                 $approver_last_name = $this->get_user_details_by_id($log_in_user_id)['last_name'];
                 $approver_full_name = "$approver_first_name $approver_last_name";
@@ -2573,7 +2870,7 @@ if($columnDateClosed){
                 $data .='
                                 <tr>
                                     <td class="approvaltable-data-popup">'.$full_name.'</td>
-                                    <td class="approvaltable-data-popup">'.($this->beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>
+                                    <td class="approvaltable-data-popup">'.$this->append_currency($row['currency_c'], $this->beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>
                                     <td class="approvaltable-data-boolean-popup">'.($this->beautify_label($row['rfporeoipublished_c'])).'</td>
                                     <td class="approvaltable-data-popup">'.date_format(date_create($row['date_modified']),'d/m/Y').'</td>
                                     <td class="approvaltable-data-popup">
@@ -2646,7 +2943,7 @@ if($columnDateClosed){
         $result = $GLOBALS['db']->query($sql);
         while($row = $GLOBALS['db']->fetchByAssoc($result) )
             {
-                $created_by=$row['created_by'];
+                $created_by=$row['assigned_user_id'];
                 $assigned=$row['assigned_user_id'];
                 $approver=$row['multiple_approver_c'];
                 $deligate = $row['delegate'];
@@ -3005,39 +3302,48 @@ if($columnDateClosed){
     }
 
     public function action_opportunity_pending_count(){
-
-        global $current_user;
-        $log_in_user_id = $current_user->id;
-
-        $db = \DBManagerFactory::getInstance();
-        $GLOBALS['db'];
-        
-        $PRC = $this->get_pending_request_count();
-        /*$query = "SELECT count(*) as count FROM opportunities AS o JOIN opportunities_cstm oc ON oc.id_c = o.id JOIN (
-                SELECT *, count(opp_id) as opp_count  FROM approval_table GROUP BY opp_id ORDER BY id DESC
-            ) AS ap ON o.id = ap.opp_id AND ap.opp_count = 1
-            WHERE oc.user_id2_c = '$log_in_user_id' AND ap.Approved = 0 AND ap.pending = 1 AND o.deleted != 1";*/
-        /*$query = "SELECT count(*) as count FROM opportunities AS o JOIN opportunities_cstm oc ON oc.id_c = o.id JOIN (
-            SELECT *, MAX(id) as id_count, count(opp_id) as opp_count  FROM approval_table GROUP BY opp_id ORDER BY id DESC
-        ) AS ap ON o.id = ap.opp_id
-        WHERE oc.user_id2_c = '$log_in_user_id' AND ap.Approved = 0 AND ap.pending = 1 AND o.deleted != 1";
-        $count = $GLOBALS['db']->query($query);
-        $count = $GLOBALS['db']->fetchByAssoc($count);*/
-        
-        /*$query = "SELECT o.id FROM opportunities o JOIN opportunities_cstm oc ON oc.id_c = o.id WHERE o.deleted != 1 AND (oc.user_id2_c = '$log_in_user_id' OR oc.delegate = '$log_in_user_id' )";
-        $result = $GLOBALS['db']->query($query);
-        $count = 0;
-        while($row = $GLOBALS['db']->fetchByAssoc($result)){
-            $oppID = $row['id'];
-            $query2 = "SELECT id, Approved, pending FROM approval_table WHERE opp_id = '$oppID' ORDER BY id DESC LIMIT 1";
-            $result2 = $GLOBALS['db']->query($query2);
-            while($row2 = $GLOBALS['db']->fetchByAssoc($result2)){
-                // echo $row2['id'].'<br>';
-                if($row2['Approved'] == 0 && $row2['pending'] == 1)
-                    $count++;
-            }
-        }*/
-        echo $PRC . '<i class="fa fa-angle-double-down" aria-hidden="true"></i>';
+        try {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+    
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            
+            $PRC = $this->get_pending_request_count();
+                /*$query = "SELECT count(*) as count FROM opportunities AS o JOIN opportunities_cstm oc ON oc.id_c = o.id JOIN (
+                        SELECT *, count(opp_id) as opp_count  FROM approval_table GROUP BY opp_id ORDER BY id DESC
+                    ) AS ap ON o.id = ap.opp_id AND ap.opp_count = 1
+                    WHERE oc.user_id2_c = '$log_in_user_id' AND ap.Approved = 0 AND ap.pending = 1 AND o.deleted != 1";*/
+                /*$query = "SELECT count(*) as count FROM opportunities AS o JOIN opportunities_cstm oc ON oc.id_c = o.id JOIN (
+                    SELECT *, MAX(id) as id_count, count(opp_id) as opp_count  FROM approval_table GROUP BY opp_id ORDER BY id DESC
+                ) AS ap ON o.id = ap.opp_id
+                WHERE oc.user_id2_c = '$log_in_user_id' AND ap.Approved = 0 AND ap.pending = 1 AND o.deleted != 1";
+                $count = $GLOBALS['db']->query($query);
+                $count = $GLOBALS['db']->fetchByAssoc($count);*/
+                
+                /*$query = "SELECT o.id FROM opportunities o JOIN opportunities_cstm oc ON oc.id_c = o.id WHERE o.deleted != 1 AND (oc.user_id2_c = '$log_in_user_id' OR oc.delegate = '$log_in_user_id' )";
+                $result = $GLOBALS['db']->query($query);
+                $count = 0;
+                while($row = $GLOBALS['db']->fetchByAssoc($result)){
+                    $oppID = $row['id'];
+                    $query2 = "SELECT id, Approved, pending FROM approval_table WHERE opp_id = '$oppID' ORDER BY id DESC LIMIT 1";
+                    $result2 = $GLOBALS['db']->query($query2);
+                    while($row2 = $GLOBALS['db']->fetchByAssoc($result2)){
+                        // echo $row2['id'].'<br>';
+                        if($row2['Approved'] == 0 && $row2['pending'] == 1)
+                            $count++;
+                    }
+                }*/
+            echo json_encode(
+                array(
+                      'data' => $PRC . '<i class="fa fa-angle-double-down" aria-hidden="true"></i>',
+                      'count' => $PRC
+                    ));
+        }
+        catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
     }
 
     public function get_pending_request_count() {
@@ -3095,35 +3401,35 @@ if($columnDateClosed){
         $data = '';
 
         if($LeadCount):
-            $data .= '<div style="width: '.$LeadCount.'%">
+            $data .= '<div style="width: '.$LeadCount.'%" class="graph-bar-each">
                     <div style="width: 100%;height: 70px;background-color: #DDA0DD;"></div>
                     <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$LeadCount.'%</p>
                 </div>';
         endif;
 
         if($QualifiedLeadCount):
-            $data .= '<div style="width: '.$QualifiedLeadCount.'%">
+            $data .= '<div style="width: '.$QualifiedLeadCount.'%" class="graph-bar-each">
                     <div style="width: 100%;height: 70px;background-color: #4B0082;"></div>
                     <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedLeadCount.'%</p>
                 </div>';
         endif;
         
         if($QualifiedOpporunityCount):
-            $data .= '<div style="width: '.$QualifiedOpporunityCount.'%">
+            $data .= '<div style="width: '.$QualifiedOpporunityCount.'%" class="graph-bar-each">
                     <div style="width: 100%; height: 70px; background-color: #0000FF;"></div>
                     <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedOpporunityCount.'%</p>
                 </div>';
         endif;
 
         if($QualifiedDPR):
-            $data .= '<div style="width: '.$QualifiedDPR.'%">
+            $data .= '<div style="width: '.$QualifiedDPR.'%" class="graph-bar-each">
                     <div style="width: 100%; height: 70px; background-color: #FFFF00;"></div>
                     <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedDPR.'%</p>
                 </div>';
         endif; 
 
         if($QualifiedBid):
-            $data .= '<div style="width: '.$QualifiedBid.'%">
+            $data .= '<div style="width: '.$QualifiedBid.'%" class="graph-bar-each">
                     <div style="width: 100%; height: 70px; background-color: #00FF00;"></div>
                     <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedBid.'%</p>
                 </div>';
@@ -3131,13 +3437,13 @@ if($columnDateClosed){
         
         if($Close):
             if($CloseWon):
-                $data .= '<div style="width: '.$CloseWon.'%">
+                $data .= '<div style="width: '.$CloseWon.'%" class="graph-bar-each">
                         <div style="width: 100%; height: 70px; background-color: #006400;"></div>
                         <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$CloseWon.'%</p>
                     </div>';
             endif;
             if($CloseLost):
-                $data .= '<div style="width: '.$CloseLost.'%">
+                $data .= '<div style="width: '.$CloseLost.'%" class="graph-bar-each">
                         <div style="width: 100%; height: 70px; background-color: #FF7F00;"></div>
                         <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$CloseLost.'%</p>
                     </div>';
@@ -3145,7 +3451,7 @@ if($columnDateClosed){
         endif; 
 
         if($Drop):
-            $data .= '<div style="width: '.$Drop.'%">
+            $data .= '<div style="width: '.$Drop.'%" class="graph-bar-each">
                     <div style="width: 100%; height: 70px; background-color: #FF0000;"></div>
                     <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$Drop.'%</p>
                 </div>';
@@ -3200,13 +3506,12 @@ if($columnDateClosed){
     public function action_getOpportunityStatusTimeline(){
         try{
             $oppID = $_POST['oppID']; 
-            
             $data = '<span class="close-sequence-flow">×</span><div class="wrap padding-tb black-color">';
 
-            $query = "SELECT name FROM opportunities WHERE id = '$oppID'";
+            $query = "SELECT name,created_by,assigned_user_id FROM opportunities WHERE id = '$oppID'";
             $result = $GLOBALS['db']->query($query);
             $result = $GLOBALS['db']->fetchByAssoc($result);
-
+            $created_by = $result['created_by'];
             $data .= '<div class="d-block padding">
                     <h2 class="">'.$result['name'].'</h2>
                     <h3 class="gray-color">Approval/Rejection Audit Trail</h3>
@@ -3248,12 +3553,30 @@ if($columnDateClosed){
                     </div>
                     <hr>';
             endif;
-            
+            $user = $this->get_user_details_by_id($created_by);
+            $first_name = $user['first_name'];
+            $last_name = $user['last_name'];
+            $full_name = "$first_name $last_name";
             $data .= '<div class="approved">';
-            $query = "SELECT u.first_name, u.last_name, ap.opp_id, ap.date_time, ap.apply_for, ap.Approved, ap.Rejected, ap.pending FROM approval_table ap JOIN users u ON u.id = ap.approver_rejector WHERE ap.opp_id = '$oppID' AND ap.pending = 0 ORDER BY ap.updated_at ASC";
+            $data .= '<!-- For Lead stage -->
+                    <div class="row half-padding-tb">
+                        <div class="d-inline-block w-50">                            
+                            <h5><span class="status-badge-green-b">L</span>
+                            <span class="line-bottom green"></span> 
+                            <span style="font-size: 12px;margin:0">'.$full_name.'</span></h5> 
+                        </div>
+                        <div class="d-inline-block w-50 align-self-end text-right">
+                            <h5 class="gray-color">'.$updateDate.'</h5>
+                        </div>
+                    </div>';
+            $query = "select u.first_name, u.last_name, ap.opp_id, ap.date_time, ap.apply_for,ap.assigned_by, ap.Approved, ap.Rejected, ap.pending, ap.assign from 
+            ( (select opp_id , assigned_to_id, date_time, 'Reassignment' as apply_for, assigned_by, 0 as Approved, 0 as Rejected, 0 as pending, 1 as assign from assign_flow where opp_id ='$oppID'
+            and (NOT (assigned_to_id ='$created_by' and status='Lead' and assigned_by ='$created_by')))
+            union (select opp_id , approver_rejector as assigned_to_id,updated_at as date_time, apply_for, '' as assigned_by, Approved, Rejected, pending, 0 as assign from approval_table where opp_id ='$oppID') ) ap 
+            JOIN users u ON u.id = ap.assigned_to_id order by date_time ASC";
             $result = $GLOBALS['db']->query($query);
             while($row = $GLOBALS['db']->fetchByAssoc($result)){
-                
+                $full_name = $row['first_name'].' '.$row['last_name'];
                 $class = '';
                 
                 if($row['Approved'] == 1){
@@ -3262,6 +3585,14 @@ if($columnDateClosed){
                 }else if($row['Rejected'] == 1){
                     $class = 'status-badge-red-b';
                     $lineClass = 'red';
+                } else if($row['pending'] == 1) {
+                    $class = 'status-badge-yellow-b';
+                    $lineClass = 'yellow';
+                } else if ($row['assign'] == 1) {
+                    $class = 'status-badge-blue-b';
+                    $lineClass = 'blue';
+                    $assigned_by = $this->getUserName($row['assigned_by']);
+                    $full_name = $assigned_by. ' <i class="fa fa-arrow-right"></i> ' . $full_name;
                 }
                 
                 $dateExtracted = substr($row['date_time'],4,11);
@@ -3270,14 +3601,15 @@ if($columnDateClosed){
                 //$data .= '<a href="javascript:void(0);" title="'.$row['first_name'].' '.$row['last_name'].'" class="label '.$class.'">'.substr($row['first_name'], 0, 1).substr($row['last_name'], 0, 1).'</a>';
                 $data .= '<!-- single -->
                     <div class="row half-padding-tb">
-                        <div class="d-inline-block w-50">
+                        <div class="d-inline-block" style="width:75%">
                             <!--<h5><span class="status-badge-green-b">'.$this->getStatusChar($row['apply_for'],$row['opp_id']).'</span> 
                             <span class="line-bottom"></span> '.$this->getApproverNames($row['opp_id'], $row['apply_for'], 0).'</h5> -->
                             
                             <h5><span class="'.$class.'">'.$this->getStatusChar($row['apply_for'],$row['opp_id']).'</span> 
-                            <span class="line-bottom '.$lineClass.'"></span> '.$row['first_name'].' '.$row['last_name'].'</h5> 
+                            <span class="line-bottom '.$lineClass.'"></span> 
+                            <span style="font-size: 12px;margin:0">'.$full_name.'</span></h5> 
                         </div>
-                        <div class="d-inline-block w-50 align-self-end text-right">
+                        <div class="d-inline-block align-self-end text-right" style="width:25%">
                             <h5 class="gray-color">'.$updateDate.'</h5>
                         </div>
                     </div>';
@@ -3367,6 +3699,9 @@ if($columnDateClosed){
             case 'Dropping':
                 $statusChar = 'DP';
                 break;
+            case 'Reassignment':
+                $statusChar = 'R';
+                break;
             default:
                 $statusChar = '';
                 break;
@@ -3383,6 +3718,2168 @@ if($columnDateClosed){
         }
         return $statusChar;
     }
+
+
+    function getColumnFilters($status = null, $type = null){
+        /* Default Columns */
+        if($type){
+            $columnFilterHtml = '<form class="pending-settings-form sort-column">';
+            $columnFilterHtml .= '<input type="hidden" name="settings-section" class="pending-settings-section" value="" />
+            <input type="hidden" name="settings-type" class="pending-settings-type" value="" />
+            <input type="hidden" name="settings-type-value" class="pending-settings-type-value" value="" />';
+        }else{
+            $columnFilterHtml = '<form class="settings-form sort-column">';
+            $columnFilterHtml .= '<input type="hidden" name="settings-section" class="settings-section" value="" />
+            <input type="hidden" name="settings-type" class="settings-type" value="" />
+            <input type="hidden" name="settings-type-value" class="settings-type-value" value="" />';
+        }
+        $columnFields = $this->opportunityColumns($status);
+        $i = 0;
+        foreach($columnFields['default'] as $key => $field){
+            $style = '';
+            if($i <= 1)
+                $style = 'class="nondrag" style="pointer-events:none; background: #eeeeef;"';
+            
+            if($i == 2){
+                $columnFilterHtml .= '<ul id="sortable1" class="sortable1 connectedSortable">';
+            }
+
+            $columnFilterHtml .= 
+                '<li '.$style.'>
+                    <input class="settingInputs" type="checkbox" id="name-select" name="'.$key.'" value="'.$key.'" checked="True" style="display: none">
+                    <input class="settingInputs" type="checkbox" id="name-select" name="customColumns[]" value="'.$key.'" checked="True" style="display: none">
+                    <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> '.$field.'</label>
+                </li>';
+            $i++;
+        }
+        $columnFilterHtml .= '</ul></form>';
+
+        /* Addon Columns */
+        $columnFilterHtml .= '<div class="divider"></div><ul id="sortable2" class="sortable2 sort-column connectedSortable" style="padding-right: 0; float: right;">';
+        foreach($columnFields['addons'] as $key => $field){
+            $columnFilterHtml .= 
+                '<li>
+                    <input class="settingInputs" type="checkbox" id="name-select" name="'.$key.'" value="'.$key.'" checked="True" style="display: none">
+                    <input class="settingInputs" type="checkbox" id="name-select" name="customColumns[]" value="'.$key.'" checked="True" style="display: none">
+                    <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> '.$field.'</label>
+                </li>';
+        }
+        $columnFilterHtml .= '</ul>';
+
+        return $columnFilterHtml;
+    }
+
+    function opportunityColumns($status = null){
+        $fields = array();
+        
+        $default = array(
+            'name'                  => 'Opportunity Name',
+            'Primary-Responsbility' => 'Primary Responsibility',
+            //'Amount'                => 'Amount (in Cr/Mn)',
+            'new_department_c'      => 'Department',
+            'REP-EOI-Published'     => 'RFP/EOI Published',
+            'Closed-Date'           => 'Modified Date',
+            'Closed-by'             => 'Modified By',
+            'Date-Created'          => 'Created Date',
+        );
+        
+        $default2 = array(
+            'multiple_approver_c'           => 'Approver',
+            'state_c'                       => 'State',
+            
+            'source_c'                      => 'Source',
+            'non_financial_consideration_c' => 'Non Financial Consideration',
+            'segment_c'                     => 'Segment',
+            'product_service_c'             => 'Product/ Service',
+            'international_c'               => 'International Opportunity'
+        );
+
+        $QualifiedLead = array(
+            'total_input_value'             => 'Amount (Cr/Mn)',
+            'sector_c'                      => 'Sector',
+            'product_service_c'             => 'Product/ Service',
+            'sub_sector_c'                  => 'Sub Sector',
+            'scope_budget_projected_c'      => 'DPR/Scope & Budget Accepted (Projected)',
+            'rfp_eoi_projected_c'           => 'RFP/EOI Initiated Drafting (Projected)',
+            'rfp_eoi_published_projected_c' => 'RFP/EOI Published (Projected)',
+            'work_order_projected_c'        => 'Work Order (Projected)'
+        );
+        $QualifiedLead = array_merge($default2, $QualifiedLead);
+
+        $QualifiedOpportunity = array(
+            'budget_head_amount_c'                     => 'Budget Head Amount (In Cr)',
+            'budget_allocated_oppertunity_c'    => 'Budget Allocated For Opportunity (in Cr)',
+            'project_implementation_start_c'    => 'Project Implementation Start Date',
+            'project_implementation_end_c'      => 'Project Implementation End Date',
+            'selection_c'                       => 'Selection/Funding/Timing',
+            /*'funding_c'                         => 'Funding',
+            'timing_button_c'                   => 'Timing',*/
+        );
+        $QualifiedOpportunity = array_merge($QualifiedLead, $QualifiedOpportunity);
+
+        $QualifiedDPR = array(
+            'submissionstatus_c' => 'Submission Status'
+        );
+        $QualifiedDPR = array_merge($QualifiedOpportunity, $QualifiedDPR);
+
+        $QualifiedBid = array(
+            'closure_status_c'  => 'Closure Status'
+        );
+        $QualifiedBid = array_merge($QualifiedDPR, $QualifiedBid);
+        
+        $fields['default'] = $default;
+        switch($status){
+            case 'Lead':
+                $fields['addons'] = $default2;
+                break;
+            case 'QualifiedLead':
+                $fields['addons'] = $QualifiedLead;
+                break;
+            case 'qualifylead':
+                $fields['addons'] = $QualifiedLead;
+                break;
+            
+            case 'Qualified':
+                $fields['addons'] = $QualifiedOpportunity;
+                break;
+            case 'qualifyOpportunity':
+                $fields['addons'] = $QualifiedOpportunity;
+                break;
+
+            case 'QualifiedDpr':
+                $fields['addons'] = $QualifiedDPR;
+                break;
+            case 'qualifyDpr':
+                $fields['addons'] = $QualifiedDPR;
+                break;
+
+            case 'QualifiedBid':
+                $fields['addons'] = $QualifiedBid;
+                break;
+            case 'qualifyBid':
+                $fields['addons'] = $QualifiedBid;
+                break;
+
+            case 'Closed':
+                $fields['addons'] = $QualifiedBid;
+                break;
+            case 'closure':
+                $fields['addons'] = $QualifiedBid;
+                break;
+
+            case 'Dropped':
+                $fields['addons'] = $QualifiedBid;
+                break;
+            case 'Dropping':
+                $fields['addons'] = $QualifiedBid;
+                break;
+
+            default:
+                $fields['addons'] = $default2;
+                break;
+        }
+        
+        return $fields;
+    }
+
+    function getColumnFiltersHeader($columnFilter){
+
+        $data = '';
+        $customColumns = @$_GET['customColumns'];
+        
+        if($customColumns):
+        foreach($customColumns as $column){
+            $data .= $this->getColumnHtml($column);
+        }
+        endif;
+
+        return $data;
+    }
+
+    function getColumnHtml($column){
+        $data = '';
+        switch($column){
+            case 'Amount':
+                $data .= '<th class="table-header">Amount ( in Cr/Mn )</th>';
+                break; 
+            
+            case 'REP-EOI-Published':
+                $data .= '<th class="table-header">RFP/EOI Published</th>';
+                break;
+
+            case 'Closed-Date':
+                $data .= '<th class="table-header">Modified Date</th>';
+                break;
+
+            case 'Closed-by':
+                $data .= '<th class="table-header">Modified By</th>';
+                break;
+
+            case 'Date-Created':
+                $data .= '<th class="table-header">Created Date</th>';
+                break;
+            
+            case 'Date-Closed':
+                $data .= '<th class="table-header">Closed Date</th>';
+                break;
+
+            case 'multiple_approver_c':
+                $data .= '<th class="table-header">Approver</th>';
+                break;
+            
+            case 'state_c':
+                $data .= '<th class="table-header">State</th>';
+                break;
+            
+            case 'new_department_c':
+                $data .= '<th class="table-header">Department</th>';
+                break;
+
+            case 'source_c':
+                $data .= '<th class="table-header">Source</th>';
+                break;
+            
+            case 'non_financial_consideration_c':
+                $data .= '<th class="table-header">Non Financial Consideration</th>';
+                break;
+            
+            case 'segment_c':
+                $data .= '<th class="table-header">Segment</th>';
+                break;
+            
+            case 'product_service_c':
+                $data .= '<th class="table-header">Product/Service</th>';
+                break;
+            
+            case 'international_c':
+                $data .= '<th class="table-header">International Opportunity</th>';
+                break;
+    
+            case 'total_input_value':
+                $data .= '<th class="table-header">Amount (Cr/Mn)</th>';
+                break;
+
+            case 'sector_c':
+                $data .= '<th class="table-header">Sector</th>';
+                break;
+
+            case 'sub_sector_c':
+                $data .= '<th class="table-header">Sub sector</th>';
+                break;
+
+            case 'scope_budget_projected_c':
+                $data .= '<th class="table-header">DPR/Scope & Budget Accepted (Projected)</th>';
+                break;
+
+            case 'rfp_eoi_projected_c':
+                $data .= '<th class="table-header">RFP/EOI Initiated Drafting (Projected)</th>';
+                break;
+
+            case 'rfp_eoi_published_projected_c':
+                $data .= '<th class="table-header">RFP/EOI Published (Projected)</th>';
+                break;
+
+            case 'work_order_projected_c':
+                $data .= '<th class="table-header">Work Order (Projected)</th>';
+                break;
+
+            case 'budget_head_amount_c':
+                $data .= '<th class="table-header">Budget Head Amount (In Cr)</th>';
+                break;
+
+            case 'budget_allocated_oppertunity_c':
+                $data .= '<th class="table-header">Budget Allocated for Opportunity (in Cr)</th>';
+                break;
+
+            case 'project_implementation_start_c':
+                $data .= '<th class="table-header">Project Implementation Start Date</th>';
+                break;
+
+            case 'project_implementation_end_c':
+                $data .= '<th class="table-header">Project Implementation End Date</th>';
+                break;
+
+            case 'selection_c':
+                $data .= '<th class="table-header">Selection/Funding/Timing</th>';
+                break;
+                
+            case 'submissionstatus_c':
+                $data .= '<th class="table-header">Submission Status</th>';
+                break;
+    
+            case 'closure_status_c':
+                $data .= '<th class="table-header">Closure Status</th>';
+                break;
+        }
+        return $data;
+    }
+
+    function getColumnFiltersBody($columnFilter, $row){
+
+        $data = '';
+        $customColumns = @$_GET['customColumns'];
+        
+        if($customColumns):
+        foreach($customColumns as $column){
+            $data .= $this->getColumnDataHtml($column, $row);
+        }
+        endif;
+
+        return $data;
+
+    }
+
+    function getColumnDataHtml($column, $row){
+        $data = '';
+        
+        if($row['date_closed']){
+            $closedDate = date_format(date_create($row['date_closed']),'d/m/Y');
+        }else{
+            $closedDate = '';
+        }
+        $closed_by = '';
+        if (!empty($row['date_modified'])) {
+            $modified_user_id = $row['modified_user_id'];
+            $modified_user_query = "SELECT * FROM users WHERE id='$modified_user_id'";
+            $modified_user_query_fetch = $GLOBALS['db']->query($modified_user_query);
+            $modified_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($modified_user_query_fetch);
+            $closed_by_first_name = $modified_user_query_fetch_row['first_name'];
+            $closed_by_last_name = $modified_user_query_fetch_row['last_name'];
+            $closed_by = "$closed_by_first_name $closed_by_last_name";
+        }
+
+        switch($column){
+            case 'Amount':
+                $data .= '<td class="table-data">'.$this->append_currency($row['currency_c'], $this->beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>';
+                break; 
+            
+            case 'REP-EOI-Published':
+                $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label($row['rfporeoipublished_c'])))).'</td>';
+                break;
+
+            case 'Closed-Date':
+                $data .= '<td class="table-data">'.date_format(date_create($row['date_modified']),'d/m/Y').'</td>'; 
+                break;
+
+            case 'Closed-by':
+                $data .= '<td class="table-data" >'.$closed_by.'</td>';
+                break;
+
+            case 'Date-Created':
+                $data .= '<td class="table-data">'.date_format(date_create($row['date_entered']),'d/m/Y').'</td>';
+                break;
+            
+            case 'Date-Closed':
+                $data .= '<td class="table-data">'.$closedDate.'</td>';
+                break;
+
+            case 'multiple_approver_c':
+                $data .= '<td class="table-data" >'.$this->getMultipleApproverNames($row['multiple_approver_c']).'</td>';
+                break;
+            
+            case 'state_c':
+                $data .= '<td class="table-data" >'.$this->beautify_label( $row['state_c'] ).'</td>';
+                break;
+            
+            case 'new_department_c':
+                $data .= '<td class="table-data" >'.$this->beautify_label( $row['new_department_c'] ).'</td>';
+                break;
+
+            case 'source_c':
+                $data .= '<td class="table-data" >'.$this->beautify_label( $row['source_c'] ).'</td>';
+                break;
+            
+            case 'non_financial_consideration_c':
+                if ($row['non_financial_consideration_c'] == null || $row['non_financial_consideration_c'] == '') {
+                    $row['non_financial_consideration_c'] = '^NA^';
+                }
+                $data .= '<td class="table-data" >'.$this->beautify_label_n_f( $row['non_financial_consideration_c'] ).'</td>';
+                break;
+            
+            case 'segment_c':
+                $data .= '<td class="table-data" >'.$this->beautify_label( $row['segment_c'] ).'</td>';
+                break;
+            
+            case 'product_service_c':
+                $data .= '<td class="table-data" >'.$this->beautify_label( $row['product_service_c'] ).'</td>';
+                break;
+            
+            case 'international_c':
+                $data .= '<td class="table-data" >'.$this->beautify_label( $row['international_c'] ).'</td>';
+                break;
+    
+            case 'total_input_value':
+                $data .= '<td class="table-data" >'.$this->append_currency($row['currency_c'], $this->beautify_amount($row['total_input_value'] )).'</td>';
+                break;
+
+            case 'sector_c':
+                $data .= '<td class="table-data" >'.$this->beautify_label( $row['sector_c'] ).'</td>';
+                break;
+
+            case 'sub_sector_c':
+                $data .= '<td class="table-data" >'.$this->beautify_label( $row['sub_sector_c'] ).'</td>';
+                break;
+
+            case 'scope_budget_projected_c':
+                $data .= '<td class="table-data" >'.$this->beautify_label( date('d/m/Y', strtotime($row['scope_budget_projected_c'])) ).'</td>';
+                break;
+
+            case 'rfp_eoi_projected_c':
+                $data .= '<td class="table-data" >'.$this->beautify_label( date('d/m/Y', strtotime($row['rfp_eoi_projected_c'])) ).'</td>';
+                break;
+
+            case 'rfp_eoi_published_projected_c':
+                $data .= '<td class="table-data" >'.$this->beautify_label( date('d/m/Y', strtotime($row['rfp_eoi_published_projected_c'])) ).'</td>';
+                break;
+
+            case 'work_order_projected_c':
+                $data .= '<td class="table-data" >'.$this->beautify_label( date('d/m/Y', strtotime($row['work_order_projected_c'])) ).'</td>';
+                break;
+
+            case 'budget_head_amount_c':
+                $data .= '<td class="table-data" >'.$this->beautify_amount( $row['budget_head_amount_c'] ).'</td>';
+                break;
+
+            case 'budget_allocated_oppertunity_c':
+                $data .= '<td class="table-data" >'.$this->beautify_label( $row['budget_allocated_oppertunity_c'] ).'</td>';
+                break;
+
+            case 'project_implementation_start_c':
+                $data .= '<td class="table-data" >'.$this->beautify_label( date('d/m/Y', strtotime($row['project_implementation_start_c'])) ).'</td>';
+                break;
+
+            case 'project_implementation_end_c':
+                $data .= '<td class="table-data" >'.$this->beautify_label( date('d/m/Y', strtotime($row['project_implementation_end_c'])) ).'</td>';
+                break;
+
+            case 'selection_c':
+                $data .= '<td class="table-data" >';
+                $data .= $this->getColor( $row['selection_c'] );
+                $data .= $this->getColor( $row['funding_c'] );
+                $data .= $this->getColor( $row['timing_button_c'] );
+                $data .= '</td>';
+                break;
+                
+            case 'submissionstatus_c':
+                $data .= '<td class="table-data" >'.$this->beautify_label( $row['submissionstatus_c'] ).'</td>';
+                break;
+    
+            case 'closure_status_c':
+                $data .= '<td class="table-data" >'.$this->beautify_label( $row['closure_status_c'] ).'</td>';
+                break;
+        }
+        return $data;
+    }
+
+    function getFilterHtml($type, $columnFilter){
+
+        $users = $this->get_users_with_team_options();
+
+        /* default fields */
+        $html = '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Opportunity Name</span>
+                <input type="text" class="form-control filter-name" name="filter-name" />
+            </div>';
+
+        $html .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Primary Responsibility</span>
+                <select class="select2" name="filter-responsibility[]" id="" multiple>
+                    '.$users.'
+                </select>
+                
+            </div>';
+        
+        $html .= $this->filterFields($type, $columnFilter);
+        return $html;
+    }
+
+    function filterFields($type, $columnFilter){
+        
+        //$columnAmount = @$columnFilter['Amount'];
+            $columnDepartment = @$columnFilter['new_department_c'];
+        $columnREPEOI = @$columnFilter['REP-EOI-Published'];
+        $columnClosedDate = @$columnFilter['Closed-Date'];
+        $columnClosedBy = @$columnFilter['Closed-by'];
+        $columnDateCreated = @$columnFilter['Date-Created'];
+        $columnDateClosed = @$columnFilter['Date-Closed'];
+
+        $multiple_approver_c            = @$columnFilter['multiple_approver_c'];
+        $state_c                        = @$columnFilter['state_c'];
+        $new_department_c               = @$columnFilter['new_department_c'];
+        $source_c                       = @$columnFilter['source_c'];
+        $non_financial_consideration_c  = @$columnFilter['non_financial_consideration_c'];
+        $segment_c                      = @$columnFilter['segment_c'];
+        $product_service_c              = @$columnFilter['product_service_c'];
+        $international_c                = @$columnFilter['international_c'];
+        
+        $total_input_value              = @$columnFilter['total_input_value'];
+        $sector_c                       = @$columnFilter['sector_c'];
+        $product_service_c              = @$columnFilter['product_service_c'];
+        $sub_sector_c                   = @$columnFilter['sub_sector_c'];
+        $scope_budget_projected_c       = @$columnFilter['scope_budget_projected_c'];
+        $rfp_eoi_projected_c            = @$columnFilter['rfp_eoi_projected_c'];
+        $rfp_eoi_published_projected_c  = @$columnFilter['rfp_eoi_published_projected_c'];
+        $work_order_projected_c         = @$columnFilter['work_order_projected_c'];
+        
+        $budget_head_amount_c                  = @$columnFilter['budget_head_amount_c'];
+        $budget_allocated_oppertunity_c = @$columnFilter['budget_allocated_oppertunity_c'];
+        $project_implementation_start_c = @$columnFilter['project_implementation_start_c'];
+        $project_implementation_end_c   = @$columnFilter['project_implementation_end_c'];
+        $selection_c                    = @$columnFilter['selection_c'];
+        $funding_c                      = @$columnFilter['funding_c'];
+        $timing_button_c                = @$columnFilter['timing_button_c'];
+
+        $submissionstatus_c             = @$columnFilter['submissionstatus_c'];
+
+        $closure_status_c               = @$columnFilter['closure_status_c'];
+
+        $data = '';
+
+
+        if($total_input_value){
+            $data .= '<div class="amount-range-container">
+                <div class="amount-range">
+                    <span class="primary-responsibilty-filter-head">
+                        Amount Range (₹)
+                        <span class="range_min color-red">0 Cr</span>
+                        <span class="color-red"> - </span>
+                        <span class="range_max color-red">200 Cr</span>
+                    </span>
+                </div>
+                <div class="rangeslider">
+                    <input class="min lowerVal" name="filter-total_input_value_min" id="lowerVal" type="range" min="0" max="200" value="0" step="10"/>
+                    <input class="max upperVal" name="filter-total_input_value_max" id="upperVal" type="range" min="0" max="200" value="200" step="10"/>
+                    <span class="light left">0 Cr</span>
+                    <span class="light right">200 Cr</span>
+                </div>
+            </div>';
+            $data .= '<div class="amount-range-container">
+                <div class="amount-range">
+                    <span class="primary-responsibilty-filter-head">
+                        Amount Range ($)
+                        <span class="range_min color-red">0 Mn</span>
+                        <span class="color-red"> - </span>
+                        <span class="range_max color-red">50 Mn</span>
+                    </span>
+                </div>
+                <div class="rangeslider usd">
+                    <input class="min lowerVal" name="filter-total_input_value_min-usd" id="lowerVal" type="range" min="0" max="50" value="0" step="5"/>
+                    <input class="max upperVal" name="filter-total_input_value_max-usd" id="upperVal" type="range" min="0" max="50" value="50" step="5"/>
+                    <span class="light left">0 Mn</span>
+                    <span class="light right">50 Mn</span>
+                </div>
+            </div>';
+        }
+        if($columnREPEOI){
+            $data .= '<div class="form-group">
+                <SPAN style="font-weight: bold;">RFP/EOI Published</SPAN>
+                <div class="filterchecklist">
+
+                    <input type="checkbox" id="required_field" class="rfp-checkbox" name="filter-rfp-eoi-status[]" value="yes">
+                    <label for="yes"> Yes</label>
+                    <input type="checkbox" id="required_field" class="rfp-checkbox" name="filter-rfp-eoi-status[]" value="no">
+                    <label for="No"> No</label>
+                    <input type="checkbox" id="required_field" class="rfp-checkbox" name="filter-rfp-eoi-status[]" value="not_required">
+                    <label for="Not-Required"> Not required</label><br>
+
+                </div>
+            </div>';
+        }
+        if($columnClosedDate){
+            $data .= '<div class="form-group">
+                <div class="date-filter">
+                    <label>Modified Date Range</label><br>
+                    From: <input class="filterdatebox" name="filter-closed-date-from" id="closed_date_from" width="300" />
+                    To: <input class="filterdatebox" name="filter-closed-date-to" id="closed_date_to" width="300" />
+                </div>
+            </div>';
+        }
+        if($columnClosedBy){
+            $users = json_decode( $this->delegate_members(), true);
+            $data .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Modified By</span>
+                <select class="select2" name="filter-Closed-by[]" id="" multiple>
+                '.$users['members'].'
+                </select>
+                
+            </div>';
+        }
+        if($columnDateCreated){
+            $data .= '<div class="form-group">
+                <div class="date-filter">
+                    <label>Created Date Range</label><br>
+                    From: <input class="filterdatebox" name="filter-created-date-from" id="date_from" width="300" />
+                    To: <input class="filterdatebox" name="filter-created-date-to" id="date_to" width="300" /><br>
+                </div>
+            </div>';
+        }
+        if($columnDateClosed){
+            $data .= '<div class="form-group">
+                <div class="date-filter">
+                    <label>Created Date Range</label><br>
+                    From: <input class="filterdatebox" name="filter-created-date-from" id="date_from" width="300" />
+                    To: <input class="filterdatebox" name="filter-created-date-to" id="date_to" width="300" /><br>
+                </div>
+            </div>';
+        }
+
+        if($multiple_approver_c){
+            $users = json_decode( $this->delegate_members(), true);
+            $data .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Approver</span>
+                <select class="filter-multiple_approver_c select2" name="filter-multiple_approver_c[]" id="filter-multiple_approver_c" multiple>
+                '.$users['members'].'
+                </select>
+                
+            </div>';
+        }
+
+        if($state_c){
+            $states = '';
+            $stateArray = $this->getDbData('states', 'name', "country_id = '101' ");
+            foreach($stateArray as $s){
+                $states .= '<option value="'.$s['name'].'">'.$this->beautify_label( $s['name'] ).'</option>';
+            }
+            $data .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">State</span>
+                <select class="state_c" name="filter-state_c" id="state_c">
+                <option value="">Select</option>
+                '.$states.'
+                </select>
+                
+            </div>';
+        }
+
+        if($new_department_c){
+            $departments = $this->getDbData('accounts', 'name', "name != '' ");
+            $departmentList = '';
+            foreach($departments as $d){
+                $departmentList .= '<option value="'.$d['name'].'">'.$this->beautify_label( $d['name'] ).'</option>';
+            }
+            $data .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Department</span>
+                <select class="" name="filter-new_department_c" id="new_department_c">
+                <option value="">Select</option>
+                '.$departmentList.'
+                </select>
+                
+            </div>';
+        }
+
+        if($source_c){
+            $sources = $this->getDbData('opportunities_cstm', 'DISTINCT source_c', " source_c != '' ");
+            $sourceList = '';
+            foreach($sources as $d){
+                $sourceList .= '<option value="'.$d['source_c'].'">'.$this->beautify_label( $d['source_c'] ).'</option>';
+            }
+            $data .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Source</span>
+                <select class="" name="filter-source_c" id="source_c">
+                <option value="">Select</option>
+                '.$sourceList.'
+                </select>
+                
+            </div>';
+        }
+
+        if($non_financial_consideration_c){
+            // $dbData = $this->getDbData('opportunities_cstm', 'DISTINCT non_financial_consideration_c', " non_financial_consideration_c != '' ");
+            $dbData = ['^NA^' , '^BrandEstablishment^', '^NewServiceLine^','^NewRegionalDevelopment^',
+            '^PilotforFutureOpportunity^', '^Relationship^', '^StrategicAlignmentforFutureOpportunity^'];
+            $dataList = '';
+            foreach($dbData as $d){
+                $dataList .= '<option value="'.$d.'">'.$this->beautify_label( $d ).'</option>';
+            }
+            $data .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Non Financial Consideration</span>
+                <select class="select2" name="filter-non_financial_consideration_c[]" id="non_financial_consideration_c" multiple>
+                '.$dataList.'
+                </select>
+                
+            </div>';
+        }
+
+        if($segment_c){
+            $dbData = $this->getDbData('segment', 'segment_name', " segment_name != '' ");
+            $segmentList = '';
+            foreach($dbData as $d){
+                $segmentList .= '<option value="'.$d['segment_name'].'">'.$this->beautify_label( $d['segment_name'] ).'</option>';
+            }
+            $data .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Segment</span>
+                <select class="" name="filter-segment_c" id="segment_c">
+                <option value="">Select</option>
+                '.$segmentList.'
+                </select>
+                
+            </div>';
+        }
+
+        if($product_service_c){
+            $dbData = $this->getDbData('service', 'DISTINCT service_name', " service_name != '' ");
+            $dataList = '';
+            foreach($dbData as $d){
+                $dataList .= '<option value="'.$d['service_name'].'">'.$this->beautify_label( $d['service_name'] ).'</option>';
+            }
+            $data .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Product/Service</span>
+                <select class="" name="filter-product_service_c" id="product_service_c">
+                <option value="">Select</option>
+                '.$dataList.'
+                </select>
+                
+            </div>';
+        }
+
+        if($international_c){
+            $data .= '<div class="form-group">
+                <SPAN style="font-weight:bold">International Opportunity</SPAN>
+                <div class="filterchecklist" style="width:30%;">
+                    <input type="checkbox" id="required_field" class="rfp-checkbox" name="filter-international_c" value="yes">
+                    <label for="yes"> Yes</label>
+                    <input type="checkbox" id="required_field" class="rfp-checkbox" name="filter-international_c" value="no">
+                    <label for="No"> No</label>
+                </div>
+            </div>';
+        }
+
+        /*if($total_input_value){
+            $data .= '<div class="amount-range-container">
+                <div class="amount-range">
+                    <span class="primary-responsibilty-filter-head">
+                        Total Amount
+                        <span class="range_min color-red">0 Cr</span>
+                        <span class="color-red"> - </span>
+                        <span class="range_max color-red">200 Cr</span>
+                    </span>
+                    
+                </div>
+                <div class="rangeslider">
+                    <input class="min lowerVal" name="filter-total_input_value_min" id="lowerVal" type="range" min="0" max="200" value="0" step="10"/>
+                    <input class="max upperVal" name="filter-total_input_value_max" id="upperVal" type="range" min="0" max="200" value="200" step="10"/>
+                    <span class="light left">0 Cr</span>
+                    <span class="light right">200 Cr</span>
+                </div>
+            </div>';
+        }*/
+        
+        if($sector_c){
+            $dbData = $this->getDbData('sector', 'name', " name != '' ");
+            $dataList = '';
+            foreach($dbData as $d){
+                $dataList .= '<option value="'.$d['name'].'">'.$this->beautify_label( $d['name'] ).'</option>';
+            }
+            $data .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Sector</span>
+                <select class="" name="filter-sector_c" id="sector_c">
+                <option value="">Select</option>
+                '.$dataList.'
+                </select>
+                
+            </div>';
+        }
+
+        if($sub_sector_c){
+            $dbData = $this->getDbData('sub_sector', 'name', " name != '' ");
+            $dataList = '';
+            foreach($dbData as $d){
+                $dataList .= '<option value="'.$d['name'].'">'.$this->beautify_label( $d['name'] ).'</option>';
+            }
+            $data .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Sub Sector</span>
+                <select class="" name="filter-sub_sector_c" id="sub_sector_c">
+                <option value="">Select</option>
+                '.$dataList.'
+                </select>
+                
+            </div>';
+        }
+        
+        if($scope_budget_projected_c){
+            $data .= '<div class="form-group">
+                <div class="date-filter">
+                    <label>DPR/Scope & Budget Accepted (Projected)</label><br>
+                    From: <input class="filterdatebox" name="filter-scope_budget_projected_c_from" id="scope_budget_projected_c_from" width="300" />
+                    To: <input class="filterdatebox" name="filter-scope_budget_projected_c_to" id="scope_budget_projected_c_to" width="300" />
+                </div>
+            </div>';
+        }
+
+        if($rfp_eoi_projected_c){
+            $data .= '<div class="form-group">
+                <div class="date-filter">
+                    <label>RFP/EOI Initiated Drafting (Projected)</label><br>
+                    From: <input class="filterdatebox" name="filter-rfp_eoi_projected_c_from" id="rfp_eoi_projected_c_from" width="300" />
+                    To: <input class="filterdatebox" name="filter-rfp_eoi_projected_c_to" id="rfp_eoi_projected_c_to" width="300" />
+                </div>
+            </div>';
+        }
+
+        if($rfp_eoi_published_projected_c){
+            $data .= '<div class="form-group">
+                <div class="date-filter">
+                    <label>RFP/EOI Published (Projected)</label><br>
+                    From: <input class="filterdatebox" name="filter-rfp_eoi_published_projected_c_from" id="rfp_eoi_projected_c_from" width="300" />
+                    To: <input class="filterdatebox" name="filter-rfp_eoi_published_projected_c_to" id="rfp_eoi_projected_c_to" width="300" />
+                </div>
+            </div>';
+        }
+
+        if($work_order_projected_c){
+            $data .= '<div class="form-group">
+                <div class="date-filter">
+                    <label>Work Order (Projected)</label><br>
+                    From: <input class="filterdatebox" name="filter-work_order_projected_c_from" id="work_order_projected_c_from" width="300" />
+                    To: <input class="filterdatebox" name="filter-work_order_projected_c_to" id="work_order_projected_c_to" width="300" />
+                </div>
+            </div>';
+        }
+        
+        if($budget_head_amount_c){
+            $data .= '<div class="amount-range-container">
+                <div class="amount-range">
+                    <span class="primary-responsibilty-filter-head">
+                        Budget Head Amount (In Cr)
+                        <span class="range_min color-red">0 Cr</span>
+                        <span class="color-red"> - </span>
+                        <span class="range_max color-red">200 Cr</span>
+                    </span>
+                </div>
+                <div class="rangeslider">
+                    <input class="min lowerVal" name="filter-budget_head_amount_c_min" id="lowerVal" type="range" min="0" max="200" value="0" step="10"/>
+                    <input class="max upperVal" name="filter-budget_head_amount_c_max" id="upperVal" type="range" min="0" max="200" value="200" step="10"/>
+                    <span class="light left">0 Cr</span>
+                    <span class="light right">200 Cr</span>
+                </div>
+            </div>';
+        }
+
+        if($budget_allocated_oppertunity_c){
+            $data .= '<div class="amount-range-container">
+                <div class="amount-range">
+                    <span class="primary-responsibilty-filter-head">
+                        Budget Allocated for Opportunity (in Cr)
+                        <span class="range_min color-red">0 Cr</span>
+                        <span class="color-red"> - </span>
+                        <span class="range_max color-red">200 Cr</span>
+                    </span>
+                </div>
+                <div class="rangeslider">
+                    <input class="min lowerVal" name="filter-budget_allocated_oppertunity_c_min" id="lowerVal" type="range" min="0" max="200" value="0" step="10"/>
+                    <input class="max upperVal" name="filter-budget_allocated_oppertunity_c_max" id="upperVal" type="range" min="0" max="200" value="200" step="10"/>
+                    <span class="light left">0 Cr</span>
+                    <span class="light right">200 Cr</span>
+                </div>
+            </div>';
+        }
+
+        if($project_implementation_start_c){
+            $data .= '<div class="form-group">
+                <div class="date-filter">
+                    <label>Project Implementation Start Date</label><br>
+                    From: <input class="filterdatebox" name="filter-project_implementation_start_c_from" id="project_implementation_start_c_from" width="300" />
+                    To: <input class="filterdatebox" name="filter-project_implementation_start_c_to" id="project_implementation_start_c_to" width="300" />
+                </div>
+            </div>';
+        }
+
+        if($project_implementation_end_c){
+            $data .= '<div class="form-group">
+                <div class="date-filter">
+                    <label>Project Implementation Start Date</label><br>
+                    From: <input class="filterdatebox" name="filter-project_implementation_end_c_from" id="project_implementation_end_c_from" width="300" />
+                    To: <input class="filterdatebox" name="filter-project_implementation_end_c_to" id="project_implementation_end_c_to" width="300" />
+                </div>
+            </div>';
+        }
+        
+        if($selection_c){
+            $data .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Selection</span>
+                <select class="" name="filter-selection_c" id="selection_c">
+                    <option value="">Select</option>
+                    <option value="Not_selected">Not Selected</option>
+                    <option value="Red">Red</option>
+                    <option value="Yellow">Yellow</option>
+                    <option value="Green">Green</option>
+                </select>
+                
+            </div>';
+        }
+
+        if($selection_c){
+            $data .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Funding</span>
+                <select class="" name="filter-funding_c" id="funding_c">
+                    <option value="">Select</option>
+                    <option value="Not_selected">Not Selected</option>
+                    <option value="Red">Red</option>
+                    <option value="Yellow">Yellow</option>
+                    <option value="Green">Green</option>
+                </select>
+                
+            </div>';
+        }
+
+        if($selection_c){
+            $data .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Timing</span>
+                <select class="" name="filter-timing_button_c" id="timing_button_c">
+                    <option value="">Select</option>
+                    <option value="Not_selected">Not Selected</option>
+                    <option value="Red">Red</option>
+                    <option value="Yellow">Yellow</option>
+                    <option value="Green">Green</option>
+                </select>
+                
+            </div>';
+        }
+
+        if($submissionstatus_c){
+            $dbData = $this->getDbData('opportunities_cstm', 'DISTINCT submissionstatus_c', " submissionstatus_c != '' ");
+            $dataList = '';
+            foreach($dbData as $d){
+                $dataList .= '<option value="'.$d['submissionstatus_c'].'">'.$this->beautify_label( $d['submissionstatus_c'] ).'</option>';
+            }
+            $data .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Submission Status</span>
+                <select class="" name="filter-submissionstatus_c" id="submissionstatus_c">
+                '.$dataList.'
+                </select>
+                
+            </div>';
+        }
+
+        if($closure_status_c){
+            $data .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Closure Status</span>
+                <select class="" name="filter-closure_status_c" id="timing_c">
+                    <option value="">Select</option>
+                    <option value="won">Won</option>
+                    <option value="lost">Lost</option>
+                </select>
+                
+            </div>';
+        }
+
+        return $data;
+    }
+
+    function getFilterQuery(){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+        
+        $multiple_approver_c            = @$_GET['filter-multiple_approver_c'];
+        $state_c                        = @$_GET['filter-state_c'];
+        $new_department_c               = @$_GET['filter-new_department_c'];
+        $source_c                       = @$_GET['filter-source_c'];
+        $non_financial_consideration_c  = @$_GET['filter-non_financial_consideration_c'];
+        $segment_c                      = @$_GET['filter-segment_c'];
+        $product_service_c              = @$_GET['filter-product_service_c'];
+        $international_c                = @$_GET['filter-international_c'];
+        
+        $total_input_value_min          = @$_GET['filter-total_input_value_min'];
+        $total_input_value_max          = @$_GET['filter-total_input_value_max'];
+        $sector_c                       = @$_GET['filter-sector_c'];
+        $product_service_c              = @$_GET['filter-product_service_c'];
+        $sub_sector_c                   = @$_GET['filter-sub_sector_c'];
+        
+        $scope_budget_projected_c_from  = @$_GET['filter-scope_budget_projected_c_from'];
+        $scope_budget_projected_c_to    = @$_GET['filter-scope_budget_projected_c_to'];
+        
+        $rfp_eoi_projected_c_from       = @$_GET['filter-rfp_eoi_projected_c_from'];
+        $rfp_eoi_projected_c_to         = @$_GET['filter-rfp_eoi_projected_c_to'];
+
+        $rfp_eoi_published_projected_c_from = @$_GET['filter-rfp_eoi_published_projected_c_from'];
+        $rfp_eoi_published_projected_c_to   = @$_GET['filter-rfp_eoi_published_projected_c_to'];
+
+        $work_order_projected_c_from    = @$_GET['filter-work_order_projected_c_from'];
+        $work_order_projected_c_to      = @$_GET['filter-work_order_projected_c_to'];
+        
+        $budget_head_amount_c_min              = @$_GET['filter-budget_head_amount_c_min'];
+        $budget_head_amount_c_max              = @$_GET['filter-budget_head_amount_c_max'];
+
+        $budget_allocated_oppertunity_c_min = @$_GET['filter-budget_allocated_oppertunity_c_min'];
+        $budget_allocated_oppertunity_c_max = @$_GET['filter-budget_allocated_oppertunity_c_max'];
+
+        $project_implementation_start_c_from = @$_GET['filter-project_implementation_start_c_from'];
+        $project_implementation_start_c_to   = @$_GET['filter-project_implementation_start_c_to'];
+
+        $project_implementation_end_c_from  = @$_GET['filter-project_implementation_end_c_from'];
+        $project_implementation_end_c_to    = @$_GET['filter-project_implementation_end_c_to'];
+
+        $selection_c                    = @$_GET['filter-selection_c'];
+        $funding_c                      = @$_GET['filter-funding_c'];
+        $timing_button_c                = @$_GET['filter-timing_button_c'];
+
+        $submissionstatus_c             = @$_GET['filter-submissionstatus_c'];
+
+        $closure_status_c               = @$_GET['filter-closure_status_c'];
+
+        $fetch_query = '';
+
+        if(isset( $_GET['filter'] ) && @$_GET['filter-name']){
+            $name = $_GET["filter-name"];
+            $fetch_query .= " AND opportunities.name LIKE '%$name%' ";
+        }
+
+        if(isset( $_GET['filter'] ) && @$_GET['filter-responsibility']){
+            $responsibility = $_GET['filter-responsibility'];
+            $fetch_query .= " AND (";
+            foreach($responsibility as $key => $res){
+                $arr = explode('andTeam',$res,0);
+                if($key)
+                    $fetch_query .= " OR ";
+                if($res == 'MyTeam') {
+                    $fetch_query .= " opportunities.assigned_user_id IN 
+                    (SELECT id FROM users WHERE reports_to_id = '$log_in_user_id' OR id = '$log_in_user_id')";
+                } else if ($arr && count($arr) > 0) {
+                    $arr[0] = chop($arr[0],"andTeam");
+                    $fetch_query .= " opportunities.assigned_user_id IN 
+                    (SELECT id FROM users WHERE reports_to_id = '$arr[0]' OR id = '$arr[0]')";
+                } else {
+                    $fetch_query .= " opportunities.assigned_user_id = '$res' ";
+                }
+                    
+                
+            }
+            $fetch_query .= " )";
+            //$fetch_query .= " AND opportunities.created_by = '$responsibility' ";
+        }
+
+        if(isset( $_GET['filter'] ) && @$_GET['filter-Closed-by']){
+            $modified = $_GET['filter-Closed-by'];
+            $fetch_query .= " AND (";
+            foreach($modified as $key => $res){
+                if($key)
+                    $fetch_query .= " OR ";
+                $fetch_query .= " opportunities.modified_user_id = '$res' ";
+            }
+            $fetch_query .= " )";
+            //$fetch_query .= " AND opportunities.created_by = '$responsibility' ";
+        }
+
+        if(isset( $_GET['filter'] ) && @$_GET['filter-rfp-eoi-status']){
+            $rpfEOIStatus = $_GET['filter-rfp-eoi-status'];
+            $fetch_query .= " AND (";
+            foreach($rpfEOIStatus as $key => $res){
+                if($key)
+                    $fetch_query .= " OR ";
+                $fetch_query .= " opportunities_cstm.rfporeoipublished_c = '$res' ";
+            }
+            $fetch_query .= " )";
+            //$fetch_query .= " AND opportunities_cstm.rfporeoipublished_c = '$rpfEOIStatus' ";
+        }
+        if (isset( $_GET['filter'] ) && (@$_GET['filter-min-price'] || @$_GET['filter-max-price'] || 
+        @$_GET['filter-min-price-usd'] || @$_GET['filter-max-price-usd'])) {
+            $minPrice = 0;
+            $maxPrice = 200;
+            $minPriceUSD = 0;
+            $maxPriceUSD = 50;
+            if (@$_GET['filter-min-price']) {
+                $minPrice = $_GET['filter-min-price'];
+             }
+            if(@$_GET['filter-max-price']) {
+                $maxPrice = $_GET['filter-max-price'];
+            }
+            if (@$_GET['filter-min-price-usd']) {
+                $minPriceUSD = $_GET['filter-min-price-usd'];
+            }
+            if(@$_GET['filter-max-price-usd']) {
+                $maxPriceUSD = $_GET['filter-max-price-usd'];
+            }
+            $inrquery = "((opportunities_cstm.budget_allocated_oppertunity_c BETWEEN '$minPrice' AND '$maxPrice') 
+            AND (opportunities_cstm.currency_c = 'INR' OR opportunities_cstm.currency_c = '' OR opportunities_cstm.currency_c is NULL))";
+            $usdquery = "((opportunities_cstm.budget_allocated_oppertunity_c BETWEEN '$minPriceUSD' AND '$maxPriceUSD') 
+            AND (opportunities_cstm.currency_c = 'USD'))";
+            $or = " OR ";
+            if ($minPrice == 0 && $maxPrice == 200) {
+                $inrquery = "(opportunities_cstm.currency_c = 'INR' OR opportunities_cstm.currency_c = '' OR opportunities_cstm.currency_c is NULL)";
+            }
+            if ($minPriceUSD == 0 && $maxPriceUSD == 50) {
+                $usdquery = "(opportunities_cstm.currency_c = 'USD')";
+            }
+            $fetch_query .= " AND ($inrquery $or $usdquery)";
+        }
+        
+        if(isset( $_GET['filter'] ) && @$_GET['filter-closed-date-from'] && @$_GET['filter-closed-date-to']){
+            $closedDateFrom = $_GET['filter-closed-date-from'];
+            $closedDateTo   = $_GET['filter-closed-date-to'];
+            $fetch_query    .= " AND DATE_FORMAT(opportunities.date_modified, '%d/%m/%Y') BETWEEN '$closedDateFrom' AND '$closedDateTo' ";
+        }
+        if(isset( $_GET['filter'] ) && @$_GET['filter-created-date-from'] && @$_GET['filter-created-date-to']){
+            $createdDateFrom    = $_GET['filter-created-date-from'];
+            $createdDateTo      = $_GET['filter-created-date-to'];
+            $fetch_query        .= " AND DATE_FORMAT(opportunities.date_entered, '%d/%m/%Y') BETWEEN '$createdDateFrom' AND '$createdDateTo' ";
+        }
+
+        if($multiple_approver_c){
+            //$approvers = implode(',', $multiple_approver_c);
+            $fetch_query .= " AND (";
+            foreach($multiple_approver_c as $key => $approver){
+                if($key)
+                    $fetch_query .= " OR ";
+                $fetch_query .= " opportunities_cstm.multiple_approver_c LIKE '%$approver%' ";
+            }
+            $fetch_query .= " )";
+            
+        }
+        if($state_c){
+            $fetch_query .= " AND opportunities_cstm.state_c = '$state_c' ";
+        }
+        if($new_department_c){
+            $fetch_query .= " AND opportunities_cstm.new_department_c = '$new_department_c' ";
+        }
+        if($source_c){
+            $fetch_query .= " AND opportunities_cstm.source_c = '$source_c' ";
+        }
+        if($non_financial_consideration_c){
+            $fetch_query .= " AND (";
+            foreach($non_financial_consideration_c as $key => $res){
+                if($key)
+                    $fetch_query .= " OR ";
+                if($res== '^NA^') {
+                    $res = 'NA';
+                    $fetch_query .= " `opportunities_cstm`.non_financial_consideration_c NOT LIKE '%$res%' OR `opportunities_cstm`.non_financial_consideration_c IS NULL";
+                } else {
+                    $fetch_query .= " opportunities_cstm.non_financial_consideration_c LIKE '%$res%' ";
+                }
+                
+            }
+            $fetch_query .= " )";
+            //$fetch_query .= " AND opportunities_cstm.non_financial_consideration_c = '$non_financial_consideration_c' ";
+        }
+        if($segment_c){
+            $fetch_query .= " AND opportunities_cstm.segment_c = '$segment_c' ";
+        }
+        if($product_service_c){
+            $fetch_query .= " AND opportunities_cstm.product_service_c = '$product_service_c' ";
+        }
+        if($international_c){
+            $fetch_query .= " AND opportunities_cstm.international_c = '$international_c' ";
+        }
+
+        if (isset( $_GET['filter'] ) && (@$_GET['filter-min-price'] || @$_GET['filter-max-price'] || 
+        @$_GET['filter-min-price-usd'] || @$_GET['filter-max-price-usd'])) {
+            $minPrice = 0;
+            $maxPrice = 200;
+            $minPriceUSD = 0;
+            $maxPriceUSD = 50;
+            if (@$_GET['filter-min-price']) {
+                $minPrice = $_GET['filter-min-price'];
+             }
+            if(@$_GET['filter-max-price']) {
+                $maxPrice = $_GET['filter-max-price'];
+            }
+            if (@$_GET['filter-min-price-usd']) {
+                $minPriceUSD = $_GET['filter-min-price-usd'];
+            }
+            if(@$_GET['filter-max-price-usd']) {
+                $maxPriceUSD = $_GET['filter-max-price-usd'];
+            }
+            $inrquery = "((opportunities_cstm.budget_allocated_oppertunity_c BETWEEN '$minPrice' AND '$maxPrice') 
+            AND (opportunities_cstm.currency_c = 'INR' OR opportunities_cstm.currency_c = '' OR opportunities_cstm.currency_c is NULL))";
+            $usdquery = "((opportunities_cstm.budget_allocated_oppertunity_c BETWEEN '$minPriceUSD' AND '$maxPriceUSD') 
+            AND (opportunities_cstm.currency_c = 'USD'))";
+            $or = " OR ";
+            if ($minPrice == 0 && $maxPrice == 200) {
+                $inrquery = "(opportunities_cstm.currency_c = 'INR' OR opportunities_cstm.currency_c = '' OR opportunities_cstm.currency_c is NULL)";
+            }
+            if ($minPriceUSD == 0 && $maxPriceUSD == 50) {
+                $usdquery = "(opportunities_cstm.currency_c = 'USD')";
+            }
+            $fetch_query .= " AND ($inrquery $or $usdquery)";
+        }
+        if( ($total_input_value_min || $total_input_value_max) || ( @$_GET['filter-total_input_value_min-usd'] || @$_GET['filter-total_input_value_min-usd'] ) ){
+            /*$minPrice = $total_input_value_min;
+            $maxPrice = $total_input_value_max;*/
+            
+            $minPrice = 0;
+            $maxPrice = 200;
+            $minPriceUSD = 0;
+            $maxPriceUSD = 50;
+            if( $total_input_value_min ) {
+                $minPrice = $total_input_value_min;
+            }
+            if( $total_input_value_max ) {
+                $maxPrice = $total_input_value_max;
+            }
+            if (@$_GET['filter-total_input_value_min-usd']) {
+                $minPriceUSD = $_GET['filter-total_input_value_min-usd'];
+            }
+            if(@$_GET['filter-total_input_value_max-usd']) {
+                $maxPriceUSD = $_GET['filter-total_input_value_max-usd'];
+            }
+            $inrquery = "((CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) BETWEEN '$minPrice' AND '$maxPrice') 
+            AND (opportunities_cstm.currency_c = 'INR' OR opportunities_cstm.currency_c = '' OR opportunities_cstm.currency_c is NULL))";
+            $usdquery = "((CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) BETWEEN '$minPriceUSD' AND '$maxPriceUSD') 
+            AND (opportunities_cstm.currency_c = 'USD'))";
+            $or = " OR ";
+            if ($minPrice == 0 && $maxPrice == 200) {
+                $inrquery = "(opportunities_cstm.currency_c = 'INR' OR opportunities_cstm.currency_c = '' OR opportunities_cstm.currency_c is NULL)";
+            }
+            if ($minPriceUSD == 0 && $maxPriceUSD == 50) {
+                $usdquery = "(opportunities_cstm.currency_c = 'USD')";
+            }
+            $fetch_query .= " AND ($inrquery $or $usdquery)";
+
+            //$fetch_query .= " AND year_quarters.total_input_value BETWEEN '$minPrice' AND '$maxPrice' ";
+        }
+
+
+        if($sector_c){
+            $fetch_query .= " AND opportunities_cstm.sector_c = '$sector_c' ";
+        }
+        if($sub_sector_c){
+            $fetch_query .= " AND opportunities_cstm.sub_sector_c = '$sub_sector_c' ";
+        }
+
+        if($scope_budget_projected_c_from && $scope_budget_projected_c_to){
+            $fetch_query .= " AND DATE_FORMAT(opportunities_cstm.scope_budget_projected_c, '%d/%m/%Y') BETWEEN '$scope_budget_projected_c_from' AND '$scope_budget_projected_c_to' ";
+        }
+
+        if($rfp_eoi_projected_c_from && $rfp_eoi_projected_c_to){
+            $fetch_query .= " AND DATE_FORMAT(opportunities_cstm.rfp_eoi_projected_c, '%d/%m/%Y') BETWEEN '$rfp_eoi_projected_c_from' AND '$rfp_eoi_projected_c_to' ";
+        }
+        if($rfp_eoi_published_projected_c_from && $rfp_eoi_published_projected_c_to){
+            $fetch_query .= " AND DATE_FORMAT(opportunities_cstm.rfp_eoi_published_projected_c,'%d/%m/%Y') BETWEEN '$rfp_eoi_published_projected_c_from' AND '$rfp_eoi_published_projected_c_to' ";
+        }
+
+        if($work_order_projected_c_from && $work_order_projected_c_to){
+            $fetch_query .= " AND DATE_FORMAT(opportunities_cstm.work_order_projected_c, '%d/%m/%Y') BETWEEN '$work_order_projected_c_from' AND '$work_order_projected_c_to' ";
+        }
+
+        if($budget_head_amount_c_min && $budget_head_amount_c_max){
+            $fetch_query .= " AND opportunities_cstm.budget_head_amount_c BETWEEN '$budget_head_amount_c_min' AND '$budget_head_amount_c_max' ";
+        }
+        
+        if($budget_allocated_oppertunity_c_min && $budget_allocated_oppertunity_c_max){
+            $fetch_query .= " AND opportunities_cstm.budget_allocated_oppertunity_c BETWEEN '$budget_allocated_oppertunity_c_min' AND '$budget_allocated_oppertunity_c_max' ";
+        }
+        
+        if($project_implementation_start_c_from && $project_implementation_start_c_to){
+            $fetch_query .= " AND DATE_FORMAT(opportunities_cstm.project_implementation_start_c,'%d/%m/%Y') BETWEEN '$project_implementation_start_c_from' AND '$project_implementation_start_c_to' ";
+        }
+        
+        if($project_implementation_end_c_from && $project_implementation_end_c_to){
+            $fetch_query .= " AND DATE_FORMAT(opportunities_cstm.project_implementation_end_c,'%d/%m/%Y') BETWEEN '$project_implementation_end_c_from' AND '$project_implementation_end_c_to' ";
+        }
+
+        if($selection_c){
+            $fetch_query .= " AND opportunities_cstm.selection_c = '$selection_c' ";
+        }
+        if($funding_c){
+            $fetch_query .= " AND opportunities_cstm.funding_c = '$funding_c' ";
+        }
+        if($timing_button_c){
+            $fetch_query .= " AND opportunities_cstm.timing_button_c = '$timing_button_c' ";
+        }
+
+        if($submissionstatus_c){
+            $fetch_query .= " AND opportunities_cstm.submissionstatus_c = '$submissionstatus_c' ";
+        }
+
+        if($closure_status_c){
+            $fetch_query .= " AND opportunities_cstm.closure_status_c = '$closure_status_c' ";
+        }
+        // echo $fetch_query;
+        // die;
+        return $fetch_query;
+    }
+
+
+    function delegate_members(){
+        try
+        {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $check_user_team = "SELECT teamfunction_c from users LEFT JOIN users_cstm ON users.id = users_cstm.id_c WHERE id = '$log_in_user_id'";
+            $check_user_team_result = $GLOBALS['db']->query($check_user_team);
+            $user_team_row = $GLOBALS['db']->fetchByAssoc($check_user_team_result);
+            $user_team = $user_team_row['teamfunction_c'];
+            
+
+            // $fetch_query = "SELECT  u.* from users u JOIN users_cstm u2 ON u2.id_c = u.id WHERE u2.teamheirarchy_c = 'team_lead' ";
+            $fetch_query = "SELECT * FROM users WHERE `deleted` != '1' AND `id` != '1' ORDER BY `users`.`first_name` ASC";
+            $result = $GLOBALS['db']->query($fetch_query);
+            //$data = '<option value="" disabled selected>Select Option</option>';
+            $data = '';
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    $full_name = $row['first_name'] . ' ' . $row['last_name'];
+                    $data .= '<option value="'.$row['id'].'">'.$full_name.'</option>';
+                }
+            } else {
+                return false;
+            }
+            return json_encode(array('members'=>$data, 'logged_in_user_team'=>$user_team, 'logged_in_id' => $log_in_user_id));
+
+        }catch(Exception $e){
+            return json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+    }
+
+    function get_users_with_team_options() {
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+        $fetch_query = "SELECT users.id, users.first_name, users.last_name, users_cstm.teamheirarchy_c
+        FROM users LEFT JOIN users_cstm ON users.id = users_cstm.id_c
+        WHERE users.`deleted` != '1' AND users.`id` != '1' ORDER BY users.`first_name` ASC";
+        $result = $GLOBALS['db']->query($fetch_query);
+        //$data = '<option value="" disabled selected>Select Option</option>';
+        $data = '';
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                $full_name = $row['first_name'] . ' ' . $row['last_name'];
+                $data .= '<option value="'.$row['id'].'">'.$full_name.'</option>';
+                if ($row['teamheirarchy_c'] == 'team_lead') {
+                    $data .= '<option value="'.$row['id'].'andTeam">'.$full_name.' and Team</option>';
+                }
+            }
+        }
+        return $data;
+
+    }
+
+    function action_reassignment_dialog_dropdown_info() {
+        try
+        {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $fetch_query = "SELECT * FROM users WHERE `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC";
+            $result = $GLOBALS['db']->query($fetch_query);
+            $data = '';
+            while($row = $result->fetch_assoc()) {
+                $full_name = $row['first_name'] . ' ' . $row['last_name'];
+                $data .= '<option value="'.$row['id'].'">'.$full_name.'</option>';
+            }
+            return json_encode(array('user_info'=>$data, 'logged_in_id' => $log_in_user_id));
+        }catch(Exception $e){
+            return json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+    }
+
+
+    function getDbData($table, $fields, $condition = null){
+        $GLOBALS['db'];
+        $query = "SELECT $fields from $table ";
+        if($condition){
+            $query .= "WHERE ".$condition;
+        }
+        $result = $GLOBALS['db']->query($query);
+        while($r = $result->fetch_assoc()){
+            $rows[] = $r;
+        }
+        return $rows;
+    }
+
+    function getMultipleApproverNames($approvers){
+        $approvers = explode(',', $approvers);
+        $data = '';
+        $i = 0;
+        foreach($approvers as $a){
+            if($i != 0)
+                $data .= ', ';
+            $data .= $this->getUserName($a);
+            $i++;
+        }
+        return $data;
+    }
+
+    function getUserName($id){
+        $user_name_fetch = "SELECT * FROM users WHERE id='$id'";
+        $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
+        $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
+        $first_name = $last_name = '';
+        if(!empty($user_name_fetch_row)){
+            $user_name = $user_name_fetch_row['user_name'];
+            $first_name = $user_name_fetch_row['first_name'];
+            $last_name = $user_name_fetch_row['last_name'];
+        }
+        return $first_name.' '.$last_name;
+    }
+
+    function action_getDefaultColumns(){
+        $columnFilterHtml = $this->getColumnFilters();
+        echo json_encode(array(
+            'columnFilter' => $columnFilterHtml
+        )); die;
+    }
+
+    function getColor($color){
+        switch($color){
+            case 'Red':
+                $html = '<div class="color-palette bg-red"></div>';
+                break;
+            case 'Green':
+                $html = '<div class="color-palette bg-green"></div>';
+                break;
+            case 'Yellow':
+                $html = '<div class="color-palette bg-yellow"></div>';
+                break;
+            case 'Not_Selected':
+                $html = '<div class="color-palette bg-default"></div>';
+                break;
+            default:
+                $html = '<div class="color-palette bg-default"></div>';
+                break;
+        }
+        return $html;
+    }
+
+    function action_export(){
+
+        global $current_user;
+
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        $log_in_user_id = $current_user->id;
+
+        $day        = isset( $_GET['day'] ) ? $_GET['day'] : $_COOKIE['day'];
+        $status_c   = isset( $_GET['status_c'] ) ? $_GET['status_c'] : '';
+        $dropped    = isset( $_GET['dropped'] ) ? $_GET['dropped'] : '';
+        $type       = isset( $_GET['csvtype'] ) ? $_GET['csvtype'] : '';
+
+        $query = "SELECT opportunities.*, opportunities_cstm.*,
+        CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities 
+            LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
+            LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
+            WHERE opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day ";
+
+        if($status_c){
+            $query .= " AND opportunities_cstm.status_c='$status_c'";
+        }
+
+        if($type){
+            $query .= " AND opportunities.opportunity_type='$type' AND opportunities.id NOT IN(
+                SELECT opp_id FROM untagged_user WHERE user_id LIKE '%$log_in_user_id%'
+            )";
+        }
+
+        if($status_c == 'Closed'){
+            $query .= ' AND opportunities_cstm.closure_status_c = "won" ';
+        }else if($status_c == 'Dropped' ){
+            $query = "SELECT opportunities.*, opportunities_cstm.*,
+        CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities 
+                LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
+                LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
+                WHERE opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day ";
+            if ($dropped) {
+                if ($dropped == 'Dropped') {
+                    $query .= "AND opportunities_cstm.status_c='Dropped'";
+                } else {
+                    $query .= "AND (opportunities_cstm.status_c='Closed' AND opportunities_cstm.closure_status_c = 'lost')";
+                }
+            } else {
+                $query .= "AND (opportunities_cstm.status_c='Dropped' OR (opportunities_cstm.status_c='Closed' AND opportunities_cstm.closure_status_c = 'lost'))";
+            }
+        }
+
+
+        $query .= $this->getFilterQuery();  //get filter query if any;
+
+        // echo $query;
+
+        $columnFields = $this->opportunityColumns('Dropped');
+        foreach($columnFields['default'] as $key => $field){
+            $headers[] = $field;
+        }
+        foreach($columnFields['addons'] as $key => $field){
+            $headers[] = $field;
+        }
+
+        $result = $GLOBALS['db']->query($query);
+        while($row = $GLOBALS['db']->fetchByAssoc($result)){
+            $created_by_id = $row['created_by'];
+
+            $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
+            $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
+            $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
+
+            $user_name = $user_name_fetch_row['user_name'];
+            $first_name = $user_name_fetch_row['first_name'];
+            $last_name = $user_name_fetch_row['last_name'];
+
+            if ($user_name_fetch_row['reports_to_id']) {
+                $reports_to = $this->get_user_details_by_id($user_name_fetch_row['reports_to_id']);
+                $reports_to_full_name = ' <i class="fa fa-arrow-right"></i> ' . $reports_to['first_name'] .' '. $reports_to['last_name'];
+            } else {
+                $reports_to_full_name = "";
+            }
+
+            $full_name = "$first_name  $last_name $reports_to_full_name";
+            $closed_by = '';
+
+            if (!empty($row['date_modified'])) {
+                $modified_user_id = $row['modified_user_id'];
+                $modified_user_query = "SELECT * FROM users WHERE id='$modified_user_id'";
+                $modified_user_query_fetch = $GLOBALS['db']->query($modified_user_query);
+                $modified_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($modified_user_query_fetch);
+                $closed_by_first_name = $modified_user_query_fetch_row['first_name'];
+                $closed_by_last_name = $modified_user_query_fetch_row['last_name'];
+                $closed_by = "$closed_by_first_name $closed_by_last_name";
+                // To Do: Find actual closed by
+            }
+            $oppID = $row['id'];
+
+            /*$tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
+            $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
+            $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
+            $tagged_users = $tagged_user_query_fetch_row['user_id'];*/
+
+            if($row['date_closed'])
+                $closedDate = date_format(date_create($row['date_closed']),'d/m/Y');
+            else
+                $closedDate = '';
+
+
+
+            $closed_by = '';
+            if (!empty($row['date_modified'])) {
+                $modified_user_id = $row['modified_user_id'];
+                $modified_user_query = "SELECT * FROM users WHERE id='$modified_user_id'";
+                $modified_user_query_fetch = $GLOBALS['db']->query($modified_user_query);
+                $modified_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($modified_user_query_fetch);
+                $closed_by_first_name = $modified_user_query_fetch_row['first_name'];
+                $closed_by_last_name = $modified_user_query_fetch_row['last_name'];
+                $closed_by = "$closed_by_first_name $closed_by_last_name";
+            }
+
+            $data[] = array(
+                $row['name'],
+                str_replace( '<i class="fa fa-arrow-right"></i>', '-', $full_name),
+                // $this->beautify_amount( $row['budget_allocated_oppertunity_c'] ),
+                $this->beautify_label( $row['new_department_c'] ),
+                $this->beautify_label( $this->beautify_label($row['rfporeoipublished_c']) ),
+                $row['date_modified'] ? date_format(date_create($row['date_modified']),'dS F Y') : '',
+                $closed_by,
+                $row['date_entered'] ? date_format(date_create($row['date_entered']), 'dS F Y') : '',
+                //$row['date_closed'] ? date_format(date_create($row['date_closed']),'d/m/Y') : '',
+                $this->getMultipleApproverNames( $row['multiple_approver_c'] ),
+                $this->beautify_label( $row['state_c'] ),
+                // $this->beautify_label( $row['new_department_c'] ),
+                $this->beautify_label( $row['source_c'] ),
+                $this->beautify_label( $row['non_financial_consideration_c'] ),
+                $this->beautify_label( $row['segment_c'] ),
+                $this->beautify_label( $row['product_service_c'] ),
+                $this->beautify_label( $row['international_c'] ),
+                $this->beautify_label( $row['total_input_value'] ),
+                $this->beautify_label( $row['sector_c'] ),
+                $this->beautify_label( $row['sub_sector_c'] ),
+                $row['scope_budget_projected_c'] ? $this->beautify_label( date( 'dS F Y', strtotime($row['scope_budget_projected_c']) ) ) : '',
+                $row['rfp_eoi_projected_c'] ? $this->beautify_label( date('dS F Y', strtotime($row['rfp_eoi_projected_c']) ) ) : '',
+                $row['rfp_eoi_published_projected_c'] ? $this->beautify_label( date('dS F Y', strtotime($row['rfp_eoi_published_projected_c']) ) ) : '',
+                $row['work_order_projected_c'] ? $this->beautify_label( date('dS F Y', strtotime($row['work_order_projected_c']) ) ) : '',
+                $this->beautify_amount( $row['budget_head_amount_c'] ),
+                $this->beautify_label( $row['budget_allocated_oppertunity_c'] ),
+                $row['project_implementation_start_c'] ? $this->beautify_label( date('dS F Y', strtotime($row['project_implementation_start_c']) ) ) : '',
+                $row['project_implementation_end_c'] ? $this->beautify_label( date('dS F Y', strtotime($row['project_implementation_end_c']) ) ) : '',
+                $row['selection_c'].' '.$row['funding_c'].' '.$row['timing_button_c'],
+                $this->beautify_label( $row['submissionstatus_c'] ),
+                $this->beautify_label( $row['closure_status_c'] )
+            );
+
+        }
+
+        $_SESSION['csvHeaders'] = serialize($headers);
+        $_SESSION['csvData']    = serialize($data);
+
+        $response = json_encode(
+            array(
+                'status' => 'success',
+            )
+        );
+
+        echo $response; die;
+    }
+
+    function action_downloadCSV(){
+        $data    = unserialize($_SESSION['csvData']);
+        $headers = unserialize($_SESSION['csvHeaders']);
+
+        $filename = date('Ymdhis');
+        ob_clean();
+        $fp = fopen("php://output", 'w');
+        if($fp){
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="'.$filename.'".csv"');
+            fputcsv($fp, array_values($headers));
+            foreach($data as $d){
+                fputcsv($fp, array_values($d));
+            }
+            fpassthru($fp);
+            fclose($fp);
+            unset($_SESSION['csvHeaders']);
+            unset($_SESSION['csvData']);
+            exit;
+        }
+    }
+
+
+
+    //--------------------------------------for re-assignment----------------------//
+   function is_reassignment_applicable($opportunity_id) {
+        global $current_user;
+         $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+    	$log_in_user_id = $current_user->id;
+        $sql ='SELECT * FROM `approval_table` WHERE `opp_id`="'.$opportunity_id.'" AND `pending`="1"';
+        $result = $GLOBALS['db']->query($sql);
+        $pending_count=$result->num_rows;
+        $sql1 ='SELECT users.reports_to_id, users_cstm.mc_c FROM users INNER JOIN users_cstm ON users_cstm.id_c= "'.$log_in_user_id.'" WHERE reports_to_id = "'.$log_in_user_id.'"';
+        $result1 = $GLOBALS['db']->query($sql1);
+        $reporting_count=$result1->num_rows;
+         while($row = $GLOBALS['db']->fetchByAssoc($result1)) {
+            $mc_check=$row['mc_c'];
+         }
+        
+        $sql2 ='SELECT t1.id ,t1.assigned_user_id,t2.multiple_approver_c FROM opportunities as t1 LEFT JOIN opportunities_cstm as t2 ON t2.id_c = t1.id WHERE t1.id= "'.$opportunity_id.'" AND (t1.assigned_user_id="'.$log_in_user_id.'" OR t2.multiple_approver_c LIKE "%'.$log_in_user_id.'%")';
+        $result2 = $GLOBALS['db']->query($sql2);
+        $reporting_count1=$result2->num_rows;
+         \LoggerManager::getLogger()->debug($reporting_count);
+        // $GLOBALS['log']->debug('Debug level message'); 
+        // return true;
+        // print($reporting_count);
+        if($mc_check=="yes"){
+         return (($pending_count <= 0));
+        } 
+        else{
+             return (($pending_count <= 0) && ($reporting_count > 0) && ($reporting_count1 > 0));
+        }
+    }
+    
+    
+    
+    public function action_new_assigned_list(){
+     try{
+         $db = \DBManagerFactory::getInstance();
+        	$GLOBALS['db'];
+        	  
+        	   global $current_user; 
+        	   
+            $opportunity_id=$_POST['oppss_id'];
+            $fetch_total_opportunity = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE id = '$opportunity_id'";
+            $fetch_total_result = $GLOBALS['db']->query($fetch_total_opportunity);
+            $fetch_total = $GLOBALS['db']->fetchByAssoc($fetch_total_result);
+    	    $rfp=$fetch_total['rfporeoipublished_c'];
+    	    $status=$fetch_total['status_c'];
+    	    $op_name = $fetch_total['name'];
+    	    $present_assigned_user=$fetch_total['assigned_to_new_c'];
+
+    	   
+    	    $combined=array();
+        	  $id_array1=array();
+        	  $id_array=array();
+        	  $name_array=array();
+        	  $func_array=array();
+        	 $func1_array=array();
+              $h_array=array();
+              $r_name=array();
+              $number=array();
+              $func2_array=array();
+              $h1_array=array();
+              $Approved_array=array();
+              $Rejected_array=array();
+              $pending_array=array();
+              
+              $n=1;
+    	  $log_in_user_id = $current_user->id;
+    	  
+    	  
+    	   $sql5='SELECT * FROM opportunities WHERE id="'.$opportunity_id.'"';
+    	    $result5 = $GLOBALS['db']->query($sql5);
+        while($row5 = $GLOBALS['db']->fetchByAssoc($result5)) 
+        {
+    	       $created_by=$row5['assigned_user_id']; 
+    	       $assigned_id=$row5['assigned_user_id'];
+    	       
+        }
+          
+        	
+        	$sql6='SELECT * FROM users WHERE id="'.$assigned_id.'"';
+    	    $result6 = $GLOBALS['db']->query($sql6);
+        while($row6 = $GLOBALS['db']->fetchByAssoc($result6)) 
+        {
+    	       $reports_to=$row6['reports_to_id'];  
+    	       
+        }
+        		$sql7="SELECT CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS name FROM users WHERE id='".$log_in_user_id."'";
+    	    $result7 = $GLOBALS['db']->query($sql7);
+        while($row7 = $GLOBALS['db']->fetchByAssoc($result7)) 
+        {
+    	       $mc_name=$row7['name'];  
+    	       
+        }
+        	
+         $sql = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+        $result = $GLOBALS['db']->query($sql);
+        while($row = $GLOBALS['db']->fetchByAssoc($result)) 
+        {
+            $check_sales = $row['teamfunction_c'];
+            $check_mc = $row['mc_c'];
+            $check_team_lead = $row['teamheirarchy_c'];
+            
+        }
+         
+         
+         //*********************************** Flow Starts here**************************  
+        if($check_mc=='yes'){
+           
+            
+            $sql3 = "SELECT * FROM users_cstm" ;
+        $result3 = $GLOBALS['db']->query($sql3);
+        while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
+        {
+         $func_array=$row3['teamfunction_c'];
+          
+     	$array = explode(",",$func_array);
+     	
+     	if($rfp=='no'|| $rfp=='select'){
+     	  
+     	    if($status=='Lead'){
+     	      
+     	        	if(in_array("^sales^",$array)){
+     	        	  
+     	              $id_array1[]=$row3["id_c"];
+     	    
+              	  };
+     	    }
+     	    
+     	    else if($status=='QualifiedLead'){
+     	        	if(in_array("^sales^",$array)||in_array("^presales^",$array)){
+     	              $id_array1[]=$row3["id_c"];
+     	    
+              	  };
+     	    }
+     	    else if($status=='Qualified'){
+     	        
+     	        if(in_array("^sales^",$array)||in_array("^presales^",$array)){
+     	              $id_array1[]=$row3["id_c"];
+     	    
+              	  };
+     	        
+     	    }
+     	    else if($status=='QualifiedDpr'){
+     	        
+     	        if(in_array("^sales^",$array)||in_array("^bid^",$array)){
+     	              $id_array1[]=$row3["id_c"];
+     	    
+              	  };
+               	  
+     	    }
+     	    else if($status=='QualifiedBid'){
+     	        if(in_array("^sales^",$array)||in_array("^bid^",$array)){
+     	              $id_array1[]=$row3["id_c"];
+     	    
+              	  };
+     	    }
+     	    else if($status=='Closed'){
+     	        	if(in_array("^sales^",$array)){
+     	              $id_array1[]=$row3["id_c"];
+     	    
+              	  };
+     	    }
+     	     else if($status=='Drop'){
+     	        	if(in_array("^sales^",$array)){
+     	              $id_array1[]=$row3["id_c"];
+     	    
+              	  };
+     	    }
+     	}
+     	else if($rfp=='yes' || $rfp=='select'){
+     	    
+     	      if($status=='Lead'){
+     	        	if(in_array("^sales^",$array)){
+     	              $id_array1[]=$row3["id_c"];
+     	    
+              	  };
+     	    }
+     	    
+     	    else if($status=='QualifiedLead'){
+     	         if(in_array("^sales^",$array)||in_array("^presales^",$array)||in_array("^bid^",$array)){
+     	              $id_array1[]=$row3["id_c"];
+     	    
+              	  };
+     	    }
+     	   
+     	    else if($status=='QualifiedBid'){
+     	         if(in_array("^sales^",$array)||in_array("^bid^",$array)){
+     	              $id_array1[]=$row3["id_c"];
+     	    
+              	  };
+     	    }
+     	    else if($status=='Closed'){
+     	        	if(in_array("^sales^",$array)){
+     	              $id_array1[]=$row3["id_c"];
+     	    
+              	  };
+     	    }
+     	     else if($status=='Drop'){
+     	        	if(in_array("^sales^",$array)){
+     	              $id_array1[]=$row3["id_c"];
+     	    
+              	  };
+     	    }
+     	    
+     	    
+     	    
+     	}
+     	else if($rfp=='not_required' || $rfp=='select'){
+     	    
+     	    
+     	      if($status=='Lead'){
+     	        	if(in_array("^sales^",$array)){
+     	              $id_array1[]=$row3["id_c"];
+     	    
+              	  };
+     	    }
+     	    
+     	    else if($status=='QualifiedLead'){
+     	         if(in_array("^sales^",$array)||in_array("^presales^",$array)){
+     	              $id_array1[]=$row3["id_c"];
+     	    
+              	  };
+     	    }
+     	    else if($status=='Qualified'){
+     	         if(in_array("^sales^",$array)||in_array("^presales^",$array)){
+     	              $id_array1[]=$row3["id_c"];
+     	    
+              	  };
+     	    }
+     	    else if($status=='QualifiedDpr'){
+     	         if(in_array("^sales^",$array)||in_array("^bid^",$array)){
+     	              $id_array1[]=$row3["id_c"];
+     	    
+              	  };
+     	    }
+     	  
+     	    else if($status=='Closed'){
+     	        	if(in_array("^sales^",$array)){
+     	              $id_array1[]=$row3["id_c"];
+     	    
+              	  };
+     	    }
+     	     else if($status=='Drop'){
+     	        	if(in_array("^sales^",$array)){
+     	              $id_array1[]=$row3["id_c"];
+     	    
+              	  };
+     	    }
+     	    
+     	    
+     	}
+     
+     	
+        }
+         
+        
+   
+       
+      // $sql1 = "SELECT users.id, CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS name,users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE id IN ('".implode("','",$id_array1)."') AND users.deleted = 0 ORDER BY `name` ASC";
+       
+       $sql1 = "SELECT users_cstm.teamfunction_c,users_cstm.teamheirarchy_c, users1.id,CONCAT(IFNULL(users1.first_name,''), ' ', IFNULL(users1.last_name,'')) AS name,CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS r_name , rpt_cstm.teamfunction_c as r_r_tf, rpt_cstm.teamheirarchy_c as r_r_th FROM users INNER JOIN users as users1 ON users.id=users1.reports_to_id INNER JOIN users_cstm as rpt_cstm ON rpt_cstm.id_c= users1.reports_to_id INNER JOIN users_cstm ON users_cstm.id_c=users1.id  WHERE users1.id IN ('".implode("','",$id_array1)."') AND users1.deleted=0 ORDER BY `name` ASC";
+        $result1 = $GLOBALS['db']->query($sql1);
+        while($row1 = $GLOBALS['db']->fetchByAssoc($result1)) 
+        {
+            array_push($number,$n);
+            array_push($func1_array,$row1['teamfunction_c']);
+           
+            array_push($name_array,$row1['name']);
+          array_push($h_array,$row1['teamheirarchy_c']);
+            array_push($r_name,$row1['r_name']);
+            array_push($func2_array,$row1['r_r_tf']);
+            array_push($h1_array,$row1['r_r_th']);
+            $n++;
+        }
+        
+
+
+
+
+      
+    $combined = array_map(function($b,$c,$d,$e,$f,$g) { if ($f==""){$f='MC';}return  $b.' / '.$c.' / '.$d.' -> '.$e.' / '.$f.' / '.$g; }, $name_array,$func1_array, $h_array,$r_name,$func2_array,$h1_array);      
+      $mc_no=$n+1;
+      $mc_no=strval($mc_no); 
+     
+      $mc_details=$mc_name.' / MC / ';
+      
+      array_push($combined,$mc_details);
+      
+   
+     
+      echo json_encode(array('1'=>$name_array,'2'=>$h_array,'3'=>$r_name,'a'=>$combined,'op_name'=>$op_name,'id'=>$opportunity_id,'present_assigned_user'=>$present_assigned_user));
+      
+      
+        }
+        
+        
+        else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||$check_team_lead=='team_member_l3'||$check_team_lead=='team_lead'){
+           
+         $sql4='SELECT * FROM users WHERE reports_to_id="'.$log_in_user_id.'" AND deleted=0' ;
+          $result4 = $GLOBALS['db']->query($sql4);
+          
+          if($result4->num_rows>0){
+               
+              while($row4 = $GLOBALS['db']->fetchByAssoc($result4)) 
+                {
+                
+                  $id_array1[]=$row4["id"];
+                }
+              
+            array_push($id_array1,$log_in_user_id);
+            
+             if($log_in_user_id==$assigned_id||$log_in_user_id==$reports_to||$opportunity_id==''){
+                 
+               
+                  
+                  $sql1="SELECT users_cstm.teamfunction_c,users_cstm.teamheirarchy_c, users1.id,CONCAT(IFNULL(users1.first_name,''), ' ', IFNULL(users1.last_name,'')) AS name,CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS r_name FROM users INNER JOIN users as users1 ON users.id=users1.reports_to_id INNER JOIN users_cstm ON users_cstm.id_c=users1.id WHERE users1.id IN ('".implode("','",$id_array1)."') AND users1.deleted=0 ORDER BY `name` ASC";
+                    $result1 = $GLOBALS['db']->query($sql1);
+                    while($row1 = $GLOBALS['db']->fetchByAssoc($result1)) 
+                    {
+                        array_push($number,$n);
+                        array_push($func1_array,$row1['teamfunction_c']);
+                       
+                        array_push($name_array,$row1['name']);
+                      array_push($h_array,$row1['teamheirarchy_c']);
+                        array_push($r_name,$row1['r_name']);
+                        $n++;
+                    }
+                    
+
+
+
+
+      
+      $combined = array_map(function($b,$c,$d,$e) { return  $b.' / '.$c.' / '.$d.' -> '.$e; }, $name_array,$func1_array, $h_array,$r_name);
+      
+     
+          
+     
+      echo json_encode(array('1'=>$name_array,'2'=>$h_array,'3'=>$r_name,'a'=>$combined, 'op_name'=>$op_name,'id'=>$opportunity_id,'present_assigned_user'=>$present_assigned_user));
+                 
+                 
+             }
+             
+             else{
+                 echo json_encode("block");
+             }
+          }
+          
+          else{
+            
+              echo json_encode("block");
+          }
+          
+        }
+        
+        
+        
+   
+     }catch(Exception $e){
+    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    	}
+		die();
+}
+
+
+public function action_update_home_assigned_id(){
+     try{
+         $db = \DBManagerFactory::getInstance();
+        	$GLOBALS['db'];
+        	  
+        	   global $current_user; 
+        	    $log_in_user_id = $current_user->id;
+        	    $assigned_name=$_POST['assigned_name'];
+        	    $opportunity_id=$_POST['opp_id'];
+        	    
+        	   
+        	     $sql="SELECT id,reports_to_id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
+        	    
+        	     $result = $GLOBALS['db']->query($sql);
+        	     
+        while($row = $GLOBALS['db']->fetchByAssoc($result)) 
+        {
+            
+            
+          $assigned_id=$row['id'];
+           
+          $reports_to_id = $row['reports_to_id'];
+    
+            
+        }
+        
+        if($assigned_id==''){
+            
+            echo json_encode(array("message"=>'false'));
+            
+        }
+        else{
+        
+        $sql1='SELECT * FROM opportunities_cstm WHERE id_c="'.$opportunity_id.'"';
+        	   
+        	   $result1 = $GLOBALS['db']->query($sql1);
+        	 
+        	    if($result1->num_rows>0){
+        	        
+        	        while($row1= $GLOBALS['db']->fetchByAssoc($result1)) 
+        {
+                      $multiple=$row1['multiple_approver_c'];
+        }
+                $sql23='UPDATE `opportunities_cstm` SET `assigned_to_new_c`="'.$assigned_name.'" WHERE id_c="'.$opportunity_id.'"';
+        	     
+        	     $result23 = $GLOBALS['db']->query($sql23);
+        	       
+        	     $sql2='UPDATE `opportunities` SET `assigned_user_id`="'.$assigned_id.'" WHERE id="'.$opportunity_id.'"';
+        	     
+        	     $result2 = $GLOBALS['db']->query($sql2);
+        	     
+        	     
+        	     
+        	      if($db->query($sql2)==TRUE){
+        	          
+                         $multiple_array=explode(',',$multiple);
+                         
+                         if(count($multiple_array)>1){
+                             
+                             $key=0;
+                              unset($multiple_array[$key]);
+                              array_unshift($multiple_array,$reports_to_id);
+                              
+                              $reports=implode(',',$multiple_array);
+                               $sql3='UPDATE `opportunities_cstm` SET `multiple_approver_c`="'.$reports.'" WHERE id_c="'.$opportunity_id.'"';
+        	           $result3 = $GLOBALS['db']->query($sql3);
+        	           
+        	          $sql31='UPDATE `opportunities_cstm` SET `user_id2_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
+        	           $result31 = $GLOBALS['db']->query($sql31);
+        	           
+        	           if($db->query($sql3)==TRUE){
+        	               echo json_encode(array("status"=>true, "message" => "Success"));
+        	               
+        	           }
+                              
+                         }
+                         else{
+                              $sql31='UPDATE `opportunities_cstm` SET `user_id2_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
+        	           $result31 = $GLOBALS['db']->query($sql31);
+                              $sql3='UPDATE `opportunities_cstm` SET `multiple_approver_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
+        	           $result3 = $GLOBALS['db']->query($sql3);
+        	           
+        	           if($db->query($sql3)==TRUE){
+        	               echo json_encode(array("status"=>true, "message" => "Success"));
+        	           }
+                         }
+        	      
+        	          
+        	       
+              
+             	
+          }
+        	    }
+        	    else{
+        	        echo json_encode(array("status"=>true, "message" => "Failed"));
+        	    }
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+     }catch(Exception $e){
+    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    	}
+		die();
+}
+
+
+
+public function action_assigned_history(){
+     try{
+         $db = \DBManagerFactory::getInstance();
+        	$GLOBALS['db'];
+        	  
+        	   global $current_user; 
+        	    $log_in_user_id = $current_user->id;
+        	    $assigned_name=$_POST['assigned_name'];
+        	    $opportunity_id=$_POST['opp_id'];
+        	    
+        	   
+        	     $sql="SELECT id,reports_to_id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
+        	    
+        	     $result = $GLOBALS['db']->query($sql);
+        	     
+        while($row = $GLOBALS['db']->fetchByAssoc($result)) 
+        {
+            
+            
+          $assigned_id=$row['id'];
+           
+          $reports_to_id = $row['reports_to_id'];
+    
+            
+        }
+        
+    
+        
+        
+         $assigned_to_new= $assigned_id;
+         $approvers_new = $reports_to_id;
+         
+         
+         $sql41='SELECT t1.id, t1.assigned_user_id,t2.multiple_approver_c,t2.status_c,t2.rfporeoipublished_c FROM opportunities as t1 LEFT JOIN opportunities_cstm as t2 ON t2.id_c = t1.id WHERE t1.id="'.$opportunity_id.'"';	    
+        $result41 = $GLOBALS['db']->query($sql41);
+        while($row41 = $GLOBALS['db']->fetchByAssoc($result41)) 
+        { 
+        $opp_id=$row41['id']; 
+        $assigned_to=$row41['assigned_user_id'];
+        $approvers=$row41['multiple_approver_c'];
+        $opp_status=$row41['status_c'];
+        $rfp=$row41['rfporeoipublished_c'];
+        }
+        
+      
+        $sql51 ='SELECT t.id, t.opp_id, t.assigned_by, t.assigned_to_id FROM assign_flow t WHERE t.opp_id="'.$opp_id.'" AND t.assigned_to_id="'.$assigned_to.'" AND t.id=(SELECT MAX(id) FROM assign_flow WHERE opp_id="'.$opp_id.'")';
+			$result51 = $GLOBALS['db']->query($sql51);
+			
+            $count=$result51->num_rows;
+            echo $count;
+			if($count>0){
+			    
+			}
+            else{ 
+                 
+                $sql25='INSERT INTO `assign_flow`(`opp_id`, `assigned_by`, `assigned_to_id`, `approver_ids`,`status`,`rfp_eoi`) VALUES ("'.$opp_id.'","'.$log_in_user_id.'","'.$assigned_to_new.'","'.$approvers_new.'","'.$opp_status.'","'.$rfp.'")';
+                //$result25 = $GLOBALS['db']->query($sql25);
+                if($db->query($sql25)==TRUE){
+                    
+                                    echo json_encode(array("status"=>true, "message" => "Success"));
+                }
+            }
+                     
+        
+        
+        
+        
+        
+        
+        
+        
+     }catch(Exception $e){
+    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    	}
+		die();
+}
+
+
+
+
 
 }
 

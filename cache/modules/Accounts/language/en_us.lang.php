@@ -1,5 +1,5 @@
 <?php
-// created: 2021-02-01 04:58:59
+// created: 2021-02-19 05:46:49
 $mod_strings = array (
   'LBL_ID' => 'ID',
   'LBL_DATE_ENTERED' => 'Date Created:',
@@ -48,9 +48,9 @@ $mod_strings = array (
   'LBL_BILLING_ADDRESS_STREET' => 'Billing Street:',
   'LBL_BILLING_ADDRESS' => 'Billing Address:',
   'LBL_ACCOUNT_INFORMATION' => 'OVERVIEW',
-  'LBL_CITY' => 'City:',
+  'LBL_CITY' => 'City',
   'LBL_CONTACTS_SUBPANEL_TITLE' => 'Contacts',
-  'LBL_COUNTRY' => 'Country:',
+  'LBL_COUNTRY' => 'Country',
   'LBL_DEFAULT_SUBPANEL_TITLE' => 'Accounts',
   'LBL_DESCRIPTION_INFORMATION' => 'Description Information',
   'LBL_DUPLICATE' => 'Possible Duplicate Account',
@@ -86,7 +86,7 @@ $mod_strings = array (
   'LBL_SHIPPING_ADDRESS_STREET_4' => 'Shipping Street 4',
   'LBL_SHIPPING_ADDRESS_STREET' => 'Shipping Street:',
   'LBL_SHIPPING_ADDRESS' => 'Shipping Address:',
-  'LBL_STATE' => 'State/Region:',
+  'LBL_STATE' => 'State',
   'LBL_TICKER_SYMBOL' => 'Ticker Symbol:',
   'LBL_TYPE' => 'Type:',
   'LBL_WEBSITE' => 'Website:',

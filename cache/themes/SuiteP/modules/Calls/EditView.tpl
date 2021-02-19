@@ -102,21 +102,6 @@ if(custom_check_form('EditView'))SUGAR.ajaxUI.submitForm(_form);return false;" c
 
 
 <div class="col-xs-12 col-sm-6 edit-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label" data-label="">
-
-{minify}
-{capture name="label" assign="label"}{sugar_translate label='LBL_ACTIVITY_TYPE' module='Calls'}{/capture}
-{$label|strip_semicolon}:
-
-{/minify}
-</div>
-
-<div class="col-xs-12 col-sm-8 edit-view-field " type="" field=""  >
-</div>
-
-<!-- [/hide] -->
 </div>
 
 
@@ -1302,6 +1287,7 @@ addToValidate('EditView', 'recurring_source', 'varchar', false,'{/literal}{sugar
 addToValidate('EditView', 'reschedule_history', 'varchar', false,'{/literal}{sugar_translate label='LBL_RESCHEDULE_HISTORY' module='Calls' for_js=true}{literal}' );
 addToValidate('EditView', 'reschedule_count', 'varchar', false,'{/literal}{sugar_translate label='LBL_RESCHEDULE_COUNT' module='Calls' for_js=true}{literal}' );
 addToValidate('EditView', 'new_current_status_c', 'text', true,'{/literal}{sugar_translate label='LBL_NEW_CURRENT_STATUS' module='Calls' for_js=true}{literal}' );
+addToValidate('EditView', 'type_of_interaction_c', 'enum', true,'{/literal}{sugar_translate label='LBL_TYPE_OF_INTERACTION' module='Calls' for_js=true}{literal}' );
 addToValidate('EditView', 'activity_date_c', 'date', true,'{/literal}{sugar_translate label='LBL_ACTIVITY_DATE' module='Calls' for_js=true}{literal}' );
 addToValidate('EditView', 'edit_purpose_field_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_EDIT_PURPOSE_FIELD' module='Calls' for_js=true}{literal}' );
 addToValidate('EditView', 'for_quick_create_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_FOR_QUICK_CREATE' module='Calls' for_js=true}{literal}' );
@@ -1310,6 +1296,5 @@ addToValidate('EditView', 'name_of_person_c', 'varchar', false,'{/literal}{sugar
 addToValidate('EditView', 'new_key_action_c', 'text', true,'{/literal}{sugar_translate label='LBL_NEW_KEY_ACTION' module='Calls' for_js=true}{literal}' );
 addToValidate('EditView', 'new_status_c', 'enum', false,'{/literal}{sugar_translate label='LBL_NEW_STATUS' module='Calls' for_js=true}{literal}' );
 addToValidate('EditView', 'next_date_c', 'date', true,'{/literal}{sugar_translate label='LBL_NEXT_DATE' module='Calls' for_js=true}{literal}' );
-addToValidate('EditView', 'type_of_interaction_c', 'enum', true,'{/literal}{sugar_translate label='LBL_TYPE_OF_INTERACTION' module='Calls' for_js=true}{literal}' );
 addToValidateBinaryDependency('EditView', 'assigned_user_name', 'alpha', false,'{/literal}{sugar_translate label='ERR_SQS_NO_MATCH_FIELD' module='Calls' for_js=true}{literal}: {/literal}{sugar_translate label='LBL_ASSIGNED_TO' module='Calls' for_js=true}{literal}', 'assigned_user_id' );
 </script><script language="javascript">if(typeof sqs_objects == 'undefined'){var sqs_objects = new Array;}sqs_objects['EditView_assigned_user_name']={"form":"EditView","method":"get_user_array","field_list":["user_name","id"],"populate_list":["assigned_user_name","assigned_user_id"],"required_list":["assigned_user_id"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};sqs_objects['EditView_parent_name']={"form":"EditView","method":"query","modules":["Accounts"],"group":"or","field_list":["name","id"],"populate_list":["parent_name","parent_id"],"required_list":["parent_id"],"conditions":[{"name":"name","op":"like_custom","end":"%","value":""}],"order":"name","limit":"30","no_match_text":"No Match"};</script>{/literal}

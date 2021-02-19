@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-01-22 14:00:09
+<?php /* Smarty version 2.6.31, created on 2021-02-15 06:51:56
          compiled from themes/SuiteP/include/EditView/EditView.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'themes/SuiteP/include/EditView/EditView.tpl', 43, false),array('function', 'counter', 'themes/SuiteP/include/EditView/EditView.tpl', 47, false),array('modifier', 'upper', 'themes/SuiteP/include/EditView/EditView.tpl', 51, false),)), $this); ?>

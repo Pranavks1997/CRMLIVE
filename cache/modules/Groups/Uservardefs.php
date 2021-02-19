@@ -507,7 +507,7 @@
     'reports_to_name' => 
     array (
       'name' => 'reports_to_name',
-      'rname' => 'last_name',
+      'rname' => 'full_name',
       'id_name' => 'reports_to_id',
       'vname' => 'LBL_REPORTS_TO_NAME',
       'type' => 'relate',
@@ -519,6 +519,18 @@
       'source' => 'non-db',
       'duplicate_merge' => 'disabled',
       'side' => 'right',
+      'fields' => 
+      array (
+        0 => 'first_name',
+        1 => 'last_name',
+      ),
+      'sort_on' => 'last_name',
+      'sort_on2' => 'first_name',
+      'db_concat_fields' => 
+      array (
+        0 => 'first_name',
+        1 => 'last_name',
+      ),
     ),
     'reports_to_link' => 
     array (
@@ -899,6 +911,35 @@
       'reportable' => false,
       'side' => 'right',
       'vname' => 'LBL_OPPORTUNITIES_USERS_2_FROM_USERS_TITLE',
+    ),
+    'bid_commercial_head_c' => 
+    array (
+      'inline_edit' => '1',
+      'labelValue' => 'Bid/Commercial Head',
+      'required' => false,
+      'source' => 'custom_fields',
+      'name' => 'bid_commercial_head_c',
+      'vname' => 'LBL_BID_COMMERCIAL_HEAD_C',
+      'type' => 'enum',
+      'massupdate' => '0',
+      'default' => 'na',
+      'no_default' => false,
+      'comments' => '',
+      'help' => '',
+      'importable' => 'true',
+      'duplicate_merge' => 'disabled',
+      'duplicate_merge_dom_value' => '0',
+      'audited' => false,
+      'reportable' => true,
+      'unified_search' => false,
+      'merge_filter' => 'disabled',
+      'len' => 100,
+      'size' => '20',
+      'options' => 'bid_commercial_head_list',
+      'studio' => 'visible',
+      'dependency' => NULL,
+      'id' => 'Usersbid_commercial_head_c',
+      'custom_module' => 'Users',
     ),
     'mc_c' => 
     array (

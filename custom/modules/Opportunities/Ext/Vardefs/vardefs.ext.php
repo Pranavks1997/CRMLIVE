@@ -211,9 +211,9 @@ $dictionary['Opportunity']['fields']['untagged_users_c']['labelValue']='Untagged
 
  
 
- // created: 2021-01-26 06:38:01
+ // created: 2021-02-11 12:58:23
 $dictionary['Opportunity']['fields']['non_financial_consideration_c']['inline_edit']='1';
-$dictionary['Opportunity']['fields']['non_financial_consideration_c']['labelValue']='Non Financial Consideration';
+$dictionary['Opportunity']['fields']['non_financial_consideration_c']['labelValue']='Non Financial Consideration Options';
 
  
 
@@ -239,9 +239,9 @@ $dictionary['Opportunity']['fields']['jjwg_maps_address_c']['inline_edit']=1;
 
  
 
- // created: 2020-12-17 17:28:09
+ // created: 2021-02-05 07:28:08
 $dictionary['Opportunity']['fields']['assigned_to_c']['inline_edit']='1';
-$dictionary['Opportunity']['fields']['assigned_to_c']['labelValue']='Assigned To';
+$dictionary['Opportunity']['fields']['assigned_to_c']['labelValue']='Assigned to';
 
  
 
@@ -286,6 +286,12 @@ $dictionary['Opportunity']['fields']['select_approver_c']['labelValue']='Approve
 
  
 
+ // created: 2021-02-03 11:37:48
+$dictionary['Opportunity']['fields']['non_financial_radio_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['non_financial_radio_c']['labelValue']='Non Financial Consideration ';
+
+ 
+
  // created: 2020-12-17 17:28:09
 $dictionary['Opportunity']['fields']['user_id3_c']['inline_edit']=1;
 
@@ -307,7 +313,7 @@ $dictionary['Opportunity']['fields']['budget_source_c']['labelValue']='Budget So
 
  
 
- // created: 2021-01-28 13:27:11
+ // created: 2021-01-28 13:28:51
 $dictionary['Opportunity']['fields']['new_department_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['new_department_c']['labelValue']='Department';
 
@@ -325,7 +331,7 @@ $dictionary['Opportunity']['fields']['bid_checklist_c']['labelValue']='Bid Check
 
  
 
- // created: 2020-11-13 06:58:55
+ // created: 2021-02-01 11:48:04
 $dictionary['Opportunity']['fields']['name']['required']=false;
 $dictionary['Opportunity']['fields']['name']['full_text_search']=array (
 );
@@ -372,6 +378,12 @@ $dictionary['Opportunity']['fields']['first_of_a_kind_c']['labelValue']='First o
 
  
 
+ // created: 2021-02-03 05:44:53
+$dictionary['Opportunity']['fields']['test_checkbox_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['test_checkbox_c']['labelValue']='Test Checkbox';
+
+ 
+
  // created: 2020-11-06 06:03:59
 $dictionary['Opportunity']['fields']['cash_f_c']['inline_edit']='';
 $dictionary['Opportunity']['fields']['cash_f_c']['labelValue']='Cash F';
@@ -402,6 +414,12 @@ $dictionary['Opportunity']['fields']['comments_c']['labelValue']='Comments';
 
  
 
+ // created: 2021-02-12 08:08:25
+$dictionary['Opportunity']['fields']['currency_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['currency_c']['labelValue']='Currency';
+
+ 
+
  // created: 2020-11-11 07:24:33
 $dictionary['Opportunity']['fields']['learnings_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['learnings_c']['labelValue']='Learnings';
@@ -425,7 +443,7 @@ $dictionary['Opportunity']['fields']['jjwg_maps_lng_c']['inline_edit']=1;
 
  
 
- // created: 2021-01-28 14:50:33
+ // created: 2021-01-28 14:47:37
 $dictionary['Opportunity']['fields']['international_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['international_c']['labelValue']='International Opportunity';
 
@@ -626,6 +644,12 @@ $dictionary['Opportunity']['fields']['tagged_users_comments_c']['labelValue']='T
 
  
 
+ // created: 2021-02-05 07:37:30
+$dictionary['Opportunity']['fields']['assigned_to_new_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['assigned_to_new_c']['labelValue']='Assigned To ';
+
+ 
+
  // created: 2020-10-20 07:46:31
 $dictionary['Opportunity']['fields']['jjwg_maps_geocode_status_c']['inline_edit']=1;
 
@@ -655,7 +679,7 @@ $dictionary['Opportunity']['fields']['risk_c']['labelValue']='Risk';
 
  
 
- // created: 2021-01-28 14:54:51
+ // created: 2021-01-28 14:54:11
 $dictionary['Opportunity']['fields']['state_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['state_c']['labelValue']='State/UTs';
 

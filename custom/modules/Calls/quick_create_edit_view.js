@@ -1,5 +1,8 @@
 $( document ).ready(function() {
+     $('#parent_name').prop('disabled', true);
     
+        $('#btn_clr_parent_name').hide();
+    $('[field=parent_name]').css({"width": "63%"});
     $('#for_quick_create_c').val('yes');
     $('#for_quick_create_c').hide();
     $('[data-label=LBL_FOR_QUICK_CREATE]').hide();
@@ -9,7 +12,7 @@ $( document ).ready(function() {
         var format_change = res[1]+'/'+res[0]+'/'+res[2];
         return format_change;
     }
-    $('#parent_type option:not(:selected)').prop('disabled', true);
+    $('#parent_type').prop('disabled', true);
     // $('#current_status_c').prop("readonly",true);
     $('#btn_parent_name').hide();
     $('#btn_assigned_user_name').hide();
@@ -56,9 +59,9 @@ $( document ).ready(function() {
     });
    
     
-    $('#parent_name').click(function() {
-        $('#btn_parent_name').trigger('click');
-    });
+    // $('#parent_name').click(function() {
+    //     $('#btn_parent_name').trigger('click');
+    // });
     $('#assigned_user_name').click(function() {
         $('#btn_assigned_user_name').trigger('click');
     });
@@ -103,13 +106,19 @@ $( document ).ready(function() {
                 opp_id:oppurtunity_id ,
             },
         success : function(data){
+            
+            var x=data.opp_status;
+            
+           
           if (data.status = true){
-                // if(data.opp_status == loaded_opp_status){
-                    $('#new_current_status_c').val(decodeHtml(data.opp_status));
-                // }else{
-                //     alert("Current status is changed to "+ data.opp_status);
-                //     window.location.reload();
-                // }
+                
+
+
+                  
+                    $('#new_current_status_c').val(x.join('\r\n'))
+                    $('#new_current_status_c').attr('readonly',true);
+                  
+               
           }else{
               alert(data.message);
               window.location.reload();

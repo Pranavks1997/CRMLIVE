@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-01-26 06:37:31
+<?php /* Smarty version 2.6.31, created on 2021-02-15 12:07:57
          compiled from modules/ModuleBuilder/tpls/MBModule/field.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_translate', 'modules/ModuleBuilder/tpls/MBModule/field.tpl', 98, false),array('function', 'html_options', 'modules/ModuleBuilder/tpls/MBModule/field.tpl', 100, false),array('function', 'sugar_help', 'modules/ModuleBuilder/tpls/MBModule/field.tpl', 101, false),)), $this); ?>

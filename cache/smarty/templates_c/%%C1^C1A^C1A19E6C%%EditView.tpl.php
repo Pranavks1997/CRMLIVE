@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-01-31 06:09:14
+<?php /* Smarty version 2.6.31, created on 2021-02-19 04:38:09
          compiled from cache/themes/SuiteP/modules/Calls/EditView.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('modifier', 'escape', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 55, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 111, false),array('modifier', 'lookup', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 170, false),array('modifier', 'count', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 272, false),array('modifier', 'default', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 785, false),array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 72, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 93, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 137, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 145, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 173, false),array('function', 'sugar_getscript', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 1103, false),array('function', 'sugar_getjspath', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 1109, false),array('block', 'minify', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 109, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('modifier', 'escape', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 55, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 115, false),array('modifier', 'lookup', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 155, false),array('modifier', 'count', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 257, false),array('modifier', 'default', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 770, false),array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 72, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 93, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 122, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 130, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 158, false),array('function', 'sugar_getscript', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 1088, false),array('function', 'sugar_getjspath', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 1094, false),array('block', 'minify', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 113, false),)), $this); ?>
 
 
 
@@ -164,23 +164,6 @@ if(custom_check_form('EditView'))SUGAR.ajaxUI.submitForm(_form);return false;" c
 
 
 <div class="col-xs-12 col-sm-6 edit-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label" data-label="">
-
-<?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_ACTIVITY_TYPE','module' => 'Calls'), $this);?>
-<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
-<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
-:
-
-<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
-</div>
-
-<div class="col-xs-12 col-sm-8 edit-view-field " type="" field=""  >
-</div>
-
-<!-- [/hide] -->
 </div>
 
 
@@ -1893,6 +1876,9 @@ addToValidate(\'EditView\', \'reschedule_count\', \'varchar\', false,\''; ?>
 addToValidate(\'EditView\', \'new_current_status_c\', \'text\', true,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_NEW_CURRENT_STATUS','module' => 'Calls','for_js' => true), $this);?>
 <?php echo '\' );
+addToValidate(\'EditView\', \'type_of_interaction_c\', \'enum\', true,\''; ?>
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_TYPE_OF_INTERACTION','module' => 'Calls','for_js' => true), $this);?>
+<?php echo '\' );
 addToValidate(\'EditView\', \'activity_date_c\', \'date\', true,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_ACTIVITY_DATE','module' => 'Calls','for_js' => true), $this);?>
 <?php echo '\' );
@@ -1916,9 +1902,6 @@ addToValidate(\'EditView\', \'new_status_c\', \'enum\', false,\''; ?>
 <?php echo '\' );
 addToValidate(\'EditView\', \'next_date_c\', \'date\', true,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_NEXT_DATE','module' => 'Calls','for_js' => true), $this);?>
-<?php echo '\' );
-addToValidate(\'EditView\', \'type_of_interaction_c\', \'enum\', true,\''; ?>
-<?php echo smarty_function_sugar_translate(array('label' => 'LBL_TYPE_OF_INTERACTION','module' => 'Calls','for_js' => true), $this);?>
 <?php echo '\' );
 addToValidateBinaryDependency(\'EditView\', \'assigned_user_name\', \'alpha\', false,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'ERR_SQS_NO_MATCH_FIELD','module' => 'Calls','for_js' => true), $this);?>

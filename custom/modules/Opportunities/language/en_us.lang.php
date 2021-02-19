@@ -1,5 +1,5 @@
 <?php
-// created: 2021-01-28 14:54:51
+// created: 2021-02-13 11:22:45
 $mod_strings = array (
   'LBL_ACCOUNTS' => 'Departments',
   'LBL_RFP/EOIPUBLISHED' => 'RFP/EOI Published',
@@ -73,7 +73,6 @@ $mod_strings = array (
   'LBL_INFLUENCERSL2' => 'Influencers(L2)',
   'LBL_DETAILVIEW_PANEL10' => 'Influencers',
   'LBL_COMMENTS' => 'Comments',
-  'LBL_NON_FINANCIAL_CONSIDERATION' => 'Non Financial Consideration',
   'LBL_EDITVIEW_PANEL10' => 'New Panel 10',
   'LBL_RISK' => 'Risk',
   'LBL_SELECTION' => 'Selection',
@@ -88,8 +87,6 @@ $mod_strings = array (
   'LBL_DETAILVIEW_PANEL11' => 'Comment',
   'LBL_SELECT_APPROVER_USER_ID' => 'Select Approver (related User ID)',
   'LBL_SELECT_APPROVER' => 'Approver',
-  'LBL_ASSIGNED_TO_USER_ID' => 'Assigned To (related User ID)',
-  'LBL_ASSIGNED_TO' => 'Assigned To',
   'LBL_CHECK1' => 'check1',
   'LBL_CHECKING_OPPORTUNITY_ID' => 'checking (related Opportunity ID)',
   'LBL_CHECKING' => 'checking',
@@ -106,4 +103,11 @@ $mod_strings = array (
   'LBL_COUNTRY' => 'Country Name',
   'LBL_NEW_DEPARTMENT' => 'Department',
   'LBL_ACCOUNT_NAME' => 'Department',
+  'LBL_NON_FINANCIAL_CONSIDERATION' => 'Non Financial Consideration Options',
+  'LBL_TEST_CHECKBOX' => 'Test Checkbox',
+  'LBL_NON_FINANCIAL_RADIO' => 'Non Financial Consideration ',
+  'LBL_ASSIGNED_TO_NEW' => 'Assigned To ',
+  'LBL_CURRENCY' => 'Currency',
+  'LBL_ASSIGNED_TO_NAME' => 'assigned_to',
+  'LBL_ASSIGNED_TO' => 'assigned_to',
 );

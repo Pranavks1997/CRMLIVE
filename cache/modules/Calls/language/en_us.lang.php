@@ -1,5 +1,5 @@
 <?php
-// created: 2021-02-01 04:58:59
+// created: 2021-02-19 05:46:49
 $mod_strings = array (
   'LBL_ID' => 'ID',
   'LBL_DATE_ENTERED' => 'Date Created',
@@ -142,5 +142,4 @@ $mod_strings = array (
   'LBL_NEW_CURRENT_STATUS' => 'Comments:',
   'LBL_PARENT_TYPE' => 'Parent Type',
   'LBL_FOR_QUICK_CREATE' => 'for quick create',
-  'LBL_ACTIVITY_TYPE' => 'Activity Type',
 );

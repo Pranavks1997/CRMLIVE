@@ -215,6 +215,27 @@
 
 
 <div class="col-xs-12 col-sm-6 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label col-2-label">
+
+
+{capture name="label" assign="label"}{sugar_translate label='LBL_ASSIGNED_TO' module='Opportunities'}{/capture}
+{$label|strip_semicolon}:
+</div>
+
+
+<div class="col-xs-12 col-sm-8 detail-view-field" type="relate" field="assigned_user_name" >
+
+{if !$fields.assigned_user_name.hidden}
+{counter name="panelFieldCount" print=false}
+
+<span id="assigned_user_id" class="sugar_field" data-id-value="{$fields.assigned_user_id.value}">{$fields.assigned_user_name.value}</span>
+{/if}
+
+</div>
+
+
 </div>
 
 </div>
@@ -422,22 +443,24 @@
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-{capture name="label" assign="label"}{sugar_translate label='LBL_COUNTRY' module='Opportunities'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_CURRENCY' module='Opportunities'}{/capture}
 {$label|strip_semicolon}:
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="country_c" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="enum" field="currency_c" >
 
-{if !$fields.country_c.hidden}
+{if !$fields.currency_c.hidden}
 {counter name="panelFieldCount" print=false}
 
-{if strlen($fields.country_c.value) <= 0}
-{assign var="value" value=$fields.country_c.default_value }
+
+{if is_string($fields.currency_c.options)}
+<input type="hidden" class="sugar_field" id="{$fields.currency_c.name}" value="{ $fields.currency_c.options }">
+{ $fields.currency_c.options }
 {else}
-{assign var="value" value=$fields.country_c.value }
-{/if} 
-<span class="sugar_field" id="{$fields.country_c.name}">{$fields.country_c.value}</span>
+<input type="hidden" class="sugar_field" id="{$fields.currency_c.name}" value="{ $fields.currency_c.value }">
+{ $fields.currency_c.options[$fields.currency_c.value]}
+{/if}
 {/if}
 
 </div>
@@ -490,22 +513,22 @@
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-{capture name="label" assign="label"}{sugar_translate label='LBL_NEW_DEPARTMENT' module='Opportunities'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_COUNTRY' module='Opportunities'}{/capture}
 {$label|strip_semicolon}:
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="new_department_c" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="country_c" >
 
-{if !$fields.new_department_c.hidden}
+{if !$fields.country_c.hidden}
 {counter name="panelFieldCount" print=false}
 
-{if strlen($fields.new_department_c.value) <= 0}
-{assign var="value" value=$fields.new_department_c.default_value }
+{if strlen($fields.country_c.value) <= 0}
+{assign var="value" value=$fields.country_c.default_value }
 {else}
-{assign var="value" value=$fields.new_department_c.value }
+{assign var="value" value=$fields.country_c.value }
 {/if} 
-<span class="sugar_field" id="{$fields.new_department_c.name}">{$fields.new_department_c.value}</span>
+<span class="sugar_field" id="{$fields.country_c.name}">{$fields.country_c.value}</span>
 {/if}
 
 </div>
@@ -544,6 +567,71 @@
 <input type="hidden" class="sugar_field" id="{$fields.source_c.name}" value="{ $fields.source_c.value }">
 { $fields.source_c.options[$fields.source_c.value]}
 {/if}
+{/if}
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label col-2-label">
+
+
+{capture name="label" assign="label"}{sugar_translate label='LBL_NEW_DEPARTMENT' module='Opportunities'}{/capture}
+{$label|strip_semicolon}:
+</div>
+
+
+<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="new_department_c" >
+
+{if !$fields.new_department_c.hidden}
+{counter name="panelFieldCount" print=false}
+
+{if strlen($fields.new_department_c.value) <= 0}
+{assign var="value" value=$fields.new_department_c.default_value }
+{else}
+{assign var="value" value=$fields.new_department_c.value }
+{/if} 
+<span class="sugar_field" id="{$fields.new_department_c.name}">{$fields.new_department_c.value}</span>
+{/if}
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label col-1-label">
+
+
+{capture name="label" assign="label"}{sugar_translate label='LBL_NON_FINANCIAL_RADIO' module='Opportunities'}{/capture}
+{$label|strip_semicolon}:
+</div>
+
+
+<div class="col-xs-12 col-sm-8 detail-view-field" type="radioenum" field="non_financial_radio_c" >
+
+{if !$fields.non_financial_radio_c.hidden}
+{counter name="panelFieldCount" print=false}
+
+<span class="sugar_field" id="{$fields.non_financial_radio_c.name}">
+{ $fields.non_financial_radio_c.options[$fields.non_financial_radio_c.value]}
+</span>
 {/if}
 
 </div>
@@ -629,17 +717,22 @@
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-{capture name="label" assign="label"}{sugar_translate label='LBL_ASSIGNED_TO' module='Opportunities'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_ASSIGNED_TO_NEW' module='Opportunities'}{/capture}
 {$label|strip_semicolon}:
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="relate" field="assigned_user_name" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="assigned_to_new_c" >
 
-{if !$fields.assigned_user_name.hidden}
+{if !$fields.assigned_to_new_c.hidden}
 {counter name="panelFieldCount" print=false}
 
-<span id="assigned_user_id" class="sugar_field" data-id-value="{$fields.assigned_user_id.value}">{$fields.assigned_user_name.value}</span>
+{if strlen($fields.assigned_to_new_c.value) <= 0}
+{assign var="value" value=$fields.assigned_to_new_c.default_value }
+{else}
+{assign var="value" value=$fields.assigned_to_new_c.value }
+{/if} 
+<span class="sugar_field" id="{$fields.assigned_to_new_c.name}">{$fields.assigned_to_new_c.value}</span>
 {/if}
 
 </div>
@@ -802,22 +895,24 @@
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-{capture name="label" assign="label"}{sugar_translate label='LBL_COUNTRY' module='Opportunities'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_CURRENCY' module='Opportunities'}{/capture}
 {$label|strip_semicolon}:
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="country_c" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="enum" field="currency_c" >
 
-{if !$fields.country_c.hidden}
+{if !$fields.currency_c.hidden}
 {counter name="panelFieldCount" print=false}
 
-{if strlen($fields.country_c.value) <= 0}
-{assign var="value" value=$fields.country_c.default_value }
+
+{if is_string($fields.currency_c.options)}
+<input type="hidden" class="sugar_field" id="{$fields.currency_c.name}" value="{ $fields.currency_c.options }">
+{ $fields.currency_c.options }
 {else}
-{assign var="value" value=$fields.country_c.value }
-{/if} 
-<span class="sugar_field" id="{$fields.country_c.name}">{$fields.country_c.value}</span>
+<input type="hidden" class="sugar_field" id="{$fields.currency_c.name}" value="{ $fields.currency_c.value }">
+{ $fields.currency_c.options[$fields.currency_c.value]}
+{/if}
 {/if}
 
 </div>
@@ -870,22 +965,22 @@
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-{capture name="label" assign="label"}{sugar_translate label='LBL_NEW_DEPARTMENT' module='Opportunities'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_COUNTRY' module='Opportunities'}{/capture}
 {$label|strip_semicolon}:
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="new_department_c" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="country_c" >
 
-{if !$fields.new_department_c.hidden}
+{if !$fields.country_c.hidden}
 {counter name="panelFieldCount" print=false}
 
-{if strlen($fields.new_department_c.value) <= 0}
-{assign var="value" value=$fields.new_department_c.default_value }
+{if strlen($fields.country_c.value) <= 0}
+{assign var="value" value=$fields.country_c.default_value }
 {else}
-{assign var="value" value=$fields.new_department_c.value }
+{assign var="value" value=$fields.country_c.value }
 {/if} 
-<span class="sugar_field" id="{$fields.new_department_c.name}">{$fields.new_department_c.value}</span>
+<span class="sugar_field" id="{$fields.country_c.name}">{$fields.country_c.value}</span>
 {/if}
 
 </div>
@@ -924,6 +1019,71 @@
 <input type="hidden" class="sugar_field" id="{$fields.source_c.name}" value="{ $fields.source_c.value }">
 { $fields.source_c.options[$fields.source_c.value]}
 {/if}
+{/if}
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label col-2-label">
+
+
+{capture name="label" assign="label"}{sugar_translate label='LBL_NEW_DEPARTMENT' module='Opportunities'}{/capture}
+{$label|strip_semicolon}:
+</div>
+
+
+<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="new_department_c" >
+
+{if !$fields.new_department_c.hidden}
+{counter name="panelFieldCount" print=false}
+
+{if strlen($fields.new_department_c.value) <= 0}
+{assign var="value" value=$fields.new_department_c.default_value }
+{else}
+{assign var="value" value=$fields.new_department_c.value }
+{/if} 
+<span class="sugar_field" id="{$fields.new_department_c.name}">{$fields.new_department_c.value}</span>
+{/if}
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label col-1-label">
+
+
+{capture name="label" assign="label"}{sugar_translate label='LBL_NON_FINANCIAL_RADIO' module='Opportunities'}{/capture}
+{$label|strip_semicolon}:
+</div>
+
+
+<div class="col-xs-12 col-sm-8 detail-view-field" type="radioenum" field="non_financial_radio_c" >
+
+{if !$fields.non_financial_radio_c.hidden}
+{counter name="panelFieldCount" print=false}
+
+<span class="sugar_field" id="{$fields.non_financial_radio_c.name}">
+{ $fields.non_financial_radio_c.options[$fields.non_financial_radio_c.value]}
+</span>
 {/if}
 
 </div>
@@ -1009,17 +1169,22 @@
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-{capture name="label" assign="label"}{sugar_translate label='LBL_ASSIGNED_TO' module='Opportunities'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_ASSIGNED_TO_NEW' module='Opportunities'}{/capture}
 {$label|strip_semicolon}:
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="relate" field="assigned_user_name" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="assigned_to_new_c" >
 
-{if !$fields.assigned_user_name.hidden}
+{if !$fields.assigned_to_new_c.hidden}
 {counter name="panelFieldCount" print=false}
 
-<span id="assigned_user_id" class="sugar_field" data-id-value="{$fields.assigned_user_id.value}">{$fields.assigned_user_name.value}</span>
+{if strlen($fields.assigned_to_new_c.value) <= 0}
+{assign var="value" value=$fields.assigned_to_new_c.default_value }
+{else}
+{assign var="value" value=$fields.assigned_to_new_c.value }
+{/if} 
+<span class="sugar_field" id="{$fields.assigned_to_new_c.name}">{$fields.assigned_to_new_c.value}</span>
 {/if}
 
 </div>

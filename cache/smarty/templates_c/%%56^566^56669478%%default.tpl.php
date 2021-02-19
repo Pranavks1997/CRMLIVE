@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-01-22 14:00:11
+<?php /* Smarty version 2.6.31, created on 2021-02-15 06:18:04
          compiled from modules/Alerts/templates/default.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_translate', 'modules/Alerts/templates/default.tpl', 5, false),array('modifier', 'strstr', 'modules/Alerts/templates/default.tpl', 21, false),array('modifier', 'lower', 'modules/Alerts/templates/default.tpl', 26, false),array('modifier', 'replace', 'modules/Alerts/templates/default.tpl', 26, false),array('modifier', 'nl2br', 'modules/Alerts/templates/default.tpl', 36, false),)), $this); ?>

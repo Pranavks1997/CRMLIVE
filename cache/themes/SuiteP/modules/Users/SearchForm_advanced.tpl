@@ -32,18 +32,18 @@
             }
 
             <div class="col-xs-12">
-                                <label for='first_name_advanced'>{sugar_translate label='LBL_FIRST_NAME' module='Users'}</label>
+                                <label for='full_name_advanced'>{sugar_translate label='LBL_NAME' module='Users'}</label>
                             </div>
             <div class="form-item">
                                 
-{if strlen($fields.first_name_advanced.value) <= 0}
-{assign var="value" value=$fields.first_name_advanced.default_value }
+{if strlen($fields.full_name_advanced.value) <= 0}
+{assign var="value" value=$fields.full_name_advanced.default_value }
 {else}
-{assign var="value" value=$fields.first_name_advanced.value }
+{assign var="value" value=$fields.full_name_advanced.value }
 {/if}  
-<input type='text' name='{$fields.first_name_advanced.name}' 
-    id='{$fields.first_name_advanced.name}' size='30' 
-    maxlength='255' 
+<input type='text' name='{$fields.full_name_advanced.name}' 
+    id='{$fields.full_name_advanced.name}' size='30' 
+    maxlength='510' 
     value='{$value}' title=''      accesskey='9'  >
                             </div>
         </div>
@@ -61,40 +61,16 @@
             }
 
             <div class="col-xs-12">
-                                <label for='last_name_advanced'>{sugar_translate label='LBL_LAST_NAME' module='Users'}</label>
+                                <label for='reports_to_name_advanced'>{sugar_translate label='LBL_REPORTS_TO_NAME' module='Users'}</label>
                             </div>
             <div class="form-item">
                                 
-{if strlen($fields.last_name_advanced.value) <= 0}
-{assign var="value" value=$fields.last_name_advanced.default_value }
-{else}
-{assign var="value" value=$fields.last_name_advanced.value }
-{/if}  
-<input type='text' name='{$fields.last_name_advanced.name}' 
-    id='{$fields.last_name_advanced.name}' size='30' 
-    maxlength='255' 
-    value='{$value}' title=''      >
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
+<input type="text" name="{$fields.reports_to_name_advanced.name}"  class="sqsEnabled"   id="{$fields.reports_to_name_advanced.name}" size="" value="{$fields.reports_to_name_advanced.value}" title='' autocomplete="off"  >
+<input type="hidden"  id="{$fields.reports_to_id_advanced.name}" value="{$fields.reports_to_id_advanced.value}">
+<span class="id-ff multiple">
+<button type="button" name="btn_{$fields.reports_to_name_advanced.name}"   title="{$APP.LBL_SELECT_BUTTON_TITLE}" class="button firstChild" value="{$APP.LBL_SELECT_BUTTON_LABEL}" onclick='open_popup("{$fields.reports_to_name_advanced.module}", 600, 400, "", true, false, {literal}{"call_back_function":"set_return","form_name":"search_form","field_to_name_array":{"id":"reports_to_id_advanced","full_name":"reports_to_name_advanced"}}{/literal}, "single", true);'><span class="suitepicon suitepicon-action-select"></span></button><button type="button" name="btn_clr_{$fields.reports_to_name_advanced.name}"   title="{$APP.LBL_CLEAR_BUTTON_TITLE}" class="button lastChild" onclick="this.form.{$fields.reports_to_name_advanced.name}.value = ''; this.form.{$fields.reports_to_id_advanced.name}.value = '';" value="{$APP.LBL_CLEAR_BUTTON_LABEL}"><span class="suitepicon suitepicon-action-clear"></span></button>
+</span>
 
-            {counter assign=index}
-            {math equation="left % right"
-            left=$index
-            right=$templateMeta.maxColumns
-            assign=modVal
-            }
-
-            <div class="col-xs-12">
-                                <label for='teamheirarchy_c_advanced'>{sugar_translate label='LBL_TEAMHEIRARCHY' module='Users'}</label>
-                            </div>
-            <div class="form-item">
-                                
-{html_options id='teamheirarchy_c_advanced' name='teamheirarchy_c_advanced[]' options=$fields.teamheirarchy_c_advanced.options size="6" class="templateGroupChooser" multiple="1" selected=$fields.teamheirarchy_c_advanced.value}
                             </div>
         </div>
     </div>
@@ -161,28 +137,11 @@
             }
 
             <div class="col-xs-12">
-                                <label for='is_admin_advanced'>{sugar_translate label='LBL_IS_ADMIN' module='Users'}</label>
+                                <label for='teamheirarchy_c_advanced'>{sugar_translate label='LBL_TEAMHEIRARCHY' module='Users'}</label>
                             </div>
             <div class="form-item">
                                 
-{assign var="yes" value=""}
-{assign var="no" value=""}
-{assign var="default" value=""}
-
-{if strval($fields.is_admin_advanced.value) == "1"}
-	{assign var="yes" value="SELECTED"}
-{elseif strval($fields.is_admin_advanced.value) == "0"}
-	{assign var="no" value="SELECTED"}
-{else}
-	{assign var="default" value="SELECTED"}
-{/if}
-
-<select id="{$fields.is_admin_advanced.name}" name="{$fields.is_admin_advanced.name}"   >
- <option value="" {$default}></option>
- <option value = "0" {$no}> {$APP.LBL_SEARCH_DROPDOWN_NO}</option>
- <option value = "1" {$yes}> {$APP.LBL_SEARCH_DROPDOWN_YES}</option>
-</select>
-
+{html_options id='teamheirarchy_c_advanced' name='teamheirarchy_c_advanced[]' options=$fields.teamheirarchy_c_advanced.options size="6" class="templateGroupChooser" multiple="1" selected=$fields.teamheirarchy_c_advanced.value}
                             </div>
         </div>
     </div>
@@ -199,19 +158,11 @@
             }
 
             <div class="col-xs-12">
-                                <label for='title_advanced'>{sugar_translate label='LBL_TITLE' module='Users'}</label>
+                                <label for='teamfunction_c_advanced'>{sugar_translate label='LBL_TEAMFUNCTION' module='Users'}</label>
                             </div>
             <div class="form-item">
                                 
-{if strlen($fields.title_advanced.value) <= 0}
-{assign var="value" value=$fields.title_advanced.default_value }
-{else}
-{assign var="value" value=$fields.title_advanced.value }
-{/if}  
-<input type='text' name='{$fields.title_advanced.name}' 
-    id='{$fields.title_advanced.name}' size='30' 
-    maxlength='50' 
-    value='{$value}' title=''      >
+{html_options name='teamfunction_c_advanced[]' options=$fields.teamfunction_c_advanced.options size="6" class="templateGroupChooser" multiple=1 selected=$fields.teamfunction_c_advanced.value}
                             </div>
         </div>
     </div>
@@ -228,28 +179,11 @@
             }
 
             <div class="col-xs-12">
-                                <label for='is_group_advanced'>{sugar_translate label='LBL_GROUP_USER' module='Users'}</label>
+                                <label for='bid_commercial_head_c_advanced'>{sugar_translate label='LBL_BID_COMMERCIAL_HEAD' module='Users'}</label>
                             </div>
             <div class="form-item">
                                 
-{assign var="yes" value=""}
-{assign var="no" value=""}
-{assign var="default" value=""}
-
-{if strval($fields.is_group_advanced.value) == "1"}
-	{assign var="yes" value="SELECTED"}
-{elseif strval($fields.is_group_advanced.value) == "0"}
-	{assign var="no" value="SELECTED"}
-{else}
-	{assign var="default" value="SELECTED"}
-{/if}
-
-<select id="{$fields.is_group_advanced.name}" name="{$fields.is_group_advanced.name}"   >
- <option value="" {$default}></option>
- <option value = "0" {$no}> {$APP.LBL_SEARCH_DROPDOWN_NO}</option>
- <option value = "1" {$yes}> {$APP.LBL_SEARCH_DROPDOWN_YES}</option>
-</select>
-
+{html_options id='bid_commercial_head_c_advanced' name='bid_commercial_head_c_advanced[]' options=$fields.bid_commercial_head_c_advanced.options size="6" class="templateGroupChooser" multiple="1" selected=$fields.bid_commercial_head_c_advanced.value}
                             </div>
         </div>
     </div>
@@ -266,222 +200,11 @@
             }
 
             <div class="col-xs-12">
-                                <label for='department_advanced'>{sugar_translate label='LBL_DEPARTMENT' module='Users'}</label>
+                                <label for='mc_c_advanced'>{sugar_translate label='LBL_MC' module='Users'}</label>
                             </div>
             <div class="form-item">
                                 
-{if strlen($fields.department_advanced.value) <= 0}
-{assign var="value" value=$fields.department_advanced.default_value }
-{else}
-{assign var="value" value=$fields.department_advanced.value }
-{/if}  
-<input type='text' name='{$fields.department_advanced.name}' 
-    id='{$fields.department_advanced.name}' size='30' 
-    maxlength='50' 
-    value='{$value}' title=''      >
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            {counter assign=index}
-            {math equation="left % right"
-            left=$index
-            right=$templateMeta.maxColumns
-            assign=modVal
-            }
-
-            <div class="col-xs-12">
-                                <label for='phone_advanced'>{sugar_translate label='LBL_ANY_PHONE' module='Users'}</label>
-                            </div>
-            <div class="form-item">
-                                
-{if strlen($fields.phone_advanced.value) <= 0}
-{assign var="value" value=$fields.phone_advanced.default_value }
-{else}
-{assign var="value" value=$fields.phone_advanced.value }
-{/if}  
-<input type='text' name='{$fields.phone_advanced.name}' 
-    id='{$fields.phone_advanced.name}' size='30' 
-     
-    value='{$value}' title=''      >
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            {counter assign=index}
-            {math equation="left % right"
-            left=$index
-            right=$templateMeta.maxColumns
-            assign=modVal
-            }
-
-            <div class="col-xs-12">
-                                <label for='address_street_advanced'>{sugar_translate label='LBL_ANY_ADDRESS' module='Users'}</label>
-                            </div>
-            <div class="form-item">
-                                
-{if strlen($fields.address_street_advanced.value) <= 0}
-{assign var="value" value=$fields.address_street_advanced.default_value }
-{else}
-{assign var="value" value=$fields.address_street_advanced.value }
-{/if}  
-<input type='text' name='{$fields.address_street_advanced.name}' 
-    id='{$fields.address_street_advanced.name}' size='30' 
-    maxlength='150' 
-    value='{$value}' title=''      >
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            {counter assign=index}
-            {math equation="left % right"
-            left=$index
-            right=$templateMeta.maxColumns
-            assign=modVal
-            }
-
-            <div class="col-xs-12">
-                                <label for='email_advanced'>{sugar_translate label='LBL_ANY_EMAIL' module='Users'}</label>
-                            </div>
-            <div class="form-item">
-                                
-{if strlen($fields.email_advanced.value) <= 0}
-{assign var="value" value=$fields.email_advanced.default_value }
-{else}
-{assign var="value" value=$fields.email_advanced.value }
-{/if}  
-<input type='text' name='{$fields.email_advanced.name}' 
-    id='{$fields.email_advanced.name}' size='30' 
-     
-    value='{$value}' title=''      >
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            {counter assign=index}
-            {math equation="left % right"
-            left=$index
-            right=$templateMeta.maxColumns
-            assign=modVal
-            }
-
-            <div class="col-xs-12">
-                                <label for='address_city_advanced'>{sugar_translate label='LBL_CITY' module='Users'}</label>
-                            </div>
-            <div class="form-item">
-                                
-{if strlen($fields.address_city_advanced.value) <= 0}
-{assign var="value" value=$fields.address_city_advanced.default_value }
-{else}
-{assign var="value" value=$fields.address_city_advanced.value }
-{/if}  
-<input type='text' name='{$fields.address_city_advanced.name}' 
-    id='{$fields.address_city_advanced.name}' size='30' 
-    maxlength='100' 
-    value='{$value}' title=''      >
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            {counter assign=index}
-            {math equation="left % right"
-            left=$index
-            right=$templateMeta.maxColumns
-            assign=modVal
-            }
-
-            <div class="col-xs-12">
-                                <label for='address_state_advanced'>{sugar_translate label='LBL_STATE' module='Users'}</label>
-                            </div>
-            <div class="form-item">
-                                
-{if strlen($fields.address_state_advanced.value) <= 0}
-{assign var="value" value=$fields.address_state_advanced.default_value }
-{else}
-{assign var="value" value=$fields.address_state_advanced.value }
-{/if}  
-<input type='text' name='{$fields.address_state_advanced.name}' 
-    id='{$fields.address_state_advanced.name}' size='30' 
-    maxlength='100' 
-    value='{$value}' title=''      >
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            {counter assign=index}
-            {math equation="left % right"
-            left=$index
-            right=$templateMeta.maxColumns
-            assign=modVal
-            }
-
-            <div class="col-xs-12">
-                                <label for='address_postalcode_advanced'>{sugar_translate label='LBL_POSTAL_CODE' module='Users'}</label>
-                            </div>
-            <div class="form-item">
-                                
-{if strlen($fields.address_postalcode_advanced.value) <= 0}
-{assign var="value" value=$fields.address_postalcode_advanced.default_value }
-{else}
-{assign var="value" value=$fields.address_postalcode_advanced.value }
-{/if}  
-<input type='text' name='{$fields.address_postalcode_advanced.name}' 
-    id='{$fields.address_postalcode_advanced.name}' size='30' 
-    maxlength='20' 
-    value='{$value}' title=''      >
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            {counter assign=index}
-            {math equation="left % right"
-            left=$index
-            right=$templateMeta.maxColumns
-            assign=modVal
-            }
-
-            <div class="col-xs-12">
-                                <label for='address_country_advanced'>{sugar_translate label='LBL_COUNTRY' module='Users'}</label>
-                            </div>
-            <div class="form-item">
-                                
-{if strlen($fields.address_country_advanced.value) <= 0}
-{assign var="value" value=$fields.address_country_advanced.default_value }
-{else}
-{assign var="value" value=$fields.address_country_advanced.value }
-{/if}  
-<input type='text' name='{$fields.address_country_advanced.name}' 
-    id='{$fields.address_country_advanced.name}' size='30' 
-    maxlength='100' 
-    value='{$value}' title=''      >
+{html_options id='mc_c_advanced' name='mc_c_advanced[]' options=$fields.mc_c_advanced.options size="6" class="templateGroupChooser" multiple="1" selected=$fields.mc_c_advanced.value}
                             </div>
         </div>
     </div>
