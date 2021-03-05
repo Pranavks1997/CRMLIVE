@@ -15,10 +15,6 @@ $GLOBALS['app_list_strings']['teamheirarchy_c_list']=array (
   'team_member_l2' => 'Team Member (L2)',
   'team_member_l3' => 'Team Member(L3)',
 );
-$GLOBALS['app_list_strings']['opportunity_type']=array (
-  'global' => 'Global',
-  'non_global' => 'Non Global',
-);
 $GLOBALS['app_list_strings']['state_c_list']=array (
 );
 $GLOBALS['app_list_strings']['submission_status_list']=array (
@@ -144,8 +140,29 @@ $GLOBALS['app_list_strings']['Interaction_type']=array (
   'Preparation' => 'Preparation',
   'Phone_Email' => 'Phone & Email',
 );
+
 $GLOBALS['app_list_strings']['currency_list']=array (
   '' => '',
   'USD' => 'USD ( $ )',
   'INR' => 'INR ( ₹ )',
+);
+
+$GLOBALS['app_list_strings']['parent_type_display']=array (
+  'Calls' => 'Activity',
+  'Accounts' => 'Department',
+  'Opportunities' => 'Opportunity',
+  'Project' => 'Project',
+);
+$GLOBALS['app_list_strings']['status_0']=array (
+  'Upcomming' => 'Upcomming',
+  'Completed' => 'Completed',
+  'Delayed' => 'Delayed',
+);
+$GLOBALS['app_list_strings']['opportunity_type']=array (
+  'non_global' => 'Non Global',
+  'global' => 'Global',
+);
+$GLOBALS['app_list_strings']['critical_list']=array (
+  'no' => 'No',
+  'yes' => 'Yes',
 );

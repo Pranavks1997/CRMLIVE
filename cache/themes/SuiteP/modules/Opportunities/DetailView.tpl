@@ -110,6 +110,22 @@
 
 
 <div class="col-xs-12 col-sm-6 detail-view-row-item">
+</div>
+
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+</div>
+
+</div>
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
 
 
 <div class="col-xs-12 col-sm-4 label col-1-label">
@@ -220,17 +236,24 @@
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-{capture name="label" assign="label"}{sugar_translate label='LBL_ASSIGNED_TO' module='Opportunities'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_CRITICAL' module='Opportunities'}{/capture}
 {$label|strip_semicolon}:
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="relate" field="assigned_user_name" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="enum" field="critical_c" >
 
-{if !$fields.assigned_user_name.hidden}
+{if !$fields.critical_c.hidden}
 {counter name="panelFieldCount" print=false}
 
-<span id="assigned_user_id" class="sugar_field" data-id-value="{$fields.assigned_user_id.value}">{$fields.assigned_user_name.value}</span>
+
+{if is_string($fields.critical_c.options)}
+<input type="hidden" class="sugar_field" id="{$fields.critical_c.name}" value="{ $fields.critical_c.options }">
+{ $fields.critical_c.options }
+{else}
+<input type="hidden" class="sugar_field" id="{$fields.critical_c.name}" value="{ $fields.critical_c.value }">
+{ $fields.critical_c.options[$fields.critical_c.value]}
+{/if}
 {/if}
 
 </div>
@@ -308,6 +331,43 @@
 </div>
 
 
+</div>
+
+</div>
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label col-1-label">
+
+
+{capture name="label" assign="label"}{sugar_translate label='LBL_ASSIGNED_TO' module='Opportunities'}{/capture}
+{$label|strip_semicolon}:
+</div>
+
+
+<div class="col-xs-12 col-sm-8 detail-view-field" type="relate" field="assigned_user_name" >
+
+{if !$fields.assigned_user_name.hidden}
+{counter name="panelFieldCount" print=false}
+
+<span id="assigned_user_id" class="sugar_field" data-id-value="{$fields.assigned_user_id.value}">{$fields.assigned_user_name.value}</span>
+{/if}
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
 </div>
 
 </div>
@@ -3853,22 +3913,27 @@
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-{capture name="label" assign="label"}{sugar_translate label='LBL_MULTIPLE_APPROVER' module='Opportunities'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_EXPECTED_INFLOW' module='Opportunities'}{/capture}
 {$label|strip_semicolon}:
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="multiple_approver_c" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="date" field="expected_inflow_c" >
 
-{if !$fields.multiple_approver_c.hidden}
+{if !$fields.expected_inflow_c.hidden}
 {counter name="panelFieldCount" print=false}
 
-{if strlen($fields.multiple_approver_c.value) <= 0}
-{assign var="value" value=$fields.multiple_approver_c.default_value }
+
+{if !empty($vardef.date_formatted_value) }
+{assign var="value" value={$vardef.date_formatted_value} }
 {else}
-{assign var="value" value=$fields.multiple_approver_c.value }
-{/if} 
-<span class="sugar_field" id="{$fields.multiple_approver_c.name}">{$fields.multiple_approver_c.value}</span>
+{if strlen($fields.expected_inflow_c.value) <= 0}
+{assign var="value" value=$fields.expected_inflow_c.default_value }
+{else}
+{assign var="value" value=$fields.expected_inflow_c.value }
+{/if}
+{/if}
+<span class="sugar_field" id="{$fields.expected_inflow_c.name}">{$value}</span>
 {/if}
 
 </div>
@@ -4004,22 +4069,27 @@
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-{capture name="label" assign="label"}{sugar_translate label='LBL_MULTIPLE_APPROVER' module='Opportunities'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_EXPECTED_INFLOW' module='Opportunities'}{/capture}
 {$label|strip_semicolon}:
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="multiple_approver_c" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="date" field="expected_inflow_c" >
 
-{if !$fields.multiple_approver_c.hidden}
+{if !$fields.expected_inflow_c.hidden}
 {counter name="panelFieldCount" print=false}
 
-{if strlen($fields.multiple_approver_c.value) <= 0}
-{assign var="value" value=$fields.multiple_approver_c.default_value }
+
+{if !empty($vardef.date_formatted_value) }
+{assign var="value" value={$vardef.date_formatted_value} }
 {else}
-{assign var="value" value=$fields.multiple_approver_c.value }
-{/if} 
-<span class="sugar_field" id="{$fields.multiple_approver_c.name}">{$fields.multiple_approver_c.value}</span>
+{if strlen($fields.expected_inflow_c.value) <= 0}
+{assign var="value" value=$fields.expected_inflow_c.default_value }
+{else}
+{assign var="value" value=$fields.expected_inflow_c.value }
+{/if}
+{/if}
+<span class="sugar_field" id="{$fields.expected_inflow_c.name}">{$value}</span>
 {/if}
 
 </div>
@@ -4159,22 +4229,22 @@
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-{capture name="label" assign="label"}{sugar_translate label='LBL_UNTAGGED_USERS' module='Opportunities'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_MULTIPLE_APPROVER' module='Opportunities'}{/capture}
 {$label|strip_semicolon}:
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="untagged_users_c" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="multiple_approver_c" >
 
-{if !$fields.untagged_users_c.hidden}
+{if !$fields.multiple_approver_c.hidden}
 {counter name="panelFieldCount" print=false}
 
-{if strlen($fields.untagged_users_c.value) <= 0}
-{assign var="value" value=$fields.untagged_users_c.default_value }
+{if strlen($fields.multiple_approver_c.value) <= 0}
+{assign var="value" value=$fields.multiple_approver_c.default_value }
 {else}
-{assign var="value" value=$fields.untagged_users_c.value }
+{assign var="value" value=$fields.multiple_approver_c.value }
 {/if} 
-<span class="sugar_field" id="{$fields.untagged_users_c.name}">{$fields.untagged_users_c.value}</span>
+<span class="sugar_field" id="{$fields.multiple_approver_c.name}">{$fields.multiple_approver_c.value}</span>
 {/if}
 
 </div>
@@ -4345,22 +4415,22 @@
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-{capture name="label" assign="label"}{sugar_translate label='LBL_UNTAGGED_USERS' module='Opportunities'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_MULTIPLE_APPROVER' module='Opportunities'}{/capture}
 {$label|strip_semicolon}:
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="untagged_users_c" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="multiple_approver_c" >
 
-{if !$fields.untagged_users_c.hidden}
+{if !$fields.multiple_approver_c.hidden}
 {counter name="panelFieldCount" print=false}
 
-{if strlen($fields.untagged_users_c.value) <= 0}
-{assign var="value" value=$fields.untagged_users_c.default_value }
+{if strlen($fields.multiple_approver_c.value) <= 0}
+{assign var="value" value=$fields.multiple_approver_c.default_value }
 {else}
-{assign var="value" value=$fields.untagged_users_c.value }
+{assign var="value" value=$fields.multiple_approver_c.value }
 {/if} 
-<span class="sugar_field" id="{$fields.untagged_users_c.name}">{$fields.untagged_users_c.value}</span>
+<span class="sugar_field" id="{$fields.multiple_approver_c.name}">{$fields.multiple_approver_c.value}</span>
 {/if}
 
 </div>

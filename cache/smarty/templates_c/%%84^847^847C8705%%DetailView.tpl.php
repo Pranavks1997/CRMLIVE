@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-02-19 05:45:08
+<?php /* Smarty version 2.6.31, created on 2021-03-05 14:21:56
          compiled from cache/themes/SuiteP/modules/Opportunities/DetailView.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 38, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 47, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 126, false),array('function', 'multienum_to_array', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 699, false),array('function', 'sugar_number_format', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 1411, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 119, false),array('modifier', 'escape', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 766, false),array('modifier', 'url2html', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 766, false),array('modifier', 'nl2br', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 766, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 38, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 47, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 142, false),array('function', 'multienum_to_array', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 759, false),array('function', 'sugar_number_format', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 1471, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 135, false),array('modifier', 'escape', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 826, false),array('modifier', 'url2html', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 826, false),array('modifier', 'nl2br', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 826, false),)), $this); ?>
 
 
 <script language="javascript">
@@ -123,6 +123,22 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_inclu
 
 
 
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+</div>
+
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+</div>
+
+</div>
 
 
 <div class="row detail-view-row">
@@ -283,22 +299,33 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_inclu
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_ASSIGNED_TO','module' => 'Opportunities'), $this);?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_CRITICAL','module' => 'Opportunities'), $this);?>
 <?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
 <?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
 :
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="relate" field="assigned_user_name" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="enum" field="critical_c" >
 
-<?php if (! $this->_tpl_vars['fields']['assigned_user_name']['hidden']): ?>
+<?php if (! $this->_tpl_vars['fields']['critical_c']['hidden']): ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
 
-<span id="assigned_user_id" class="sugar_field" data-id-value="<?php echo $this->_tpl_vars['fields']['assigned_user_id']['value']; ?>
-"><?php echo $this->_tpl_vars['fields']['assigned_user_name']['value']; ?>
-</span>
+
+<?php if (is_string ( $this->_tpl_vars['fields']['critical_c']['options'] )): ?>
+<input type="hidden" class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['critical_c']['name']; ?>
+" value="<?php echo $this->_tpl_vars['fields']['critical_c']['options']; ?>
+">
+<?php echo $this->_tpl_vars['fields']['critical_c']['options']; ?>
+
+<?php else: ?>
+<input type="hidden" class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['critical_c']['name']; ?>
+" value="<?php echo $this->_tpl_vars['fields']['critical_c']['value']; ?>
+">
+<?php echo $this->_tpl_vars['fields']['critical_c']['options'][$this->_tpl_vars['fields']['critical_c']['value']]; ?>
+
+<?php endif; ?>
 <?php endif; ?>
 
 </div>
@@ -394,6 +421,48 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_inclu
 </div>
 
 
+</div>
+
+</div>
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label col-1-label">
+
+
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_ASSIGNED_TO','module' => 'Opportunities'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+</div>
+
+
+<div class="col-xs-12 col-sm-8 detail-view-field" type="relate" field="assigned_user_name" >
+
+<?php if (! $this->_tpl_vars['fields']['assigned_user_name']['hidden']): ?>
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<span id="assigned_user_id" class="sugar_field" data-id-value="<?php echo $this->_tpl_vars['fields']['assigned_user_id']['value']; ?>
+"><?php echo $this->_tpl_vars['fields']['assigned_user_name']['value']; ?>
+</span>
+<?php endif; ?>
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
 </div>
 
 </div>
@@ -4479,26 +4548,31 @@ unset($_smarty_tpl_vars);
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_MULTIPLE_APPROVER','module' => 'Opportunities'), $this);?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_EXPECTED_INFLOW','module' => 'Opportunities'), $this);?>
 <?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
 <?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
 :
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="multiple_approver_c" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="date" field="expected_inflow_c" >
 
-<?php if (! $this->_tpl_vars['fields']['multiple_approver_c']['hidden']): ?>
+<?php if (! $this->_tpl_vars['fields']['expected_inflow_c']['hidden']): ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
 
-<?php if (strlen ( $this->_tpl_vars['fields']['multiple_approver_c']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['multiple_approver_c']['default_value']); ?>
+
+<?php if (! empty ( $this->_tpl_vars['vardef']['date_formatted_value'] )): ?>
+<?php $this->assign('value', "{".($this->_tpl_vars['vardef']).".date_formatted_value"); ?> }
 <?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['multiple_approver_c']['value']); ?>
-<?php endif; ?> 
-<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['multiple_approver_c']['name']; ?>
-"><?php echo $this->_tpl_vars['fields']['multiple_approver_c']['value']; ?>
+<?php if (strlen ( $this->_tpl_vars['fields']['expected_inflow_c']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['expected_inflow_c']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['expected_inflow_c']['value']); ?>
+<?php endif; ?>
+<?php endif; ?>
+<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['expected_inflow_c']['name']; ?>
+"><?php echo $this->_tpl_vars['value']; ?>
 </span>
 <?php endif; ?>
 
@@ -4655,26 +4729,31 @@ unset($_smarty_tpl_vars);
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_MULTIPLE_APPROVER','module' => 'Opportunities'), $this);?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_EXPECTED_INFLOW','module' => 'Opportunities'), $this);?>
 <?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
 <?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
 :
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="multiple_approver_c" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="date" field="expected_inflow_c" >
 
-<?php if (! $this->_tpl_vars['fields']['multiple_approver_c']['hidden']): ?>
+<?php if (! $this->_tpl_vars['fields']['expected_inflow_c']['hidden']): ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
 
-<?php if (strlen ( $this->_tpl_vars['fields']['multiple_approver_c']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['multiple_approver_c']['default_value']); ?>
+
+<?php if (! empty ( $this->_tpl_vars['vardef']['date_formatted_value'] )): ?>
+<?php $this->assign('value', "{".($this->_tpl_vars['vardef']).".date_formatted_value"); ?> }
 <?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['multiple_approver_c']['value']); ?>
-<?php endif; ?> 
-<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['multiple_approver_c']['name']; ?>
-"><?php echo $this->_tpl_vars['fields']['multiple_approver_c']['value']; ?>
+<?php if (strlen ( $this->_tpl_vars['fields']['expected_inflow_c']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['expected_inflow_c']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['expected_inflow_c']['value']); ?>
+<?php endif; ?>
+<?php endif; ?>
+<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['expected_inflow_c']['name']; ?>
+"><?php echo $this->_tpl_vars['value']; ?>
 </span>
 <?php endif; ?>
 
@@ -4831,26 +4910,26 @@ unset($_smarty_tpl_vars);
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_UNTAGGED_USERS','module' => 'Opportunities'), $this);?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_MULTIPLE_APPROVER','module' => 'Opportunities'), $this);?>
 <?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
 <?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
 :
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="untagged_users_c" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="multiple_approver_c" >
 
-<?php if (! $this->_tpl_vars['fields']['untagged_users_c']['hidden']): ?>
+<?php if (! $this->_tpl_vars['fields']['multiple_approver_c']['hidden']): ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
 
-<?php if (strlen ( $this->_tpl_vars['fields']['untagged_users_c']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['untagged_users_c']['default_value']); ?>
+<?php if (strlen ( $this->_tpl_vars['fields']['multiple_approver_c']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['multiple_approver_c']['default_value']); ?>
 <?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['untagged_users_c']['value']); ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['multiple_approver_c']['value']); ?>
 <?php endif; ?> 
-<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['untagged_users_c']['name']; ?>
-"><?php echo $this->_tpl_vars['fields']['untagged_users_c']['value']; ?>
+<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['multiple_approver_c']['name']; ?>
+"><?php echo $this->_tpl_vars['fields']['multiple_approver_c']['value']; ?>
 </span>
 <?php endif; ?>
 
@@ -5043,26 +5122,26 @@ unset($_smarty_tpl_vars);
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_UNTAGGED_USERS','module' => 'Opportunities'), $this);?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_MULTIPLE_APPROVER','module' => 'Opportunities'), $this);?>
 <?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
 <?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
 :
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="untagged_users_c" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="multiple_approver_c" >
 
-<?php if (! $this->_tpl_vars['fields']['untagged_users_c']['hidden']): ?>
+<?php if (! $this->_tpl_vars['fields']['multiple_approver_c']['hidden']): ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
 
-<?php if (strlen ( $this->_tpl_vars['fields']['untagged_users_c']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['untagged_users_c']['default_value']); ?>
+<?php if (strlen ( $this->_tpl_vars['fields']['multiple_approver_c']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['multiple_approver_c']['default_value']); ?>
 <?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['untagged_users_c']['value']); ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['multiple_approver_c']['value']); ?>
 <?php endif; ?> 
-<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['untagged_users_c']['name']; ?>
-"><?php echo $this->_tpl_vars['fields']['untagged_users_c']['value']; ?>
+<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['multiple_approver_c']['name']; ?>
+"><?php echo $this->_tpl_vars['fields']['multiple_approver_c']['value']; ?>
 </span>
 <?php endif; ?>
 

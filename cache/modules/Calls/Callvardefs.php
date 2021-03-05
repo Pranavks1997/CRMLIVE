@@ -289,15 +289,18 @@
       'vname' => 'LBL_STATUS',
       'type' => 'enum',
       'len' => 100,
-      'options' => 'call_status_dom',
+      'options' => 'status_0',
       'comment' => 'The status of the call (Held, Not Held, etc.)',
       'required' => true,
       'importable' => 'required',
-      'default' => 'Planned',
+      'default' => '',
       'studio' => 
       array (
         'detailview' => false,
       ),
+      'inline_edit' => true,
+      'comments' => 'The status of the call (Held, Not Held, etc.)',
+      'merge_filter' => 'disabled',
     ),
     'direction' => 
     array (
@@ -674,7 +677,7 @@
     array (
       'inline_edit' => '1',
       'labelValue' => 'Comments:',
-      'required' => true,
+      'required' => false,
       'source' => 'custom_fields',
       'name' => 'new_current_status_c',
       'vname' => 'LBL_NEW_CURRENT_STATUS',

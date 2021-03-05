@@ -14,15 +14,9 @@ class OpportunitiesController extends SugarController
     {
       try{  
         global $current_user;
-        // print_r($current_user);
-        // die();
+       
     	  $log_in_user_id = $current_user->id;
-    // 	if($current_user->is_admin !=1){
-    // 	    echo 'not admin';
-    // 	}else{
-    // 	     echo 'admin';
-    // 	}
-    // 	die();
+  
     	  $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
         // $user_id = $_POST[''];
@@ -452,11 +446,31 @@ public function action_year_quarters(){
 			$result = $GLOBALS['db']->query($sql);
 			// print_r($result->num_rows);
 			if($result->num_rows>0){
-				$update_query="UPDATE year_quarters SET start_year='".$start_year."',start_quarter='". $start_quarter."',end_year='". $end_year."',end_quarter='". $end_quarter."',num_of_bidders='". $num_of_bidders."',total_input_value='". $total."' WHERE opp_id='".$id."'";
+			    
+			    while($row = $GLOBALS['db']->fetchByAssoc($result) )
+				{
+				      
+			    $start_year_old=$row['start_year'];
+			    $start_quarter_old=$row['start_quarter'];
+			     $end_year_old=$row['end_year'];
+			    $end_quarter_old=$row['end_quarter'];
+			    $num_of_bidders_old = $_POST['num_of_bidders'];
+			    $total_old=$_POST['total_input_value'];
+			    	
+ 				}
+ 				
+ 				
+			   
+			     $update_query="UPDATE year_quarters SET start_year='".$start_year."',start_quarter='". $start_quarter."',end_year='". $end_year."',end_quarter='". $end_quarter."',num_of_bidders='". $num_of_bidders."',total_input_value='". $total."' WHERE opp_id='".$id."'";
 				$res0 = $db->query($update_query);
+				
+				
 			}else{
 				$insert_query='INSERT INTO year_quarters (opp_id,start_year,start_quarter,end_year,end_quarter,num_of_bidders,total_input_value) VALUES ("'.$id.'", "'.$start_year.'","'. $start_quarter.'", "'.$end_year.'", "'.$end_quarter.'", "'.$num_of_bidders.'", "'.$total.'")';
 				$res0 = $db->query($insert_query);
+				
+			
+				
 			}
     
   }catch(Exception $e){
@@ -666,40 +680,7 @@ public function action_detailView_check(){
     	
     	$db = \DBManagerFactory::getInstance();
 	    	$GLOBALS['db'];
-          
-          $sql ='SELECT * FROM opportunities WHERE id="'. $opportunity_id.'"';
-			$result = $GLOBALS['db']->query($sql);
-			
-			while($row = $GLOBALS['db']->fetchByAssoc($result) )
-				{
-				    $created_by=$row['created_by'];
-				   $assigned=$row['assigned_user_id'];
-				}
-			 $sql1 ='SELECT * FROM opportunities_cstm WHERE id_c="'. $opportunity_id.'"';
-			$result1 = $GLOBALS['db']->query($sql1);
-			
-			while($row1 = $GLOBALS['db']->fetchByAssoc($result1) )
-				{
-				    
-				     $approver=$row1['multiple_approver_c'];
-				     $deligate=$row1['delegate'];
-				     $approver1=$row1['user_id2_c'];
-				    
-				    
-				}
-					$sql5 = "SELECT  * FROM tagged_user WHERE opp_id='".$opportunity_id."'";
-		 	$result5 = $GLOBALS['db']->query($sql5);
-			while($row5 = $GLOBALS['db']->fetchByAssoc($result5))
-			{
-	    		    $others=$row5['user_id'];
-			}	
-             
-		$others_id_array = explode(",",$others);
-				
-			 $team_func_array = explode(',', $deligate);
-			 $team_func_array1 = explode(',', $approver);
-			 //$team_func_array2 = explode(',', $approver1);
-			 
+     		 
 			  $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
         $result3 = $GLOBALS['db']->query($sql3);
         while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
@@ -709,15 +690,47 @@ public function action_detailView_check(){
             $check_team_lead = $row3['teamheirarchy_c'];
             
         }
-        //|| $log_in_user_id == $created_by
-			 if(  $check_mc =="yes" || $current_user->is_admin || in_array($log_in_user_id, $team_func_array1)||in_array($log_in_user_id, $others_id_array)  || in_array($log_in_user_id, $team_func_array) || $log_in_user_id == $approver1 || $log_in_user_id == $assigned) {
+        
+         
+      
+        
+       //------------------------------------------new code--------------------------------------------
+         $sql_opp="SELECT opportunities.id,opportunities.assigned_user_id,opportunities.opportunity_type,opportunities_cstm.multiple_approver_c AS approvers,opportunities_cstm.delegate,tagged_user.user_id AS tagged_users_id, users_cstm.user_lineage as lineage FROM opportunities INNER JOIN opportunities_cstm ON opportunities_cstm.id_c=opportunities.id LEFT JOIN tagged_user ON tagged_user.opp_id = opportunities.id LEFT JOIN users_cstm ON users_cstm.id_c = opportunities.assigned_user_id WHERE opportunities.id='".$opportunity_id."' AND opportunities.deleted=0";
+			$result_opp = $GLOBALS['db']->query($sql_opp);
+			
+			while($row_opp = $GLOBALS['db']->fetchByAssoc($result_opp) )
+				{
+				   $opp_id=$row_opp['id'];
+				   $assigned_user_id=$row_opp['assigned_user_id'];
+				   $multiple_approver_id=$row_opp['approvers'];
+				   $lineage=$row_opp['lineage'];
+				   $tagged_users=$row_opp['tagged_users_id'];
+				   $opp_type=$row_opp['opportunity_type'];
+				   $delegte_id=$row_opp['delegate'];
+				}
+
+                   $approver=explode(',',$multiple_approver_id);
+                   $lineage_array=explode(',',$lineage);
+                   $tagged_users_array=explode(',',$tagged_users);
+                   $delegte_id_array=explode(',',$delegte_id);
+       //------------------------------------------new code--------------END------------------------------
+       
+       
+        
+        //-----Floew starts here----------
+        
+     
+        
+        	 if(  $check_mc =="yes" || $current_user->is_admin || in_array($log_in_user_id,$lineage_array)||in_array($log_in_user_id,$approver)||in_array($log_in_user_id,$tagged_users_array)||in_array($log_in_user_id,$delegte_id_array)||$log_in_user_id==$assigned_user_id) {
           	 
-          	  echo json_encode ("true");
+          	  $message='true';
+          	  echo json_encode (array("message"=>$message,"mc"=>$check_mc));
+          	
                 
             }else{
-                echo json_encode ("false");
+                 $message='false';
+                  echo json_encode (array("message"=>$message,"mc"=>$check_mc));
             }
-        
 				
     
   }catch(Exception $e){
@@ -1985,6 +1998,9 @@ public function action_approve(){
 	    		    //$by_mc=$ow_mc['created_by'];
 			}
      
+     //-----------------flow starts here------------------------------------
+     
+     
      if(in_array($log_in_user_id,$id_mc) && $log_in_user_id==$by_mc){
          
          	$row_array=array();
@@ -2052,6 +2068,7 @@ public function action_approve(){
                     			    
                     			     if($db->query($sql77)==TRUE){
                     			         
+                    			         // akash change here
                     			         
                     			        echo json_encode(array("status"=>true,"next_status"=>$next_status));
                     			        
@@ -2100,7 +2117,7 @@ public function action_approve(){
                     			    
                     			     if($db->query($sql7)==TRUE){
                     			         
-                    			         
+                    			         // akash change here
                     			        echo json_encode(array("status"=>true,"next_status"=>$next_status));
                     			         //alerts
                     			       
@@ -2119,7 +2136,7 @@ public function action_approve(){
                     			    
                     			     if($db->query($sql7)==TRUE){
                     			         
-                    			         
+                    			         // akash change here
                     			        echo json_encode(array("status"=>true,"next_status"=>$next_status));
                     			         //alerts
                     			       
@@ -2139,7 +2156,7 @@ public function action_approve(){
                     			    
                     			     if($db->query($sql7)==TRUE){
                     			         
-                    			         
+                    			         // akash change here
                     			        echo json_encode(array("status"=>true,"next_status"=>$next_status));
                     			         //alerts
                     			       
@@ -2254,7 +2271,7 @@ public function action_approve(){
                     			 
                     			    
                     			     if($db->query($sql7)==TRUE){
-                    			         
+                    			         // akash change here
                     			         
                     			        echo json_encode(array("status"=>true,"next_status"=>$next_status));
                     			         //alerts
@@ -2350,7 +2367,14 @@ public function action_approve(){
                     			    
                     			     if($db->query($sql7)==TRUE){
                     			         
+                    			         // akash change here
                     			         
+                    			         
+                    			         
+                    			         
+                    			         
+                    			         
+            
                     			        echo json_encode(array("status"=>true,"next_status"=>$next_status));
                     			        
                     			         
@@ -2784,6 +2808,8 @@ public function action_fetch_reporting_manager()
        $assigned_id=$_POST['assigned_id'];
        $assigned_name=$_POST['assigned_name'];
        $opportunity_id=$_POST['opps_id'];
+       $status=$_POST['s'];
+       $rfp_type=$_POST['r'];
       try{  
           
             global $current_user;
@@ -2794,6 +2820,68 @@ public function action_fetch_reporting_manager()
             $approvers_name=array();
             $approvers_id=array();
             
+            	$sql_tl="SELECT case when teamheirarchy_c='team_member_l1' then 'l1' when teamheirarchy_c ='team_member_l2' then 'l2' when teamheirarchy_c ='team_member_l3' then 'l3' when teamheirarchy_c='team_lead' then 'tl' end AS 'heirarchy' FROM users_cstm WHERE id_c='".$assigned_id."'";
+        
+        $result_tl = $GLOBALS['db']->query($sql_tl);
+        
+     while ($row_tl = mysqli_fetch_assoc($result_tl)){
+            
+           $team_h=$row_tl['heirarchy'];
+        }
+       
+         if($team_h=="tl"){
+             
+            $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
+            $result_tlr = $GLOBALS['db']->query($sql_tlr);
+            while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+            
+           $team_lead_name=$row_tlr['name'];
+           $team_lead_id=$row_tlr['id'];
+        }
+        
+        
+            
+        }
+       
+       else if($team_h=="l1"){
+            
+            $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
+            $result_tlr = $GLOBALS['db']->query($sql_tlr);
+            while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+            
+           $team_lead_name=$row_tlr['name'];
+           $team_lead_id=$row_tlr['id'];
+        }
+            
+        }
+        else if($team_h=="l2"){
+            
+              $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'"))';
+            $result_tlr = $GLOBALS['db']->query($sql_tlr);
+            while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+            
+           $team_lead_name=$row_tlr['name'];
+           $team_lead_id=$row_tlr['id'];
+        }
+            
+        }
+        else if($team_h=="l3"){
+            
+             $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")))';
+            $result_tlr = $GLOBALS['db']->query($sql_tlr);
+            while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+            
+           $team_lead_name=$row_tlr['name'];
+           $team_lead_id=$row_tlr['id'];
+        }
+            
+            
+            
+        }
+        
+        
+        
+        
      
     	$sql_b_c="SELECT users.id, users.employee_status, users.deleted, users_cstm.bid_commercial_head_c,CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS fullname FROM users INNER JOIN users_cstm ON users_cstm.id_c = users.id WHERE users.employee_status='Active' AND users.deleted=0 AND users_cstm.bid_commercial_head_c IN ('bid_team_head','commercial_team_head')";
         
@@ -2863,6 +2951,7 @@ public function action_fetch_reporting_manager()
 	    			
 	    		
 //-----------------------Flow starts here---------------------------------------------------------------
+
        if($opportunity_id=='' && in_array($log_in_user_id,$id_mc)){
            
           if($log_in_user_id==$assigned_id){
@@ -2879,6 +2968,44 @@ public function action_fetch_reporting_manager()
 	    	}	
 	    	
 	    	else{
+	    	    // change here
+	    	    
+	    	       
+        	    if($rfp_type=='no'){
+	    	       
+	    	        if($status=='Qualified'||$status=='QualifiedDpr'||$status=='QualifiedBid'||$status=='Closed'||$status=='Drop'){
+	    	            
+	    	           
+	    	             $reporting_id=$team_lead_id;
+	    	    $reporting_name=$team_lead_name;
+	    	        }
+	    	            
+	    	        }
+	    	    
+	    	    else if($rfp_type=='yes'){
+	    	        
+	    	           if($status=='QualifiedLead'||$status=='QualifiedBid'||$status=='Closed'||$status=='Drop'){
+	    	            
+	    	             $reporting_id=$team_lead_id;
+	    	    $reporting_name=$team_lead_name;
+	    	        }
+	    	        
+	    	        
+	    	    }
+	    	    else if($rfp_type=='not_required'){
+	    	        
+	    	        
+	    	        
+	    	           if($status=='Qualified'||$status=='QualifiedDpr'||$status=='QualifiedBid'||$status=='Closed'||$status=='Drop'){
+	    	            
+	    	             $reporting_id=$team_lead_id;
+	    	    $reporting_name=$team_lead_name;
+	    	        }
+	    	    }
+	    	   
+	    	    
+	    	    
+	    	    
 	    	    array_push($approvers_name,$reporting_name);
 	             array_push($approvers_id,$reporting_id);
 	             $approvers_name=array_merge($approvers_name,$bid_commercial_approvers_name);
@@ -2903,6 +3030,44 @@ public function action_fetch_reporting_manager()
 	    	    
 	    	}	
 	    	else{
+	    	    
+	    	    // change here
+	    	    
+	    	      
+        	    if($rfp_type=='no'){
+	    	       
+	    	        if($status=='Qualified'||$status=='QualifiedDpr'||$status=='QualifiedBid'||$status=='Closed'||$status=='Drop'){
+	    	            
+	    	           
+	    	             $reporting_id=$team_lead_id;
+	    	    $reporting_name=$team_lead_name;
+	    	        }
+	    	            
+	    	        }
+	    	    
+	    	    else if($rfp_type=='yes'){
+	    	        
+	    	           if($status=='QualifiedLead'||$status=='QualifiedBid'||$status=='Closed'||$status=='Drop'){
+	    	            
+	    	             $reporting_id=$team_lead_id;
+	    	    $reporting_name=$team_lead_name;
+	    	        }
+	    	        
+	    	        
+	    	    }
+	    	    else if($rfp_type=='not_required'){
+	    	        
+	    	        
+	    	        
+	    	           if($status=='Qualified'||$status=='QualifiedDpr'||$status=='QualifiedBid'||$status=='Closed'||$status=='Drop'){
+	    	            
+	    	             $reporting_id=$team_lead_id;
+	    	    $reporting_name=$team_lead_name;
+	    	        }
+	    	    }
+	    	   
+	    	   
+	    	    
 	    	    array_push($approvers_name,$reporting_name);
 	             array_push($approvers_id,$reporting_id);
 	             $approvers_name=array_merge($approvers_name,$bid_commercial_approvers_name);
@@ -2914,11 +3079,52 @@ public function action_fetch_reporting_manager()
        
         	else{
         	    
+        	   
+        	    
         	    if(in_array($assigned_id,$id_mc)){
         	        $reporting_id=$assigned_id;
 	    	    $reporting_name=$assigned_name;
         	    }
         	    
+        	   // change here
+        	   
+        	    if($rfp_type=='no'){
+	    	       
+	    	        if($status=='Qualified'||$status=='QualifiedDpr'||$status=='QualifiedBid'||$status=='Closed'||$status=='Drop'){
+	    	            
+	    	           
+	    	             $reporting_id=$team_lead_id;
+	    	    $reporting_name=$team_lead_name;
+	    	        }
+	    	            
+	    	        }
+	    	    
+	    	    else if($rfp_type=='yes'){
+	    	        
+	    	           if($status=='QualifiedLead'||$status=='QualifiedBid'||$status=='Closed'||$status=='Drop'){
+	    	            
+	    	             $reporting_id=$team_lead_id;
+	    	    $reporting_name=$team_lead_name;
+	    	        }
+	    	        
+	    	        
+	    	    }
+	    	    else if($rfp_type=='not_required'){
+	    	        
+	    	        
+	    	        
+	    	           if($status=='Qualified'||$status=='QualifiedDpr'||$status=='QualifiedBid'||$status=='Closed'||$status=='Drop'){
+	    	            
+	    	             $reporting_id=$team_lead_id;
+	    	    $reporting_name=$team_lead_name;
+	    	        }
+	    	    }
+	    	   
+        	   
+        	 //  echo $rfp_type.'/'.$status;
+        	   
+        	   
+        	   
 	    	    array_push($approvers_name,$reporting_name);
 	             array_push($approvers_id,$reporting_id);
 	             $approvers_name=array_merge($approvers_name,$bid_commercial_approvers_name);
@@ -2969,9 +3175,9 @@ public function action_untagged_users_list(){
 				$re= $GLOBALS['db']->query($opp);
 			while($ow = $GLOBALS['db']->fetchByAssoc($re))
 			{
-	    		   array_push ($reporting,$ow['created_by']);
+	    		   array_push ($reporting,$ow['assigned_user_id']);
 	    		   
-	    		       $creator=$ow['created_by'];
+	    		       $creator=$ow['assigned_user_id'];
 	    		     $sql_creater='SELECT * From users WHERE id="'.$creator.'"';
 		
 		
@@ -2997,8 +3203,18 @@ public function action_untagged_users_list(){
 			$array=explode(',',$string);
 			
 			$reporting=array_merge($reporting,$array);
+			
+			
+		$sql_mc='SELECT * FROM users_cstm WHERE mc_c="yes"';
+			$result_mc=$GLOBALS['db']->query($sql_mc);
+			
+			while($row_mc=$GLOBALS['db']->fetchByAssoc($result_mc)){
+			     array_push($reporting,$row_mc['id_c']);
+			    
+			}
+			
 		
-		$sql1 = "SELECT  id, user_name,CONCAT(IFNULL(first_name,''), ' ', IFNULL(last_name,'')) AS fullname FROM users WHERE id NOT IN ('".implode("','",$reporting)."') ORDER BY first_name ASC";
+		$sql1 = "SELECT  id, user_name,CONCAT(IFNULL(first_name,''), ' ', IFNULL(last_name,'')) AS fullname FROM users WHERE id NOT IN ('".implode("','",$reporting)."') AND deleted=0 ORDER BY first_name ASC";
 		 	$result1 = $GLOBALS['db']->query($sql1);
 			while($row1 = $GLOBALS['db']->fetchByAssoc($result1))
 			{
@@ -3052,9 +3268,9 @@ public function action_tagged_users_list(){
 				$re= $GLOBALS['db']->query($opp);
 			while($ow = $GLOBALS['db']->fetchByAssoc($re))
 			{
-	    		   array_push ($reporting,$ow['created_by']);
+	    		   array_push ($reporting,$ow['assigned_user_id']);
 	    		   
-	    		       $creator=$ow['created_by'];
+	    		       $creator=$ow['assigned_user_id'];
 	    		     $sql_creater='SELECT * From users WHERE id="'.$creator.'"';
 		
 		
@@ -3081,10 +3297,16 @@ public function action_tagged_users_list(){
 			
 			$reporting=array_merge($reporting,$array);
 			
+				$sql_mc='SELECT * FROM users_cstm WHERE mc_c="yes"';
+			$result_mc=$GLOBALS['db']->query($sql_mc);
 			
+			while($row_mc=$GLOBALS['db']->fetchByAssoc($result_mc)){
+			     array_push($reporting,$row_mc['id_c']);
+			    
+			}
 		
 		
-		$sql1 = "SELECT  id, user_name,CONCAT(IFNULL(first_name,''), ' ', IFNULL(last_name,'')) AS fullname FROM users WHERE id NOT IN ('".implode("','",$reporting)."') ORDER BY first_name ASC";
+		$sql1 = "SELECT  id, user_name,CONCAT(IFNULL(first_name,''), ' ', IFNULL(last_name,'')) AS fullname FROM users WHERE id NOT IN ('".implode("','",$reporting)."') AND deleted=0 ORDER BY first_name ASC";
 		 	$result1 = $GLOBALS['db']->query($sql1);
 			while($row1 = $GLOBALS['db']->fetchByAssoc($result1))
 			{
@@ -3141,6 +3363,7 @@ public function action_save_untagged_users_list(){
       }
       die();
 }
+
 public function action_save_tagged_users_list(){
      try{  
         global $current_user;
@@ -3148,21 +3371,179 @@ public function action_save_tagged_users_list(){
        $tagged=$_POST['tagged'];
        $opp_name=$_POST['opp_name'];
        $base_url=$_POST['base_url'];
+       $assigned_id=$_POST['assigned_id'];
     	  $log_in_user_id = $current_user->id;
    
    $tagged_array=explode(',',$tagged);
-   
+  
     	  $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
         
         $sql="SELECT * FROM tagged_user WHERE opp_id='".$op_id."'";
         	$result = $GLOBALS['db']->query($sql);
         	
-        	if($result->num_rows>0){
+	if($result->num_rows>0){
 			    
-				$update_query="UPDATE tagged_user SET user_id='".$tagged."'  WHERE opp_id='".$op_id."'";
-				$res0 = $db->query($update_query);
-			if( $db->query($update_query)==TRUE){	
+			    	
+        	$sql111='SELECT * FROM tagged_user WHERE opp_id = "'.$op_id.'"';
+        
+                 $result111 = $GLOBALS['db']->query($sql111);
+        
+        
+        
+                 while ($row111 = mysqli_fetch_assoc($result111)) {
+     
+                     $tag_id = $row111['user_id'];
+       
+                    }
+    
+                 $tagged_user_id_array = explode(",",$tag_id);
+    
+    
+                
+   
+                     	$sql_opp='SELECT * FROM opportunities_cstm INNER JOIN opportunities ON opportunities.id =opportunities_cstm.id_c WHERE opportunities_cstm.id_c = "'.$op_id.'"';
+        
+                          $result_opp = $GLOBALS['db']->query($sql_opp);
+        
+        
+        
+                       while ($row_opp = mysqli_fetch_assoc($result_opp)) {
+     
+                      $users_id2c = $row_opp['user_id2_c'];
+                      $multi_approver=$row_opp['multiple_approver_c'];
+                      $assigned_id_opp=$row_opp['assigned_user_id'];
+                      
+       
+                       }
+                       
+                       $sql_reports="SELECT reports_to_id FROM users WHERE id='".$assigned_id."'";
+                       
+                        $result_reports = $GLOBALS['db']->query($sql_reports);
+        
+        
+        
+                       while ($row_reports = mysqli_fetch_assoc($result_reports)) {
+     
+                      $reports_to = $row_reports['reports_to_id'];
+                     
+                      
+       
+                       }
+                       
+                       	$sql_tl="SELECT case when teamheirarchy_c='team_member_l1' then 'l1' when teamheirarchy_c ='team_member_l2' then 'l2' when teamheirarchy_c ='team_member_l3' then 'l3' when teamheirarchy_c='team_lead' then 'tl' end AS 'heirarchy' FROM users_cstm WHERE id_c='".$assigned_id."'";
+        
+                 $result_tl = $GLOBALS['db']->query($sql_tl);
+        
+                while ($row_tl = mysqli_fetch_assoc($result_tl)){
+            
+           $team_h=$row_tl['heirarchy'];
+        }
+        
+                  if($team_h=="tl"){
+             
+            $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
+            $result_tlr = $GLOBALS['db']->query($sql_tlr);
+            while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+            
+           $team_lead_name=$row_tlr['name'];
+           $team_lead_id=$row_tlr['id'];
+        }
+        
+        
+            
+        }
+       
+                 else if($team_h=="l1"){
+            
+            $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
+            $result_tlr = $GLOBALS['db']->query($sql_tlr);
+            while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+            
+           $team_lead_name=$row_tlr['name'];
+           $team_lead_id=$row_tlr['id'];
+        }
+            
+        }
+                   else if($team_h=="l2"){
+            
+              $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'"))';
+            $result_tlr = $GLOBALS['db']->query($sql_tlr);
+            while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+            
+           $team_lead_name=$row_tlr['name'];
+           $team_lead_id=$row_tlr['id'];
+        }
+            
+        }
+                   else if($team_h=="l3"){
+            
+             $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")))';
+            $result_tlr = $GLOBALS['db']->query($sql_tlr);
+            while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+            
+           $team_lead_name=$row_tlr['name'];
+           $team_lead_id=$row_tlr['id'];
+        }
+            
+            
+            
+        }
+            
+    
+                           $multi_approver_array=explode(',',$multi_approver);
+          $tagged_user_id_array=array_merge($tagged_user_id_array,$tagged_array);
+                    
+                    $tagged_user_id_array=array_unique($tagged_user_id_array);
+        
+                             if (($key = array_search($assigned_id,$tagged_user_id_array)) !== false) {
+                                 
+                                
+	    			       
+                                 unset($tagged_user_id_array[$key]);
+                                 
+                                 
+                           }
+                           if (($key = array_search($team_lead_id,$tagged_user_id_array)) !== false) {
+                                 
+                                
+	    			       
+                                 unset($tagged_user_id_array[$key]);
+                                 
+                                 
+                           }
+                           if (($key = array_search($reports_to,$tagged_user_id_array)) !== false) {
+	    			       
+                                 unset($tagged_user_id_array[$key]);
+                           }
+                           
+                            
+                           
+                         
+                           
+                           
+                           
+                            $tagged_user_id_array=array_diff($tagged_user_id_array,$multi_approver_array);
+        
+                             
+                            
+                              
+                              $tagged_user_id_array=array_unique($tagged_user_id_array);
+                              $tagged_user_id_array=array_intersect($tagged_user_id_array,$tagged_array);
+                              
+                              $tag_id=implode(",",$tagged_user_id_array);
+                              
+                            
+          
+                            $update_sql="UPDATE tagged_user SET user_id='".$tag_id."' WHERE opp_id='".$op_id."'" ;
+          
+                               $GLOBALS['db']->query($update_sql);
+
+                                   
+			             
+				
+		                     	if( $db->query($update_sql)==TRUE){	
+		                     	    
 				while($row = $GLOBALS['db']->fetchByAssoc($result)){
 				    $old=$row['user_id'];
 				}
@@ -3211,11 +3592,16 @@ public function action_save_tagged_users_list(){
     //                                 					    @$mail->Send();
     //                                 				}			
 			}
+			
+			
+			    
+			
 				
 			}
-			else{
+			
+		else{
 				$insert_query='INSERT INTO  tagged_user (opp_id,user_id) VALUES ("'.$op_id.'","'.$tagged.'")';
-				$res0 = $db->query($insert_query);
+			//	$res0 = $db->query($insert_query);
 					$email_array=array();
 					$sql23 = "SELECT  * FROM users WHERE id IN ('".implode("','",$tagged_array)."') ";
 		 	$result23 = $GLOBALS['db']->query($sql23);
@@ -3769,7 +4155,67 @@ public function action_new_assigned_list(){
               
             array_push($id_array1,$log_in_user_id);
             
-             if($log_in_user_id==$assigned_id||$log_in_user_id==$reports_to||$opportunity_id==''){
+            	$sql_tl="SELECT case when teamheirarchy_c='team_member_l1' then 'l1' when teamheirarchy_c ='team_member_l2' then 'l2' when teamheirarchy_c ='team_member_l3' then 'l3' when teamheirarchy_c='team_lead' then 'tl' end AS 'heirarchy' FROM users_cstm WHERE id_c='".$assigned_id."'";
+        
+                 $result_tl = $GLOBALS['db']->query($sql_tl);
+        
+                while ($row_tl = mysqli_fetch_assoc($result_tl)){
+            
+           $team_h=$row_tl['heirarchy'];
+        }
+        
+                  if($team_h=="tl"){
+             
+            $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
+            $result_tlr = $GLOBALS['db']->query($sql_tlr);
+            while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+            
+           $team_lead_name=$row_tlr['name'];
+           $team_lead_id=$row_tlr['id'];
+        }
+        
+        
+            
+        }
+       
+                 else if($team_h=="l1"){
+            
+            $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
+            $result_tlr = $GLOBALS['db']->query($sql_tlr);
+            while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+            
+           $team_lead_name=$row_tlr['name'];
+           $team_lead_id=$row_tlr['id'];
+        }
+            
+        }
+                   else if($team_h=="l2"){
+            
+              $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'"))';
+            $result_tlr = $GLOBALS['db']->query($sql_tlr);
+            while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+            
+           $team_lead_name=$row_tlr['name'];
+           $team_lead_id=$row_tlr['id'];
+        }
+            
+        }
+                   else if($team_h=="l3"){
+            
+             $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")))';
+            $result_tlr = $GLOBALS['db']->query($sql_tlr);
+            while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+            
+           $team_lead_name=$row_tlr['name'];
+           $team_lead_id=$row_tlr['id'];
+        }
+            
+            
+            
+        }
+            
+            
+             if($log_in_user_id==$assigned_id||$log_in_user_id==$reports_to||$opportunity_id==''||$log_in_user_id==$team_lead_id){
                  
                
                   
@@ -3902,7 +4348,7 @@ public function action_fetch_assigned_id(){
            
             
             
-           $a_id=$row['id'];
+          $a_id=$row['id'];
            
            
     
@@ -3912,6 +4358,12 @@ public function action_fetch_assigned_id(){
         
         
         echo $a_id;
+        
+        
+        
+        
+        
+        
      }catch(Exception $e){
     		echo json_encode(array("status"=>false, "message" => "Some error occured"));
     	}
@@ -3926,6 +4378,504 @@ public function action_fetch_assigned_id(){
 
 //---------------------------------------fetch assigned id------END---------------------------------
 
+//-------------------------------------mc_check---------------------------------------
+
+public function action_fetch_mc_check(){
+     try{
+         $db = \DBManagerFactory::getInstance();
+        	$GLOBALS['db'];
+        	  
+        	   global $current_user; 
+        	    $log_in_user_id = $current_user->id;
+        	    $assigned_name=$_POST['f'];
+        	    $f_name=$_POST['f_name'];
+        	    $l_name=$_POST['l_name'];
+        	    
+        	   
+        	     $sql="SELECT *  FROM users_cstm WHERE id_c='".$log_in_user_id."' ";
+        	    
+        	     $result = $GLOBALS['db']->query($sql);
+        	     
+        while($row = $GLOBALS['db']->fetchByAssoc($result)) 
+        {
+            
+           
+            
+            
+           $check=$row['mc_c'];
+           
+           
+    
+            
+        }
+        
+       	echo json_encode(array("status"=>true, "mc" => $check)); 
+        
+       
+     }catch(Exception $e){
+    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    	}
+		die();
+}
+
+
+
+
+
+
+
+//---------------------------------------mc_check------END---------------------------------
+
+//---------------tageed user edit_access -------------------------------------------------------------
+
+
+public function action_editView_access(){
+     try{
+         $db = \DBManagerFactory::getInstance();
+        	$GLOBALS['db'];
+        	
+        	   global $current_user; 
+            	$log_in_user_id = $current_user->id;
+        	    $opp_id=$_POST['opps_id'];
+        	    $assigned_id = $_POST['assigned_id_edit'];
+        	    $bid_commercial_approvers_id = array();
+        	
+        	$sql='SELECT * FROM tagged_user WHERE opp_id = "'.$opp_id.'"';
+        
+        $result = $GLOBALS['db']->query($sql);
+        
+        
+        
+        while ($row = mysqli_fetch_assoc($result)) {
+     
+      $tag_id = $row['user_id'];
+       
+    }
+    
+    $tagged_user_id_array = explode(",",$tag_id);
+    
+     $sql_mc= "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+        $result_mc = $GLOBALS['db']->query($sql_mc);
+        while($row_mc = $GLOBALS['db']->fetchByAssoc($result_mc)) 
+        {
+            $check_sales = $row_mc['teamfunction_c'];
+            $check_mc = $row_mc['mc_c'];
+            $check_team_lead = $row_mc['teamheirarchy_c'];
+            
+        }
+    
+    
+    	$sql_logged_in="SELECT case when teamheirarchy_c='team_member_l1' then 'l1' when teamheirarchy_c ='team_member_l2' then 'l2' when teamheirarchy_c ='team_member_l3' then 'l3' when teamheirarchy_c='team_lead' then 'tl' end AS 'heirarchy' FROM users_cstm WHERE id_c='".$log_in_user_id."'";
+        
+        $result_logged_in = $GLOBALS['db']->query($sql_logged_in);
+        
+      while ($row_logged_in = mysqli_fetch_assoc($result_logged_in)){
+            
+           $team_logged_in=$row_logged_in['heirarchy'];
+        }
+    
+    	$sql_tl="SELECT case when teamheirarchy_c='team_member_l1' then 'l1' when teamheirarchy_c ='team_member_l2' then 'l2' when teamheirarchy_c ='team_member_l3' then 'l3' when teamheirarchy_c='team_lead' then 'tl' end AS 'heirarchy' FROM users_cstm WHERE id_c='".$assigned_id."'";
+        
+        $result_tl = $GLOBALS['db']->query($sql_tl);
+        
+     while ($row_tl = mysqli_fetch_assoc($result_tl)){
+            
+           $team_h=$row_tl['heirarchy'];
+        }
+       
+         if($team_h=="tl"){
+             
+            $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
+            $result_tlr = $GLOBALS['db']->query($sql_tlr);
+            while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+            
+           $team_lead_name=$row_tlr['name'];
+           $team_lead_id=$row_tlr['id'];
+        }
+        
+        
+            
+        }
+       
+       else if($team_h=="l1"){
+            
+            $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
+            $result_tlr = $GLOBALS['db']->query($sql_tlr);
+            while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+            
+           $team_lead_name=$row_tlr['name'];
+           $team_lead_id=$row_tlr['id'];
+        }
+            
+        }
+        else if($team_h=="l2"){
+            
+              $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'"))';
+            $result_tlr = $GLOBALS['db']->query($sql_tlr);
+            while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+            
+           $team_lead_name=$row_tlr['name'];
+           $team_lead_id=$row_tlr['id'];
+        }
+            
+        }
+        else if($team_h=="l3"){
+            
+             $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")))';
+            $result_tlr = $GLOBALS['db']->query($sql_tlr);
+            while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+            
+           $team_lead_name=$row_tlr['name'];
+           $team_lead_id=$row_tlr['id'];
+        }
+            
+            
+            
+        }
+        
+        
+        	$sql_b_c="SELECT users.id, users.employee_status, users.deleted, users_cstm.bid_commercial_head_c,CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS fullname FROM users INNER JOIN users_cstm ON users_cstm.id_c = users.id WHERE users.employee_status='Active' AND users.deleted=0 AND users_cstm.bid_commercial_head_c IN ('bid_team_head','commercial_team_head')";
+        
+        $result_b_c = $GLOBALS['db']->query($sql_b_c);
+        
+     while ($row_b_c = mysqli_fetch_assoc($result_b_c)){
+            
+             array_push($bid_commercial_approvers_id,$row_b_c['id']);
+           
+        }
+        
+        
+        
+        $sql_assigned="SELECT users.id, users.employee_status, users.deleted,CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS fullname FROM users INNER JOIN users_cstm ON users_cstm.id_c = users.id WHERE users.employee_status='Active' AND users.deleted=0 AND users.id IN (SELECT reports_to_id  FROM users WHERE id='".$assigned_id."')";
+      $result_assigned = $GLOBALS['db']->query($sql_assigned);
+        
+     while ($row_assigned = mysqli_fetch_assoc($result_assigned)){
+            
+             $reporting_id=$row_assigned['id'];
+             $reporting_name=$row_assigned['fullname'];
+             
+        }
+        
+         
+   //----------flow starts here-------------------------
+     if($check_mc=='yes'){
+         
+     }
+    else if(in_array($log_in_user_id,$tagged_user_id_array) ){
+        if($team_logged_in == 'tl'){
+            echo "block_tag_user";
+        }else{
+            echo "block_tag_user_all";
+        }
+    }else if($log_in_user_id == $assigned_id){
+        if($team_logged_in !== 'tl'){
+            echo "block_assigned_user";
+        }
+    }else if($log_in_user_id == $reporting_id){
+        if($team_logged_in !== 'tl'){
+            echo "block_reports_to_user";
+        }
+    }else if(in_array($log_in_user_id,$bid_commercial_approvers_id)){
+        echo "block_bid_commercial_user";
+    }
+    
+   
+     }catch(Exception $e){
+    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    	}
+		die();
+}
+
+//--------------------------tageed user edit_access -----------END------------------------------------------------------------------------
+
+//---------------------------------------------------l1 and l2-----------------------------------------------------------------------------
+
+public function action_l1_l2_audit_trail(){
+    
+    
+          
+     global $current_user; 
+    $log_in_user_id = $current_user->id;
+   
+    $id=$_POST['id'];
+    $start_year = $_POST['start_year'];
+    $start_quarter = $_POST['start_quarter'];
+    $end_year = $_POST['end_year'];
+    $end_quarter = $_POST['end_quarter'];
+    $num_of_bidders = $_POST['no_of_bidders'];
+    $total=$_POST['total_input_value'];
+    $l2_html=base64_encode($_POST['l2_html']);
+    $l2_input=base64_encode(serialize($_POST['l2_input']));
+    
+    $close=$_POST['close'];
+    
+    
+  try{ 
+    	$db = \DBManagerFactory::getInstance();
+	    	$GLOBALS['db'];
+          
+          if($num_of_bidders==""||$num_of_bidders==0){
+              $num_of_bidders = 1;
+          }
+          
+          $sql ='SELECT * FROM year_quarters WHERE opp_id="'.$id.'"';
+			$result = $GLOBALS['db']->query($sql);
+			// print_r($result->num_rows);
+			if($result->num_rows>0){
+			   
+			  
+			    while($row = $GLOBALS['db']->fetchByAssoc($result) )
+				{
+				      
+			    $start_year_old=$row['start_year'];
+			    $start_quarter_old=$row['start_quarter'];
+			     $end_year_old=$row['end_year'];
+			    $end_quarter_old=$row['end_quarter'];
+			    $num_of_bidders_old = $row['num_of_bidders'];
+			    $total_old=$row['total_input_value'];
+			    	
+ 				}
+ 				
+ 			
+ 				
+ 				if($start_year==$start_year_old && $start_quarter==$start_quarter_old && $end_year==$end_year_old && $end_quarter==$end_quarter_old && $num_of_bidders==$num_of_bidders_old && $total==$total_old)
+			   { 
+				
+    	$message="if l1";
+			   }
+			   else
+			   {
+			   
+	$message="else l1";
+				
+				$insert_audit_query="INSERT INTO `l1_audit`(`opp_id`, `created_by`) VALUES ('".$id."','".$log_in_user_id."')";
+				$res1 = $db->query($insert_audit_query);
+				
+				
+			   }
+			   
+			    
+				
+				
+			}
+			
+			else{
+			
+	$message="else out l1";
+			
+				$insert_audit_query="INSERT INTO `l1_audit`(`opp_id`, `created_by`) VALUES ('".$id."','".$log_in_user_id."')";
+				$res1 = $db->query($insert_audit_query);
+				
+			}
+	//-------------------------------------for L2---------------------------------------------------------------
+	if ($close=='l2'){
+			$sql_l2 ='SELECT * FROM l2 WHERE opp_id="'.$id.'"';
+			$result_l2 = $GLOBALS['db']->query($sql_l2);
+			// print_r($result->num_rows);
+			if($result_l2->num_rows>0){
+			   
+			  
+			    while($row_l2 = $GLOBALS['db']->fetchByAssoc($result_l2) )
+				{
+				//      	$l2_input_old =unserialize(base64_decode( $row_l2['l2_input']));
+			 //  	$l2_html_old = base64_decode($row_l2['l2_html']);
+			 
+			 	$l2_input_old =$row_l2['l2_input'];
+			   	$l2_html_old =$row_l2['l2_html'];
+			   
+			    	
+ 				}
+ 				
+ 			
+ 			
+ 				if( $l2_html==$l2_html_old && $l2_input==$l2_input_old)
+			   { 
+				
+        $message="if l2";
+        
+			   }
+			   else
+			   {
+			   
+	$message="else l2";
+				
+				$insert_audit_query_l2="INSERT INTO `l2_audit` (`opp_id`, `created_by`) VALUES ('".$id."','".$log_in_user_id."')";
+				$res1_l2 = $db->query($insert_audit_query_l2);
+				
+				
+			   }
+			   
+			    
+				
+				
+			}
+			
+			else{
+			
+		$message="else out l2";
+		
+				$insert_audit_query_l2="INSERT INTO `l2_audit`(`opp_id`, `created_by`) VALUES ('".$id."','".$log_in_user_id."')";
+				$res1_l2 = $db->query($insert_audit_query_l2);
+				
+			}
+			
+	}	
+			echo json_encode($message);
+			
+			
+    
+  }catch(Exception $e){
+    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    	}
+		die();
+}
+
+
+
+
+//-------------------------------------------------------l1 and l2------------------------------------------------------------------------
+
+
+//---------------------------udate existing users lineage function------------------------------------------
+
+// public function action_users_lineage_update(){
+//      try{
+//          $db = \DBManagerFactory::getInstance();
+//         	$GLOBALS['db'];
+        	
+//         	   global $current_user; 
+//             	$log_in_user_id = $current_user->id;
+            	
+//             	$opp_id=array();
+//             	$hierarchy=array();
+//             	$reports_to=array();
+//             	$name=array();
+//             	$l2=array();
+//             	$l1=array();
+//             	$tl=array();
+       
+//       $sql="SELECT CONCAT(t2.first_name,' ',t2.last_name) as name,t1.id_c,CASE WHEN t1.teamheirarchy_c='team_lead' THEN 'tl' WHEN t1.teamheirarchy_c='team_member_l1' THEN 'l1' WHEN t1.teamheirarchy_c='team_member_l2' THEN 'l2' WHEN t1.teamheirarchy_c='team_member_l3' THEN 'l3' END AS 'h' FROM users_cstm as t1 LEFT JOIN users as t2 ON t1.id_c = t2.id WHERE t2.deleted=0 AND t1.mc_c!='yes' AND t2.is_admin=0";
+//     $result = $GLOBALS['db']->query($sql);
+//   while ($row = mysqli_fetch_assoc($result)){
+            
+//             $name[]=$row['name'];
+//              $users_id[]=$row['id_c'];
+//              $hierarchy[]=$row['h'];
+             
+//         }
+  
+           
+           
+//          for ($i = 0; $i < count($name); $i++) {
+            
+            
+//              if($hierarchy[$i]=='tl'){
+      
+//       $sql_r="SELECT reports_to_id FROM users WHERE id='".$users_id[$i]."'";
+//       $result_r = $GLOBALS['db']->query($sql_r);
+//   while ($row_r = mysqli_fetch_assoc($result_r)){
+            
+//              array_push($reports_to,$row_r['reports_to_id']);
+             
+//         }
+//              }
+             
+//               else if($hierarchy[$i]=='l1'){
+                  
+//                   $sql_r="SELECT reports_to_id FROM users WHERE id='".$users_id[$i]."'";
+//                   $result_r = $GLOBALS['db']->query($sql_r);
+//                   while ($row_r = mysqli_fetch_assoc($result_r)){
+            
+//                          array_push($reports_to,$row_r['reports_to_id']);
+             
+             
+//                      }
+//               }
+//               else if($hierarchy[$i]=='l2'){
+                  
+//                   $sql_r="SELECT reports_to_id FROM users WHERE id='".$users_id[$i]."'";
+//       $result_r = $GLOBALS['db']->query($sql_r);
+//   while ($row_r = mysqli_fetch_assoc($result_r)){
+            
+//             $r=$row_r['reports_to_id'];
+//              array_push($reports_to,$row_r['reports_to_id']);
+             
+//               $sql_r1="SELECT reports_to_id FROM users WHERE id='".$r."'";
+//       $result_r1 = $GLOBALS['db']->query($sql_r1);
+//   while ($row_r1 = mysqli_fetch_assoc($result_r1)){
+            
+//             $r1=$row_r1['reports_to_id'];
+//              array_push($reports_to,$row_r1['reports_to_id']);
+             
+             
+//         }
+             
+//         }
+                  
+//               }
+//               else if($hierarchy[$i]=='l3'){
+                  
+                  
+//                          $sql_r="SELECT reports_to_id FROM users WHERE id='".$users_id[$i]."'";
+//       $result_r = $GLOBALS['db']->query($sql_r);
+//   while ($row_r = mysqli_fetch_assoc($result_r)){
+            
+//             $r=$row_r['reports_to_id'];
+//              array_push($reports_to,$row_r['reports_to_id']);
+             
+//               $sql_r1="SELECT reports_to_id FROM users WHERE id='".$r."'";
+//       $result_r1 = $GLOBALS['db']->query($sql_r1);
+//   while ($row_r1 = mysqli_fetch_assoc($result_r1)){
+            
+//             $r1=$row_r1['reports_to_id'];
+//              array_push($reports_to,$row_r1['reports_to_id']);
+             
+//               $sql_r2="SELECT reports_to_id FROM users WHERE id='".$r1."'";
+//       $result_r2 = $GLOBALS['db']->query($sql_r2);
+//   while ($row_r2 = mysqli_fetch_assoc($result_r2)){
+            
+//             $r2=$row_r2['reports_to_id'];
+//              array_push($reports_to,$row_r2['reports_to_id']);
+             
+             
+//         }
+             
+//         }
+             
+//         }
+            
+                  
+                  
+//               }
+              
+//               $reports=implode(',',$reports_to);
+              
+//               $update_sql='UPDATE users_cstm SET user_lineage="'.$reports.'" WHERE id_c="'.$users_id[$i].'"';
+              
+//               $GLOBALS['db']->query($update_sql);
+             
+//              print_r($name[$i].'  --reports to-- '.json_encode($reports_to).'<br>');
+//              $reports_to=[];
+//              $r="";
+//              $r1="";
+//              $r2="";
+    
+// }
+        
+        
+        
+        
+//      }catch(Exception $e){
+//     		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+//     	}
+// 		die();
+// }
+
+
+
+
+
+//------------------------------------------END---------------------------
 
 //===========================Write code above this line=========================================    
 }

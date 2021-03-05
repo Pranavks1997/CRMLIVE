@@ -10,150 +10,116 @@ require_once('include/UploadStream.php');
 
 class HomeController extends SugarController
 {
-    public function starting_fetch(){
-        try
-        {
-            global $current_user;
+    public function action_pending_records(){
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
 
-            $db = \DBManagerFactory::getInstance();
-            $GLOBALS['db'];
-            $log_in_user_id = $current_user->id;
-            $fetch_total_opportunity = "SELECT count(*) as total from opportunities";
-            $fetch_total_result = $GLOBALS['db']->query($fetch_total_opportunity);
-            $fetch_total = $GLOBALS['db']->fetchByAssoc($fetch_total_result);
-            $total = $fetch_total['total'];
+        $fetch_pending_records = "SELECT opp_id  FROM approval_table WHERE pending = 1";
+        $fetch_total_pending_record_result = $GLOBALS['db']->query($fetch_pending_records);
+        $data = '<table class="pending-request-table" style="font-family: Lato, Lato, Arial, sans-serif !important;
+            height: 400px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: -webkit-box;
+            width: 100%;
+            flex-direction: column;"
+            >
+            <tbody style="display: table; width: 100%;">
+            <ul class="table-ul" style="display: flex;
+            align-items: center;height: 50px;justify-content: space-between;">
+            
+            <div class="option_tabs_container">
+            <li class="tableHeader-Content option_tab_header_btn" id="option_one-tab" for="option_one">
+            <div class="prt-top-headings">Qualify Lead (25) </div>
+            </li>
+            
+            
+            <li class="option_tab_header_btn" id="option_two-tab" for="option_two">
+            <div class="prt-top-headings" >Qualify Opportunity (23) </div>
+            </li>
+            <li class="tableHeader-Content option_tab_header_btn" id="option_three-tab" for="option_three">
+            <div class="prt-top-headings">Qualify DPR (20) </div>
+            </li>
+            
+            
+            <li class="tableHeader-Content option_tab_header_btn" id="option_four-tab" for="option_four">
+            <div class="prt-top-headings" >Qualify Bid (16) </div>
+            </li>
+            <li class="tableHeader-Content option_tab_header_btn" id="option_five-tab" for="option_five">
+            <div class="prt-top-headings">Close (12) </div>
+            </li>
+            
+            
+            <li class="tableHeader-Content option_tab_header_btn" id="option_six-tab" for="option_six">
+            <div class="prt-top-headings" >Drop (2) </div>
+            </li>
+            </div>
+            
+            <div>
+            <li class="search-box-block">
+            <div class="search-box">
+            <div style="display: flex;">
+            <div style="display: flex; margin-left: auto;">
+            <button class="filter" id="filter_myBtn" onclick="openFilterDialog()" style="padding:10; border: none !important;">
+            <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
+            </button>
+            
+            <button class="cog" id="setting_myBtn" onclick="openSettingDialog()" style="padding:10; border: none !important;">
+            <i id="setting_myBtn" class="fa fa-list" aria-hidden="true"> </i>
+            </button>
+            </div>
+            </div>
+            </div>
+            
+            </li>
+            </div>
+            
+            </ul>
+            <tr class="table-header-row">
+            <th class="table-header">Name</th>
+            <th class="table-header">Primary Responsibility</th>
+            <th class="table-header">Amount ( in Cr/Mn )</th>
+            <th class="table-header">RFP/EOI Published</th>
+            <th class="table-header">Modified Date</th>
+            <th class="table-header">Status</th>
+            <th class="table-header">Created Date</th>
+            <th class="table-header">Action</th>
+            </tr>
+        ';
+            while($pending_data_row = $GLOBALS['db']->fetchByAssoc($fetch_total_pending_record_result))
+            {
+                $opportunity_id = $pending_data_row["opp_id"];
+                $pending_opportunitiy_data = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE id = '$opportunity_id'  ORDER BY `opportunities`.`date_modified` DESC";
+                $fetch_result_pending_opportunity = $GLOBALS['db']->query($pending_opportunitiy_data);
 
-            $fetch_self_count = "SELECT count(*) as self_count from opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE assigned_user_id='$log_in_user_id'";
-            $fetch_self_result = $GLOBALS['db']->query($fetch_self_count);
-            $fetch_self = $GLOBALS['db']->fetchByAssoc($fetch_self_result);
-            $self_count = $fetch_self['self_count'];
-
-            $fetch_team_count = "SELECT count(*) as team_count from opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE team_id=''";
-            $fetch_team_result = $GLOBALS['db']->query($fetch_team_count);
-            $fetch_team = $GLOBALS['db']->fetchByAssoc($fetch_team_result);
-            $team_count = $fetch_team['team_count'];
-
-            print_r(array($total, $self_count, $team_count));
-
-        }catch(Exception $e){
-            echo json_encode(array("status"=>false, "message" => "Some error occured"));
-        }
-        die();
-
-    }
-
-
-public function action_pending_records()
-{
-    $db = \DBManagerFactory::getInstance();
-    $GLOBALS['db'];
-
-    $fetch_pending_records = "SELECT opp_id  FROM approval_table WHERE pending = 1";
-    $fetch_total_pending_record_result = $GLOBALS['db']->query($fetch_pending_records);
-    $data = '<table class="pending-request-table" style="font-family: Lato, Lato, Arial, sans-serif !important;
-        height: 400px;
-        overflow-y: auto;
-        overflow-x: hidden;
-        display: -webkit-box;
-        width: 100%;
-        flex-direction: column;"
-        >
-        <tbody style="display: table; width: 100%;">
-        <ul class="table-ul" style="display: flex;
-        align-items: center;height: 50px;justify-content: space-between;">
-        
-        <div class="option_tabs_container">
-        <li class="tableHeader-Content option_tab_header_btn" id="option_one-tab" for="option_one">
-        <div class="prt-top-headings">Qualify Lead (25) </div>
-        </li>
-        
-        
-        <li class="option_tab_header_btn" id="option_two-tab" for="option_two">
-        <div class="prt-top-headings" >Qualify Opportunity (23) </div>
-        </li>
-        <li class="tableHeader-Content option_tab_header_btn" id="option_three-tab" for="option_three">
-        <div class="prt-top-headings">Qualify DPR (20) </div>
-        </li>
-        
-        
-        <li class="tableHeader-Content option_tab_header_btn" id="option_four-tab" for="option_four">
-        <div class="prt-top-headings" >Qualify Bid (16) </div>
-        </li>
-        <li class="tableHeader-Content option_tab_header_btn" id="option_five-tab" for="option_five">
-        <div class="prt-top-headings">Close (12) </div>
-        </li>
-        
-        
-        <li class="tableHeader-Content option_tab_header_btn" id="option_six-tab" for="option_six">
-        <div class="prt-top-headings" >Drop (2) </div>
-        </li>
-        </div>
-        
-        <div>
-        <li class="search-box-block">
-        <div class="search-box">
-        <div style="display: flex;">
-        <div style="display: flex; margin-left: auto;">
-        <button class="filter" id="filter_myBtn" onclick="openFilterDialog()" style="padding:10; border: none !important;">
-        <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
-        </button>
-        
-        <button class="cog" id="setting_myBtn" onclick="openSettingDialog()" style="padding:10; border: none !important;">
-        <i id="setting_myBtn" class="fa fa-list" aria-hidden="true"> </i>
-        </button>
-        </div>
-        </div>
-        </div>
-        
-        </li>
-        </div>
-        
-        </ul>
-        <tr class="table-header-row">
-        <th class="table-header">Name</th>
-        <th class="table-header">Primary Responsibility</th>
-        <th class="table-header">Amount ( in Cr/Mn )</th>
-        <th class="table-header">RFP/EOI Published</th>
-        <th class="table-header">Modified Date</th>
-        <th class="table-header">Status</th>
-        <th class="table-header">Created Date</th>
-        <th class="table-header">Action</th>
-        </tr>
-       ';
-    while($pending_data_row = $GLOBALS['db']->fetchByAssoc($fetch_total_pending_record_result))
-    {
-        $opportunity_id = $pending_data_row["opp_id"];
-        $pending_opportunitiy_data = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE id = '$opportunity_id'  ORDER BY `opportunities`.`date_modified` DESC";
-        $fetch_result_pending_opportunity = $GLOBALS['db']->query($pending_opportunitiy_data);
-
-        while($pending_data_opportunity_row =  $GLOBALS['db']->fetchByAssoc($fetch_result_pending_opportunity))
-        {
-            $created_by_id = $pending_data_opportunity_row['assigned_user_id'];
-            $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
-            $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
-            $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
-            $user_name = $user_name_fetch_row['user_name'];
-            $first_name = $user_name_fetch_row['first_name'];
-            $last_name = $user_name_fetch_row['last_name'];
-            $full_name = $first_name .' '. $last_name;
-            $data .= ' <tr class="tabvalue">
-                    <td>'.$pending_data_opportunity_row['name'].'</td>
-                    <td>'.$full_name.'</td>
-                    <td>'.$pending_data_opportunity_row['amount'].'</td>
-                    <td>'.$pending_data_opportunity_row['rfporeoipublished_c'].'</td>
-                    <td>'.$pending_data_opportunity_row['date_modified'].'</td>
-                    <td>'.$pending_data_opportunity_row['status_c'].'</td>
-                    <td>'.$pending_data_opportunity_row['date_entered'].'</td>
-                    <td>
-                    <div style="font-size: 20px;">
-                    <i class="fa fa-check-circle"></i>
-                    <i class="fa fa-times-circle"></i>
-                    <i class="fa fa-info-circle"></i>
-                    </div>
-                    </td>
-                    </tr>';
-        }
-    }
+                while($pending_data_opportunity_row =  $GLOBALS['db']->fetchByAssoc($fetch_result_pending_opportunity))
+                {
+                    $created_by_id = $pending_data_opportunity_row['assigned_user_id'];
+                    $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
+                    $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
+                    $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
+                    $user_name = $user_name_fetch_row['user_name'];
+                    $first_name = $user_name_fetch_row['first_name'];
+                    $last_name = $user_name_fetch_row['last_name'];
+                    $full_name = $first_name .' '. $last_name;
+                    $data .= ' <tr class="tabvalue">
+                            <td>'.$pending_data_opportunity_row['name'].'</td>
+                            <td>'.$full_name.'</td>
+                            <td>'.$pending_data_opportunity_row['amount'].'</td>
+                            <td>'.$pending_data_opportunity_row['rfporeoipublished_c'].'</td>
+                            <td>'.$pending_data_opportunity_row['date_modified'].'</td>
+                            <td>'.$pending_data_opportunity_row['status_c'].'</td>
+                            <td>'.$pending_data_opportunity_row['date_entered'].'</td>
+                            <td>
+                            <div style="font-size: 20px;">
+                            <i class="fa fa-check-circle"></i>
+                            <i class="fa fa-times-circle"></i>
+                            <i class="fa fa-info-circle"></i>
+                            </div>
+                            </td>
+                            </tr>';
+                }
+            }
     }
 
     public function action_filter_opportunities_by_status(){
@@ -287,19 +253,17 @@ public function action_pending_records()
             
             $data .= '<th class="table-header">Action</th></tr>';
            //$fetch_by_status = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE status_c='$status_c' AND  date_entered BETWEEN '".$intervalDate."' AND '".$todayDate."'  AND deleted != 1";
-            if($searchTerm){
-                $fetch_by_status = "SELECT opportunities.*, opportunities_cstm.*, 
-                CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities 
-                LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
-                LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
-                WHERE opportunities_cstm.status_c='$status_c' AND opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day AND opportunities.name LIKE '%$searchTerm%' ";
-            }else{
-                $fetch_by_status = "SELECT opportunities.*, opportunities_cstm.*, 
-                CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities 
-                    LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
-                    LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
-                    WHERE opportunities_cstm.status_c='$status_c' AND opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day ";
+            $fetch_by_status = "SELECT opportunities.*, opportunities_cstm.*, 
+            CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities 
+            LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
+            LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
+            WHERE opportunities_cstm.status_c='$status_c' AND opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day ";
+            
+            if($searchTerm) {
+                $fetch_by_status .= " AND opportunities.name LIKE '%$searchTerm%' ";
             }
+            $opp_id_show = $this->private_opps();
+            $fetch_by_status .= " AND (opportunities.opportunity_type = 'global' OR opportunities.id  IN ('".implode("','",$opp_id_show)."'))";
 
             if($status_c == 'Closed'){
                 $fetch_by_status .= ' AND opportunities_cstm.closure_status_c = "won" ';
@@ -310,6 +274,11 @@ public function action_pending_records()
                 LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
                 LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
                 WHERE opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day ";
+                if($searchTerm) {
+                    $fetch_by_status .= " AND opportunities.name LIKE '%$searchTerm%' ";
+                }
+                $opp_id_show = $this->private_opps();
+                $fetch_by_status .= " AND (opportunities.opportunity_type = 'global' OR opportunities.id  IN ('".implode("','",$opp_id_show)."'))";
                 if ($dropped) {
                     if ($dropped == 'Dropped') {
                         $fetch_by_status .= "AND status_c='Dropped'";
@@ -323,6 +292,8 @@ public function action_pending_records()
 
             if($_GET['filter'])
                 $fetch_by_status .= $this->getFilterQuery();
+            
+            //echo $fetch_by_status; die;
 
             /*if($_GET['filter'] && @$_GET['filter-responsibility']){
                 $responsibility = $_GET['filter-responsibility'];
@@ -392,7 +363,7 @@ public function action_pending_records()
                 }
                 $oppID = $row['id'];
                 $data .='<tr>
-                            <td class="table-data">';
+                            <td class="table-data"><a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'">';
                 $tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
                 $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
                 $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
@@ -406,7 +377,7 @@ public function action_pending_records()
                 } else {
                     $data .= $row['name'];
                 }
-                $data .='</td><td class="table-data">'.$full_name.'</td>';
+                $data .='</a></td><td class="table-data">'.$full_name.'</td>';
 
                 if(!@$_GET['customColumns']):
                 /*if($columnAmount){
@@ -683,45 +654,20 @@ public function action_pending_records()
             $data .= '<th class="table-header">Action</th>
         </tr>';
             $type = $_GET['type'];
+            
+            $fetch_query = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE opportunity_type='$type' AND deleted != 1 AND date_entered >= now() - interval '$day' day";
+            if($type == 'non_global'){
+                $opp_id_show = $this->private_opps();
+                $fetch_query .= " AND opportunities.id  IN ('".implode("','",$opp_id_show)."')";
+            }
             if($searchTerm){
-                $fetch_query = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE opportunity_type='$type' AND deleted != 1 AND date_entered >= now() - interval '$day' day AND name LIKE '%$searchTerm%' AND 
-                opportunities.id NOT IN(
-                SELECT opp_id FROM untagged_user WHERE user_id LIKE '%$log_in_user_id%'
-                ) ";
-            }else{
-                $fetch_query = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE opportunity_type='$type' AND deleted != 1 AND date_entered >= now() - interval '$day' day AND 
-                opportunities.id NOT IN(
-                SELECT opp_id FROM untagged_user WHERE user_id LIKE '%$log_in_user_id%'
-                )";
+                $fetch_query .= " AND name LIKE '%$searchTerm%'";
             }
-
-
-            /*if($_GET['filter'] && @$_GET['filter-responsibility']){
-                $responsibility = $_GET['filter-responsibility'];
-                $fetch_query .= " AND opportunities.created_by = '$responsibility' ";
-            }
-            if($_GET['filter'] && @$_GET['filter-rfp-eoi-status']){
-                $rpfEOIStatus = $_GET['filter-rfp-eoi-status'];
-                $fetch_query .= " AND opportunities_cstm.rfporeoipublished_c = '$rpfEOIStatus' ";
-            }
-            if($_GET['filter'] && @$_GET['filter-min-price'] && @$_GET['filter-max-price']){
-                $minPrice = $_GET['filter-min-price'];
-                $maxPrice = $_GET['filter-max-price'];
-                $fetch_query .= " AND opportunities_cstm.budget_allocated_oppertunity_c BETWEEN '$minPrice' AND '$maxPrice' ";
-            }
-            if($_GET['filter'] && @$_GET['filter-closed-date-from'] && @$_GET['filter-closed-date-to']){
-                $closedDateFrom = $_GET['filter-closed-date-from'];
-                $closedDateTo = $_GET['filter-closed-date-to'];
-                $fetch_query .= " AND DATE_FORMAT(opportunities.date_modified, '%d/%m/%Y') BETWEEN '$closedDateFrom' AND '$closedDateTo' ";
-            }
-            if($_GET['filter'] && @$_GET['filter-created-date-from'] && @$_GET['filter-created-date-to']){
-                $createdDateFrom = $_GET['filter-created-date-from'];
-                $createdDateTo = $_GET['filter-created-date-to'];
-                $fetch_query .= " AND DATE_FORMAT(opportunities.date_entered, '%d/%m/%Y') BETWEEN '$createdDateFrom' AND '$createdDateTo' ";
-            }*/
             
             if($_GET['filter'])
                 $fetch_query .= $this->getFilterQuery();
+
+            //echo $fetch_query; die;
 
             $fetch_query .= " ORDER BY `opportunities`.`date_modified` DESC";
 
@@ -765,7 +711,7 @@ public function action_pending_records()
                 }
                 $oppID = $row['id'];
                 $data .='<tr>
-                            <td class="table-data">';
+                            <td class="table-data"><a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'">';
                 $tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
                 $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
                 $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
@@ -775,7 +721,7 @@ public function action_pending_records()
                 } else {
                     $data .= $row['name'];
                 }
-                $data .='</td><td class="table-data">'.$full_name.'</td>';
+                $data .='</a></td><td class="table-data">'.$full_name.'</td>';
 
                 if(!@$_GET['customColumns']):
                 /*if($columnAmount){
@@ -890,8 +836,76 @@ public function action_pending_records()
         die();
     }
 
+    public function private_opps() {
+        global $current_user;
+        
+        $login_user_id=$current_user->id;
+            
+        $opp_id=array();
+        $assigned_user_id = array();
+        $multiple_approver_id = array();
+        $lineage = array();
+        $tagged_users=array();
+        $opp_type= array();
+        $opp_id_show=array();
+        $bid_commercial_id=array();
+        $mc_id=array();
 
 
+
+        $sql_opp="SELECT opportunities.id,opportunities.assigned_user_id,opportunities.opportunity_type,opportunities_cstm.multiple_approver_c AS approvers,tagged_user.user_id AS tagged_users_id, users_cstm.user_lineage as lineage 
+        FROM opportunities INNER JOIN opportunities_cstm ON opportunities_cstm.id_c=opportunities.id LEFT JOIN tagged_user ON tagged_user.opp_id = opportunities.id LEFT JOIN users_cstm ON users_cstm.id_c = opportunities.assigned_user_id 
+        WHERE opportunities.deleted=0";
+        $result_opp = $GLOBALS['db']->query($sql_opp);
+        
+        while($row_opp = $GLOBALS['db']->fetchByAssoc($result_opp) )
+        {
+            $opp_id[]=$row_opp['id'];
+            $assigned_user_id[]=$row_opp['assigned_user_id'];
+            $multiple_approver_id[]=$row_opp['approvers'];
+            $lineage[]=$row_opp['lineage'];
+            $tagged_users[]=$row_opp['tagged_users_id'];
+            $opp_type[]=$row_opp['opportunity_type'];
+        }
+        $sql_bid="SELECT id_c FROM `users_cstm` LEFT JOIN users ON users_cstm.id_c=users.id WHERE `bid_commercial_head_c`='commercial_team_head' OR `bid_commercial_head_c`='bid_team_head' AND users.deleted=0";
+        $result_bid = $GLOBALS['db']->query($sql_bid);
+    
+        while($row_bid = $GLOBALS['db']->fetchByAssoc($result_bid) )
+        {
+            $bid_commercial_id[]=$row_bid['id_c'];
+            
+        }
+        $sql_mc="SELECT id_c FROM `users_cstm` LEFT JOIN users ON users_cstm.id_c=users.id WHERE `mc_c`='yes' AND users.deleted=0";
+        $result_mc = $GLOBALS['db']->query($sql_mc);
+        
+        while($row_mc = $GLOBALS['db']->fetchByAssoc($result_mc) )
+        {
+            $mc_id[]=$row_mc['id_c'];
+            
+        }
+        if(in_array($login_user_id,$mc_id) || $current_user->is_admin==1){ 
+            $opp_id_show=$opp_id;
+        }
+        else{
+                    
+            for($i=0;$i<count($opp_id);$i++){
+                
+                if($opp_type[$i]=='non_global'){
+
+                    if( in_array($login_user_id,explode(',',$tagged_users[$i])) || in_array($login_user_id,explode(',',$lineage[$i])) || in_array($login_user_id,explode(',',$multiple_approver_id[$i])) || in_array($login_user_id,explode(',',$assigned_user_id[$i]))  ) {
+                    
+                    
+                            array_push($opp_id_show,$opp_id[$i]);
+                            
+                    }
+                    
+                    
+                }
+            }
+            
+        }
+        return $opp_id_show;
+    }
 
     public function action_delegate_members(){
         try
@@ -934,8 +948,6 @@ public function action_pending_records()
         }
         die();
     }
-
-
 
     public function action_show_data_between_date(){
         try
@@ -1008,7 +1020,7 @@ public function action_pending_records()
            $fetch_team_count = "SELECT count(*) as team_count from opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE  deleted != 1 AND date_entered >= now() - interval '$day' day AND assigned_user_id IN (SELECT id_c FROM users_cstm WHERE teamfunction_c = (SELECT teamfunction_c FROM users_cstm WHERE id_c = '$log_in_user_id'))";
             $fetch_team_result = $GLOBALS['db']->query($fetch_team_count);
             $fetch_team = $GLOBALS['db']->fetchByAssoc($fetch_team_result);
-            $team_count = $fetch_team['team_count'];
+            $team_count = $log_in_user_id == '1' ? 0 : $fetch_team['team_count'];
 
            $fetch_by_status = "";
            $result = array();
@@ -1036,7 +1048,7 @@ public function action_pending_records()
                 $fetch_team_count_by_status = "SELECT count(*) as team_count_by_status from opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE  deleted != 1 AND date_entered >= now() - interval '$day' day AND status_c= '".$row['status_c']."' AND assigned_user_id IN (SELECT id_c FROM users_cstm WHERE teamfunction_c = (SELECT teamfunction_c FROM users_cstm WHERE id_c = '$log_in_user_id')) ";
                 $fetch_team_count_by_status_result = $GLOBALS['db']->query($fetch_team_count_by_status);
                 $fetch_team_result_by_status = $GLOBALS['db']->fetchByAssoc($fetch_team_count_by_status_result);
-                $team_count_by_status = $fetch_team_result_by_status['team_count_by_status'];
+                $team_count_by_status = ($log_in_user_id == '1') ? 0 : $fetch_team_result_by_status['team_count_by_status'];
 
                 $fetch_self_count_by_status = "SELECT count(*) as self_count_by_status FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE status_c= '".$row['status_c']."' AND assigned_user_id='$log_in_user_id' AND deleted != 1 AND date_entered >= now() - interval '$day' day";
                 $fetch_self_count_by_status_result = $GLOBALS['db']->query($fetch_self_count_by_status);
@@ -1229,19 +1241,18 @@ public function action_pending_records()
             $data .= '<th class="table-header text-center">Action</th>
             </tr>';
 
+            
+            $fetch_query = "SELECT opportunities.*, opportunities_cstm.*,
+                            CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities
+                            LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
+                            LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
+                            WHERE opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day ";
             if($searchTerm){
-                $fetch_query = "SELECT opportunities.*, opportunities_cstm.*,
-                CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities
-                    LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
-                    LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
-                    WHERE opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day AND opportunities.name LIKE '%$searchTerm%' ";
-            }else{
-                $fetch_query = "SELECT opportunities.*, opportunities_cstm.*,
-                CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities
-                    LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
-                    LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
-                    WHERE deleted != 1 AND date_entered >= now() - interval '$day' day ";
+                $fetch_query .= " AND opportunities.name LIKE '%$searchTerm%' ";
             }
+            
+            $opp_id_show = $this->private_opps();
+            $fetch_query .= " AND (opportunities.opportunity_type = 'global' OR opportunities.id  IN ('".implode("','",$opp_id_show)."'))";
 
             if($_GET['filter'])
                 $fetch_query .= $this->getFilterQuery();
@@ -1290,7 +1301,7 @@ public function action_pending_records()
                 }
                 $oppID = $row['id'];
                 $data .='<tr>
-                            <td class="table-data">';
+                            <td class="table-data"><a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'">';
                 $tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
                 $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
                 $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
@@ -1303,7 +1314,7 @@ public function action_pending_records()
                 } else {
                     $data .= $row['name'];
                 }
-                $data .='</td><td class="table-data">'.$full_name.'</td>';
+                $data .='</a></td><td class="table-data">'.$full_name.'</td>';
 
                 if(!@$_GET['customColumns']):
 
@@ -1418,7 +1429,9 @@ public function action_pending_records()
                 'non_global_organization'   =>  $non_global_organization_count,
                 'fetched_by_status'         =>  $fetch_by_status,
                 'columnFilter'              => $columnFilterHtml,
-                'filters'                   => $filters
+                'filters'                   => $filters,
+                'loggedin_user'             => $log_in_user_id,
+                'fetch_query'               => $fetch_query
             ));
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
@@ -1502,7 +1515,6 @@ public function action_pending_records()
         return $data;
     }
 
-
     public function action_deselect_members_from_global_opportunity(){
             try {
                 $db = \DBManagerFactory::getInstance();
@@ -1512,23 +1524,15 @@ public function action_pending_records()
                 if ($_POST['userIdList']) {
                     $user_id_list = $_POST['userIdList'];
                 }
-                if ($this->is_global($opportunity_id)) {
-                    $count_query = "SELECT * FROM tagged_user WHERE opp_id='$opportunity_id'";
-                    $result = $GLOBALS['db']->query($count_query);
-                    if ($result->num_rows > 0) {
-                        $query = "UPDATE  tagged_user SET user_id = '$user_id_list' WHERE opp_id='$opportunity_id'";
-                    } else {
-                        $query = "INSERT into tagged_user(opp_id,user_id) VALUES('$opportunity_id','$user_id_list')";
-                    }
+                $count_query = "SELECT * FROM tagged_user WHERE opp_id='$opportunity_id'";
+                $result = $GLOBALS['db']->query($count_query);
+                if ($result->num_rows > 0) {
+                    $query = "UPDATE tagged_user SET user_id = '$user_id_list' WHERE opp_id='$opportunity_id'";
                 } else {
-                    $count_query = "SELECT * FROM untagged_user WHERE opp_id='$opportunity_id'";
-                    $result = $GLOBALS['db']->query($count_query);
-                    if ($result->num_rows > 0) {
-                        $query = "UPDATE  untagged_user SET user_id = '$user_id_list' WHERE opp_id='$opportunity_id'";
-                    } else {
-                        $query = "INSERT into untagged_user(opp_id,user_id) VALUES('$opportunity_id','$user_id_list')";
-                    }
+                    $query = "INSERT into tagged_user(opp_id,user_id) VALUES('$opportunity_id','$user_id_list')";
                 }
+                $sub_query = "UPDATE opportunities_cstm SET tagged_hiden_c = '$user_id_list' WHERE id_c='$opportunity_id'";
+                $GLOBALS['db']->query($sub_query);
                 if($db->query($query)==TRUE){
                     echo $query;
                 }else{
@@ -1546,8 +1550,6 @@ public function action_pending_records()
         $result = $GLOBALS['db']->fetchByAssoc($fetch_query);
         return $result['cnt'] == '1' ? true : false;
     }
-
-
 
     public function action_opportunity_dialog_info()
     {
@@ -1577,9 +1579,6 @@ public function action_pending_records()
             if($row['opportunity_type'] == 'global'){
                 $sub_head = 'Selected members will be able to view details or take action';
                 $change_font = 'Select Members';
-            }else{
-                $sub_head = "Deselected members won't be able to view details or take action";
-                $change_font = 'Deselect Members';
             }
 
             $data = '
@@ -1622,11 +1621,7 @@ public function action_pending_records()
     public function get_initial_multi_selected_dropdown_value($opportunity_id, $is_global, $useridreq) {
         $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
-        if ($is_global == true) {
-            $query = "SELECT user_id FROM tagged_user WHERE opp_id = '$opportunity_id'";
-        } else {
-            $query = "SELECT user_id FROM untagged_user WHERE opp_id = '$opportunity_id'";
-        }
+        $query = "SELECT user_id FROM tagged_user WHERE opp_id = '$opportunity_id'";
         $result = $GLOBALS['db']->query($query);
         $result_row = $GLOBALS['db']->fetchByAssoc($result);
         if ($useridreq) {
@@ -1739,7 +1734,6 @@ public function action_pending_records()
         return $count['count'];
     }
 
-
     public function action_filter_for_opportunity_list(){
         try
         {
@@ -1753,8 +1747,6 @@ public function action_pending_records()
         }
         die();
     }
-
-
 
     public function action_store_delegate_result(){
         try{
@@ -1843,7 +1835,6 @@ public function action_pending_records()
         $array = preg_split('/(?=[A-Z])/',$label);
         return implode(' ', $array);
     }
-
 
     public function action_custom_filters(){
         try{
@@ -1939,7 +1930,9 @@ public function action_pending_records()
 
 
             if(!empty($required_field) || !empty($lowerVal) || !empty($upperVal) || !empty($responsibility) || !empty($today) || !empty($closed_date_from) || !empty($closed_date_to)){
-                $custom_filter_query = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE deleted != 1 AND date_entered >= now() - interval '$day' day AND date_entered >= now() - interval '$day' day AND ";
+                $custom_filter_query = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE deleted != 1 AND date_entered >= now() - interval '$day' day";
+                $opp_id_show = $this->private_opps();
+                $custom_filter_query .= " AND (opportunity_type = 'global' OR opportunities.id IN ('".implode("','",$opp_id_show)."'))";
                 if (!empty($required_field)) {
                     $custom_filter_query .= "rfporeoipublished_c = '$required_field'";
                 }
@@ -1986,7 +1979,7 @@ public function action_pending_records()
                     }
                     $oppID = $row['id'];
                     $data .='<tr>
-                                <td class="table-data">';
+                                <td class="table-data"><a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'">';
                     $tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
                     $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
                     $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
@@ -1997,7 +1990,7 @@ public function action_pending_records()
                         $data .= $row['name'];
                     }
                     $data .='
-                    </td><td class="table-data">'.$full_name.'</td>
+                    </a></td><td class="table-data">'.$full_name.'</td>
                     <td class="table-data">'.($this->append_currency( $row['currency_c'], $this->beautify_amount($row['budget_allocated_oppertunity_c']))).'</td>
                     <td class="table-data">'.($this->beautify_label($row['rfporeoipublished_c'])).'</td>
                     <td class="table-data">'.date_format(date_create($row['date_modified']),'d/m/Y').'</td>
@@ -2037,8 +2030,6 @@ public function action_pending_records()
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
     }
-
-
 
     public function action_filter_by_column(){
         try
@@ -2346,8 +2337,9 @@ public function action_pending_records()
             $fetch_query .= " JOIN opportunities_cstm ON opportunities_cstm.id_c = ap.opp_id";
             $fetch_query .= " LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id";
             $fetch_query .= " WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '1200' day AND ( ap.approver_rejector = '$log_in_user_id' OR ap.delegate_id = '$log_in_user_id' ) AND ap.apply_for = '$status'";
-            if($rowCount)
-                $fetch_query .= " AND ap.row_count = '$rowCount'";
+            $fetch_query .= " GROUP BY ap.opp_id";
+            /*if($rowCount)
+                $fetch_query .= " AND ap.row_count = '$rowCount'";*/
             
             /*if($_GET['filter'] && @$_GET['filter-responsibility']){
                 $responsibility = $_GET['filter-responsibility'];
@@ -2429,11 +2421,14 @@ public function action_pending_records()
                     if($row2['Approved'] == 0 && $row2['pending'] == 1){*/
                         $oppID = $row['id'];
                         $data .='<tr>
-                                    <td class="table-data">';
+                                    <td class="table-data"><a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'">';
                         $tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
                         $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
                         $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
-                        $tagged_users = $tagged_user_query_fetch_row['user_id'];
+                        $tagged_users = '';
+                        if($tagged_user_query_fetch_row){
+                            $tagged_users = $tagged_user_query_fetch_row['user_id'];
+                        }
                         $delegated_u_id = $row['delegate_id'];
                         if ((strpos($tagged_users, $log_in_user_id) !== false)) {
                             $data .= $row['name']. ' <i class="fa fa-tag" style="font-size: 12px; color:green"></i>';
@@ -2443,7 +2438,7 @@ public function action_pending_records()
                             $data .= $row['name'];
                         }
                         $data .='
-                                </td><td class="table-data">'.$full_name.'</td>
+                                </a></td><td class="table-data">'.$full_name.'</td>
                                 
                                 <td class="table-data" style="text-align: center">'.$this->pendingApprovalStatus($row['id'], $status).'</td>';
 
@@ -2451,9 +2446,9 @@ public function action_pending_records()
                                 /*if($columnAmount){
                 $data .= '<th class="table-header">Amount ( in Cr )</th>';
             }*/
-            if($columnDepartment){
-                $data .= '<th class="table-header">Department</th>';
-            }
+                                if($columnDepartment){
+                                    $data .= '<th class="table-header">'.($this->beautify_label(($this->beautify_label($row['new_department_c'])))).'</th>';
+                                }
                                 if($columnREPEOI){
                                     $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label($row['rfporeoipublished_c'])))).'</td>';
                                 }
@@ -2526,7 +2521,8 @@ public function action_pending_records()
             echo json_encode(array(
                 'data'          => $data,
                 'columnFilter'  => $columnFilterHtml,
-                'filters'       => $filters
+                'filters'       => $filters,
+                'fetch_query'   => $fetch_query
             ));
 
             //echo $data;
@@ -2660,7 +2656,7 @@ public function action_pending_records()
         if($status)
             $maxQuery .= " AND ap.apply_for = '$status'";
 
-        $maxQuery .= " ORDER BY row_count DESC LIMIT 1";
+        $maxQuery .= " GROUP BY ap.opp_id ORDER BY row_count DESC";
         
         $result = $GLOBALS['db']->query($maxQuery);
         $rowCount = $GLOBALS['db']->fetchByAssoc($result);
@@ -2673,8 +2669,8 @@ public function action_pending_records()
 
         if($status)
             $query .= " AND ap.apply_for = '$status'";
-        if($rowCount)
-            $query .= " AND ap.row_count = '$rowCount'";
+        /*if($rowCount)
+            $query .= " AND ap.row_count = '$rowCount'";*/
 
         //echo $query; die;
 
@@ -2937,45 +2933,33 @@ public function action_pending_records()
     	$db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
 
-        $team_func_array = $team_func_array1 = $others_id_array = array();
-
-        $sql ='SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE opportunities.id="'. $opportunity_id.'"';
-        $result = $GLOBALS['db']->query($sql);
-        while($row = $GLOBALS['db']->fetchByAssoc($result) )
-            {
-                $created_by=$row['assigned_user_id'];
-                $assigned=$row['assigned_user_id'];
-                $approver=$row['multiple_approver_c'];
-                $deligate = $row['delegate'];
-                $approver1=$row['user_id2_c'];
-            }
-        $sql5 = "SELECT user_id FROM tagged_user WHERE opp_id='".$opportunity_id."'";
-        $result5 = $GLOBALS['db']->query($sql5);
-        while($row5 = $GLOBALS['db']->fetchByAssoc($result5))
-        {
-                $other1=$row5['user_id'];
-                $others_id_array = explode(',', $other1);
+        $sql = "SELECT * FROM tagged_user WHERE tagged_user.opp_id='$opportunity_id' AND tagged_user.users_id='$log_in_user_id'";
+        $tagged_result = $GLOBALS['db']->query($sql);
+        
+        $sql1 = "SELECT users_cstm.user_lineage FROM users_cstm 
+        JOIN opportunities ON opportunities.assigned_user_id = users_cstm.id_c 
+        WHERE opportunities.id = '$opportunity_id' ";
+        $result1 = $GLOBALS['db']->query($sql1);
+        while($row1 = $GLOBALS['db']->fetchByAssoc($result1)) {
+            $user_lineage = $row1['user_lineage'];
         }
-        if (strpos($deligate, ',') !== false) {
-            $team_func_array = explode(',', $deligate);
-        }
-        if (strpos($approver, ',') !== false) {
-            $team_func_array1 = explode(',', $approver);
-        }
-        $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+        $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c 
+        FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
         $result3 = $GLOBALS['db']->query($sql3);
         while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
         {
-            $check_sales = $row3['teamfunction_c'];
             $check_mc = $row3['mc_c'];
             $check_team_lead = $row3['teamheirarchy_c'];
-            
         }
-        if($check_mc =="yes"|| $log_in_user_id == $created_by || $log_in_user_id == "1"
-        || in_array($log_in_user_id, $team_func_array1)||in_array($log_in_user_id, $others_id_array)  || in_array($log_in_user_id, $team_func_array) 
-        || $log_in_user_id == $approver1 || $log_in_user_id == $assigned)
+
+        if($check_mc =="yes" || ($check_team_lead == 'team_lead')) 
         {
-            return true;
+            if(
+                (strpos($user_lineage, $log_in_user_id) !== false) 
+                    || ($tagged_result->num_rows > 0)) {
+                    return true;
+                }
+
         } else{
             return false;
         }
@@ -2985,11 +2969,12 @@ public function action_pending_records()
         try{
             global $current_user;
             $log_in_user_id = $current_user->id;
-            $check_user_team = "SELECT teamfunction_c from users LEFT JOIN users_cstm ON users.id = users_cstm.id_c WHERE id = '$log_in_user_id'";
+            $check_user_team = "SELECT teamfunction_c, mc_c from users LEFT JOIN users_cstm ON users.id = users_cstm.id_c WHERE id = '$log_in_user_id'";
             $check_user_team_result = $GLOBALS['db']->query($check_user_team);
             $user_team_row = $GLOBALS['db']->fetchByAssoc($check_user_team_result);
             $user_team = $user_team_row['teamfunction_c'];
-            echo json_encode(array('user_team'=>$user_team, 'user_id'=> $log_in_user_id));
+            $mc_c = $user_team_row['mc_c'];
+            echo json_encode(array('user_team'=>$user_team, 'mc_c' =>$mc_c , 'user_id'=> $log_in_user_id));
         }catch(Exception $e){
             echo json_encode(array("message" => "Some error occured"));
         }
@@ -3048,7 +3033,6 @@ public function action_pending_records()
         die();
     }
     
-
     function action_opportunity_status_update(){
         try
         {
@@ -3107,9 +3091,22 @@ public function action_pending_records()
                     if(!$this->checkPendingAndRejectedApprovals($id, $_POST['changed-status'])){
                         $updateOpportunity = "UPDATE opportunities_cstm SET status_c = '$changedStatus' WHERE id_c = '$id'";
                         $db->query($updateOpportunity);
-                    }
+                        
+                         $sql_assigned_id = "SELECT assigned_user_id FROM opportunities WHERE id = '$id'";
+                         $result_assigned_id = $db->query($sql_assigned_id);
+                         while ($row_assigned_id = mysqli_fetch_assoc($result_assigned_id)){
+                               $assigned_id=$row_assigned_id['assigned_user_id'];
+                            }
+                            
+                            $sql_assigned_name = "SELECT CONCAT(first_name, ' ',last_name) as name FROM users WHERE id = '$assigned_id'";
+                         $result_assigned_name = $db->query($sql_assigned_name);
+                         while ($row_assigned_name = mysqli_fetch_assoc($result_assigned_name)){
+                                $assigned_name=$row_assigned_name['name'];
+                            }
+                            
+                         }
                 }
-                echo json_encode(array("status"=>true, "message" => "Status changed successfully."));
+                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.","opps_id"=>$id,"rfp"=>$rfp_eoi,"opp_status"=>$changedStatus,"assigned_id"=>$assigned_id,"assigned_name"=>$assigned_name));
             }else{
                 echo json_encode(array("status"=>false, "message" => "Some error occured"));
             }
@@ -3118,6 +3115,29 @@ public function action_pending_records()
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
         die();
+    }
+
+    function action_update_multiple_approver(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+                $GLOBALS['db'];
+                
+                global $current_user; 
+                    $log_in_user_id = $current_user->id;
+                    $approvers_id=$_POST['multiple_approvers_id'];
+                    $opps_id=$_POST['opps_id'];
+                    
+                    $id_array=implode(',',$approvers_id);
+                    
+                    $update_multiple_approver_id='UPDATE opportunities_cstm SET multiple_approver_c="'.$id_array.'" WHERE id_c="'.$opps_id.'"';
+                    
+                    $GLOBALS['db']->query($update_multiple_approver_id);
+                    
+                
+        }catch(Exception $e){
+                echo json_encode(array("status"=>false, "message" => "Some error occured"));
+            }
+            die();
     }
 
     function getApprovalStatus($status, $rfp_eoi_status){
@@ -3493,10 +3513,9 @@ public function action_pending_records()
     public function get_non_global_op_count($day) {
         global $current_user;
         $log_in_user_id = $current_user->id;
-        $organiztion_non_global_count = "SELECT count(*) as org_non_global_count FROM opportunities WHERE opportunity_type = 'non_global' AND deleted != 1 AND date_entered >= now() - interval '$day' day AND 
-            opportunities.id NOT IN(
-            SELECT opp_id FROM untagged_user WHERE user_id LIKE '%$log_in_user_id%'
-            )";
+        $organiztion_non_global_count = "SELECT count(*) as org_non_global_count FROM opportunities WHERE opportunity_type = 'non_global' AND deleted != 1 AND date_entered >= now() - interval '$day' day";
+        $opp_id_show = $this->private_opps();
+        $organiztion_non_global_count .= " AND opportunities.id IN ('".implode("','",$opp_id_show)."')";
         $organiztion_count_result = $GLOBALS['db']->query($organiztion_non_global_count);
         $fetch_organization_count = $GLOBALS['db']->fetchByAssoc($organiztion_count_result);
         $non_global_organization_count = $fetch_organization_count['org_non_global_count'];
@@ -3518,13 +3537,17 @@ public function action_pending_records()
                 </div>
                 <hr>';
 
-            $query = "SELECT u.first_name, u.last_name, ap.date_time, ap.apply_for, ap.Approved, ap.Rejected, ap.pending FROM approval_table ap JOIN users u ON u.id = ap.approver_rejector WHERE ap.opp_id = '$oppID' AND ap.pending = 0 ORDER BY ap.updated_at DESC, ap.Rejected ASC LIMIT 1";
+            $query = "select u.first_name, u.last_name, ap.opp_id, ap.date_time, ap.apply_for,ap.assigned_by, ap.Approved, ap.Rejected, ap.pending, ap.assign from 
+            ( (select opp_id , assigned_to_id, date_time, 'Reassignment' as apply_for, assigned_by, 0 as Approved, 0 as Rejected, 0 as pending, 1 as assign from assign_flow where opp_id ='$oppID'
+            and (NOT (assigned_to_id ='$created_by' and status='Lead' and assigned_by ='$created_by')))
+            union (select opp_id , approver_rejector as assigned_to_id,updated_at as date_time, apply_for, '' as assigned_by, Approved, Rejected, pending, 0 as assign from approval_table where opp_id ='$oppID') ) ap 
+            JOIN users u ON u.id = ap.assigned_to_id order by date_time DESC LIMIT 1";
             $result = $GLOBALS['db']->query($query);
             $result = $GLOBALS['db']->fetchByAssoc($result);
             
             if($result):
             
-                $dateExtracted = substr($result['date_time'],4,11);
+                $dateExtracted = substr($result['date_time'],0,10);
                 $updateDate = date('d/m/Y', strtotime($dateExtracted));
             
                 if($result['pending'] == 1){
@@ -3539,6 +3562,10 @@ public function action_pending_records()
                     $class = 'label-red';
                     $circleClass = 'red-color red-bg';
                     $status = 'Rejected';
+                } else if($result['assign'] == 1) {
+                    $class = 'label-blue';
+                    $circleClass = 'blue-color blue-bg';
+                    $status = 'Reassigned';
                 }
 
                 $data .= '<div class="row padding">
@@ -3594,11 +3621,9 @@ public function action_pending_records()
                     $assigned_by = $this->getUserName($row['assigned_by']);
                     $full_name = $assigned_by. ' <i class="fa fa-arrow-right"></i> ' . $full_name;
                 }
-                
-                $dateExtracted = substr($row['date_time'],4,11);
+                $dateExtracted = substr($row['date_time'],0,10);
                 $updateDate = date('d/m/Y', strtotime($dateExtracted));
 
-                //$data .= '<a href="javascript:void(0);" title="'.$row['first_name'].' '.$row['last_name'].'" class="label '.$class.'">'.substr($row['first_name'], 0, 1).substr($row['last_name'], 0, 1).'</a>';
                 $data .= '<!-- single -->
                     <div class="row half-padding-tb">
                         <div class="d-inline-block" style="width:75%">
@@ -3615,34 +3640,6 @@ public function action_pending_records()
                     </div>';
             }
             $data .= '</div>';
-
-            /*$query = "SELECT u.first_name, u.last_name, ap.opp_id, ap.date_time, ap.apply_for, ap.Approved, ap.Rejected, ap.pending FROM approval_table ap JOIN users u ON u.id = ap.approver_rejector WHERE ap.opp_id = '$oppID' AND ap.pending = 0 AND ap.Rejected = 1 GROUP BY ap.apply_for";
-            $result = $GLOBALS['db']->query($query);
-            while($row = $GLOBALS['db']->fetchByAssoc($result)){
-                
-                $class = '';
-                if($row['pending'] == 1)
-                    $class = 'label-yellow';
-                else if($row['Approved'] == 1)
-                    $class = 'label-green';
-                else if($row['Rejected'] == 1)
-                    $class = 'label-red';
-                
-                $dateExtracted = substr($row['date_time'],4,11);
-                $updateDate = date('d/m/Y', strtotime($dateExtracted));
-
-                //$data .= '<a href="javascript:void(0);" title="'.$row['first_name'].' '.$row['last_name'].'" class="label '.$class.'">'.substr($row['first_name'], 0, 1).substr($row['last_name'], 0, 1).'</a>';
-                $data .= '<!-- single -->
-                    <div class="row half-padding-tb rejected">
-                        <div class="d-inline-block w-50">
-                            <h5><span class="status-badge-red-b">'.$this->getStatusChar($row['apply_for']).'</span> 
-                            <span class="line-up"></span> '.$this->getApproverNames($row['opp_id'], $row['apply_for'], 1).'</h5> 
-                        </div>
-                        <div class="d-inline-block w-50 align-self-end text-right">
-                            <h5 class="gray-color">'.$updateDate.'</h5>
-                        </div>
-                    </div>';
-            }*/
 
             $data .= '</div>';
             echo json_encode(array('data' => $data));
@@ -3718,7 +3715,6 @@ public function action_pending_records()
         }
         return $statusChar;
     }
-
 
     function getColumnFilters($status = null, $type = null){
         /* Default Columns */
@@ -4121,19 +4117,25 @@ public function action_pending_records()
                 break;
 
             case 'scope_budget_projected_c':
-                $data .= '<td class="table-data" >'.$this->beautify_label( date('d/m/Y', strtotime($row['scope_budget_projected_c'])) ).'</td>';
+                $scope_budget_projected_c = $row['scope_budget_projected_c'] ? $this->beautify_label( date('d/m/Y', strtotime($row['scope_budget_projected_c'])) ) : '';
+                $data .= '<td class="table-data" >'.$scope_budget_projected_c.'</td>';
                 break;
 
             case 'rfp_eoi_projected_c':
-                $data .= '<td class="table-data" >'.$this->beautify_label( date('d/m/Y', strtotime($row['rfp_eoi_projected_c'])) ).'</td>';
+                $rfp_eoi_projected_c = $row['rfp_eoi_projected_c'] ? $this->beautify_label( date('d/m/Y', strtotime($row['rfp_eoi_projected_c'])) ) : '';
+                $data .= '<td class="table-data" >'.$rfp_eoi_projected_c.'</td>';
                 break;
 
             case 'rfp_eoi_published_projected_c':
-                $data .= '<td class="table-data" >'.$this->beautify_label( date('d/m/Y', strtotime($row['rfp_eoi_published_projected_c'])) ).'</td>';
+                $rfp_eoi_published_projected_c = $row['rfp_eoi_published_projected_c'] ? $this->beautify_label( date('d/m/Y', strtotime($row['rfp_eoi_published_projected_c'])) ) : '';
+                $data .= '<td class="table-data" >'.
+                $rfp_eoi_published_projected_c
+                .'</td>';
                 break;
 
             case 'work_order_projected_c':
-                $data .= '<td class="table-data" >'.$this->beautify_label( date('d/m/Y', strtotime($row['work_order_projected_c'])) ).'</td>';
+                $work_order_projected_c = $row['work_order_projected_c'] ? $this->beautify_label( date('d/m/Y', strtotime($row['work_order_projected_c'])) ) : '';
+                $data .= '<td class="table-data" >'.$work_order_projected_c.'</td>';
                 break;
 
             case 'budget_head_amount_c':
@@ -4145,11 +4147,13 @@ public function action_pending_records()
                 break;
 
             case 'project_implementation_start_c':
-                $data .= '<td class="table-data" >'.$this->beautify_label( date('d/m/Y', strtotime($row['project_implementation_start_c'])) ).'</td>';
+                $project_implementation_start_c = $row['project_implementation_start_c'] ? $this->beautify_label( date('d/m/Y', strtotime($row['project_implementation_start_c'])) ) : '';
+                $data .= '<td class="table-data" >'.$project_implementation_start_c.'</td>';
                 break;
 
             case 'project_implementation_end_c':
-                $data .= '<td class="table-data" >'.$this->beautify_label( date('d/m/Y', strtotime($row['project_implementation_end_c'])) ).'</td>';
+                $project_implementation_end_c = $row['project_implementation_end_c'] ? $this->beautify_label( date('d/m/Y', strtotime($row['project_implementation_end_c'])) ) : '';
+                $data .= '<td class="table-data" >'.$project_implementation_end_c.'</td>';
                 break;
 
             case 'selection_c':
@@ -4388,7 +4392,7 @@ public function action_pending_records()
             '^PilotforFutureOpportunity^', '^Relationship^', '^StrategicAlignmentforFutureOpportunity^'];
             $dataList = '';
             foreach($dbData as $d){
-                $dataList .= '<option value="'.$d.'">'.$this->beautify_label( $d ).'</option>';
+                $dataList .= '<option value="'.$d.'">'.$this->beautify_label_n_f( $d ).'</option>';
             }
             $data .= '<div class="form-group">
                 <span class="primary-responsibilty-filter-head">Non Financial Consideration</span>
@@ -4696,8 +4700,8 @@ public function action_pending_records()
         $work_order_projected_c_from    = @$_GET['filter-work_order_projected_c_from'];
         $work_order_projected_c_to      = @$_GET['filter-work_order_projected_c_to'];
         
-        $budget_head_amount_c_min              = @$_GET['filter-budget_head_amount_c_min'];
-        $budget_head_amount_c_max              = @$_GET['filter-budget_head_amount_c_max'];
+        $budget_head_c_min              = @$_GET['filter-budget_head_c_min'];
+        $budget_head_c_max              = @$_GET['filter-budget_head_c_max'];
 
         $budget_allocated_oppertunity_c_min = @$_GET['filter-budget_allocated_oppertunity_c_min'];
         $budget_allocated_oppertunity_c_max = @$_GET['filter-budget_allocated_oppertunity_c_max'];
@@ -4727,13 +4731,11 @@ public function action_pending_records()
             $responsibility = $_GET['filter-responsibility'];
             $fetch_query .= " AND (";
             foreach($responsibility as $key => $res){
-                $arr = explode('andTeam',$res,0);
+                
                 if($key)
                     $fetch_query .= " OR ";
-                if($res == 'MyTeam') {
-                    $fetch_query .= " opportunities.assigned_user_id IN 
-                    (SELECT id FROM users WHERE reports_to_id = '$log_in_user_id' OR id = '$log_in_user_id')";
-                } else if ($arr && count($arr) > 0) {
+                if (strpos($res, 'andTeam') !== false) {
+                    $arr = explode('andTeam',$res,0);
                     $arr[0] = chop($arr[0],"andTeam");
                     $fetch_query .= " opportunities.assigned_user_id IN 
                     (SELECT id FROM users WHERE reports_to_id = '$arr[0]' OR id = '$arr[0]')";
@@ -4805,12 +4807,26 @@ public function action_pending_records()
         if(isset( $_GET['filter'] ) && @$_GET['filter-closed-date-from'] && @$_GET['filter-closed-date-to']){
             $closedDateFrom = $_GET['filter-closed-date-from'];
             $closedDateTo   = $_GET['filter-closed-date-to'];
-            $fetch_query    .= " AND DATE_FORMAT(opportunities.date_modified, '%d/%m/%Y') BETWEEN '$closedDateFrom' AND '$closedDateTo' ";
+
+            $dateFrom = explode('/', $closedDateFrom);
+            $closedDateFrom = $dateFrom[2].'-'.$dateFrom[1].'-'.$dateFrom[0];
+
+            $dateTo = explode('/', $closedDateTo);
+            $closedDateTo = $dateTo[2].'-'.$dateTo[1].'-'.$dateTo[0];
+
+            $fetch_query    .= " AND DATE(opportunities.date_modified) BETWEEN '$closedDateFrom' AND '$closedDateTo' ";
         }
         if(isset( $_GET['filter'] ) && @$_GET['filter-created-date-from'] && @$_GET['filter-created-date-to']){
             $createdDateFrom    = $_GET['filter-created-date-from'];
             $createdDateTo      = $_GET['filter-created-date-to'];
-            $fetch_query        .= " AND DATE_FORMAT(opportunities.date_entered, '%d/%m/%Y') BETWEEN '$createdDateFrom' AND '$createdDateTo' ";
+
+            $dateFrom = explode('/', $createdDateFrom);
+            $createdDateFrom = $dateFrom[2].'-'.$dateFrom[1].'-'.$dateFrom[0];
+
+            $dateTo = explode('/', $createdDateTo);
+            $createdDateTo = $dateTo[2].'-'.$dateTo[1].'-'.$dateTo[0];
+
+            $fetch_query        .= " AND DATE(opportunities.date_entered) BETWEEN '$createdDateFrom' AND '$createdDateTo' ";
         }
 
         if($multiple_approver_c){
@@ -4839,8 +4855,7 @@ public function action_pending_records()
                 if($key)
                     $fetch_query .= " OR ";
                 if($res== '^NA^') {
-                    $res = 'NA';
-                    $fetch_query .= " `opportunities_cstm`.non_financial_consideration_c NOT LIKE '%$res%' OR `opportunities_cstm`.non_financial_consideration_c IS NULL";
+                    $fetch_query .= " (`opportunities_cstm`.non_financial_consideration_c LIKE '%$res%' OR `opportunities_cstm`.non_financial_consideration_c = '' OR `opportunities_cstm`.non_financial_consideration_c IS NULL)";
                 } else {
                     $fetch_query .= " opportunities_cstm.non_financial_consideration_c LIKE '%$res%' ";
                 }
@@ -4935,22 +4950,46 @@ public function action_pending_records()
         }
 
         if($scope_budget_projected_c_from && $scope_budget_projected_c_to){
-            $fetch_query .= " AND DATE_FORMAT(opportunities_cstm.scope_budget_projected_c, '%d/%m/%Y') BETWEEN '$scope_budget_projected_c_from' AND '$scope_budget_projected_c_to' ";
+            $dateFrom = explode('/', $scope_budget_projected_c_from);
+            $scope_budget_projected_c_from = $dateFrom[2].'-'.$dateFrom[1].'-'.$dateFrom[0];
+
+            $dateTo = explode('/', $scope_budget_projected_c_to);
+            $scope_budget_projected_c_to = $dateTo[2].'-'.$dateTo[1].'-'.$dateTo[0];
+            
+            $fetch_query .= " AND DATE(opportunities_cstm.scope_budget_projected_c) BETWEEN '$scope_budget_projected_c_from' AND '$scope_budget_projected_c_to' ";
         }
 
         if($rfp_eoi_projected_c_from && $rfp_eoi_projected_c_to){
-            $fetch_query .= " AND DATE_FORMAT(opportunities_cstm.rfp_eoi_projected_c, '%d/%m/%Y') BETWEEN '$rfp_eoi_projected_c_from' AND '$rfp_eoi_projected_c_to' ";
+            $dateFrom = explode('/', $rfp_eoi_projected_c_from);
+            $rfp_eoi_projected_c_from = $dateFrom[2].'-'.$dateFrom[1].'-'.$dateFrom[0];
+
+            $dateTo = explode('/', $rfp_eoi_projected_c_to);
+            $rfp_eoi_projected_c_to = $dateTo[2].'-'.$dateTo[1].'-'.$dateTo[0];
+
+            $fetch_query .= " AND DATE(opportunities_cstm.rfp_eoi_projected_c) BETWEEN '$rfp_eoi_projected_c_from' AND '$rfp_eoi_projected_c_to' ";
         }
         if($rfp_eoi_published_projected_c_from && $rfp_eoi_published_projected_c_to){
-            $fetch_query .= " AND DATE_FORMAT(opportunities_cstm.rfp_eoi_published_projected_c,'%d/%m/%Y') BETWEEN '$rfp_eoi_published_projected_c_from' AND '$rfp_eoi_published_projected_c_to' ";
+            $dateFrom = explode('/', $rfp_eoi_published_projected_c_from);
+            $rfp_eoi_published_projected_c_from = $dateFrom[2].'-'.$dateFrom[1].'-'.$dateFrom[0];
+
+            $dateTo = explode('/', $rfp_eoi_published_projected_c_to);
+            $rfp_eoi_published_projected_c_to = $dateTo[2].'-'.$dateTo[1].'-'.$dateTo[0];
+
+            $fetch_query .= " AND DATE(opportunities_cstm.rfp_eoi_published_projected_c) BETWEEN '$rfp_eoi_published_projected_c_from' AND '$rfp_eoi_published_projected_c_to' ";
         }
 
         if($work_order_projected_c_from && $work_order_projected_c_to){
-            $fetch_query .= " AND DATE_FORMAT(opportunities_cstm.work_order_projected_c, '%d/%m/%Y') BETWEEN '$work_order_projected_c_from' AND '$work_order_projected_c_to' ";
+            $dateFrom = explode('/', $work_order_projected_c_from);
+            $work_order_projected_c_from = $dateFrom[2].'-'.$dateFrom[1].'-'.$dateFrom[0];
+
+            $dateTo = explode('/', $work_order_projected_c_to);
+            $work_order_projected_c_to = $dateTo[2].'-'.$dateTo[1].'-'.$dateTo[0];
+
+            $fetch_query .= " AND DATE(opportunities_cstm.work_order_projected_c) BETWEEN '$work_order_projected_c_from' AND '$work_order_projected_c_to' ";
         }
 
-        if($budget_head_amount_c_min && $budget_head_amount_c_max){
-            $fetch_query .= " AND opportunities_cstm.budget_head_amount_c BETWEEN '$budget_head_amount_c_min' AND '$budget_head_amount_c_max' ";
+        if($budget_head_c_min && $budget_head_c_max){
+            $fetch_query .= " AND opportunities_cstm.budget_head_c BETWEEN '$budget_head_c_min' AND '$budget_head_c_max' ";
         }
         
         if($budget_allocated_oppertunity_c_min && $budget_allocated_oppertunity_c_max){
@@ -4958,11 +4997,23 @@ public function action_pending_records()
         }
         
         if($project_implementation_start_c_from && $project_implementation_start_c_to){
-            $fetch_query .= " AND DATE_FORMAT(opportunities_cstm.project_implementation_start_c,'%d/%m/%Y') BETWEEN '$project_implementation_start_c_from' AND '$project_implementation_start_c_to' ";
+            $dateFrom = explode('/', $project_implementation_start_c_from);
+            $project_implementation_start_c_from = $dateFrom[2].'-'.$dateFrom[1].'-'.$dateFrom[0];
+
+            $dateTo = explode('/', $project_implementation_start_c_to);
+            $project_implementation_start_c_to = $dateTo[2].'-'.$dateTo[1].'-'.$dateTo[0];
+
+            $fetch_query .= " AND DATE(opportunities_cstm.project_implementation_start_c) BETWEEN '$project_implementation_start_c_from' AND '$project_implementation_start_c_to' ";
         }
         
         if($project_implementation_end_c_from && $project_implementation_end_c_to){
-            $fetch_query .= " AND DATE_FORMAT(opportunities_cstm.project_implementation_end_c,'%d/%m/%Y') BETWEEN '$project_implementation_end_c_from' AND '$project_implementation_end_c_to' ";
+            $dateFrom = explode('/', $project_implementation_end_c_from);
+            $project_implementation_end_c_from = $dateFrom[2].'-'.$dateFrom[1].'-'.$dateFrom[0];
+
+            $dateTo = explode('/', $project_implementation_end_c_to);
+            $project_implementation_end_c_to = $dateTo[2].'-'.$dateTo[1].'-'.$dateTo[0];
+
+            $fetch_query .= " AND DATE(opportunities_cstm.project_implementation_end_c) BETWEEN '$project_implementation_end_c_from' AND '$project_implementation_end_c_to' ";
         }
 
         if($selection_c){
@@ -4986,7 +5037,6 @@ public function action_pending_records()
         // die;
         return $fetch_query;
     }
-
 
     function delegate_members(){
         try
@@ -5060,7 +5110,6 @@ public function action_pending_records()
             return json_encode(array("status"=>false, "message" => "Some error occured"));
         }
     }
-
 
     function getDbData($table, $fields, $condition = null){
         $GLOBALS['db'];
@@ -5147,22 +5196,19 @@ public function action_pending_records()
             LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
             LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
             WHERE opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day ";
-
         if($status_c){
             $query .= " AND opportunities_cstm.status_c='$status_c'";
         }
 
         if($type){
-            $query .= " AND opportunities.opportunity_type='$type' AND opportunities.id NOT IN(
-                SELECT opp_id FROM untagged_user WHERE user_id LIKE '%$log_in_user_id%'
-            )";
+            $query .= " AND opportunities.opportunity_type='$type' AND opportunities.id";
         }
 
         if($status_c == 'Closed'){
             $query .= ' AND opportunities_cstm.closure_status_c = "won" ';
         }else if($status_c == 'Dropped' ){
             $query = "SELECT opportunities.*, opportunities_cstm.*,
-        CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities 
+                CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities 
                 LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
                 LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
                 WHERE opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day ";
@@ -5316,571 +5362,968 @@ public function action_pending_records()
             exit;
         }
     }
-
-
-
     //--------------------------------------for re-assignment----------------------//
-   function is_reassignment_applicable($opportunity_id) {
-        global $current_user;
-         $db = \DBManagerFactory::getInstance();
-            $GLOBALS['db'];
-    	$log_in_user_id = $current_user->id;
-        $sql ='SELECT * FROM `approval_table` WHERE `opp_id`="'.$opportunity_id.'" AND `pending`="1"';
-        $result = $GLOBALS['db']->query($sql);
-        $pending_count=$result->num_rows;
-        $sql1 ='SELECT users.reports_to_id, users_cstm.mc_c FROM users INNER JOIN users_cstm ON users_cstm.id_c= "'.$log_in_user_id.'" WHERE reports_to_id = "'.$log_in_user_id.'"';
-        $result1 = $GLOBALS['db']->query($sql1);
-        $reporting_count=$result1->num_rows;
-         while($row = $GLOBALS['db']->fetchByAssoc($result1)) {
-            $mc_check=$row['mc_c'];
-         }
-        
-        $sql2 ='SELECT t1.id ,t1.assigned_user_id,t2.multiple_approver_c FROM opportunities as t1 LEFT JOIN opportunities_cstm as t2 ON t2.id_c = t1.id WHERE t1.id= "'.$opportunity_id.'" AND (t1.assigned_user_id="'.$log_in_user_id.'" OR t2.multiple_approver_c LIKE "%'.$log_in_user_id.'%")';
-        $result2 = $GLOBALS['db']->query($sql2);
-        $reporting_count1=$result2->num_rows;
-         \LoggerManager::getLogger()->debug($reporting_count);
-        // $GLOBALS['log']->debug('Debug level message'); 
-        // return true;
-        // print($reporting_count);
-        if($mc_check=="yes"){
-         return (($pending_count <= 0));
-        } 
-        else{
-             return (($pending_count <= 0) && ($reporting_count > 0) && ($reporting_count1 > 0));
-        }
-    }
-    
-    
-    
-    public function action_new_assigned_list(){
-     try{
-         $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-        	  
-        	   global $current_user; 
-        	   
-            $opportunity_id=$_POST['oppss_id'];
-            $fetch_total_opportunity = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE id = '$opportunity_id'";
-            $fetch_total_result = $GLOBALS['db']->query($fetch_total_opportunity);
-            $fetch_total = $GLOBALS['db']->fetchByAssoc($fetch_total_result);
-    	    $rfp=$fetch_total['rfporeoipublished_c'];
-    	    $status=$fetch_total['status_c'];
-    	    $op_name = $fetch_total['name'];
-    	    $present_assigned_user=$fetch_total['assigned_to_new_c'];
-
-    	   
-    	    $combined=array();
-        	  $id_array1=array();
-        	  $id_array=array();
-        	  $name_array=array();
-        	  $func_array=array();
-        	 $func1_array=array();
-              $h_array=array();
-              $r_name=array();
-              $number=array();
-              $func2_array=array();
-              $h1_array=array();
-              $Approved_array=array();
-              $Rejected_array=array();
-              $pending_array=array();
-              
-              $n=1;
-    	  $log_in_user_id = $current_user->id;
-    	  
-    	  
-    	   $sql5='SELECT * FROM opportunities WHERE id="'.$opportunity_id.'"';
-    	    $result5 = $GLOBALS['db']->query($sql5);
-        while($row5 = $GLOBALS['db']->fetchByAssoc($result5)) 
-        {
-    	       $created_by=$row5['assigned_user_id']; 
-    	       $assigned_id=$row5['assigned_user_id'];
-    	       
-        }
-          
-        	
-        	$sql6='SELECT * FROM users WHERE id="'.$assigned_id.'"';
-    	    $result6 = $GLOBALS['db']->query($sql6);
-        while($row6 = $GLOBALS['db']->fetchByAssoc($result6)) 
-        {
-    	       $reports_to=$row6['reports_to_id'];  
-    	       
-        }
-        		$sql7="SELECT CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS name FROM users WHERE id='".$log_in_user_id."'";
-    	    $result7 = $GLOBALS['db']->query($sql7);
-        while($row7 = $GLOBALS['db']->fetchByAssoc($result7)) 
-        {
-    	       $mc_name=$row7['name'];  
-    	       
-        }
-        	
-         $sql = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
-        $result = $GLOBALS['db']->query($sql);
-        while($row = $GLOBALS['db']->fetchByAssoc($result)) 
-        {
-            $check_sales = $row['teamfunction_c'];
-            $check_mc = $row['mc_c'];
-            $check_team_lead = $row['teamheirarchy_c'];
+    function is_reassignment_applicable($opportunity_id) {
+            global $current_user;
+            // fetch assigned id 
+            // send to user_cstm
+            // fetch user_lineage column
+            // string to array contains($log_in_user)
+            $db = \DBManagerFactory::getInstance();
+                $GLOBALS['db'];
+            $log_in_user_id = $current_user->id;
+            $sql ='SELECT * FROM `approval_table` WHERE `opp_id`="'.$opportunity_id.'" AND `pending`="1"';
+            $result = $GLOBALS['db']->query($sql);
+            $pending_count=$result->num_rows;
+            $sql1 ='SELECT users.reports_to_id, users_cstm.mc_c FROM users INNER JOIN users_cstm ON users_cstm.id_c= "'.$log_in_user_id.'" WHERE reports_to_id = "'.$log_in_user_id.'"';
+            $result1 = $GLOBALS['db']->query($sql1);
+            $reporting_count=$result1->num_rows;
+            while($row = $GLOBALS['db']->fetchByAssoc($result1)) {
+                $mc_check=$row['mc_c'];
+            }
             
-        }
-         
-         
-         //*********************************** Flow Starts here**************************  
-        if($check_mc=='yes'){
-           
-            
-            $sql3 = "SELECT * FROM users_cstm" ;
-        $result3 = $GLOBALS['db']->query($sql3);
-        while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
-        {
-         $func_array=$row3['teamfunction_c'];
-          
-     	$array = explode(",",$func_array);
-     	
-     	if($rfp=='no'|| $rfp=='select'){
-     	  
-     	    if($status=='Lead'){
-     	      
-     	        	if(in_array("^sales^",$array)){
-     	        	  
-     	              $id_array1[]=$row3["id_c"];
-     	    
-              	  };
-     	    }
-     	    
-     	    else if($status=='QualifiedLead'){
-     	        	if(in_array("^sales^",$array)||in_array("^presales^",$array)){
-     	              $id_array1[]=$row3["id_c"];
-     	    
-              	  };
-     	    }
-     	    else if($status=='Qualified'){
-     	        
-     	        if(in_array("^sales^",$array)||in_array("^presales^",$array)){
-     	              $id_array1[]=$row3["id_c"];
-     	    
-              	  };
-     	        
-     	    }
-     	    else if($status=='QualifiedDpr'){
-     	        
-     	        if(in_array("^sales^",$array)||in_array("^bid^",$array)){
-     	              $id_array1[]=$row3["id_c"];
-     	    
-              	  };
-               	  
-     	    }
-     	    else if($status=='QualifiedBid'){
-     	        if(in_array("^sales^",$array)||in_array("^bid^",$array)){
-     	              $id_array1[]=$row3["id_c"];
-     	    
-              	  };
-     	    }
-     	    else if($status=='Closed'){
-     	        	if(in_array("^sales^",$array)){
-     	              $id_array1[]=$row3["id_c"];
-     	    
-              	  };
-     	    }
-     	     else if($status=='Drop'){
-     	        	if(in_array("^sales^",$array)){
-     	              $id_array1[]=$row3["id_c"];
-     	    
-              	  };
-     	    }
-     	}
-     	else if($rfp=='yes' || $rfp=='select'){
-     	    
-     	      if($status=='Lead'){
-     	        	if(in_array("^sales^",$array)){
-     	              $id_array1[]=$row3["id_c"];
-     	    
-              	  };
-     	    }
-     	    
-     	    else if($status=='QualifiedLead'){
-     	         if(in_array("^sales^",$array)||in_array("^presales^",$array)||in_array("^bid^",$array)){
-     	              $id_array1[]=$row3["id_c"];
-     	    
-              	  };
-     	    }
-     	   
-     	    else if($status=='QualifiedBid'){
-     	         if(in_array("^sales^",$array)||in_array("^bid^",$array)){
-     	              $id_array1[]=$row3["id_c"];
-     	    
-              	  };
-     	    }
-     	    else if($status=='Closed'){
-     	        	if(in_array("^sales^",$array)){
-     	              $id_array1[]=$row3["id_c"];
-     	    
-              	  };
-     	    }
-     	     else if($status=='Drop'){
-     	        	if(in_array("^sales^",$array)){
-     	              $id_array1[]=$row3["id_c"];
-     	    
-              	  };
-     	    }
-     	    
-     	    
-     	    
-     	}
-     	else if($rfp=='not_required' || $rfp=='select'){
-     	    
-     	    
-     	      if($status=='Lead'){
-     	        	if(in_array("^sales^",$array)){
-     	              $id_array1[]=$row3["id_c"];
-     	    
-              	  };
-     	    }
-     	    
-     	    else if($status=='QualifiedLead'){
-     	         if(in_array("^sales^",$array)||in_array("^presales^",$array)){
-     	              $id_array1[]=$row3["id_c"];
-     	    
-              	  };
-     	    }
-     	    else if($status=='Qualified'){
-     	         if(in_array("^sales^",$array)||in_array("^presales^",$array)){
-     	              $id_array1[]=$row3["id_c"];
-     	    
-              	  };
-     	    }
-     	    else if($status=='QualifiedDpr'){
-     	         if(in_array("^sales^",$array)||in_array("^bid^",$array)){
-     	              $id_array1[]=$row3["id_c"];
-     	    
-              	  };
-     	    }
-     	  
-     	    else if($status=='Closed'){
-     	        	if(in_array("^sales^",$array)){
-     	              $id_array1[]=$row3["id_c"];
-     	    
-              	  };
-     	    }
-     	     else if($status=='Drop'){
-     	        	if(in_array("^sales^",$array)){
-     	              $id_array1[]=$row3["id_c"];
-     	    
-              	  };
-     	    }
-     	    
-     	    
-     	}
-     
-     	
-        }
-         
-        
-   
-       
-      // $sql1 = "SELECT users.id, CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS name,users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE id IN ('".implode("','",$id_array1)."') AND users.deleted = 0 ORDER BY `name` ASC";
-       
-       $sql1 = "SELECT users_cstm.teamfunction_c,users_cstm.teamheirarchy_c, users1.id,CONCAT(IFNULL(users1.first_name,''), ' ', IFNULL(users1.last_name,'')) AS name,CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS r_name , rpt_cstm.teamfunction_c as r_r_tf, rpt_cstm.teamheirarchy_c as r_r_th FROM users INNER JOIN users as users1 ON users.id=users1.reports_to_id INNER JOIN users_cstm as rpt_cstm ON rpt_cstm.id_c= users1.reports_to_id INNER JOIN users_cstm ON users_cstm.id_c=users1.id  WHERE users1.id IN ('".implode("','",$id_array1)."') AND users1.deleted=0 ORDER BY `name` ASC";
-        $result1 = $GLOBALS['db']->query($sql1);
-        while($row1 = $GLOBALS['db']->fetchByAssoc($result1)) 
-        {
-            array_push($number,$n);
-            array_push($func1_array,$row1['teamfunction_c']);
-           
-            array_push($name_array,$row1['name']);
-          array_push($h_array,$row1['teamheirarchy_c']);
-            array_push($r_name,$row1['r_name']);
-            array_push($func2_array,$row1['r_r_tf']);
-            array_push($h1_array,$row1['r_r_th']);
-            $n++;
-        }
-        
-
-
-
-
-      
-    $combined = array_map(function($b,$c,$d,$e,$f,$g) { if ($f==""){$f='MC';}return  $b.' / '.$c.' / '.$d.' -> '.$e.' / '.$f.' / '.$g; }, $name_array,$func1_array, $h_array,$r_name,$func2_array,$h1_array);      
-      $mc_no=$n+1;
-      $mc_no=strval($mc_no); 
-     
-      $mc_details=$mc_name.' / MC / ';
-      
-      array_push($combined,$mc_details);
-      
-   
-     
-      echo json_encode(array('1'=>$name_array,'2'=>$h_array,'3'=>$r_name,'a'=>$combined,'op_name'=>$op_name,'id'=>$opportunity_id,'present_assigned_user'=>$present_assigned_user));
-      
-      
+            $sql2 ='SELECT t1.id ,t1.assigned_user_id,t2.multiple_approver_c FROM opportunities as t1 LEFT JOIN opportunities_cstm as t2 ON t2.id_c = t1.id WHERE t1.id= "'.$opportunity_id.'" AND (t1.assigned_user_id="'.$log_in_user_id.'" OR t2.multiple_approver_c LIKE "%'.$log_in_user_id.'%")';
+            $result2 = $GLOBALS['db']->query($sql2);
+            $reporting_count1=$result2->num_rows;
+            \LoggerManager::getLogger()->debug($reporting_count);
+            // $GLOBALS['log']->debug('Debug level message'); 
+            // return true;
+            // print($reporting_count);
+            if($mc_check=="yes"){
+            return (($pending_count <= 0));
+            } 
+            else{
+                return (($pending_count <= 0) && ($reporting_count > 0) && ($reporting_count1 > 0));
+            }
         }
         
         
-        else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||$check_team_lead=='team_member_l3'||$check_team_lead=='team_lead'){
-           
-         $sql4='SELECT * FROM users WHERE reports_to_id="'.$log_in_user_id.'" AND deleted=0' ;
-          $result4 = $GLOBALS['db']->query($sql4);
-          
-          if($result4->num_rows>0){
-               
-              while($row4 = $GLOBALS['db']->fetchByAssoc($result4)) 
-                {
+        
+        public function action_new_assigned_list(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+                $GLOBALS['db'];
                 
-                  $id_array1[]=$row4["id"];
+                global $current_user; 
+                
+                $opportunity_id=$_POST['oppss_id'];
+                $fetch_total_opportunity = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE id = '$opportunity_id'";
+                $fetch_total_result = $GLOBALS['db']->query($fetch_total_opportunity);
+                $fetch_total = $GLOBALS['db']->fetchByAssoc($fetch_total_result);
+                $rfp=$fetch_total['rfporeoipublished_c'];
+                $status=$fetch_total['status_c'];
+                $op_name = $fetch_total['name'];
+                $present_assigned_user=$fetch_total['assigned_to_new_c'];
+
+            
+                $combined=array();
+                $id_array1=array();
+                $id_array=array();
+                $name_array=array();
+                $func_array=array();
+                $func1_array=array();
+                $h_array=array();
+                $r_name=array();
+                $number=array();
+                $func2_array=array();
+                $h1_array=array();
+                $Approved_array=array();
+                $Rejected_array=array();
+                $pending_array=array();
+
+                
+                $n=1;
+            $log_in_user_id = $current_user->id;
+            
+           
+            
+            $sql5='SELECT * FROM opportunities WHERE id="'.$opportunity_id.'"';
+                $result5 = $GLOBALS['db']->query($sql5);
+            while($row5 = $GLOBALS['db']->fetchByAssoc($result5)) 
+            {
+                $created_by=$row5['assigned_user_id']; 
+                $assigned_id=$row5['assigned_user_id'];
+                
+            }
+            
+            
+            
+                  $sql_tl="SELECT case when teamheirarchy_c='team_member_l1' then 'l1' when teamheirarchy_c ='team_member_l2' then 'l2' when teamheirarchy_c ='team_member_l3' then 'l3' when teamheirarchy_c='team_lead' then 'tl' end AS 'heirarchy' FROM users_cstm WHERE id_c='".$assigned_id."'";
+            
+            $result_tl = $GLOBALS['db']->query($sql_tl);
+            
+        while ($row_tl = mysqli_fetch_assoc($result_tl)){
+                
+            $team_h=$row_tl['heirarchy'];
+            }
+        
+            if($team_h=="tl"){
+                
+                $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
+                $result_tlr = $GLOBALS['db']->query($sql_tlr);
+                while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+                
+            $team_lead_name=$row_tlr['name'];
+            $team_lead_id=$row_tlr['id'];
+            }
+            
+            
+                
+            }
+        
+        else if($team_h=="l1"){
+                
+                $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
+                $result_tlr = $GLOBALS['db']->query($sql_tlr);
+                while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+                
+            $team_lead_name=$row_tlr['name'];
+            $team_lead_id=$row_tlr['id'];
+            }
+                
+            }
+            else if($team_h=="l2"){
+                
+                $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'"))';
+                $result_tlr = $GLOBALS['db']->query($sql_tlr);
+                while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+                
+            $team_lead_name=$row_tlr['name'];
+            $team_lead_id=$row_tlr['id'];
+            }
+                
+            }
+            else if($team_h=="l3"){
+                
+                $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")))';
+                $result_tlr = $GLOBALS['db']->query($sql_tlr);
+                while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+                
+            $team_lead_name=$row_tlr['name'];
+            $team_lead_id=$row_tlr['id'];
+            }
+                
+                
+                
+            }
+           
+                
+                $sql6='SELECT * FROM users WHERE id="'.$assigned_id.'"';
+                $result6 = $GLOBALS['db']->query($sql6);
+            while($row6 = $GLOBALS['db']->fetchByAssoc($result6)) 
+            {
+                $reports_to=$row6['reports_to_id'];  
+                
+            }
+                    $sql7="SELECT CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS name FROM users WHERE id='".$log_in_user_id."'";
+                $result7 = $GLOBALS['db']->query($sql7);
+            while($row7 = $GLOBALS['db']->fetchByAssoc($result7)) 
+            {
+                $mc_name=$row7['name'];  
+                
+            }
+                
+            $sql = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+            $result = $GLOBALS['db']->query($sql);
+            while($row = $GLOBALS['db']->fetchByAssoc($result)) 
+            {
+                $check_sales = $row['teamfunction_c'];
+                $check_mc = $row['mc_c'];
+                $check_team_lead = $row['teamheirarchy_c'];
+                
+            }
+            
+            
+            //*********************************** Flow Starts here**************************  
+            if($check_mc=='yes'){
+            
+                
+                $sql3 = "SELECT * FROM users_cstm" ;
+            $result3 = $GLOBALS['db']->query($sql3);
+            while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
+            {
+            $func_array=$row3['teamfunction_c'];
+            
+            $array = explode(",",$func_array);
+            
+            if($rfp=='no'|| $rfp=='select'){
+            
+                if($status=='Lead'){
+                
+                        if(in_array("^sales^",$array)){
+                        
+                        $id_array1[]=$row3["id_c"];
+                
+                    };
                 }
-              
-            array_push($id_array1,$log_in_user_id);
-            
-             if($log_in_user_id==$assigned_id||$log_in_user_id==$reports_to||$opportunity_id==''){
-                 
-               
-                  
-                  $sql1="SELECT users_cstm.teamfunction_c,users_cstm.teamheirarchy_c, users1.id,CONCAT(IFNULL(users1.first_name,''), ' ', IFNULL(users1.last_name,'')) AS name,CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS r_name FROM users INNER JOIN users as users1 ON users.id=users1.reports_to_id INNER JOIN users_cstm ON users_cstm.id_c=users1.id WHERE users1.id IN ('".implode("','",$id_array1)."') AND users1.deleted=0 ORDER BY `name` ASC";
-                    $result1 = $GLOBALS['db']->query($sql1);
-                    while($row1 = $GLOBALS['db']->fetchByAssoc($result1)) 
-                    {
-                        array_push($number,$n);
-                        array_push($func1_array,$row1['teamfunction_c']);
-                       
-                        array_push($name_array,$row1['name']);
-                      array_push($h_array,$row1['teamheirarchy_c']);
-                        array_push($r_name,$row1['r_name']);
-                        $n++;
-                    }
+                
+                else if($status=='QualifiedLead'){
+                        if(in_array("^sales^",$array)||in_array("^presales^",$array)){
+                        $id_array1[]=$row3["id_c"];
+                
+                    };
+                }
+                else if($status=='Qualified'){
                     
-
-
-
-
-      
-      $combined = array_map(function($b,$c,$d,$e) { return  $b.' / '.$c.' / '.$d.' -> '.$e; }, $name_array,$func1_array, $h_array,$r_name);
-      
-     
-          
-     
-      echo json_encode(array('1'=>$name_array,'2'=>$h_array,'3'=>$r_name,'a'=>$combined, 'op_name'=>$op_name,'id'=>$opportunity_id,'present_assigned_user'=>$present_assigned_user));
-                 
-                 
-             }
-             
-             else{
-                 echo json_encode("block");
-             }
-          }
-          
-          else{
-            
-              echo json_encode("block");
-          }
-          
-        }
-        
-        
-        
-   
-     }catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
-		die();
-}
-
-
-public function action_update_home_assigned_id(){
-     try{
-         $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-        	  
-        	   global $current_user; 
-        	    $log_in_user_id = $current_user->id;
-        	    $assigned_name=$_POST['assigned_name'];
-        	    $opportunity_id=$_POST['opp_id'];
-        	    
-        	   
-        	     $sql="SELECT id,reports_to_id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
-        	    
-        	     $result = $GLOBALS['db']->query($sql);
-        	     
-        while($row = $GLOBALS['db']->fetchByAssoc($result)) 
-        {
-            
-            
-          $assigned_id=$row['id'];
-           
-          $reports_to_id = $row['reports_to_id'];
-    
-            
-        }
-        
-        if($assigned_id==''){
-            
-            echo json_encode(array("message"=>'false'));
-            
-        }
-        else{
-        
-        $sql1='SELECT * FROM opportunities_cstm WHERE id_c="'.$opportunity_id.'"';
-        	   
-        	   $result1 = $GLOBALS['db']->query($sql1);
-        	 
-        	    if($result1->num_rows>0){
-        	        
-        	        while($row1= $GLOBALS['db']->fetchByAssoc($result1)) 
-        {
-                      $multiple=$row1['multiple_approver_c'];
-        }
-                $sql23='UPDATE `opportunities_cstm` SET `assigned_to_new_c`="'.$assigned_name.'" WHERE id_c="'.$opportunity_id.'"';
-        	     
-        	     $result23 = $GLOBALS['db']->query($sql23);
-        	       
-        	     $sql2='UPDATE `opportunities` SET `assigned_user_id`="'.$assigned_id.'" WHERE id="'.$opportunity_id.'"';
-        	     
-        	     $result2 = $GLOBALS['db']->query($sql2);
-        	     
-        	     
-        	     
-        	      if($db->query($sql2)==TRUE){
-        	          
-                         $multiple_array=explode(',',$multiple);
-                         
-                         if(count($multiple_array)>1){
-                             
-                             $key=0;
-                              unset($multiple_array[$key]);
-                              array_unshift($multiple_array,$reports_to_id);
-                              
-                              $reports=implode(',',$multiple_array);
-                               $sql3='UPDATE `opportunities_cstm` SET `multiple_approver_c`="'.$reports.'" WHERE id_c="'.$opportunity_id.'"';
-        	           $result3 = $GLOBALS['db']->query($sql3);
-        	           
-        	          $sql31='UPDATE `opportunities_cstm` SET `user_id2_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
-        	           $result31 = $GLOBALS['db']->query($sql31);
-        	           
-        	           if($db->query($sql3)==TRUE){
-        	               echo json_encode(array("status"=>true, "message" => "Success"));
-        	               
-        	           }
-                              
-                         }
-                         else{
-                              $sql31='UPDATE `opportunities_cstm` SET `user_id2_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
-        	           $result31 = $GLOBALS['db']->query($sql31);
-                              $sql3='UPDATE `opportunities_cstm` SET `multiple_approver_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
-        	           $result3 = $GLOBALS['db']->query($sql3);
-        	           
-        	           if($db->query($sql3)==TRUE){
-        	               echo json_encode(array("status"=>true, "message" => "Success"));
-        	           }
-                         }
-        	      
-        	          
-        	       
-              
-             	
-          }
-        	    }
-        	    else{
-        	        echo json_encode(array("status"=>true, "message" => "Failed"));
-        	    }
-        }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-     }catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
-		die();
-}
-
-
-
-public function action_assigned_history(){
-     try{
-         $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-        	  
-        	   global $current_user; 
-        	    $log_in_user_id = $current_user->id;
-        	    $assigned_name=$_POST['assigned_name'];
-        	    $opportunity_id=$_POST['opp_id'];
-        	    
-        	   
-        	     $sql="SELECT id,reports_to_id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
-        	    
-        	     $result = $GLOBALS['db']->query($sql);
-        	     
-        while($row = $GLOBALS['db']->fetchByAssoc($result)) 
-        {
-            
-            
-          $assigned_id=$row['id'];
-           
-          $reports_to_id = $row['reports_to_id'];
-    
-            
-        }
-        
-    
-        
-        
-         $assigned_to_new= $assigned_id;
-         $approvers_new = $reports_to_id;
-         
-         
-         $sql41='SELECT t1.id, t1.assigned_user_id,t2.multiple_approver_c,t2.status_c,t2.rfporeoipublished_c FROM opportunities as t1 LEFT JOIN opportunities_cstm as t2 ON t2.id_c = t1.id WHERE t1.id="'.$opportunity_id.'"';	    
-        $result41 = $GLOBALS['db']->query($sql41);
-        while($row41 = $GLOBALS['db']->fetchByAssoc($result41)) 
-        { 
-        $opp_id=$row41['id']; 
-        $assigned_to=$row41['assigned_user_id'];
-        $approvers=$row41['multiple_approver_c'];
-        $opp_status=$row41['status_c'];
-        $rfp=$row41['rfporeoipublished_c'];
-        }
-        
-      
-        $sql51 ='SELECT t.id, t.opp_id, t.assigned_by, t.assigned_to_id FROM assign_flow t WHERE t.opp_id="'.$opp_id.'" AND t.assigned_to_id="'.$assigned_to.'" AND t.id=(SELECT MAX(id) FROM assign_flow WHERE opp_id="'.$opp_id.'")';
-			$result51 = $GLOBALS['db']->query($sql51);
-			
-            $count=$result51->num_rows;
-            echo $count;
-			if($count>0){
-			    
-			}
-            else{ 
-                 
-                $sql25='INSERT INTO `assign_flow`(`opp_id`, `assigned_by`, `assigned_to_id`, `approver_ids`,`status`,`rfp_eoi`) VALUES ("'.$opp_id.'","'.$log_in_user_id.'","'.$assigned_to_new.'","'.$approvers_new.'","'.$opp_status.'","'.$rfp.'")';
-                //$result25 = $GLOBALS['db']->query($sql25);
-                if($db->query($sql25)==TRUE){
+                    if(in_array("^sales^",$array)||in_array("^presales^",$array)){
+                        $id_array1[]=$row3["id_c"];
+                
+                    };
                     
-                                    echo json_encode(array("status"=>true, "message" => "Success"));
+                }
+                else if($status=='QualifiedDpr'){
+                    
+                    if(in_array("^sales^",$array)||in_array("^bid^",$array)){
+                        $id_array1[]=$row3["id_c"];
+                
+                    };
+                    
+                }
+                else if($status=='QualifiedBid'){
+                    if(in_array("^sales^",$array)||in_array("^bid^",$array)){
+                        $id_array1[]=$row3["id_c"];
+                
+                    };
+                }
+                else if($status=='Closed'){
+                        if(in_array("^sales^",$array)){
+                        $id_array1[]=$row3["id_c"];
+                
+                    };
+                }
+                else if($status=='Drop'){
+                        if(in_array("^sales^",$array)){
+                        $id_array1[]=$row3["id_c"];
+                
+                    };
                 }
             }
-                     
+            else if($rfp=='yes' || $rfp=='select'){
+                
+                if($status=='Lead'){
+                        if(in_array("^sales^",$array)){
+                        $id_array1[]=$row3["id_c"];
+                
+                    };
+                }
+                
+                else if($status=='QualifiedLead'){
+                    if(in_array("^sales^",$array)||in_array("^presales^",$array)||in_array("^bid^",$array)){
+                        $id_array1[]=$row3["id_c"];
+                
+                    };
+                }
+            
+                else if($status=='QualifiedBid'){
+                    if(in_array("^sales^",$array)||in_array("^bid^",$array)){
+                        $id_array1[]=$row3["id_c"];
+                
+                    };
+                }
+                else if($status=='Closed'){
+                        if(in_array("^sales^",$array)){
+                        $id_array1[]=$row3["id_c"];
+                
+                    };
+                }
+                else if($status=='Drop'){
+                        if(in_array("^sales^",$array)){
+                        $id_array1[]=$row3["id_c"];
+                
+                    };
+                }
+                
+                
+                
+            }
+            else if($rfp=='not_required' || $rfp=='select'){
+                
+                
+                if($status=='Lead'){
+                        if(in_array("^sales^",$array)){
+                        $id_array1[]=$row3["id_c"];
+                
+                    };
+                }
+                
+                else if($status=='QualifiedLead'){
+                    if(in_array("^sales^",$array)||in_array("^presales^",$array)){
+                        $id_array1[]=$row3["id_c"];
+                
+                    };
+                }
+                else if($status=='Qualified'){
+                    if(in_array("^sales^",$array)||in_array("^presales^",$array)){
+                        $id_array1[]=$row3["id_c"];
+                
+                    };
+                }
+                else if($status=='QualifiedDpr'){
+                    if(in_array("^sales^",$array)||in_array("^bid^",$array)){
+                        $id_array1[]=$row3["id_c"];
+                
+                    };
+                }
+            
+                else if($status=='Closed'){
+                        if(in_array("^sales^",$array)){
+                        $id_array1[]=$row3["id_c"];
+                
+                    };
+                }
+                else if($status=='Drop'){
+                        if(in_array("^sales^",$array)){
+                        $id_array1[]=$row3["id_c"];
+                
+                    };
+                }
+                
+                
+            }
         
+            
+            }
+            
+            
+    
         
+        // $sql1 = "SELECT users.id, CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS name,users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE id IN ('".implode("','",$id_array1)."') AND users.deleted = 0 ORDER BY `name` ASC";
         
-        
-        
-        
-        
-        
-     }catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
-		die();
-}
+        $sql1 = "SELECT users_cstm.teamfunction_c,users_cstm.teamheirarchy_c, users1.id,CONCAT(IFNULL(users1.first_name,''), ' ', IFNULL(users1.last_name,'')) AS name,CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS r_name , rpt_cstm.teamfunction_c as r_r_tf, rpt_cstm.teamheirarchy_c as r_r_th FROM users INNER JOIN users as users1 ON users.id=users1.reports_to_id INNER JOIN users_cstm as rpt_cstm ON rpt_cstm.id_c= users1.reports_to_id INNER JOIN users_cstm ON users_cstm.id_c=users1.id  WHERE users1.id IN ('".implode("','",$id_array1)."') AND users1.deleted=0 ORDER BY `name` ASC";
+            $result1 = $GLOBALS['db']->query($sql1);
+            while($row1 = $GLOBALS['db']->fetchByAssoc($result1)) 
+            {
+                array_push($number,$n);
+                array_push($func1_array,$row1['teamfunction_c']);
+            
+                array_push($name_array,$row1['name']);
+            array_push($h_array,$row1['teamheirarchy_c']);
+                array_push($r_name,$row1['r_name']);
+                array_push($func2_array,$row1['r_r_tf']);
+                array_push($h1_array,$row1['r_r_th']);
+                $n++;
+            }
+            
 
 
 
 
+        
+        $combined = array_map(function($b,$c,$d,$e,$f,$g) { if ($f==""){$f='MC';}return  $b.' / '.$c.' / '.$d.' -> '.$e.' / '.$f.' / '.$g; }, $name_array,$func1_array, $h_array,$r_name,$func2_array,$h1_array);      
+        $mc_no=$n+1;
+        $mc_no=strval($mc_no); 
+        
+        $mc_details=$mc_name.' / MC / ';
+        
+        array_push($combined,$mc_details);
+        
+    
+        
+        echo json_encode(array('1'=>$name_array,'2'=>$h_array,'3'=>$r_name,'a'=>$combined,'op_name'=>$op_name,'id'=>$opportunity_id,'present_assigned_user'=>$present_assigned_user));
+        
+        
+            }
+            
+            
+            else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||$check_team_lead=='team_member_l3'||$check_team_lead=='team_lead'){
+            
+            $sql4='SELECT * FROM users WHERE reports_to_id="'.$log_in_user_id.'" AND deleted=0' ;
+            $result4 = $GLOBALS['db']->query($sql4);
+            
+            if($result4->num_rows>0){
+                
+                while($row4 = $GLOBALS['db']->fetchByAssoc($result4)) 
+                    {
+                    
+                    $id_array1[]=$row4["id"];
+                    }
+                
+                array_push($id_array1,$log_in_user_id);
+               
+              
+               
+                if($log_in_user_id==$assigned_id||$log_in_user_id==$reports_to||$opportunity_id=='' || $log_in_user_id==$team_lead_id){
+                    
+              
+                    
+                    $sql1="SELECT users_cstm.teamfunction_c,users_cstm.teamheirarchy_c, users1.id,CONCAT(IFNULL(users1.first_name,''), ' ', IFNULL(users1.last_name,'')) AS name,CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS r_name FROM users INNER JOIN users as users1 ON users.id=users1.reports_to_id INNER JOIN users_cstm ON users_cstm.id_c=users1.id WHERE users1.id IN ('".implode("','",$id_array1)."') AND users1.deleted=0 ORDER BY `name` ASC";
+                        $result1 = $GLOBALS['db']->query($sql1);
+                        while($row1 = $GLOBALS['db']->fetchByAssoc($result1)) 
+                        {
+                            array_push($number,$n);
+                            array_push($func1_array,$row1['teamfunction_c']);
+                        
+                            array_push($name_array,$row1['name']);
+                        array_push($h_array,$row1['teamheirarchy_c']);
+                            array_push($r_name,$row1['r_name']);
+                            $n++;
+                        }
+                        
 
+
+
+
+        
+        $combined = array_map(function($b,$c,$d,$e) { return  $b.' / '.$c.' / '.$d.' -> '.$e; }, $name_array,$func1_array, $h_array,$r_name);
+        
+        
+            
+        
+        echo json_encode(array('1'=>$name_array,'2'=>$h_array,'3'=>$r_name,'a'=>$combined, 'op_name'=>$op_name,'id'=>$opportunity_id,'present_assigned_user'=>$present_assigned_user));
+                    
+                    
+                }
+                
+                else{
+                    echo json_encode("block");
+                }
+            }
+            
+            else{
+                
+                echo json_encode("block");
+            }
+            
+            }
+            
+            
+            
+    
+        }catch(Exception $e){
+                echo json_encode(array("status"=>false, "message" => "Some error occured"));
+            }
+            die();
+    }
+
+    public function action_update_home_assigned_id(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+                $GLOBALS['db'];
+                
+                global $current_user; 
+                    $log_in_user_id = $current_user->id;
+                    $assigned_name=$_POST['assigned_name'];
+                    $opportunity_id=$_POST['opp_id'];
+                    
+                
+                    $sql="SELECT id,reports_to_id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
+                    
+                    $result = $GLOBALS['db']->query($sql);
+                    
+            while($row = $GLOBALS['db']->fetchByAssoc($result)) 
+            {
+                
+                
+            $assigned_id=$row['id'];
+            
+            $reports_to_id = $row['reports_to_id'];
+        
+                
+            }
+            
+                $sql_tl="SELECT case when teamheirarchy_c='team_member_l1' then 'l1' when teamheirarchy_c ='team_member_l2' then 'l2' when teamheirarchy_c ='team_member_l3' then 'l3' when teamheirarchy_c='team_lead' then 'tl' end AS 'heirarchy' FROM users_cstm WHERE id_c='".$assigned_id."'";
+            
+            $result_tl = $GLOBALS['db']->query($sql_tl);
+            
+        while ($row_tl = mysqli_fetch_assoc($result_tl)){
+                
+            $team_h=$row_tl['heirarchy'];
+            }
+        
+            if($team_h=="tl"){
+                
+                $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
+                $result_tlr = $GLOBALS['db']->query($sql_tlr);
+                while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+                
+            $team_lead_name=$row_tlr['name'];
+            $team_lead_id=$row_tlr['id'];
+            }
+            
+            
+                
+            }
+        
+        else if($team_h=="l1"){
+                
+                $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
+                $result_tlr = $GLOBALS['db']->query($sql_tlr);
+                while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+                
+            $team_lead_name=$row_tlr['name'];
+            $team_lead_id=$row_tlr['id'];
+            }
+                
+            }
+            else if($team_h=="l2"){
+                
+                $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'"))';
+                $result_tlr = $GLOBALS['db']->query($sql_tlr);
+                while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+                
+            $team_lead_name=$row_tlr['name'];
+            $team_lead_id=$row_tlr['id'];
+            }
+                
+            }
+            else if($team_h=="l3"){
+                
+                $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")))';
+                $result_tlr = $GLOBALS['db']->query($sql_tlr);
+                while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+                
+            $team_lead_name=$row_tlr['name'];
+            $team_lead_id=$row_tlr['id'];
+            }
+                
+                
+                
+            }
+            
+            if($assigned_id==''){
+                
+                echo json_encode(array("message"=>'false'));
+                
+            }
+            else{
+            
+            $sql1='SELECT * FROM opportunities_cstm WHERE id_c="'.$opportunity_id.'"';
+                
+                $result1 = $GLOBALS['db']->query($sql1);
+                
+                    if($result1->num_rows>0){
+                        
+                        while($row1= $GLOBALS['db']->fetchByAssoc($result1)) 
+            {
+                        $multiple=$row1['multiple_approver_c'];
+                        $status_new=$row1['status_c'];
+                        $rfp_new=$row1['rfporeoipublished_c'];
+            }
+                    $sql23='UPDATE `opportunities_cstm` SET `assigned_to_new_c`="'.$assigned_name.'" WHERE id_c="'.$opportunity_id.'"';
+                    
+                    $result23 = $GLOBALS['db']->query($sql23);
+                    
+                    $sql2='UPDATE `opportunities` SET `assigned_user_id`="'.$assigned_id.'" WHERE id="'.$opportunity_id.'"';
+                    
+                    $result2 = $GLOBALS['db']->query($sql2);
+                    
+                    if($rfp_new=='no'){
+                        if($status_new=='Qualified' || $status_new=='QualifiedDpr' || $status_new=='QualifiedBid' || $status_new=='Closed'){
+                            $reports_to_id=$team_lead_id;
+                            
+                        }
+                        
+                    }
+                    else if($rfp_new=='yes'){
+                        if($status_new=='QualifiedLead' || $status_new=='QualifiedBid' || $status_new=='Closed'){
+                            $reports_to_id=$team_lead_id;
+                        }
+                        
+                    }
+                    else if($rfp_new=='not_required'){
+                        
+                    
+                        if($status_new=='Qualified' || $status_new=='QualifiedDpr' || $status_new=='QualifiedBid' || $status_new=='Closed'){
+                            
+                            
+                            $reports_to_id=$team_lead_id;
+                            
+                            
+                        }
+                        
+                    }
+                
+                    
+                    if($db->query($sql2)==TRUE){
+                        
+                            $multiple_array=explode(',',$multiple);
+                            
+                            if(count($multiple_array)>1){
+                                
+                                $key=0;
+                                unset($multiple_array[$key]);
+                                array_unshift($multiple_array,$reports_to_id);
+                                
+                                $reports=implode(',',$multiple_array);
+                                
+                                $sql3='UPDATE `opportunities_cstm` SET `multiple_approver_c`="'.$reports.'" WHERE id_c="'.$opportunity_id.'"';
+                        $result3 = $GLOBALS['db']->query($sql3);
+                        
+                        $sql31='UPDATE `opportunities_cstm` SET `user_id2_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
+                        $result31 = $GLOBALS['db']->query($sql31);
+                        
+                        if($db->query($sql3)==TRUE){
+                            echo json_encode(array("status"=>true, "message" => "Success"));
+                            
+                        }
+                                
+                            }
+                            else{
+                                $sql31='UPDATE `opportunities_cstm` SET `user_id2_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
+                        $result31 = $GLOBALS['db']->query($sql31);
+                                $sql3='UPDATE `opportunities_cstm` SET `multiple_approver_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
+                        $result3 = $GLOBALS['db']->query($sql3);
+                        
+                        if($db->query($sql3)==TRUE){
+                            echo json_encode(array("status"=>true, "message" => "Success"));
+                        }
+                            }
+                    
+                        
+                    
+                
+                    
+            }
+                    }
+                    else{
+                        echo json_encode(array("status"=>true, "message" => "Failed"));
+                    }
+            }
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+        }catch(Exception $e){
+                echo json_encode(array("status"=>false, "message" => "Some error occured"));
+            }
+            die();
+    }
+
+    public function action_assigned_history(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+                $GLOBALS['db'];
+                
+                global $current_user; 
+                    $log_in_user_id = $current_user->id;
+                    $assigned_name=$_POST['assigned_name'];
+                    $opportunity_id=$_POST['opp_id'];
+                    
+                
+                    $sql="SELECT id,reports_to_id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
+                    
+                    $result = $GLOBALS['db']->query($sql);
+                    
+            while($row = $GLOBALS['db']->fetchByAssoc($result)) 
+            {
+                
+                
+            $assigned_id=$row['id'];
+            
+            $reports_to_id = $row['reports_to_id'];
+        
+                
+            }
+            
+        
+            
+            
+            $assigned_to_new= $assigned_id;
+            $approvers_new = $reports_to_id;
+            
+            
+            $sql41='SELECT t1.id, t1.assigned_user_id,t2.multiple_approver_c,t2.status_c,t2.rfporeoipublished_c FROM opportunities as t1 LEFT JOIN opportunities_cstm as t2 ON t2.id_c = t1.id WHERE t1.id="'.$opportunity_id.'"';	    
+            $result41 = $GLOBALS['db']->query($sql41);
+            while($row41 = $GLOBALS['db']->fetchByAssoc($result41)) 
+            { 
+            $opp_id=$row41['id']; 
+            $assigned_to=$row41['assigned_user_id'];
+            $approvers=$row41['multiple_approver_c'];
+            $opp_status=$row41['status_c'];
+            $rfp=$row41['rfporeoipublished_c'];
+            }
+            
+        
+            $sql51 ='SELECT t.id, t.opp_id, t.assigned_by, t.assigned_to_id FROM assign_flow t WHERE t.opp_id="'.$opp_id.'" AND t.assigned_to_id="'.$assigned_to.'" AND t.id=(SELECT MAX(id) FROM assign_flow WHERE opp_id="'.$opp_id.'")';
+                $result51 = $GLOBALS['db']->query($sql51);
+                
+                $count=$result51->num_rows;
+                echo $count;
+                if($count>0){
+                    
+                }
+                else{ 
+                    
+                    $sql25='INSERT INTO `assign_flow`(`opp_id`, `assigned_by`, `assigned_to_id`, `approver_ids`,`status`,`rfp_eoi`) VALUES ("'.$opp_id.'","'.$log_in_user_id.'","'.$assigned_to_new.'","'.$approvers_new.'","'.$opp_status.'","'.$rfp.'")';
+                    //$result25 = $GLOBALS['db']->query($sql25);
+                    if($db->query($sql25)==TRUE){
+                        
+                                        echo json_encode(array("status"=>true, "message" => "Success"));
+                    }
+                }
+                        
+            
+            
+            
+            
+            
+            
+            
+            
+        }catch(Exception $e){
+                echo json_encode(array("status"=>false, "message" => "Some error occured"));
+            }
+            die();
+    }
+
+
+
+           //--------------------------------------for user-report-table----------------------//
+           public function action_get_report_table_data() {
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $team_lead_filter = null;
+            if (isset($_GET['team_lead'])) {
+                $team_lead_filter = @$_GET['team_lead'];
+            }
+            $day = isset( $_GET['day'] ) ? $_GET['day'] : $_COOKIE['day'];
+            $query = "SELECT users.id,users.first_name,users.last_name
+                        FROM users
+                        JOIN users_cstm uc ON users.id = uc.id_c
+                        WHERE users.deleted != 1 AND users.id != '1' AND users.id != '' ";
+            if($team_lead_filter) {
+                $query .= " AND (uc.user_lineage LIKE '%$team_lead_filter%' OR uc.id_c = '$team_lead_filter')";
+            }
+            $result = $GLOBALS['db']->query($query);
+            if ($result->num_rows == 0) {
+                $data[] = array(); 
+            }
+            $team_sum_count = 0;
+            $team_sum_value = 0;
+            $team_participation = 0;
+            $team_sum_value_usd = 0;
+            while($row = $GLOBALS['db']->fetchByAssoc($result)){
+                $Lead = $QualifiedLead = $Qualified = $QualifiedDpr = $QualifiedBid = $Closed = $Dropped = 0;
+                $total_value=array("Lead"=>0,"QualifiedLead"=>0,"Qualified"=>0,"QualifiedDpr"=>0,"QualifiedBid"=>0,"Closed"=>0,"Dropped"=>0);
+                $total_value_usd=array("Lead"=>0,"QualifiedLead"=>0,"Qualified"=>0,"QualifiedDpr"=>0,"QualifiedBid"=>0,"Closed"=>0,"Dropped"=>0);
+
+                $user_id = $row['id'];
+                $user_full_name = $row['first_name'] . ' ' . $row['last_name'];
+                $closed_arr = $this->user_report_closed_count($user_id, $day);
+                $expected_inflow_date = $this->get_nearest_inflow_date($user_id, $day);
+
+                $sub_query = "SELECT opportunities_cstm.status_c, count(*) as op_count,
+                                SUM(CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED)) as total_input_value
+                                FROM `opportunities` 
+                                LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
+                                LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id 
+                                WHERE opportunities.assigned_user_id = '$user_id' AND opportunities.deleted != 1 
+                                AND opportunities.date_entered >= now() - interval '$day' day ";
+                $sub_query_group_by = " GROUP BY opportunities_cstm.status_c";
+                $sub_query1 = $sub_query . " AND (opportunities_cstm.currency_c = 'INR' OR opportunities_cstm.currency_c = '' OR opportunities_cstm.currency_c is NULL)" . $sub_query_group_by;
+                $sub_query2 = $sub_query . " AND (opportunities_cstm.currency_c = 'USD')" . $sub_query_group_by;
+                $sub_query3 = $sub_query.$sub_query_group_by;
+
+                $fetch_result = $GLOBALS['db']->query($sub_query3);
+                while($sub_row = $GLOBALS['db']->fetchByAssoc($fetch_result)){
+                    $status = $sub_row['status_c'];
+                    $$status = $sub_row['op_count'];
+                }
+                
+                
+                $fetch_result1 = $GLOBALS['db']->query($sub_query1);
+                while($sub_row = $GLOBALS['db']->fetchByAssoc($fetch_result1)){
+                    if ($sub_row['total_input_value'])
+                    $total_value[$sub_row['status_c']] = $sub_row['total_input_value'];
+                }
+
+                $fetch_result2 = $GLOBALS['db']->query($sub_query2);
+                while($sub_row = $GLOBALS['db']->fetchByAssoc($fetch_result2)){
+                    if ($sub_row['total_input_value'])
+                    $total_value_usd[$sub_row['status_c']] = $sub_row['total_input_value'];
+                }
+
+                
+                $total_count = $Lead + $QualifiedLead + $Qualified + $QualifiedDpr + $QualifiedBid + $Closed + $Dropped;
+                $total_value_individual = $total_value['Lead'] + $total_value['QualifiedLead'] + $total_value['Qualified'] + $total_value['QualifiedDpr'] +
+                $total_value['QualifiedBid'] + $total_value['Closed'] + $total_value['Dropped'];
+                $total_value_individual_usd = $total_value_usd['Lead'] + $total_value_usd['QualifiedLead'] + $total_value_usd['Qualified'] + $total_value_usd['QualifiedDpr'] +
+                $total_value_usd['QualifiedBid'] + $total_value_usd['Closed'] + $total_value_usd['Dropped'];
+                $team_sum_count += $total_count;
+                $team_sum_value += $total_value_individual;
+                $team_sum_value_usd += $total_value_individual_usd;
+                $participated_count = $this->get_participated_count($user_id, $total_count);
+                $team_participation += $participated_count;
+
+                $data[] = array(
+                    $user_full_name,
+                    $total_count,
+                    $this->append_currency('INR', $this->beautify_amount($total_value_individual))
+                    . ' - ' .$this->append_currency('USD', $this->beautify_amount($total_value_individual_usd)),
+                    $Lead,
+                    $this->append_currency('INR', $this->beautify_amount($total_value['Lead']))
+                    . ' - ' .$this->append_currency('USD', $this->beautify_amount($total_value_usd['Lead'])),
+                    $QualifiedLead,
+                    $this->append_currency('INR', $this->beautify_amount($total_value['QualifiedLead']))
+                    . ' - ' .$this->append_currency('USD', $this->beautify_amount($total_value_usd['QualifiedLead'])),
+                    $Qualified,
+                    $this->append_currency('INR', $this->beautify_amount($total_value['Qualified']))
+                    . ' - ' .$this->append_currency('USD', $this->beautify_amount($total_value_usd['Qualified'])),
+                    $QualifiedDpr,
+                    $this->append_currency('INR', $this->beautify_amount($total_value['QualifiedDpr']))
+                    . ' - ' .$this->append_currency('USD', $this->beautify_amount($total_value_usd['QualifiedDpr'])),
+                    $QualifiedBid,
+                    $this->append_currency('INR', $this->beautify_amount($total_value['QualifiedBid']))
+                    . ' - ' .$this->append_currency('USD', $this->beautify_amount($total_value_usd['QualifiedBid'])),
+                    $closed_arr['won'],
+                    $this->append_currency('INR', $this->beautify_amount($closed_arr['won_value']))
+                    . ' - ' .$this->append_currency('USD', $this->beautify_amount($closed_arr['won_value_usd'])),
+                    $closed_arr['lost'],
+                    $this->append_currency('INR', $this->beautify_amount($closed_arr['lost_value']))
+                    . ' - ' .$this->append_currency('USD', $this->beautify_amount($closed_arr['lost_value_usd'])),
+                    $Dropped,
+                    $this->append_currency('INR', $this->beautify_amount($total_value['Dropped']))
+                    . ' - ' .$this->append_currency('USD', $this->beautify_amount($total_value_usd['Dropped'])),
+                    $participated_count,
+                    $expected_inflow_date
+                );
+            }
+            if (count($data) > 0) {
+                $data[] = array(
+                    'TOTAL',
+                    $team_sum_count,
+                    $this->append_currency('INR', $this->beautify_amount($team_sum_value))
+                    . ' - ' .$this->append_currency('USD', $this->beautify_amount($team_sum_value_usd)));
+            }
+            
+            $response = json_encode(
+                array(
+                    'data' => $data,
+                    'status' => 'success',
+                    'query' => $query
+                )
+            );
+    
+            echo $response; die;
+        }
+
+    function user_report_closed_count($user_id, $day) {
+        $closed_query = "SELECT count(*) as op_count,
+                        SUM(CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED)) as total_input_value
+                        FROM `opportunities` 
+                        LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
+                        LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id 
+                        WHERE opportunities.assigned_user_id = '$user_id' AND opportunities.deleted != 1
+                        AND opportunities.date_entered >= now() - interval '$day' day
+                        AND opportunities_cstm.status_c = 'Closed' ";
+        $closed_win_query = $closed_query . " AND opportunities_cstm.closure_status_c = 'won'";
+        $closed_lost_query = $closed_query . " AND opportunities_cstm.closure_status_c = 'lost'";
+
+        $fetch_won_result = $GLOBALS['db']->query($closed_win_query);
+        $fetch_won = $GLOBALS['db']->fetchByAssoc($fetch_won_result);
+        $fetch_lost_result = $GLOBALS['db']->query($closed_lost_query);
+        $fetch_lost = $GLOBALS['db']->fetchByAssoc($fetch_lost_result);
+
+        $closed_win_query_usd = $closed_win_query . " AND (opportunities_cstm.currency_c = 'INR' OR opportunities_cstm.currency_c = '' OR opportunities_cstm.currency_c is NULL)";
+        $closed_lost_query_usd = $closed_lost_query . " AND (opportunities_cstm.currency_c = 'USD')";
+
+        $fetch_won_result_usd = $GLOBALS['db']->query($closed_win_query_usd);
+        $fetch_won_usd = $GLOBALS['db']->fetchByAssoc($fetch_won_result_usd);
+        $fetch_lost_result_usd = $GLOBALS['db']->query($closed_lost_query_usd);
+        $fetch_lost_usd = $GLOBALS['db']->fetchByAssoc($fetch_lost_result_usd);
+
+        return array(
+            'won' => $fetch_won['op_count'],
+            'won_value' => ($fetch_won['total_input_value']) ? ($fetch_won['total_input_value']) : 0,
+            'lost' => $fetch_lost['op_count'],
+            'lost_value' => ($fetch_lost['total_input_value']) ? ($fetch_lost['total_input_value']) : 0,
+            'won_value_usd' => ($fetch_won_usd['total_input_value']) ? ($fetch_won_usd['total_input_value']) : 0,
+            'lost_value_usd' => ($fetch_lost_usd['total_input_value']) ? ($fetch_lost_usd['total_input_value']) : 0,
+
+        );
+    }
+
+    function get_participated_count($user_id, $assigned_count = 0) {
+        $approval_count = $modification_count = 0;
+        //Approval contribution (Lineage or delegated)
+        $approval_count_query = "SELECT count(DISTINCT opp_id) as approval_count FROM `approval_table` WHERE approver_rejector = '$user_id' or delegate_id = '$user_id'";
+        $fetch_result = $GLOBALS['db']->query($approval_count_query);
+        $result = $GLOBALS['db']->fetchByAssoc($fetch_result);
+        if ($result && $result['approval_count'] > 0)
+            $approval_count = $result['approval_count'];
+            
+        // Modification Contribution (reassigned, tagged)
+        $modification_count_query = "CREATE VIEW Sample as 
+                                        (SELECT DISTINCT opportunities_audit.parent_id as modification_count FROM opportunities_audit 
+                                        JOIN opportunities ON opportunities.id = opportunities_audit.parent_id
+                                        WHERE (opportunities_audit.created_by = '$user_id'
+                                        AND opportunities.assigned_user_id != '$user_id'))
+                                        
+                                        UNION
+                                        
+                                        (SELECT DISTINCT l1_audit.opp_id as modification_count FROM l1_audit 
+                                        WHERE (l1_audit.created_by = '$user_id'))                                   
+                                        
+                                        UNION
+                                        
+                                        (SELECT DISTINCT l2_audit.opp_id as modification_count FROM l2_audit
+                                        WHERE (l2_audit.created_by = '$user_id'));
+                                        SELECT COUNT(*) as m_count FROM Sample;
+                                        DROP VIEW Sample;
+                                        ";
+        $fetch_result = $GLOBALS['db']->query($modification_count_query);
+        $result = $GLOBALS['db']->fetchByAssoc($fetch_result);
+        if ($result && $result['modification_count'] > 0)
+            $modification_count = $result['modification_count'];
+        
+        return $assigned_count + $approval_count + $modification_count;
+    }
+
+    function get_nearest_inflow_date($user_id, $day) {
+        $final = '';
+        $query = "SELECT oc.expected_inflow_c as expected_inflow_c from opportunities_cstm as oc
+                JOIN opportunities ON opportunities.id = oc.id_c 
+                WHERE oc.status_c = 'Closed' AND oc.expected_inflow_c IS NOT NULL
+                AND opportunities.assigned_user_id = '$user_id'
+                AND opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day
+                AND oc.expected_inflow_c >= now()
+                ORDER BY oc.expected_inflow_c ASC LIMIT 1";
+        $fetch_result = $GLOBALS['db']->query($query);
+        $result = $GLOBALS['db']->fetchByAssoc($fetch_result);
+        if ($result && $result['expected_inflow_c'] > 0) {
+            $final = date_format(date_create($result['expected_inflow_c']),'d/m/Y');;
+        }
+        return  $final;
+    }
+    function currencyConverter($currency_from, $currency_to, $currency_input) {
+        $req_url = 'https://api.exchangerate-api.com/v4/latest/USD';
+        $response_json = file_get_contents($req_url);
+        if(false !== $response_json) {
+            try {    
+            $response_object = json_decode($response_json);
+            $INR_price = round(($currency_input * $response_object->rates->INR), 2);
+            }
+            catch(Exception $e) {
+            }
+        }
+    
+        return $INR_price;
+    }
+    
+    function action_get_team_filter_report_table(){
+        $query = "SELECT users.id, users.first_name, users.last_name FROM users 
+                    JOIN users_cstm ON users.id = users_cstm.id_c
+                    WHERE users_cstm.teamheirarchy_c = 'team_lead'";
+        $fetch_result = $GLOBALS['db']->query($query);
+        $teamLeadList = '<option value="" selected disabled>Select</option>';
+        while($row = $GLOBALS['db']->fetchByAssoc($fetch_result)){
+            $teamLeadList .= '<option value="'.$row['id'].'">'.$this->beautify_label( $row['first_name']. ' ' .$row['last_name'] ).'</option>';
+        }
+        echo json_encode(
+            array(
+                'data' => $teamLeadList,
+                'status' => 'success',
+            )
+        );
+        die;
+    }
 }
 
 ?>

@@ -22,7 +22,7 @@ $(document).ready(function(){
                     var create_query_string = 'action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3DEditView%26return_module%3DOpportunities%26return_action%3DDetailView';
                     var url = window.location.href;
                     var queryString = url ? url.split('?')[1] : window.location.search.slice(1);
-                    if (queryString == create_query_string || ($_GET('module') == 'Opportunities' && $_GET('action') == 'EditView' && $_GET('record') == '' )) {
+                    if (queryString == create_query_string ) {
                         alert("You are not authorized to create.");
                         window.location.replace(window.location.href.split('?')[0]+"?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3Dindex%26return_module%3DOpportunities%26return_action%3DDetailView");
                     }
@@ -318,7 +318,7 @@ $(document).ready(function(){
        
       
       
-   //-----------------onload lead status validation for all cases----------------       
+    //-----------------onload lead status validation for all cases----------------       
     if ((form_validation == "yes" || form_validation == "no" || form_validation == "not_required" || form_validation == "select")&&$("#status_c").val()=="Lead" ) {
       
        if($("#assigned_user_id").val() == ""){
@@ -547,14 +547,17 @@ $(document).ready(function(){
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -736,19 +739,22 @@ $(document).ready(function(){
              
                   if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -956,21 +962,24 @@ $(document).ready(function(){
               $("#risk_c").css("background-color", "Red");
              } 
              
-                  if($("#scope_budget_projected_c").val() == ""){
+                 if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -1196,20 +1205,22 @@ $(document).ready(function(){
              
                   if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
-              
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
              
@@ -1388,21 +1399,24 @@ $(document).ready(function(){
               $("#risk_c").css("background-color", "Red");
              } 
              
-                 if($("#scope_budget_projected_c").val() == ""){
+                if($("#scope_budget_projected_c").val() == ""){
               validate = false;
                alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -1583,21 +1597,24 @@ $(document).ready(function(){
               $("#risk_c").css("background-color", "Red");
              } 
              
-                  if($("#scope_budget_projected_c").val() == ""){
+                 if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -1797,19 +1814,22 @@ $(document).ready(function(){
              
                   if($("#scope_budget_projected_c").val() == ""){
               validate = false;
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
              
@@ -2042,21 +2062,24 @@ $(document).ready(function(){
               $("#risk_c").css("background-color", "Red");
              } 
              
-                  if($("#scope_budget_projected_c").val() == ""){
+                if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -2273,21 +2296,24 @@ $(document).ready(function(){
              //  $("#risk_c").css("background-color", "Red");
              // } 
              
-                  if($("#scope_budget_projected_c").val() == ""){
+                 if($("#scope_budget_projected_c").val() == ""){
               validate = false;
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -2449,7 +2475,7 @@ $(document).ready(function(){
         
       
       
-   //-----------------onload lead status validation for all cases----------------       
+     //-----------------onload lead status validation for all cases----------------       
     if ((form_validation == "yes" || form_validation == "no" || form_validation == "not_required" || form_validation == "select")&&$("#status_c").val()=="Lead" ) {
       
        if($("#assigned_user_id").val() == ""){
@@ -2678,14 +2704,17 @@ $(document).ready(function(){
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -2867,19 +2896,22 @@ $(document).ready(function(){
              
                   if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -3087,21 +3119,24 @@ $(document).ready(function(){
               $("#risk_c").css("background-color", "Red");
              } 
              
-                  if($("#scope_budget_projected_c").val() == ""){
+                 if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -3327,20 +3362,22 @@ $(document).ready(function(){
              
                   if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
-              
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
              
@@ -3519,21 +3556,24 @@ $(document).ready(function(){
               $("#risk_c").css("background-color", "Red");
              } 
              
-                 if($("#scope_budget_projected_c").val() == ""){
+                if($("#scope_budget_projected_c").val() == ""){
               validate = false;
                alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -3714,21 +3754,24 @@ $(document).ready(function(){
               $("#risk_c").css("background-color", "Red");
              } 
              
-                  if($("#scope_budget_projected_c").val() == ""){
+                 if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -3928,19 +3971,22 @@ $(document).ready(function(){
              
                   if($("#scope_budget_projected_c").val() == ""){
               validate = false;
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
              
@@ -4173,21 +4219,24 @@ $(document).ready(function(){
               $("#risk_c").css("background-color", "Red");
              } 
              
-                  if($("#scope_budget_projected_c").val() == ""){
+                if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -4404,21 +4453,24 @@ $(document).ready(function(){
              //  $("#risk_c").css("background-color", "Red");
              // } 
              
-                  if($("#scope_budget_projected_c").val() == ""){
+                 if($("#scope_budget_projected_c").val() == ""){
               validate = false;
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -4499,6 +4551,7 @@ $(document).ready(function(){
       
                 
           $('#approve_comments').css("display","block");
+          
      alert_validation = [];
     
           
@@ -4519,7 +4572,7 @@ $(document).ready(function(){
        
       
       
-   //-----------------onload lead status validation for all cases----------------       
+     //-----------------onload lead status validation for all cases----------------       
     if ((form_validation == "yes" || form_validation == "no" || form_validation == "not_required" || form_validation == "select")&&$("#status_c").val()=="Lead" ) {
       
        if($("#assigned_user_id").val() == ""){
@@ -4748,14 +4801,17 @@ $(document).ready(function(){
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -4937,19 +4993,22 @@ $(document).ready(function(){
              
                   if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -5157,21 +5216,24 @@ $(document).ready(function(){
               $("#risk_c").css("background-color", "Red");
              } 
              
-                  if($("#scope_budget_projected_c").val() == ""){
+                 if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -5397,20 +5459,22 @@ $(document).ready(function(){
              
                   if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
-              
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
              
@@ -5589,21 +5653,24 @@ $(document).ready(function(){
               $("#risk_c").css("background-color", "Red");
              } 
              
-                 if($("#scope_budget_projected_c").val() == ""){
+                if($("#scope_budget_projected_c").val() == ""){
               validate = false;
                alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -5784,21 +5851,24 @@ $(document).ready(function(){
               $("#risk_c").css("background-color", "Red");
              } 
              
-                  if($("#scope_budget_projected_c").val() == ""){
+                 if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -5998,19 +6068,22 @@ $(document).ready(function(){
              
                   if($("#scope_budget_projected_c").val() == ""){
               validate = false;
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
              
@@ -6243,21 +6316,24 @@ $(document).ready(function(){
               $("#risk_c").css("background-color", "Red");
              } 
              
-                  if($("#scope_budget_projected_c").val() == ""){
+                if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -6474,21 +6550,24 @@ $(document).ready(function(){
              //  $("#risk_c").css("background-color", "Red");
              // } 
              
-                  if($("#scope_budget_projected_c").val() == ""){
+                 if($("#scope_budget_projected_c").val() == ""){
               validate = false;
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -6593,11 +6672,12 @@ $(document).ready(function(){
       var assigned_id = $("#assigned_user_id").val();   
         var opps_id=$('#EditView input[name=record]').val();
              $.ajax({
-                url : 'index.php?module=Opportunities&action=fetch_reporting_manager',
+                url : 'index.php?module=Opportunities&action=fetch_mc_check',
                 type : 'POST',
                 dataType: "json",
                 data:{
-                 opps_id
+                 opps_id,
+                 assigned_id
                 },
                  
                 success : function(data){
@@ -8052,11 +8132,87 @@ $(document).ready(function(){
          }
        }
        
+         var assigned_name = $("#assigned_user_name").val();
+   var assigned_id = $("#assigned_user_id").val();
+  
+    var s=data.next_status;
+    var r=$('#rfporeoipublished_c').val(); 
+    
+    $.ajax({
+                url : 'index.php?module=Opportunities&action=fetch_reporting_manager',
+                type : 'POST',
+                dataType: "json",
+                 data:{
+                  opps_id,
+                 assigned_name,
+                 assigned_id,
+                 s,
+                 r
+                },
+                success : function(data_approver){
+               
+                  
+               // data=JSON.parse(data_approver);
+               // alert (r+'  '+s);
+                
+                 $("#select_approver_c").val(data_approver.reporting_name);
+                 $("#user_id2_c").val(data_approver.reporting_id);
+                $('#multiple_approver_c').val(data_approver.reporting_id);
+                
+                      if(r=="no")  {
+               
+                if (s=="Qualified"||s=="QualifiedDpr"){
+                  
+                  
+                   
+                     $("#select_approver_c").val(data_approver.approvers_name);
+              //  $("#user_id2_c").val(data.reporting_id);
+                $('#multiple_approver_c').val(data_approver.approvers_id);
+                  
         
-       $('#SAVE_HEADER').trigger('click');
+                }
+                
+                 }
+                 
+                    else  if(r=="not_required"){
+                     
+                  if (s=="Qualified"){
+                  
+                        $("#select_approver_c").val(data_approver.approvers_name);
+              //  $("#user_id2_c").val(data.reporting_id);
+                $('#multiple_approver_c').val(data_approver.approvers_id);
+                  
+                 
+                 
+                 }
+                  
+                    }
+                    
+                       else  if(r=="yes")  {
+                
+                if (s=="QualifiedLead"){
+                
+                   $("#select_approver_c").val(data_approver.approvers_name);
+              //  $("#user_id2_c").val(data.reporting_id);
+                $('#multiple_approver_c').val(data_approver.approvers_id);
+                  }
+                }
+                
+                 
+                
+               } 
+            });
+  
+        
+      
          }
          
-           $('#SAVE_HEADER').trigger('click');
+           setTimeout(function() {
+      $('#SAVE_HEADER').trigger('click');
+      
+ }, 1000);
+         
+           
          
         }
          

@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-02-18 13:18:45
+<?php /* Smarty version 2.6.31, created on 2021-03-05 07:09:23
          compiled from cache/themes/SuiteP/modules/Users/EditView.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_getjspath', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 4, false),array('function', 'sugar_action_menu', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 93, false),array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 116, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 137, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 162, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 235, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 263, false),array('function', 'multienum_to_array', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 1797, false),array('function', 'sugar_help', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 2271, false),array('function', 'sugar_getimage', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 2690, false),array('block', 'minify', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 153, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 155, false),array('modifier', 'lookup', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 260, false),array('modifier', 'count', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 362, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_getjspath', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 4, false),array('function', 'sugar_action_menu', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 93, false),array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 116, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 137, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 162, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 235, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 263, false),array('function', 'multienum_to_array', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 1798, false),array('function', 'sugar_help', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 2272, false),array('function', 'sugar_getimage', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 2691, false),array('block', 'minify', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 153, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 155, false),array('modifier', 'lookup', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 260, false),array('modifier', 'count', 'cache/themes/SuiteP/modules/Users/EditView.tpl', 362, false),)), $this); ?>
 
 
 <?php echo $this->_tpl_vars['ROLLOVER']; ?>
@@ -789,7 +789,7 @@ value='<?php echo $this->_tpl_vars['value']; ?>
 '; ?>
 
 </script>
-<script type="text/javascript" src='include/SugarFields/Fields/Image/SugarFieldFile.js?v=v0ic0JBF4yfQcId5UVG7uA'></script>
+<script type="text/javascript" src='include/SugarFields/Fields/Image/SugarFieldFile.js?v=dPjrddmGRgUIpNrI9VNmdg'></script>
 <?php if (! empty ( $this->_tpl_vars['fields']['photo']['value'] )): ?>
 <?php $this->assign('showRemove', true); ?>
 <?php else: ?>
@@ -2544,6 +2544,7 @@ value='<?php echo $this->_tpl_vars['value']; ?>
 <?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
 :
 
+<span class="required">*</span>
 <?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
 </div>
 
@@ -4210,7 +4211,7 @@ addToValidate(\'EditView\', \'bid_commercial_head_c\', \'enum\', false,\''; ?>
 addToValidate(\'EditView\', \'mc_c\', \'enum\', true,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_MC','module' => 'Users','for_js' => true), $this);?>
 <?php echo '\' );
-addToValidate(\'EditView\', \'teamfunction_c[]\', \'multienum\', false,\''; ?>
+addToValidate(\'EditView\', \'teamfunction_c[]\', \'multienum\', true,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_TEAMFUNCTION','module' => 'Users','for_js' => true), $this);?>
 <?php echo '\' );
 addToValidate(\'EditView\', \'teamheirarchy_c\', \'enum\', false,\''; ?>

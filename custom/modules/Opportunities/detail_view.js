@@ -7,10 +7,115 @@ $('#whole_subpanel_history').remove();
 
      setTimeout(function() {
       $('#check a').hide();
-      console.log('sad');
+      
  }, 10);
  
+ //--------------------hiding critical-----------------------------------------------------
  
+ $(".label:contains(Critical:),[field=critical_c]").hide()
+ 
+ //---------------------hiding critical-------END-------------------------------------------
+ 
+ 
+ //--------showing only when the closure status won -- onload----------------------------------
+    
+    
+   
+     
+     let closure_status = $("#closure_status_c").val();
+     
+     if(closure_status == 'won'){
+      $(".label:contains(Expected Inflow:)").show();
+      $("[field=expected_inflow_c]").show();
+     }
+     
+     if(closure_status == 'lost'){
+      $(".label:contains(Expected Inflow:)").hide();
+      $("[field=expected_inflow_c]").hide();
+     }
+     
+     if(closure_status == 'reinitiate'){
+      $(".label:contains(Expected Inflow:)").hide();
+      $("[field=expected_inflow_c]").hide();
+     }
+     
+   
+    
+   //--------showing only when the closure status won -- onload-----END-----------------------------
+ 
+ //-------------------------Approver--------------------------------------------
+    var opps_id=$('#formDetailView input[name=record]').val(); 
+    var assigned_name = $("#assigned_user_name").val();
+   var assigned_id = document.getElementById('assigned_user_id').getAttribute('data-id-value');
+  
+    var s=$('#status_c').val();
+    var r=$('#rfporeoipublished_c').val(); 
+    
+    $.ajax({
+                url : 'index.php?module=Opportunities&action=fetch_reporting_manager',
+                type : 'POST',
+                dataType: "json",
+                 data:{
+                  opps_id,
+                 assigned_name,
+                 assigned_id,
+                 s,
+                 r
+                },
+                success : function(data_approver){
+                 
+                  
+               // data=JSON.parse(data_approver);
+                
+                
+                 $("[field=select_approver_c]").text(data_approver.reporting_name);
+                 $("#user_id2_c").val(data_approver.reporting_id);
+                $('#multiple_approver_c').val(data_approver.reporting_id);
+                
+                      if(r=="no")  {
+               
+                if (s=="Qualified"||s=="QualifiedDpr"){
+                  
+                  
+                   
+                     $("[field=select_approver_c]").text(data_approver.approvers_name);
+                // $("#user_id2_c").val(data.reporting_id);
+                $('#multiple_approver_c').val(data_approver.approvers_id);
+                  
+        
+                }
+                
+                 }
+                 
+                    else  if(r=="not_required"){
+                     
+                  if (s=="Qualified"){
+                  
+                        $("[field=select_approver_c]").text(data_approver.approvers_name);
+                // $("#user_id2_c").val(data.reporting_id);
+                $('#multiple_approver_c').val(data_approver.approvers_id);
+                  
+                 
+                 
+                 }
+                  
+                    }
+                    
+                       else  if(r=="yes")  {
+               
+                if (s=="QualifiedLead"){
+                 
+                   $("[field=select_approver_c]").text(data_approver.approvers_name);
+                // $("#user_id2_c").val(data.reporting_id);
+                $('#multiple_approver_c').val(data_approver.approvers_id);
+                  }
+                }
+                
+               } 
+            });
+ 
+
+ //------------------------Approver----------------------------------------------
  //------------------------fetch l1 and l2--------------------------------
   var decodeHTML = function (html) {
   	var txt = document.createElement('textarea');
@@ -1301,21 +1406,23 @@ $('#whole_subpanel_history').remove();
             },
              success: function (data) {
               
-           // alert(data);
+          //  alert(data.message);
            
-            var data1=data;
-           console.log(data1);
+           
             
-            if(data1==='true'){
+            if(data.message==='true'){
              
              console.log("in");
              $('#edit_button').show();
              $('#delete_button').show();
             }
-           if(data1==='false') {
+           if(data.message==='false') {
              console.log("else");
              $('#edit_button').hide();
              $('#delete_button').hide();
+            }
+            if(data.mc==='yes') {
+             $(".label:contains(Critical:),[field=critical_c]").show()
             }
               
              }
@@ -1738,6 +1845,13 @@ function removeAttachment(fileName, extension) {
    $("#close_bid").on("click",function(){
   $("#bidChecklistForm").css("display","none");
  })
+ 
+ 
+ //--------------------------- for activity status change -----------------------------------------
+ 
+ // $("#status_c").prop("readonly",true);
+ 
+ //--------------------------- for activity status change --------END---------------------------------
 
    //**************************Write code above this line******************************************************
 });

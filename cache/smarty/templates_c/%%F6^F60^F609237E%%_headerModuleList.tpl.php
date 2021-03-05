@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-02-15 06:18:08
+<?php /* Smarty version 2.6.31, created on 2021-03-05 13:50:44
          compiled from themes/SuiteP/tpls/_headerModuleList.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_link', 'themes/SuiteP/tpls/_headerModuleList.tpl', 59, false),array('function', 'sugar_translate', 'themes/SuiteP/tpls/_headerModuleList.tpl', 115, false),array('function', 'suite_check_access', 'themes/SuiteP/tpls/_headerModuleList.tpl', 121, false),array('function', 'counter', 'themes/SuiteP/tpls/_headerModuleList.tpl', 214, false),array('function', 'search_controller', 'themes/SuiteP/tpls/_headerModuleList.tpl', 530, false),array('modifier', 'lower', 'themes/SuiteP/tpls/_headerModuleList.tpl', 118, false),array('modifier', 'replace', 'themes/SuiteP/tpls/_headerModuleList.tpl', 118, false),array('modifier', 'default', 'themes/SuiteP/tpls/_headerModuleList.tpl', 760, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_link', 'themes/SuiteP/tpls/_headerModuleList.tpl', 59, false),array('function', 'sugar_translate', 'themes/SuiteP/tpls/_headerModuleList.tpl', 115, false),array('function', 'suite_check_access', 'themes/SuiteP/tpls/_headerModuleList.tpl', 121, false),array('function', 'counter', 'themes/SuiteP/tpls/_headerModuleList.tpl', 214, false),array('function', 'search_controller', 'themes/SuiteP/tpls/_headerModuleList.tpl', 541, false),array('modifier', 'lower', 'themes/SuiteP/tpls/_headerModuleList.tpl', 118, false),array('modifier', 'replace', 'themes/SuiteP/tpls/_headerModuleList.tpl', 118, false),array('modifier', 'strstr', 'themes/SuiteP/tpls/_headerModuleList.tpl', 306, false),array('modifier', 'default', 'themes/SuiteP/tpls/_headerModuleList.tpl', 771, false),)), $this); ?>
 
 <!--Start Responsive Top Navigation Menu -->
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -361,7 +361,18 @@ if ($this->_foreach['groupList']['total'] > 0):
                                        <a href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3Dindex%26return_module%3DOpportunities%26return_action%3DDetailView">View Opportunities</a>
                                     </li>
                                     <li>
-                                       <a id="opp_hide" class="dashboard_opp_hide" href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3DEditView%26return_module%3DOpportunities%26return_action%3DDetailView">Create Opportunity</a>
+                                         <?php 
+                                        global $current_user;
+                                           $this->_tpl_vars['current_user_function'] = $current_user->teamfunction_c;
+                                           $this->_tpl_vars['current_user_admin'] = $current_user->is_admin;
+                                           $this->_tpl_vars['current_user_mc'] = $current_user->mc_c;
+                                            ?>
+                                           <?php if ($this->_tpl_vars['current_user_admin'] != 1): ?>
+                                           <?php if (((is_array($_tmp=$this->_tpl_vars['current_user_function'])) ? $this->_run_mod_handler('strstr', true, $_tmp, '^sales^') : strstr($_tmp, '^sales^')) || $this->_tpl_vars['current_user_mc'] == 'yes'): ?>
+                                       <a id="opp_hide" class="dashboard_opp_hide" href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3DEditView%26return_module%3DOpportunities%26return_action%3DDetailView">Create Opportunities</a>
+                                       <?php endif; ?>
+                                       <?php endif; ?>
+                                    
                                     </li>
                               
                                 <?php $_from = $this->_tpl_vars['modules']['extra']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }if (count($_from)):

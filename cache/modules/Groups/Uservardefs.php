@@ -937,7 +937,7 @@
       'size' => '20',
       'options' => 'bid_commercial_head_list',
       'studio' => 'visible',
-      'dependency' => NULL,
+      'dependency' => false,
       'id' => 'Usersbid_commercial_head_c',
       'custom_module' => 'Users',
     ),
@@ -974,7 +974,7 @@
     array (
       'inline_edit' => '1',
       'labelValue' => 'Team Function',
-      'required' => false,
+      'required' => true,
       'source' => 'custom_fields',
       'name' => 'teamfunction_c',
       'vname' => 'LBL_TEAMFUNCTION',

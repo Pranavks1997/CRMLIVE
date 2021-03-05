@@ -1,8 +1,5 @@
 <?php
- // created: 2020-11-11 07:48:17
-$dictionary['Opportunity']['fields']['description']['inline_edit']=true;
-$dictionary['Opportunity']['fields']['description']['comments']='Full text of the note';
-$dictionary['Opportunity']['fields']['description']['merge_filter']='disabled';
-$dictionary['Opportunity']['fields']['description']['rows']='4';
+ // created: 2021-03-02 13:35:30
+$dictionary['Opportunity']['fields']['description']['audited']=true;
 
  ?>

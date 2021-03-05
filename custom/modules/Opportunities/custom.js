@@ -4,11 +4,6 @@ $(document).ready(function () {
  
 
 
-
-
-// $('[field="non_financial_consideration_c"]input').attr("disabled",true);
-
-//  $(".check_box").attr('disabled',true);
  $(".add_field_button").attr("class",'add_field_button add_btn button');
  //-------------------hiding navigation----
   $(".opp_hide").hide();
@@ -19,9 +14,85 @@ $(document).ready(function () {
   
   $( ".label:contains('Bid Files:'),.downloadAttachment,.remove_attachment,.multiple_file,#add_button" ).hide();
   
+ //---------------------expected cash inflow Date -----------------------------------------------
+ 
+ $("#expected_inflow_c_trigger").hide();
+  $("#expected_inflow_c").attr("readonly",true).datepicker({
+        dateFormat: 'dd/mm/yy',
+        changeYear: true,
+        changeMonth: true,
+        onSelect: function(){
+           
+            
+        }
+    });
+    
+    
+    //--------showing only when the closure status won -- onload----------------------------------
+    
+    
+   
+     
+     let closure_status = $("#closure_status_c").val();
+     
+     if(closure_status == 'won'){
+      $("[data-label=LBL_EXPECTED_INFLOW]").show();
+      $("#expected_inflow_c").show();
+     }
+     
+     if(closure_status == 'lost'){
+      $("[data-label=LBL_EXPECTED_INFLOW]").hide();
+      $("#expected_inflow_c").hide();
+     }
+     
+     if(closure_status == 'reinitiate'){
+      $("[data-label=LBL_EXPECTED_INFLOW]").hide();
+      $("#expected_inflow_c").hide();
+     }
+     
+   
+    
+   //--------showing only when the closure status won -- onload-----END-----------------------------
+    
+    //--------showing only when the closure status won -- onchange----------------------------------
+    
+    
+    $("#closure_status_c").on("change",function(){
+     
+     let closure_status = $("#closure_status_c").val();
+     
+     switch (closure_status) {
+      case 'won':
+       $("[data-label=LBL_EXPECTED_INFLOW]").show();
+       $("#expected_inflow_c").show();
+       break;
+       
+       case 'lost':
+        $("[data-label=LBL_EXPECTED_INFLOW]").hide();
+        $("#expected_inflow_c").hide();
+        break;
+        
+       case 'reinitiate':
+        $("[data-label=LBL_EXPECTED_INFLOW]").hide();
+        $("#expected_inflow_c").hide();
+        break;
+      
+      default:
+       // code
+     }
+     
+    })
+    
+   //--------showing only when the closure status won -- onchange-----END-----------------------------
+ 
+ //---------------------expected cash inflow Date -----END------------------------------------------
+  
+//------------------------------------------------------------Global and non global----------------------------------------------------------  
+  
  $('#opportunity_type').on('change', function(e) {
   // Does some stuff and logs the event to the console
   if($("#opportunity_type").val()=="global"){
+   
     $("[data-label=LBL_UNTAGGED_USERS]").hide();
     $("[field=untagged_users_c]").hide();
     $("[data-label=LBL_TAGGED_USERS]").show();
@@ -29,11 +100,12 @@ $(document).ready(function () {
     
    }
    else  {
-    ($("#opportunity_type").val()=="non_global")
-    $("[data-label=LBL_TAGGED_USERS]").hide();
-    $("[field=tagged_users_c]").hide();
-    $("[data-label=LBL_UNTAGGED_USERS]").show();
-    $("[field=untagged_users_c]").show();
+    
+   $("[data-label=LBL_UNTAGGED_USERS]").hide();
+    $("[field=untagged_users_c]").hide();
+    $("[data-label=LBL_TAGGED_USERS]").show();
+    $("[field=tagged_users_c]").show();
+    
     
    }
 });
@@ -46,17 +118,16 @@ if($("#opportunity_type").val()=="global"){
     
    }
    else  {
-    ($("#opportunity_type").val()=="non_global")
-    $("[data-label=LBL_TAGGED_USERS]").hide();
-    $("[field=tagged_users_c]").hide();
-    $("[data-label=LBL_UNTAGGED_USERS]").show();
-    $("[field=untagged_users_c]").show();
     
+    $("[data-label=LBL_UNTAGGED_USERS]").hide();
+    $("[field=untagged_users_c]").hide();
+    $("[data-label=LBL_TAGGED_USERS]").show();
+    $("[field=tagged_users_c]").show();
    }
   
+ //------------------------------------------------------------Global and non global-----------END----------------------------------------------- 
   
-  
-  //
+ 
  
   
  //---------------------------------------Multiple Approver--------------------------------------
@@ -64,57 +135,6 @@ if($("#opportunity_type").val()=="global"){
  
 
  var opps_id = $('[name=record]').val();
- // alert(opps_id);
- // $.ajax({
- //        url : 'index.php?module=Opportunities&action=multiple_approver',
- //        type : 'POST',
- //        dataType: "json",
- //         data :
- //            {
- //              opps_id  
- //            },
- //        success : function(data){
-
-         
-        
-        
- //    var  data1 ="";
- //   // alert (data1);
- //          if(data.status == true){
- //            var i;
- //            var text = '';
- //            if(opps_id != "" ){
- //               // console.log(data.user_id);
- //                 //console.log(data.other_user_id);
- //                  //console.log(data.other_user_id.includes(data.user_id[i]));
- //                for (i = 0; i<data.user_id.length; i++) {
-                
- //                    if(data.other_user_id.includes(data.user_id[i])){
-                    
- //                        text +=  '<option value="'+data.user_id[i]+'" selected>'+data.name[i]+' / '+data.email[i]+' / '+(data1=data.teamfunction[i].toString().replace(/[^ \, a-zA-Z 0-9]+/g,' '))+'</option>'
-                   
-                     
- //                    }else{
- //                        text +=  '<option value="'+data.user_id[i]+'">'+data.name[i]+' / '+data.email[i]+' / '+(data1=data.teamfunction[i].toString().replace(/[^ \, a-zA-Z 0-9]+/g,' '))+'</option>'
-                        
- //                    }
- //                }
- //            }else{
- //                for (i = 0; i<data.user_id.length; i++) {
- //                    text +=  '<option value="'+data.user_id[i]+'">'+data.name[i]+' / '+data.email[i]+' / '+(data1=data.teamfunction[i].toString().replace(/[^ \, a-zA-Z 0-9]+/g,' '))+'</option>'
-                
- //                }
- //            }
-            
- //            // $("#select_approver_c").append(text);
- //            $('.demo').dropdown({});
- //          }
-           
-         
- //        }
-  
- // });
- 
  
  $("#btn_select_approver_c").hide();
  $("#select_approver_c").attr("disabled",true);
@@ -125,6 +145,7 @@ if($("#opportunity_type").val()=="global"){
  
    var assigned_name = $("#assigned_user_name").val();
    var assigned_id = $("#assigned_user_id").val();
+  
     var s=$('#status_c').val();
     var r=$('#rfporeoipublished_c').val(); 
     
@@ -135,7 +156,9 @@ if($("#opportunity_type").val()=="global"){
                  data:{
                   opps_id,
                  assigned_name,
-                 assigned_id
+                 assigned_id,
+                 s,
+                 r
                 },
                 success : function(data_approver){
                  
@@ -344,42 +367,42 @@ $('#timing_button_c').find('option').css('background-color','white');
  var id=$('#EditView input[name=record]').val();
  // alert(id);
  
-  $.ajax({
-        url : 'index.php?module=Opportunities&action=fetch_l1',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
+//   $.ajax({
+//         url : 'index.php?module=Opportunities&action=fetch_l1',
+//         type : 'POST',
+//         dataType: "json",
+//           data :
+//             {
+//                 id,
                 
-            },
-            success: function (return_data) {
+//             },
+//             success: function (return_data) {
                 
-                if(return_data.status == true ){
-                    //console.log('in');
-                     if (return_data.total_input_value!='') {
+//                 if(return_data.status == true ){
+//                     //console.log('in');
+//                      if (return_data.total_input_value!='') {
                        
 
 
-                       $('#total_input_value').val(return_data.total_input_value);
+//                       $('#total_input_value').val(return_data.total_input_value);
                        
                        
-                   }
-        //   if(return_data.l1_html != ''&& return_data.l1_input!=""){
+//                   }
+//         //   if(return_data.l1_html != ''&& return_data.l1_input!=""){
               
              
-        //       var l1HTML_decoded = decodeHTML(return_data.l1_html);
-        //       //var l1INPUT_decoded = decodeHTML(return_data.l1_input);
-        //       $('#total_value').html(l1HTML_decoded);
-        //       $('#total_value input').each(function(index) {
-        //           $(this).val(decodeHTML(return_data.l1_input[index]));
-        //         });
+//         //       var l1HTML_decoded = decodeHTML(return_data.l1_html);
+//         //       //var l1INPUT_decoded = decodeHTML(return_data.l1_input);
+//         //       $('#total_value').html(l1HTML_decoded);
+//         //       $('#total_value input').each(function(index) {
+//         //           $(this).val(decodeHTML(return_data.l1_input[index]));
+//         //         });
               
-        //          }
-                }
+//         //          }
+//                 }
                 
-            }
-  });
+//             }
+//   });
  
    $.ajax({
         url : 'index.php?module=Opportunities&action=fetch_year_quarters',
@@ -397,9 +420,10 @@ $('#timing_button_c').find('option').css('background-color','white');
                 var end_quarter=return_data.end_quarter;
                 var num_of_bidders=return_data.num_of_bidders;
                 var total=return_data.total;
-               
+              // alert(total);
                  if(start_year!=''&& start_quarter !=''&& end_quarter!=''&& end_year !=''){
                   
+                   $('#total_input_value').val(total);
                      
                             $('#startYear').val(start_year);
                              var start_year=$('#startYear').val();
@@ -567,38 +591,45 @@ $('#timing_button_c').find('option').css('background-color','white');
                   
      
      $(document).on('click','#close1',function(){
-     // alert('custom');
+     
      document.getElementById("myForm").style.display = "none";
-          var id=$('#EditView input[name=record]').val();
- var total_input_value=$('#total_input_value').val();
-      var l1_html;
-      var l1_input=[];
-      $('#total_value input').each(function() {
-        l1_input.push($(this).val());
-      });
-      l1_html=$('#total_value').html();
-    //   console.log(l1_html,l1_input);
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=l1',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
-                l1_html,
-                l1_input,
-                total_input_value
-            },
-            success: function (data) {
-                
-              // alert(data.message);
-              // $("#myForm").css("display","none");
-                
-                // console.log(data.message);
-            }
-  });
- 
-    var start_year=$('#startYear').val();
+     
+     //----for l1 and l2 audit trai--------------------------------------------------
+            var start_year=$('#startYear').val();
+            var end_year=$('#endYear').val();
+            var start_quarter=$('#start_quarter').val();
+            var end_quarter=$('#end_quarter').val();
+            var no_of_bidders=$('#bid').val();
+            var total_input_value=$('#total_input_value').val();
+             var l2_html;
+             var l2_input=[];
+              var id = $('[name=record]').val();
+              $('#mtenth input').each(function() {
+                  l2_input.push($(this).val());
+                   });
+                 l2_html=$('#mtenth').html();
+            $.ajax({
+                url : 'index.php?module=Opportunities&action=l1_l2_audit_trail',
+                type : 'POST',
+                dataType: "json",
+                 data :
+                    {
+                      start_year,
+                      end_year,
+                      start_quarter,
+                      end_quarter,
+                      no_of_bidders,
+                      total_input_value,
+                      l2_input,
+                      l2_html,
+                      id
+                    },
+                success : function(data){
+                 
+                //alert(data);
+                 console.log(data);
+               
+                    var start_year=$('#startYear').val();
                     var end_year=$('#endYear').val();
                     var start_quarter=$('#start_quarter').val();
                     var end_quarter=$('#end_quarter').val();
@@ -610,7 +641,7 @@ $('#timing_button_c').find('option').css('background-color','white');
                     
                     if(start_year!=''&& start_quarter !=''&& end_quarter!=''&& end_year !=''){
                       
-                       // alert(start_year,start_quarter,end_year,end_quarter,no_of_bidders);
+                      // alert(start_year,start_quarter,end_year,end_quarter,no_of_bidders);
                       var id=$('#EditView input[name=record]').val();
                    
                       $.ajax({
@@ -633,6 +664,46 @@ $('#timing_button_c').find('option').css('background-color','white');
                   });
                   
                     }
+ 
+                
+                 
+                }
+            });
+  
+  //------------------for l1 and l2 audit trail----------END---------------------------------------- 
+  
+     
+     
+     
+     
+          var id=$('#EditView input[name=record]').val();
+ var total_input_value=$('#total_input_value').val();
+      var l1_html;
+      var l1_input=[];
+      $('#total_value input').each(function() {
+        l1_input.push($(this).val());
+      });
+      l1_html=$('#total_value').html();
+    //   console.log(l1_html,l1_input);
+//       $.ajax({
+//         url : 'index.php?module=Opportunities&action=l1',
+//         type : 'POST',
+//         dataType: "json",
+//           data :
+//             {
+//                 id,
+//                 l1_html,
+//                 l1_input,
+//                 total_input_value
+//             },
+//             success: function (data) {
+                
+//               // alert(data.message);
+//               // $("#myForm").css("display","none");
+                
+//                 // console.log(data.message);
+//             }
+//   });
          
        var starty = $('#startYear').val();
        var endy = $('#endYear').val();
@@ -658,7 +729,83 @@ $('#timing_button_c').find('option').css('background-color','white');
      });
      
      $(document).on('click', '#close2', function(){
-        
+      
+      
+      
+      
+         //----for l1 and l2 audit trai--------------------------------------------------
+            var start_year=$('#startYear').val();
+            var end_year=$('#endYear').val();
+            var start_quarter=$('#start_quarter').val();
+            var end_quarter=$('#end_quarter').val();
+            var no_of_bidders=$('#bid').val();
+            var total_input_value=$('#total_input_value').val();
+             var l2_html;
+             var l2_input=[];
+             var close="l2";
+              var id = $('[name=record]').val();
+              $('#mtenth input').each(function() {
+                  l2_input.push($(this).val());
+                   });
+                 l2_html=$('#mtenth').html();
+            $.ajax({
+                url : 'index.php?module=Opportunities&action=l1_l2_audit_trail',
+                type : 'POST',
+                dataType: "json",
+                 data :
+                    {
+                      start_year,
+                      end_year,
+                      start_quarter,
+                      end_quarter,
+                      no_of_bidders,
+                      total_input_value,
+                      l2_input,
+                      l2_html,
+                      id,
+                      close
+                    },
+                success : function(data){
+                 
+                console.log(data);
+                 
+               
+                    var start_year=$('#startYear').val();
+                    var end_year=$('#endYear').val();
+                    var start_quarter=$('#start_quarter').val();
+                    var end_quarter=$('#end_quarter').val();
+                    var no_of_bidders=$('#bid').val();
+                   
+                    
+                      var total_input_value=$('#total_input_value').val();
+                   
+                    
+                    if(start_year!=''&& start_quarter !=''&& end_quarter!=''&& end_year !=''){
+                      
+                      // alert(start_year,start_quarter,end_year,end_quarter,no_of_bidders);
+                      var id=$('#EditView input[name=record]').val();
+                   
+                      $.ajax({
+                        url : 'index.php?module=Opportunities&action=year_quarters',
+                        type : 'POST',
+                          data :
+                            {
+                                id,
+                                start_year,
+                                end_year,
+                                start_quarter,
+                                 end_quarter,
+                                 no_of_bidders,
+                                 total_input_value
+                            },
+                            success: function (data) {
+                                
+                                
+                            }
+                  });
+                  
+                    }
+                    
                     var id=$('#EditView input[name=record]').val();         
                     var total_input_value=$('#total_input_value').val();
                       var l1_html;
@@ -668,25 +815,25 @@ $('#timing_button_c').find('option').css('background-color','white');
                       });
                       l1_html=$('#total_value').html();
                     //   console.log(l1_html,l1_input);
-                      $.ajax({
-                        url : 'index.php?module=Opportunities&action=l1',
-                        type : 'POST',
-                        dataType: "json",
-                          data :
-                            {
-                                id,
-                                l1_html,
-                                l1_input,
-                                total_input_value
-                            },
-                            success: function (data) {
+                //       $.ajax({
+                //         url : 'index.php?module=Opportunities&action=l1',
+                //         type : 'POST',
+                //         dataType: "json",
+                //           data :
+                //             {
+                //                 id,
+                //                 l1_html,
+                //                 l1_input,
+                //                 total_input_value
+                //             },
+                //             success: function (data) {
                                 
-                               // alert(data.message);
-                               // $("#myForm").css("display","none");
+                //               // alert(data.message);
+                //               // $("#myForm").css("display","none");
                                 
-                                // console.log(data.message);
-                            }
-                  });
+                //                 // console.log(data.message);
+                //             }
+                //   });
                  
                  var l2_html;
                       var l2_input=[];
@@ -714,42 +861,54 @@ $('#timing_button_c').find('option').css('background-color','white');
                             }
                   });
                   
+ 
+                
+                 
+                }
+            });
+  
+  //------------------for l1 and l2 audit trail----------END---------------------------------------- 
+  
+     
+     
                 
                   
-                    var start_year=$('#startYear').val();
-                    var end_year=$('#endYear').val();
-                    var start_quarter=$('#start_quarter').val();
-                    var end_quarter=$('#end_quarter').val();
-                    var no_of_bidders=$('#bid').val();
+                  //   var start_year=$('#startYear').val();
+                  //   var end_year=$('#endYear').val();
+                  //   var start_quarter=$('#start_quarter').val();
+                  //   var end_quarter=$('#end_quarter').val();
+                  //   var no_of_bidders=$('#bid').val();
                    
                     
                    
                    
                     
-                    if(start_year!=''&& start_quarter !=''&& end_quarter!=''&& end_year !=''){
+                  //   if(start_year!=''&& start_quarter !=''&& end_quarter!=''&& end_year !=''){
                       
-                       // alert(start_year,start_quarter,end_year,end_quarter,no_of_bidders);
-                      var id=$('#EditView input[name=record]').val();
+                  //      // alert(start_year,start_quarter,end_year,end_quarter,no_of_bidders);
+                  //     var id=$('#EditView input[name=record]').val();
                    
-                      $.ajax({
-                        url : 'index.php?module=Opportunities&action=year_quarters',
-                        type : 'POST',
-                          data :
-                            {
-                                id,
-                                start_year,
-                                end_year,
-                                start_quarter,
-                                 end_quarter,
-                                 no_of_bidders
-                            },
-                            success: function (data) {
+                  //     $.ajax({
+                  //       url : 'index.php?module=Opportunities&action=year_quarters',
+                  //       type : 'POST',
+                  //         data :
+                  //           {
+                  //               id,
+                  //               start_year,
+                  //               end_year,
+                  //               start_quarter,
+                  //                end_quarter,
+                  //                no_of_bidders
+                  //           },
+                  //           success: function (data) {
                                 
                                 
-                            }
-                  });
+                  //           }
+                  // });
                   
-                    }                       
+                  //   }   
+                    
+                    
                   
                     var cumalitive = $("#cum td input").val();
                     
@@ -769,6 +928,9 @@ $('#timing_button_c').find('option').css('background-color','white');
                       document.getElementById("myForm").style.display = "none";
                          
      });
+     
+     
+     
  
 //-----------------------------------------------------fetch l1 and l2 and quarters--------------END------------------------- 
   if ($("#selection_c").val() == "Green") {
@@ -867,8 +1029,22 @@ $( ".module-title-text" ).replaceWith( '<h2 class="module-title-text"> CREATE Op
               "<span style='color:red;'>*</span>"
               );
                }    
+              
+              
+        if ($("[data-label=LBL_NEW_DEPARTMENT] span").text() == "") {
                
+             $("[data-label=LBL_NEW_DEPARTMENT]").append(
+              "<span style='color:red;'>*</span>"
+              );
+               }   
+      
+        if ($("[data-label=LBL_ASSIGNED_TO_NEW] span").text() == "") {
                
+             $("[data-label=LBL_ASSIGNED_TO_NEW]").append(
+              "<span style='color:red;'>*</span>"
+              );
+               }  
+         
       if ($("[data-label=LBL_OPPORTUNITY_NAME] span").text() == "") {
     
      $("[data-label=LBL_OPPORTUNITY_NAME]").append(
@@ -1345,14 +1521,17 @@ $( ".module-title-text" ).replaceWith( '<h2 class="module-title-text"> CREATE Op
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -1534,19 +1713,22 @@ $( ".module-title-text" ).replaceWith( '<h2 class="module-title-text"> CREATE Op
              
                   if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -1754,21 +1936,24 @@ $( ".module-title-text" ).replaceWith( '<h2 class="module-title-text"> CREATE Op
               $("#risk_c").css("background-color", "Red");
              } 
              
-                  if($("#scope_budget_projected_c").val() == ""){
+                 if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -1994,20 +2179,22 @@ $( ".module-title-text" ).replaceWith( '<h2 class="module-title-text"> CREATE Op
              
                   if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
-              
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
              
@@ -2186,21 +2373,24 @@ $( ".module-title-text" ).replaceWith( '<h2 class="module-title-text"> CREATE Op
               $("#risk_c").css("background-color", "Red");
              } 
              
-                 if($("#scope_budget_projected_c").val() == ""){
+                if($("#scope_budget_projected_c").val() == ""){
               validate = false;
                alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -2381,21 +2571,24 @@ $( ".module-title-text" ).replaceWith( '<h2 class="module-title-text"> CREATE Op
               $("#risk_c").css("background-color", "Red");
              } 
              
-                  if($("#scope_budget_projected_c").val() == ""){
+                 if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -2595,19 +2788,22 @@ $( ".module-title-text" ).replaceWith( '<h2 class="module-title-text"> CREATE Op
              
                   if($("#scope_budget_projected_c").val() == ""){
               validate = false;
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
              
@@ -2840,21 +3036,24 @@ $( ".module-title-text" ).replaceWith( '<h2 class="module-title-text"> CREATE Op
               $("#risk_c").css("background-color", "Red");
              } 
              
-                  if($("#scope_budget_projected_c").val() == ""){
+                if($("#scope_budget_projected_c").val() == ""){
               validate = false;
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -3071,21 +3270,24 @@ $( ".module-title-text" ).replaceWith( '<h2 class="module-title-text"> CREATE Op
              //  $("#risk_c").css("background-color", "Red");
              // } 
              
-                  if($("#scope_budget_projected_c").val() == ""){
+                 if($("#scope_budget_projected_c").val() == ""){
               validate = false;
+               alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
               $("#scope_budget_projected_c").css("background-color", "Red");
-              alert_validation.push("DPR/Scope & Budget Accepted (Projected)");
              }
              if($("#rfp_eoi_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Initiated Drafting (Projected)");
               $("#rfp_eoi_projected_c").css("background-color", "Red");
              }
              if($("#rfp_eoi_published_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("RFP/EOI Published (Projected)");
               $("#rfp_eoi_published_projected_c").css("background-color", "Red");
              }
              if($("#work_order_projected_c").val() == ""){
               validate = false;
+              alert_validation.push("Work Order (Projected)");
               $("#work_order_projected_c").css("background-color", "Red");
              }
             
@@ -5723,62 +5925,53 @@ if ( $("#rfporeoipublished_c").val()=='yes' && $("#status_c").val()=="Lead"){
     //if user click the date field other than scope and budget projected date field
     
     $(()=>{
-      $("#rfp_eoi_projected_c").click(()=>{
-         scope = $("#scope_budget_projected_c").val();
-      if(scope == "" ){
-         $('#rfp_eoi_projected_c').attr('readonly',true).datepicker("option", "showOn", "off");
-    alert("please first select DPR/Scope Budget accepted Projected date");
+  //     $("#rfp_eoi_projected_c").click(()=>{
+  //        scope = $("#scope_budget_projected_c").val();
+  //     if(scope == "" ){
+  //        // $('#rfp_eoi_projected_c').datepicker("option", "showOn", "off");
+  //   alert("please first select DPR/Scope Budget accepted Projected date");
+  //   $("#rfp_eoi_projected_c").val('');
    
-  }else{
-      $('#rfp_eoi_projected_c').attr('readonly',true).datepicker("option", "showOn", "off");
-  }
-    });
-   $("#rfp_eoi_published_projected_c").click(()=>{
-         scope = $("#scope_budget_projected_c").val();
-      if(scope == "" ){
-    alert("please first select DPR/Scope Budget accepted Projected date");
-    $('#rfp_eoi_published_projected_c').attr('readonly',true).datepicker("option", "showOn", "off");
-  }else{
-      $('#rfp_eoi_published_projected_c').attr('readonly',true).datepicker("option", "showOn", "off");
-  }
-    });
+  // }
+  
+  //   });
     
-    $("#work_order_projected_c").click(()=>{
-         scope = $("#scope_budget_projected_c").val();
-      if(scope == "" ){
-    alert("please first select DPR/Scope Budget accepted Projected date");
-    $('#work_order_projected_c').attr('readonly',true).datepicker("option", "showOn", "off");
-  }else{
-      $('#work_order_projected_c').attr('readonly',true).datepicker("option", "showOn", "off");
-  }
-    });
+    
+  //  $("#rfp_eoi_published_projected_c").click(()=>{
+  //        scope = $("#scope_budget_projected_c").val();
+  //     if(scope == "" ){
+  //   alert("please first select DPR/Scope Budget accepted Projected date");
+  //   // $('#rfp_eoi_published_projected_c').datepicker("option", "showOn", "off");
+  // }
+  //   });
+    
+  //   $("#work_order_projected_c").click(()=>{
+  //        scope = $("#scope_budget_projected_c").val();
+  //     if(scope == "" ){
+  //   alert("please first select DPR/Scope Budget accepted Projected date");
+  //   // $('#work_order_projected_c').datepicker("option", "showOn", "off");
+     
+  // }
+  //   });
     
     $("#scope_budget_achieved_c").click(()=>{
          scope = $("#scope_budget_projected_c").val();
-  //     if(scope == "" ){
-  //   alert("please first select DPR/Scope Budget accepted Projected date");
-  // }
+  
     });
     
     $("#rfp_eoi_achieved_c").click(()=>{
          scope = $("#scope_budget_projected_c").val();
-  //     if(scope == "" ){
-  //   alert("please first select DPR/Scope Budget accepted Projected date");
-  // }
+  
     });
     
     $("#rfp_eoi_published_achieved_c").click(()=>{
          scope = $("#scope_budget_projected_c").val();
-  //     if(scope == "" ){
-  //   alert("please first select DPR/Scope Budget accepted Projected date");
-  // }
+  
     });
     
     $("#work_order_achieved_c").click(()=>{
          scope = $("#scope_budget_projected_c").val();
-  //     if(scope == "" ){
-  //   alert("please first select DPR/Scope Budget accepted Projected date");
-  // }
+  
     });
     
     });
@@ -5791,41 +5984,91 @@ if ( $("#rfporeoipublished_c").val()=='yes' && $("#status_c").val()=="Lead"){
     
     //------------------------ making date default values-------------------------------
     $(function(){
-    $("#scope_budget_projected_c").datepicker({
+    $("#scope_budget_projected_c").prop("readonly",true).datepicker({
     dateFormat : 'dd/mm/yy',
     changeMonth: true,
     changeYear: true,
     mindate:0,
-    onSelect: function(selected) {
-      $('#rfp_eoi_projected_c').css('background-color','#d8f5ee');
-      $('#rfp_eoi_published_projected_c').css('background-color','#d8f5ee');
-      $('#work_order_projected_c').css('background-color','#d8f5ee');
+    onSelect: function(date1) {
+      // $('#rfp_eoi_projected_c').css('background-color','#d8f5ee');
+      // $('#rfp_eoi_published_projected_c').css('background-color','#d8f5ee');
+      // $('#work_order_projected_c').css('background-color','#d8f5ee');
     //rfp initiated
-   let drafting = $("#scope_budget_projected_c").datepicker('getDate');
-   drafting.setMonth(drafting.getMonth()+1);
-    $("#rfp_eoi_projected_c").datepicker('setDate',drafting);
+   let drafting = $(this).datepicker('getDate');
+   // drafting.setMonth(drafting.getMonth()+1);
+   //  $("#rfp_eoi_projected_c").datepicker('setDate',drafting);
     $('#rfp_eoi_projected_c').datepicker('option', 'minDate', drafting);
 
   
     
-    // rfp published
+   //  // rfp published
     
-    let published = $("#rfp_eoi_projected_c").datepicker('getDate');
-    published.setMonth(published.getMonth()+1);
-    $("#rfp_eoi_published_projected_c").datepicker('setDate',published);
-    $('#rfp_eoi_published_projected_c').datepicker('option', 'minDate', published);
+   //  let published = $("#rfp_eoi_projected_c").datepicker('getDate');
+   //  published.setMonth(published.getMonth()+1);
+   //  $("#rfp_eoi_published_projected_c").datepicker('setDate',published);
+    $('#rfp_eoi_published_projected_c').datepicker('option', 'minDate', drafting);
     
-    //work projected
-    let work = $("#rfp_eoi_published_projected_c").datepicker('getDate');
-      work.setMonth(published.getMonth()+1);
-      $("#work_order_projected_c").datepicker('setDate',work);
-      $('#work_order_projected_c').datepicker('option', 'minDate', work);
+   //  //work projected
+   //  let work = $("#rfp_eoi_published_projected_c").datepicker('getDate');
+   //    work.setMonth(published.getMonth()+1);
+   //    $("#work_order_projected_c").datepicker('setDate',work);
+      $('#work_order_projected_c').datepicker('option', 'minDate', drafting);
+      
        }
        
+       
+    
     
    
 });
 
+
+//rfp initiated
+   let drafting = $("#scope_budget_projected_c").datepicker('getDate');
+   
+    
+    $('#rfp_eoi_projected_c').prop("readonly",true).datepicker({
+     dateFormat : 'dd/mm/yy',
+    changeMonth: true,
+    changeYear: true,
+    minDate:drafting,
+    onSelect:function(date1) {
+     if($("#scope_budget_projected_c").val() == ''){
+                alert("please first select DPR/Scope Budget accepted Projected date");
+                $("#rfp_eoi_projected_c").val('');
+            }
+    }
+    });
+    
+    //rfp eoi published
+    
+  $('#rfp_eoi_published_projected_c').prop("readonly",true).datepicker({
+     dateFormat : 'dd/mm/yy',
+    changeMonth: true,
+    changeYear: true,
+    minDate:drafting,
+    onSelect:function() {
+     if($("#scope_budget_projected_c").val() == ''){
+                alert("please first select DPR/Scope Budget accepted Projected date");
+                $("#rfp_eoi_published_projected_c").val('');
+            }
+    }
+    });
+    
+   //work order projected
+    
+  $('#work_order_projected_c').prop("readonly",true).datepicker({
+     dateFormat : 'dd/mm/yy',
+    changeMonth: true,
+    changeYear: true,
+    minDate:drafting,
+    onSelect:function() {
+     if($("#scope_budget_projected_c").val() == ''){
+                alert("please first select DPR/Scope Budget accepted Projected date");
+                $("#work_order_projected_c").val('');
+            }
+    }
+    });
 
 //scope-budget achieved
 $("#scope_budget_achieved_c").datepicker({ 
@@ -6821,9 +7064,8 @@ $(document).on('click', function () {
 
 $(document).on('click','#SAVE_HEADER',function() {
     
-   // alert('in');
    
-  // $('.value_for').trigger('click');
+  
     //------------------------------------------Department adding ----------------------------------------------------
 var d_name = $("#new_department_c").val();
 
@@ -6835,7 +7077,10 @@ var d_name = $("#new_department_c").val();
                     {
                       d_name,
                     },
-                success : function(data){}
+                success : function(data){
+                 
+                 
+                }
             });
             
 //-----------------------------------------Department END-------------------------------------
@@ -6856,6 +7101,8 @@ var d_name = $("#new_department_c").val();
        
        $('#tagged_hiden_c').val(tag);
        
+       }else{
+        $('#tagged_hiden_c').val('');
        }
  
    var tagged=$('#tagged_hiden_c').val();
@@ -6863,21 +7110,23 @@ var d_name = $("#new_department_c").val();
    var opp_name=$('#name').val();
 var base_url = window.location.href.split('?')[0];  
 
-    $.ajax({
-                url : 'index.php?module=Opportunities&action=save_untagged_users_list',
-                type : 'POST',
-                dataType: "json",
-                data:{
-                 opps_id,
-                 untagged
-                },
+    // $.ajax({
+    //             url : 'index.php?module=Opportunities&action=save_untagged_users_list',
+    //             type : 'POST',
+    //             dataType: "json",
+    //             data:{
+    //              opps_id,
+    //              untagged
+    //             },
                  
-                success : function(data){
+    //             success : function(data){
                  
                  
-                }
+    //             }
      
-    })
+    // })
+   // alert(tagged);
+     var assigned_id = $("#assigned_user_id").val();
      $.ajax({
                 url : 'index.php?module=Opportunities&action=save_tagged_users_list',
                 type : 'POST',
@@ -6886,11 +7135,13 @@ var base_url = window.location.href.split('?')[0];
                  opps_id,
                  tagged,
                  opp_name,
-                 base_url
+                 base_url,
+                 assigned_id
                 },
                  
                 success : function(data){
-                 
+                
+                 alert(data);
                  
                 }
      
@@ -6912,25 +7163,25 @@ var base_url = window.location.href.split('?')[0];
       });
       l1_html=$('#total_value').html();
     //   console.log(l1_html,l1_input);
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=l1',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
-                l1_html,
-                l1_input,
-                total_input_value
-            },
-            success: function (data) {
+  //     $.ajax({
+  //       url : 'index.php?module=Opportunities&action=l1',
+  //       type : 'POST',
+  //       dataType: "json",
+  //         data :
+  //           {
+  //               id,
+  //               l1_html,
+  //               l1_input,
+  //               total_input_value
+  //           },
+  //           success: function (data) {
                 
-               // alert(data.message);
-               // $("#myForm").css("display","none");
+  //              // alert(data.message);
+  //              // $("#myForm").css("display","none");
                 
-                // console.log(data.message);
-            }
-  });
+  //              //  console.log(data.message);
+  //           }
+  // });
  
  var l2_html;
       var l2_input=[];
@@ -6939,24 +7190,24 @@ var base_url = window.location.href.split('?')[0];
       });
       l2_html=$('#mtenth').html();
     
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=l2',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
-                l2_html,
-                l2_input
-            },
-            success: function (data) {
+  //     $.ajax({
+  //       url : 'index.php?module=Opportunities&action=l2',
+  //       type : 'POST',
+  //       dataType: "json",
+  //         data :
+  //           {
+  //               id,
+  //               l2_html,
+  //               l2_input
+  //           },
+  //           success: function (data) {
                     
-                // alert(data.message);
-               // $("#myForm").css("display","none");
+  //               // alert(data.message);
+  //              // $("#myForm").css("display","none");
                 
-                // console.log(data);
-            }
-  });
+  //               // console.log(data);
+  //           }
+  // });
   
 
   
@@ -6975,24 +7226,24 @@ var base_url = window.location.href.split('?')[0];
      //  alert(start_year+start_quarter+end_year+end_quarter+no_of_bidders);
       var id=$('#EditView input[name=record]').val();
    
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=year_quarters',
-        type : 'POST',
-          data :
-            {
-                id,
-                start_year,
-                end_year,
-                start_quarter,
-                 end_quarter,
-                 no_of_bidders,
-                 total_input_value
-            },
-            success: function (data) {
+  //     $.ajax({
+  //       url : 'index.php?module=Opportunities&action=year_quarters',
+  //       type : 'POST',
+  //         data :
+  //           {
+  //               id,
+  //               start_year,
+  //               end_year,
+  //               start_quarter,
+  //                end_quarter,
+  //                no_of_bidders,
+  //                total_input_value
+  //           },
+  //           success: function (data) {
                 
                 
-            }
-  });
+  //           }
+  // });
   
     }
    
@@ -7009,25 +7260,25 @@ else if($("#status_c").val()=="QualifiedLead" && $('#rfporeoipublished_c').val()
       });
       l1_html=$('#total_value').html();
     //   console.log(l1_html,l1_input);
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=l1',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
-                l1_html,
-                l1_input,
-                total_input_value
-            },
-            success: function (data) {
+  //     $.ajax({
+  //       url : 'index.php?module=Opportunities&action=l1',
+  //       type : 'POST',
+  //       dataType: "json",
+  //         data :
+  //           {
+  //               id,
+  //               l1_html,
+  //               l1_input,
+  //               total_input_value
+  //           },
+  //           success: function (data) {
                 
-               // alert(data.message);
-               // $("#myForm").css("display","none");
+  //              // alert(data.message);
+  //              // $("#myForm").css("display","none");
                 
-                // console.log(data.message);
-            }
-  });
+  //               // console.log(data.message);
+  //           }
+  // });
  
 
   
@@ -7048,24 +7299,24 @@ else if($("#status_c").val()=="QualifiedLead" && $('#rfporeoipublished_c').val()
      //  alert(start_year+start_quarter+end_year+end_quarter+no_of_bidders);
       var id=$('#EditView input[name=record]').val();
    
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=year_quarters',
-        type : 'POST',
-          data :
-            {
-                id,
-                start_year,
-                end_year,
-                start_quarter,
-                 end_quarter,
-                 no_of_bidders,
-                 total_input_value
-            },
-            success: function (data) {
+  //     $.ajax({
+  //       url : 'index.php?module=Opportunities&action=year_quarters',
+  //       type : 'POST',
+  //         data :
+  //           {
+  //               id,
+  //               start_year,
+  //               end_year,
+  //               start_quarter,
+  //                end_quarter,
+  //                no_of_bidders,
+  //                total_input_value
+  //           },
+  //           success: function (data) {
                 
                 
-            }
-  });
+  //           }
+  // });
   
     }
    
@@ -7082,25 +7333,25 @@ else if($("#status_c").val()=="QualifiedLead" && $('#rfporeoipublished_c').val()
       });
       l1_html=$('#total_value').html();
     //   console.log(l1_html,l1_input);
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=l1',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
-                l1_html,
-                l1_input,
-                total_input_value
-            },
-            success: function (data) {
+//       $.ajax({
+//         url : 'index.php?module=Opportunities&action=l1',
+//         type : 'POST',
+//         dataType: "json",
+//           data :
+//             {
+//                 id,
+//                 l1_html,
+//                 l1_input,
+//                 total_input_value
+//             },
+//             success: function (data) {
                 
-               // alert(data.message);
-               // $("#myForm").css("display","none");
+//               // alert(data.message);
+//               // $("#myForm").css("display","none");
                 
-                // console.log(data.message);
-            }
-  });
+//                 // console.log(data.message);
+//             }
+//   });
  
 
   
@@ -7121,24 +7372,24 @@ else if($("#status_c").val()=="QualifiedLead" && $('#rfporeoipublished_c').val()
      //  alert(start_year+start_quarter+end_year+end_quarter+no_of_bidders);
       var id=$('#EditView input[name=record]').val();
    
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=year_quarters',
-        type : 'POST',
-          data :
-            {
-                id,
-                start_year,
-                end_year,
-                start_quarter,
-                 end_quarter,
-                 no_of_bidders,
-                 total_input_value
-            },
-            success: function (data) {
+//       $.ajax({
+//         url : 'index.php?module=Opportunities&action=year_quarters',
+//         type : 'POST',
+//           data :
+//             {
+//                 id,
+//                 start_year,
+//                 end_year,
+//                 start_quarter,
+//                  end_quarter,
+//                  no_of_bidders,
+//                  total_input_value
+//             },
+//             success: function (data) {
                 
                 
-            }
-  });
+//             }
+//   });
   
     }
    
@@ -7156,25 +7407,25 @@ var id=$('#EditView input[name=record]').val();
       });
       l1_html=$('#total_value').html();
     //   console.log(l1_html,l1_input);
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=l1',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
-                l1_html,
-                l1_input,
-                total_input_value
-            },
-            success: function (data) {
+//       $.ajax({
+//         url : 'index.php?module=Opportunities&action=l1',
+//         type : 'POST',
+//         dataType: "json",
+//           data :
+//             {
+//                 id,
+//                 l1_html,
+//                 l1_input,
+//                 total_input_value
+//             },
+//             success: function (data) {
                 
-               // alert(data.message);
-               // $("#myForm").css("display","none");
+//               // alert(data.message);
+//               // $("#myForm").css("display","none");
                 
-                // console.log(data.message);
-            }
-  });
+//                 // console.log(data.message);
+//             }
+//   });
  
  
  var l2_html;
@@ -7184,24 +7435,24 @@ var id=$('#EditView input[name=record]').val();
       });
       l2_html=$('#mtenth').html();
     
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=l2',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
-                l2_html,
-                l2_input
-            },
-            success: function (data) {
+//       $.ajax({
+//         url : 'index.php?module=Opportunities&action=l2',
+//         type : 'POST',
+//         dataType: "json",
+//           data :
+//             {
+//                 id,
+//                 l2_html,
+//                 l2_input
+//             },
+//             success: function (data) {
                     
-                // alert(data.message);
-               // $("#myForm").css("display","none");
+//                 // alert(data.message);
+//               // $("#myForm").css("display","none");
                 
-                // console.log(data);
-            }
-  });
+//                 // console.log(data);
+//             }
+//   });
   
   // --------------- saving for  DPR bidchecklist--------------------------------
   
@@ -7356,24 +7607,24 @@ pbg_array = pbg_array.filter(rex.test.bind(rex));
        
       var id=$('#EditView input[name=record]').val();
    
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=year_quarters',
-        type : 'POST',
-          data :
-            {
-                id,
-                start_year,
-                end_year,
-                start_quarter,
-                 end_quarter,
-                 no_of_bidders,
-                 total_input_value
-            },
-            success: function (data) {
+//       $.ajax({
+//         url : 'index.php?module=Opportunities&action=year_quarters',
+//         type : 'POST',
+//           data :
+//             {
+//                 id,
+//                 start_year,
+//                 end_year,
+//                 start_quarter,
+//                  end_quarter,
+//                  no_of_bidders,
+//                  total_input_value
+//             },
+//             success: function (data) {
                 
                 
-            }
-  });
+//             }
+//   });
   
     }
     
@@ -7391,25 +7642,25 @@ else if($("#status_c").val()=="QualifiedDpr"){
       });
       l1_html=$('#total_value').html();
     //   console.log(l1_html,l1_input);
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=l1',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
-                l1_html,
-                l1_input,
-                total_input_value
-            },
-            success: function (data) {
+//       $.ajax({
+//         url : 'index.php?module=Opportunities&action=l1',
+//         type : 'POST',
+//         dataType: "json",
+//           data :
+//             {
+//                 id,
+//                 l1_html,
+//                 l1_input,
+//                 total_input_value
+//             },
+//             success: function (data) {
                 
-               // alert(data.message);
-               // $("#myForm").css("display","none");
+//               // alert(data.message);
+//               // $("#myForm").css("display","none");
                 
-                // console.log(data.message);
-            }
-  });
+//                 // console.log(data.message);
+//             }
+//   });
  
  
  var l2_html;
@@ -7419,24 +7670,24 @@ else if($("#status_c").val()=="QualifiedDpr"){
       });
       l2_html=$('#mtenth').html();
     
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=l2',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
-                l2_html,
-                l2_input
-            },
-            success: function (data) {
+//       $.ajax({
+//         url : 'index.php?module=Opportunities&action=l2',
+//         type : 'POST',
+//         dataType: "json",
+//           data :
+//             {
+//                 id,
+//                 l2_html,
+//                 l2_input
+//             },
+//             success: function (data) {
                     
-                // alert(data.message);
-               // $("#myForm").css("display","none");
+//                 // alert(data.message);
+//               // $("#myForm").css("display","none");
                 
-                // console.log(data);
-            }
-  });
+//                 // console.log(data);
+//             }
+//   });
   
    // --------------- saving for  DPR bidchecklist--------------------------------
   
@@ -7591,24 +7842,24 @@ pbg_array = pbg_array.filter(rex.test.bind(rex));
        
       var id=$('#EditView input[name=record]').val();
    
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=year_quarters',
-        type : 'POST',
-          data :
-            {
-                id,
-                start_year,
-                end_year,
-                start_quarter,
-                 end_quarter,
-                 no_of_bidders,
-                 total_input_value
-            },
-            success: function (data) {
+//       $.ajax({
+//         url : 'index.php?module=Opportunities&action=year_quarters',
+//         type : 'POST',
+//           data :
+//             {
+//                 id,
+//                 start_year,
+//                 end_year,
+//                 start_quarter,
+//                  end_quarter,
+//                  no_of_bidders,
+//                  total_input_value
+//             },
+//             success: function (data) {
                 
                 
-            }
-  });
+//             }
+//   });
   
     }
    
@@ -7626,25 +7877,25 @@ else if($("#status_c").val()=="QualifiedBid"){
       });
       l1_html=$('#total_value').html();
     //   console.log(l1_html,l1_input);
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=l1',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
-                l1_html,
-                l1_input,
-                total_input_value
-            },
-            success: function (data) {
+//       $.ajax({
+//         url : 'index.php?module=Opportunities&action=l1',
+//         type : 'POST',
+//         dataType: "json",
+//           data :
+//             {
+//                 id,
+//                 l1_html,
+//                 l1_input,
+//                 total_input_value
+//             },
+//             success: function (data) {
                 
-               // alert(data.message);
-               // $("#myForm").css("display","none");
+//               // alert(data.message);
+//               // $("#myForm").css("display","none");
                 
-                // console.log(data.message);
-            }
-  });
+//                 // console.log(data.message);
+//             }
+//   });
  
  
  var l2_html;
@@ -7654,24 +7905,24 @@ else if($("#status_c").val()=="QualifiedBid"){
       });
       l2_html=$('#mtenth').html();
     
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=l2',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
-                l2_html,
-                l2_input
-            },
-            success: function (data) {
+//       $.ajax({
+//         url : 'index.php?module=Opportunities&action=l2',
+//         type : 'POST',
+//         dataType: "json",
+//           data :
+//             {
+//                 id,
+//                 l2_html,
+//                 l2_input
+//             },
+//             success: function (data) {
                     
-                // alert(data.message);
-               // $("#myForm").css("display","none");
+//                 // alert(data.message);
+//               // $("#myForm").css("display","none");
                 
-                // console.log(data);
-            }
-  });
+//                 // console.log(data);
+//             }
+//   });
   
  // --------------- saving for  DPR bidchecklist--------------------------------
   
@@ -7823,24 +8074,24 @@ pbg_array = pbg_array.filter(rex.test.bind(rex));
        
       var id=$('#EditView input[name=record]').val();
    
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=year_quarters',
-        type : 'POST',
-          data :
-            {
-                id,
-                start_year,
-                end_year,
-                start_quarter,
-                 end_quarter,
-                 no_of_bidders,
-                 total_input_value
-            },
-            success: function (data) {
+//       $.ajax({
+//         url : 'index.php?module=Opportunities&action=year_quarters',
+//         type : 'POST',
+//           data :
+//             {
+//                 id,
+//                 start_year,
+//                 end_year,
+//                 start_quarter,
+//                  end_quarter,
+//                  no_of_bidders,
+//                  total_input_value
+//             },
+//             success: function (data) {
                 
                 
-            }
-  });
+//             }
+//   });
   
     }
    
@@ -7858,25 +8109,25 @@ var id=$('#EditView input[name=record]').val();
       });
       l1_html=$('#total_value').html();
     //   console.log(l1_html,l1_input);
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=l1',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
-                l1_html,
-                l1_input,
-                total_input_value
-            },
-            success: function (data) {
+//       $.ajax({
+//         url : 'index.php?module=Opportunities&action=l1',
+//         type : 'POST',
+//         dataType: "json",
+//           data :
+//             {
+//                 id,
+//                 l1_html,
+//                 l1_input,
+//                 total_input_value
+//             },
+//             success: function (data) {
                 
-               // alert(data.message);
-               // $("#myForm").css("display","none");
+//               // alert(data.message);
+//               // $("#myForm").css("display","none");
                 
-                // console.log(data.message);
-            }
-  });
+//                 // console.log(data.message);
+//             }
+//   });
  
  var l2_html;
       var l2_input=[];
@@ -7885,24 +8136,24 @@ var id=$('#EditView input[name=record]').val();
       });
       l2_html=$('#mtenth').html();
     
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=l2',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
-                l2_html,
-                l2_input
-            },
-            success: function (data) {
+//       $.ajax({
+//         url : 'index.php?module=Opportunities&action=l2',
+//         type : 'POST',
+//         dataType: "json",
+//           data :
+//             {
+//                 id,
+//                 l2_html,
+//                 l2_input
+//             },
+//             success: function (data) {
                     
-                // alert(data.message);
-               // $("#myForm").css("display","none");
+//                 // alert(data.message);
+//               // $("#myForm").css("display","none");
                 
-                // console.log(data);
-            }
-  });
+//                 // console.log(data);
+//             }
+//   });
   
  // --------------- saving for  DPR bidchecklist--------------------------------
   
@@ -8058,24 +8309,24 @@ pbg_array = pbg_array.filter(rex.test.bind(rex));
        
       var id=$('#EditView input[name=record]').val();
    
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=year_quarters',
-        type : 'POST',
-          data :
-            {
-                id,
-                start_year,
-                end_year,
-                start_quarter,
-                 end_quarter,
-                 no_of_bidders,
-                 total_input_value
-            },
-            success: function (data) {
+//       $.ajax({
+//         url : 'index.php?module=Opportunities&action=year_quarters',
+//         type : 'POST',
+//           data :
+//             {
+//                 id,
+//                 start_year,
+//                 end_year,
+//                 start_quarter,
+//                  end_quarter,
+//                  no_of_bidders,
+//                  total_input_value
+//             },
+//             success: function (data) {
                 
                 
-            }
-  });
+//             }
+//   });
   
     }
    
@@ -8414,7 +8665,7 @@ $.ajax({
           
            
            if(datw=='block'){
-           $('#assigned_to_new_c').attr('disabled',true);
+           $('#assigned_to_new_c').attr('readonly',true);
              
            }
            
@@ -8491,7 +8742,7 @@ $.ajax({
            $('#assigned_user_id').val(data);
           $('[name=assigned_user_name]').val(f);
           
-             var assigned_name = $("#assigned_to_new_c").val();
+   var assigned_name = $("#assigned_to_new_c").val();
    var assigned_id = $("#assigned_user_id").val();
     var s=$('#status_c').val();
     var r=$('#rfporeoipublished_c').val(); 
@@ -8504,7 +8755,9 @@ $.ajax({
                  data:{
                   opps_id,
                  assigned_name,
-                 assigned_id
+                 assigned_id,
+                 s,
+                 r,
                 },
                 success : function(data_approver){
                  
@@ -8885,7 +9138,9 @@ $.ajax({
                  data:{
                   opps_id,
                  assigned_name,
-                 assigned_id
+                 assigned_id,
+                 s,
+                 r
                 },
                 success : function(data_approver){
                  
@@ -9266,7 +9521,9 @@ $.ajax({
                  data:{
                   opps_id,
                  assigned_name,
-                 assigned_id
+                 assigned_id,
+                 s,
+                 r
                 },
                 success : function(data_approver){
                  
@@ -9598,7 +9855,73 @@ $.ajax({
 
 //-------------------------------New Assssigned to field-----END-------------------------------------------------------
 
+//------------------------------tageed user edit_access ----------------------------------------------------------------
+var assigned_id_edit= $("#assigned_user_id").val();
+$.ajax({
+        url : 'index.php?module=Opportunities&action=editView_access',
+        type : 'POST',
+        data:{
+         opps_id,
+         assigned_id_edit
+        },
+        success:function(data){
+         var tagged_users_new= [];
+          $(".dropdown-chose-list span").each(function(){
+          tagged_users_new.push($(this).text())
+          });
+          
+          tagged_users_new= tagged_users_new.filter(tagged=>tagged);
+         
+         if(data == "block_tag_user"){
+          $("#opportunity_type option[value='global']").attr("disabled",true);
+          $("#opportunity_type option[value='non_global']").attr("disabled",true);
+          $("[field=assigned_to_new_c]").attr("readonly",true);
+           $("[field=critical_c],[data-label=LBL_CRITICAL]").hide();
+          
+         }else if(data == "block_tag_user_all"){
+          $("#opportunity_type option[value='global']").attr("disabled",true);
+           $("#opportunity_type option[value='non_global']").attr("disabled",true);
+          $(".dropdown-chose-list,.dropdown-display").hide(); 
+         $("[field=tagged_users_c]").append(`<span>${tagged_users_new}</span>`);
+          $("[field=assigned_to_new_c]").attr("readonly",true);
+           $("[field=critical_c],[data-label=LBL_CRITICAL]").hide();
+          
+         }else if(data == "block_assigned_user"){
+                  if(opps_id!=""){
+                   $("#opportunity_type option[value='global']").attr("disabled",true);
+                   $("#opportunity_type option[value='non_global']").attr("disabled",true);
+                  }
+                  else{
+                    $("#opportunity_type option[value='global']").attr("disabled",true);
+                  }
 
+         $(".dropdown-chose-list,.dropdown-display").hide(); 
+         $("[field=tagged_users_c]").append(`<span>${tagged_users_new}</span>`);
+           $("[field=critical_c],[data-label=LBL_CRITICAL]").hide();
+          
+         }else if(data == "block_reports_to_user"){
+          $("#opportunity_type option[value='global']").attr("disabled",true);
+           $("#opportunity_type option[value='non_global']").attr("disabled",true);
+         $(".dropdown-chose-list,.dropdown-display").hide(); 
+         $("[field=tagged_users_c]").append(`<span>${tagged_users_new}</span>`);
+           $("[field=critical_c],[data-label=LBL_CRITICAL]").hide();
+          
+         }
+         else if(data == "block_bid_commercial_user"){
+         $("#opportunity_type option[value='global']").attr("disabled",true);
+           $("#opportunity_type option[value='non_global']").attr("disabled",true);
+            $("[field=critical_c],[data-label=LBL_CRITICAL]").hide();
+          
+         }
+         
+         
+        }
+        
+        })
+        
+
+
+//------------------------------tageed user edit_access ---------END-------------------------------------------------------
 
 
 /**************************************Don't delete anything after this line **************************************************************/

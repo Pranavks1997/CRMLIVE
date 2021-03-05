@@ -6,7 +6,14 @@ $hook_array = Array();
 // position, file, function 
 $hook_array['after_login'] = Array(); 
 $hook_array['after_login'][] = Array(1, 'SugarFeed old feed entry remover', 'modules/SugarFeed/SugarFeedFlush.php','SugarFeedFlush', 'flushStaleEntries'); 
-
+$hook_array['after_save'] = Array();
+$hook_array['after_save'][] = Array(
+    77,
+    'After save',
+    'custom/modules/Users/lineage.php',
+    'lineage',
+    'update_lineage'
+);
 
 
 ?>

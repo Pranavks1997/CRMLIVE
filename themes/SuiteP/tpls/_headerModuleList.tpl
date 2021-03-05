@@ -296,7 +296,18 @@
                                        <a href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3Dindex%26return_module%3DOpportunities%26return_action%3DDetailView">View Opportunities</a>
                                     </li>
                                     <li>
-                                       <a id="opp_hide" class="dashboard_opp_hide" href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3DEditView%26return_module%3DOpportunities%26return_action%3DDetailView">Create Opportunity</a>
+                                         {php}
+                                        global $current_user;
+                                           $this->_tpl_vars['current_user_function'] = $current_user->teamfunction_c;
+                                           $this->_tpl_vars['current_user_admin'] = $current_user->is_admin;
+                                           $this->_tpl_vars['current_user_mc'] = $current_user->mc_c;
+                                           {/php}
+                                           {if $current_user_admin!=1}
+                                           {if $current_user_function|strstr:'^sales^' || $current_user_mc=="yes"}
+                                       <a id="opp_hide" class="dashboard_opp_hide" href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3DEditView%26return_module%3DOpportunities%26return_action%3DDetailView">Create Opportunities</a>
+                                       {/if}
+                                       {/if}
+                                    
                                     </li>
                               
                                 {foreach from=$modules.extra item=submodulename key=submodule}

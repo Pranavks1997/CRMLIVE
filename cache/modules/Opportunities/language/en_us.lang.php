@@ -1,5 +1,5 @@
 <?php
-// created: 2021-02-19 05:48:01
+// created: 2021-03-05 14:27:26
 $mod_strings = array (
   'LBL_ID' => 'ID',
   'LBL_DATE_ENTERED' => 'Date Created',
@@ -175,6 +175,8 @@ $mod_strings = array (
   'LBL_NON_FINANCIAL_RADIO' => 'Non Financial Consideration ',
   'LBL_ASSIGNED_TO_NEW' => 'Assigned To ',
   'LBL_ASSIGNED_TO' => 'assigned_to',
+  'LBL_EXPECTED_INFLOW' => 'Expected Inflow',
+  'LBL_CRITICAL' => 'Critical',
   'LBL_OPPORTUNITIES_USERS_2_FROM_USERS_TITLE' => 'Untag Users',
   'LBL_OPPORTUNITIES_DOCUMENTS_1_FROM_DOCUMENTS_TITLE' => 'Documents',
   '‘LBL_FILE_MIME_TYPE’' => 'File Mime Type',

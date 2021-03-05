@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-02-19 04:38:09
+<?php /* Smarty version 2.6.31, created on 2021-03-05 06:43:25
          compiled from cache/themes/SuiteP/modules/Calls/EditView.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('modifier', 'escape', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 55, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 115, false),array('modifier', 'lookup', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 155, false),array('modifier', 'count', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 257, false),array('modifier', 'default', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 770, false),array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 72, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 93, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 122, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 130, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 158, false),array('function', 'sugar_getscript', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 1088, false),array('function', 'sugar_getjspath', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 1094, false),array('block', 'minify', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 113, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('modifier', 'escape', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 55, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 115, false),array('modifier', 'lookup', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 155, false),array('modifier', 'count', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 257, false),array('modifier', 'default', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 770, false),array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 72, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 93, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 122, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 130, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 158, false),array('function', 'sugar_getscript', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 1087, false),array('function', 'sugar_getjspath', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 1093, false),array('block', 'minify', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 113, false),)), $this); ?>
 
 
 
@@ -1427,7 +1427,6 @@ value='<?php echo $this->_tpl_vars['value']; ?>
 <?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
 :
 
-<span class="required">*</span>
 <?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
 </div>
 
@@ -1873,7 +1872,7 @@ addToValidate(\'EditView\', \'reschedule_history\', \'varchar\', false,\''; ?>
 addToValidate(\'EditView\', \'reschedule_count\', \'varchar\', false,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_RESCHEDULE_COUNT','module' => 'Calls','for_js' => true), $this);?>
 <?php echo '\' );
-addToValidate(\'EditView\', \'new_current_status_c\', \'text\', true,\''; ?>
+addToValidate(\'EditView\', \'new_current_status_c\', \'text\', false,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_NEW_CURRENT_STATUS','module' => 'Calls','for_js' => true), $this);?>
 <?php echo '\' );
 addToValidate(\'EditView\', \'type_of_interaction_c\', \'enum\', true,\''; ?>
