@@ -4203,6 +4203,13 @@ table end -->
                 filter_by_type(value, day, searchTerm, '', '', 0);
             }
         }
+        function closeSequenceFlow(){
+            debugger;
+            $('.backdrop').fadeOut();
+            $('.sequence-flow').slideUp();
+            $('.sequence-flow').html('');
+            $('body').removeClass('no-scroll');
+        }
 
         function filterHelper(ref){
             var day = Cookies.get('day');
@@ -4265,10 +4272,11 @@ table end -->
             }
 
             $(document).on('click', '.close-sequence-flow', function(){
-                $('.backdrop').fadeOut();
-                $('.sequence-flow').slideUp();
-                $('.sequence-flow').html('');
-                $('body').removeClass('no-scroll');
+                // debugger;
+                // $('.backdrop').fadeOut();
+                // $('.sequence-flow').slideUp();
+                // $('.sequence-flow').html('');
+                // $('body').removeClass('no-scroll');
             })
 
             $('#deselect_members').change(function(){

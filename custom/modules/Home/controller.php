@@ -3525,7 +3525,7 @@ class HomeController extends SugarController
     public function action_getOpportunityStatusTimeline(){
         try{
             $oppID = $_POST['oppID']; 
-            $data = '<span class="close-sequence-flow">×</span><div class="wrap padding-tb black-color">';
+            $data = '<span class="close-sequence-flow" onclick="closeSequenceFlow()">×</span><div class="wrap padding-tb black-color">';
 
             $query = "SELECT name,created_by,assigned_user_id FROM opportunities WHERE id = '$oppID'";
             $result = $GLOBALS['db']->query($query);

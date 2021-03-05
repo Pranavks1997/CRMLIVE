@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-03-03 12:22:33
+<?php /* Smarty version 2.6.31, created on 2021-03-05 14:46:07
          compiled from cache/themes/SuiteP/modules/Employees/DetailView.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Employees/DetailView.tpl', 39, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Employees/DetailView.tpl', 48, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Employees/DetailView.tpl', 98, false),array('function', 'sugar_phone', 'cache/themes/SuiteP/modules/Employees/DetailView.tpl', 202, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Employees/DetailView.tpl', 91, false),array('modifier', 'escape', 'cache/themes/SuiteP/modules/Employees/DetailView.tpl', 539, false),array('modifier', 'url2html', 'cache/themes/SuiteP/modules/Employees/DetailView.tpl', 539, false),array('modifier', 'nl2br', 'cache/themes/SuiteP/modules/Employees/DetailView.tpl', 539, false),)), $this); ?>
