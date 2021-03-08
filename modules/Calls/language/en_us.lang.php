@@ -72,7 +72,7 @@ $mod_strings = array(
     'LBL_TIME' => 'Start Time:',
     'LBL_HOURS_ABBREV' => 'h',
     'LBL_MINSS_ABBREV' => 'm',
-    'LNK_NEW_CALL' => 'Log Call',
+    'LNK_NEW_CALL' => 'Create Call',
     'LNK_NEW_MEETING' => 'Schedule Meeting',
     'LNK_CALL_LIST' => 'View Calls',
     'LNK_IMPORT_CALLS' => 'Import Calls',
@@ -154,7 +154,7 @@ $mod_strings = array(
     'LBL_RESCHEDULE_ERROR1' => 'Please select a valid date',
     'LBL_RESCHEDULE_ERROR2' => 'Please select a reason',
     'LBL_RESCHEDULE_PANEL' => 'Reschedule',
-    'LBL_RESCHEDULE_HISTORY' => 'Call Attempt History',
+    'LBL_RESCHEDULE_HISTORY' => 'Attempt History',
     'LBL_CANCEL' => 'Cancel',
     'LBL_SAVE' => 'Save',
 

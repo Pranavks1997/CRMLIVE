@@ -87,6 +87,7 @@ class UploadFile
         // $field_name is the name of your passed file selector field in your form
         // i.e., for Emails, it is "email_attachmentX" where X is 0-9
         $this->field_name = $field_name;
+    
     }
 
     /**

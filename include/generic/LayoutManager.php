@@ -138,7 +138,7 @@ class LayoutManager
                 'module'=>'Calls',
                 'title'=>'LBL_NEW_BUTTON_TITLE',
                 'access_key'=>'LBL_NEW_BUTTON_KEY',
-                'form_value'=>'LNK_NEW_CALL',
+                'form_value'=>'Create Activity',
                 'ACL'=>'edit',
             ),
             'SugarWidgetSubPanelTopCreateTaskButton' => array(

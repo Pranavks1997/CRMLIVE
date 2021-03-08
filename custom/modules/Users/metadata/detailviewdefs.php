@@ -25,20 +25,28 @@ array (
           'field' => '30',
         ),
       ),
-      'useTabs' => true,
+      'useTabs' => false,
       'tabDefs' => 
       array (
         'LBL_USER_INFORMATION' => 
         array (
-          'newTab' => true,
+          'newTab' => false,
           'panelDefault' => 'expanded',
         ),
         'LBL_EMPLOYEE_INFORMATION' => 
         array (
           'newTab' => false,
-          'panelDefault' => 'collapsed',
+          'panelDefault' => 'expanded',
         ),
       ),
+      'includes' => 
+      array (
+        0 => 
+        array (
+          'file' => 'custom/modules/Users/detail_view.js',
+        ),
+      ),
+      'syncDetailEditViews' => true,
     ),
     'useTabs' => true,
     'tabDefs' => 
@@ -60,32 +68,33 @@ array (
       array (
         0 => 
         array (
-          0 => 'full_name',
-          1 => 'user_name',
+          0 => 
+          array (
+            'name' => 'first_name',
+            'label' => 'LBL_FIRST_NAME',
+          ),
+          1 => 
+          array (
+            'name' => 'last_name',
+            'label' => 'LBL_LAST_NAME',
+          ),
         ),
         1 => 
         array (
           0 => 'status',
-          1 => 
+          1 => 'user_name',
+        ),
+        2 => 
+        array (
+          0 => 
           array (
             'name' => 'UserType',
             'customCode' => '{$USER_TYPE_READONLY}',
           ),
         ),
-        2 => 
-        array (
-          0 => 'photo',
-          1 => 
-          array (
-            'name' => 'opportunities_users_1_name',
-          ),
-        ),
         3 => 
         array (
-          0 => 
-          array (
-            'name' => 'opportunities_users_2_name',
-          ),
+          0 => 'photo',
         ),
       ),
       'LBL_EMPLOYEE_INFORMATION' => 
@@ -107,20 +116,15 @@ array (
         ),
         3 => 
         array (
-          0 => 'reports_to_name',
+          0 => 
+          array (
+            'name' => 'mc_c',
+            'studio' => 'visible',
+            'label' => 'LBL_MC',
+          ),
           1 => 'phone_other',
         ),
         4 => 
-        array (
-          0 => 
-          array (
-            'name' => 'teamfunction_c',
-            'studio' => 'visible',
-            'label' => 'LBL_TEAMFUNCTION',
-          ),
-          1 => 'phone_fax',
-        ),
-        5 => 
         array (
           0 => 
           array (
@@ -128,17 +132,32 @@ array (
             'studio' => 'visible',
             'label' => 'LBL_TEAMHEIRARCHY',
           ),
+          1 => 'phone_fax',
+        ),
+        5 => 
+        array (
+          0 => 'reports_to_name',
           1 => 'phone_home',
         ),
         6 => 
         array (
-          0 => 'messenger_type',
-          1 => 'messenger_id',
+          0 => 
+          array (
+            'name' => 'bid_commercial_head_c',
+            'studio' => 'visible',
+            'label' => 'LBL_BID_COMMERCIAL_HEAD',
+          ),
+          1 => 'address_city',
         ),
         7 => 
         array (
-          0 => 'address_street',
-          1 => 'address_city',
+          0 => 
+          array (
+            'name' => 'teamfunction_c',
+            'studio' => 'visible',
+            'label' => 'LBL_TEAMFUNCTION',
+          ),
+          1 => 'address_street',
         ),
         8 => 
         array (
@@ -148,6 +167,7 @@ array (
         9 => 
         array (
           0 => 'address_country',
+          1 => '',
         ),
         10 => 
         array (

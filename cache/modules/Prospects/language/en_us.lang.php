@@ -1,5 +1,5 @@
 <?php
-// created: 2020-12-07 11:31:50
+// created: 2021-03-08 16:28:10
 $mod_strings = array (
   'LBL_ID' => 'ID',
   'LBL_DATE_ENTERED' => 'Date Created',
@@ -144,4 +144,5 @@ $mod_strings = array (
   'LBL_EDIT_ACCOUNT_NAME' => 'Account Name:',
   'LBL_HISTORY_SUBPANEL_TITLE' => 'History',
   'LBL_FP_EVENTS_PROSPECTS_1_FROM_FP_EVENTS_TITLE' => 'Events',
+  'LBL_CALLS' => 'Activities',
 );

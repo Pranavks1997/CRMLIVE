@@ -153,10 +153,6 @@ function formSubmitCheck(){ldelim}var duration=true;if(typeof(isValidDuration)!=
             array(
               0 =>
               array(
-                'name' => 'direction',
-              ),
-              1 =>
-              array(
                 'name' => 'status',
               ),
             ),
@@ -177,6 +173,9 @@ function formSubmitCheck(){ldelim}var duration=true;if(typeof(isValidDuration)!=
           array(
             'name' => 'parent_name',
             'label' => 'LBL_LIST_RELATED_TO',
+            array(
+              'required' => true,
+            ),
           ),
         ),
         2 =>

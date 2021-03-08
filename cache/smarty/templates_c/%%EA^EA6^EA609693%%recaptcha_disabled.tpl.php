@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2020-12-07 11:32:05
+<?php /* Smarty version 2.6.31, created on 2021-03-04 18:48:27
          compiled from /home/ubuntu/environment/CRM/include/utils/recaptcha_disabled.tpl */ ?>
 <?php echo '
 <script>

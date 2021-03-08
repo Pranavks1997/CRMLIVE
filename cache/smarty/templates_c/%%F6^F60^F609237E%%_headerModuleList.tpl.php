@@ -1,12 +1,13 @@
-<?php /* Smarty version 2.6.31, created on 2020-12-07 11:32:04
+<?php /* Smarty version 2.6.31, created on 2021-03-06 14:08:25
          compiled from themes/SuiteP/tpls/_headerModuleList.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_link', 'themes/SuiteP/tpls/_headerModuleList.tpl', 58, false),array('function', 'sugar_translate', 'themes/SuiteP/tpls/_headerModuleList.tpl', 114, false),array('function', 'suite_check_access', 'themes/SuiteP/tpls/_headerModuleList.tpl', 120, false),array('function', 'counter', 'themes/SuiteP/tpls/_headerModuleList.tpl', 213, false),array('function', 'search_controller', 'themes/SuiteP/tpls/_headerModuleList.tpl', 514, false),array('modifier', 'lower', 'themes/SuiteP/tpls/_headerModuleList.tpl', 117, false),array('modifier', 'replace', 'themes/SuiteP/tpls/_headerModuleList.tpl', 117, false),array('modifier', 'default', 'themes/SuiteP/tpls/_headerModuleList.tpl', 770, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_link', 'themes/SuiteP/tpls/_headerModuleList.tpl', 59, false),array('function', 'sugar_translate', 'themes/SuiteP/tpls/_headerModuleList.tpl', 115, false),array('function', 'suite_check_access', 'themes/SuiteP/tpls/_headerModuleList.tpl', 121, false),array('function', 'counter', 'themes/SuiteP/tpls/_headerModuleList.tpl', 214, false),array('function', 'search_controller', 'themes/SuiteP/tpls/_headerModuleList.tpl', 553, false),array('modifier', 'lower', 'themes/SuiteP/tpls/_headerModuleList.tpl', 118, false),array('modifier', 'replace', 'themes/SuiteP/tpls/_headerModuleList.tpl', 118, false),array('modifier', 'default', 'themes/SuiteP/tpls/_headerModuleList.tpl', 783, false),)), $this); ?>
+
 <!--Start Responsive Top Navigation Menu -->
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="dropdown">
+           <button type="button" class="navbar-toggle collapsed" data-toggle="dropdown">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -33,7 +34,7 @@ _<?php echo $this->_tpl_vars['module']; ?>
                                     <?php echo $this->_tpl_vars['module']; ?>
 
                                     <?php if ($this->_tpl_vars['modulekey'] != 'Home' && $this->_tpl_vars['modulekey'] != 'Calendar'): ?>
-                                        <span class="glyphicon glyphicon-plus"  onclick="window.location.href = 'index.php?action=EditView&module=<?php echo $this->_tpl_vars['modulekey']; ?>
+                                        <span style="display:none" class="glyphicon glyphicon-plus"  onclick="window.location.href = 'index.php?action=EditView&module=<?php echo $this->_tpl_vars['modulekey']; ?>
 '"></span>
                                                                             <?php endif; ?>
                                 </a>
@@ -47,7 +48,7 @@ _<?php echo $this->_tpl_vars['module']; ?>
 '">
                                     <?php echo $this->_tpl_vars['submodulename']; ?>
 
-                                    <span class="glyphicon glyphicon-plus"  onclick="window.location.href = 'index.php?action=EditView&module=<?php echo $this->_tpl_vars['submodule']; ?>
+                                    <span style="display:none" class="glyphicon glyphicon-plus"  onclick="window.location.href = 'index.php?action=EditView&module=<?php echo $this->_tpl_vars['submodule']; ?>
 '"></span>
                                                                     </a>
                             </li>
@@ -119,7 +120,7 @@ if ($this->_foreach['lastViewed']['total'] > 0):
 <?php $this->_smarty_vars['capture']['default'] = ob_get_contents();  $this->assign('access', ob_get_contents());ob_end_clean(); ?>
                                                             <?php if ($this->_tpl_vars['access']): ?>
                                                                  <a href="<?php echo smarty_function_sugar_link(array('module' => $this->_tpl_vars['item']['module_name'],'action' => 'EditView','record' => $this->_tpl_vars['item']['item_id'],'link_only' => 1), $this);?>
-" class="recent-links-edit"><span class=" glyphicon glyphicon-pencil"></a>
+" class="recent-links-edit"><span style="display:none"class="glyphicon glyphicon-pencil"></a>
                                                             <?php endif; ?>
                                                         </li>
                                                     <?php endif; ?>
@@ -156,7 +157,7 @@ if ($this->_foreach['lastViewed']['total'] > 0):
 <?php $this->_smarty_vars['capture']['default'] = ob_get_contents();  $this->assign('access', ob_get_contents());ob_end_clean(); ?>
                                                             <?php if ($this->_tpl_vars['access']): ?>
                                                                 <a href="<?php echo smarty_function_sugar_link(array('module' => $this->_tpl_vars['item']['module_name'],'action' => 'EditView','record' => $this->_tpl_vars['item']['id'],'link_only' => 1), $this);?>
-" class="favorite-links-edit"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></a>
+" class="favorite-links-edit"><span  style="display:none" class="glyphicon glyphicon-pencil" aria-hidden="true"></a>
                                                             <?php endif; ?>
                                                         </li>
                                                     <?php endif; ?>
@@ -271,7 +272,7 @@ if ($this->_foreach['lastViewed']['total'] > 0):
 <?php $this->_smarty_vars['capture']['default'] = ob_get_contents();  $this->assign('access', ob_get_contents());ob_end_clean(); ?>
                                                                     <?php if ($this->_tpl_vars['access']): ?>
                                                                         <a href="<?php echo smarty_function_sugar_link(array('module' => $this->_tpl_vars['item']['module_name'],'action' => 'EditView','record' => $this->_tpl_vars['item']['item_id'],'link_only' => 1), $this);?>
-" class="recent-links-edit"><span class=" glyphicon glyphicon-pencil"></a>
+" class="recent-links-edit"><span style="display:none" class=" glyphicon glyphicon-pencil"></a>
                                                                     <?php endif; ?>
                                                                 </li>
                                                                 <?php echo smarty_function_counter(array('name' => 'submoduleRecentRecords','print' => false), $this);?>
@@ -350,23 +351,53 @@ if ($this->_foreach['groupList']['total'] > 0):
                         <?php ob_start(); ?>parentTab=<?php echo $this->_tpl_vars['group']; ?>
 <?php $this->_smarty_vars['capture']['extraparams'] = ob_get_contents();  $this->assign('extraparams', ob_get_contents());ob_end_clean(); ?>
                         <li class="topnav <?php if (($this->_foreach['groupList']['iteration'] == $this->_foreach['groupList']['total'])): ?>all<?php endif; ?>">
-                            <span class="notCurrentTabLeft">&nbsp;</span><span class="notCurrentTab">
+                            <span class="notCurrentTabLeft">&nbsp;</span><span id="check" class="notCurrentTab">
                             <a href="#" id="grouptab_<?php echo ($this->_foreach['groupList']['iteration']-1); ?>
-" class="dropdown-toggle grouptab"><?php echo $this->_tpl_vars['group']; ?>
-</a>
+" class="dropdown-toggle grouptab opp_hide">opportunities</a>
                             <span class="notCurrentTabRight">&nbsp;</span>
-                            <ul class="dropdown-menu" role="menu" <?php if (($this->_foreach['groupList']['iteration'] == $this->_foreach['groupList']['total'])): ?> class="All"<?php endif; ?>>
-                                <?php $_from = $this->_tpl_vars['modules']['modules']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }if (count($_from)):
-    foreach ($_from as $this->_tpl_vars['modulekey'] => $this->_tpl_vars['module']):
+                            <ul class="dropdown-menu" role="menu" id="hide1" <?php if (($this->_foreach['groupList']['iteration'] == $this->_foreach['groupList']['total'])): ?> class="All"<?php endif; ?>>
+                          
+                                    <li>
+                                       <a href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3Dindex%26return_module%3DOpportunities%26return_action%3DDetailView">View Opportunities</a>
+                                    </li>
+                                    <li>
+                                       <a id="opp_hide" class="dashboard_opp_hide" href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3DEditView%26return_module%3DOpportunities%26return_action%3DDetailView">Create Opportunity</a>
+                                    </li>
+                              
+                                <?php $_from = $this->_tpl_vars['modules']['extra']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }if (count($_from)):
+    foreach ($_from as $this->_tpl_vars['submodule'] => $this->_tpl_vars['submodulename']):
 ?>
                                     <li>
-                                        <?php ob_start(); ?>moduleTab_<?php echo ($this->_foreach['moduleList']['iteration']-1); ?>
-_<?php echo $this->_tpl_vars['module']; ?>
-<?php $this->_smarty_vars['capture']['moduleTabId'] = ob_get_contents();  $this->assign('moduleTabId', ob_get_contents());ob_end_clean(); ?>
-                                        <?php echo smarty_function_sugar_link(array('id' => $this->_tpl_vars['moduleTabId'],'module' => $this->_tpl_vars['modulekey'],'data' => $this->_tpl_vars['module'],'extraparams' => $this->_tpl_vars['extraparams']), $this);?>
-
+                                        <a href="<?php echo smarty_function_sugar_link(array('module' => $this->_tpl_vars['submodule'],'link_only' => 1,'extraparams' => $this->_tpl_vars['extraparams']), $this);?>
+"><?php echo $this->_tpl_vars['submodulename']; ?>
+</a>
                                     </li>
                                 <?php endforeach; endif; unset($_from); ?>
+                            </ul>
+                            
+                        </li>
+                    <?php endforeach; endif; unset($_from); ?>
+                      <?php $_from = $this->_tpl_vars['groupTabs']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }$this->_foreach['groupList'] = array('total' => count($_from), 'iteration' => 0);
+if ($this->_foreach['groupList']['total'] > 0):
+    foreach ($_from as $this->_tpl_vars['group'] => $this->_tpl_vars['modules']):
+        $this->_foreach['groupList']['iteration']++;
+?>
+                        <?php ob_start(); ?>parentTab=<?php echo $this->_tpl_vars['group']; ?>
+<?php $this->_smarty_vars['capture']['extraparams'] = ob_get_contents();  $this->assign('extraparams', ob_get_contents());ob_end_clean(); ?>
+                        <li class="topnav <?php if (($this->_foreach['groupList']['iteration'] == $this->_foreach['groupList']['total'])): ?>all<?php endif; ?>">
+                            <span class="notCurrentTabLeft">&nbsp;</span><span id="check_dept" class="notCurrentTab">
+                            <a href="#" id="grouptab_<?php echo ($this->_foreach['groupList']['iteration']-1); ?>
+" class="dropdown-toggle grouptab opp_hide">Departments</a>
+                            <span class="notCurrentTabRight">&nbsp;</span>
+                            <ul class="dropdown-menu" role="menu"  <?php if (($this->_foreach['groupList']['iteration'] == $this->_foreach['groupList']['total'])): ?> class="All"<?php endif; ?>>
+                          
+                                    <li>
+                                       <a href="index.php?module=Accounts&action=index">View Departments</a>
+                                    </li>
+                                    <li>
+                                       <a  href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DAccounts%26action%3DEditView%26return_module%3DAccounts%26return_action%3Dindex">Create Departments</a>
+                                    </li>
+                              
                                 <?php $_from = $this->_tpl_vars['modules']['extra']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }if (count($_from)):
     foreach ($_from as $this->_tpl_vars['submodule'] => $this->_tpl_vars['submodulename']):
 ?>
@@ -379,6 +410,41 @@ _<?php echo $this->_tpl_vars['module']; ?>
                             </ul>
                         </li>
                     <?php endforeach; endif; unset($_from); ?>
+                    <?php $_from = $this->_tpl_vars['groupTabs']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }$this->_foreach['groupList'] = array('total' => count($_from), 'iteration' => 0);
+if ($this->_foreach['groupList']['total'] > 0):
+    foreach ($_from as $this->_tpl_vars['group'] => $this->_tpl_vars['modules']):
+        $this->_foreach['groupList']['iteration']++;
+?>
+                        <?php ob_start(); ?>parentTab=<?php echo $this->_tpl_vars['group']; ?>
+<?php $this->_smarty_vars['capture']['extraparams'] = ob_get_contents();  $this->assign('extraparams', ob_get_contents());ob_end_clean(); ?>
+                        <li class="topnav <?php if (($this->_foreach['groupList']['iteration'] == $this->_foreach['groupList']['total'])): ?>all<?php endif; ?>">
+                            <span class="notCurrentTabLeft">&nbsp;</span><span id="check_activity" class="notCurrentTab">
+                            <a href="#" id="grouptab_<?php echo ($this->_foreach['groupList']['iteration']-1); ?>
+" class="dropdown-toggle grouptab opp_hide">Activity</a>
+                            <span class="notCurrentTabRight">&nbsp;</span>
+                            <ul class="dropdown-menu" role="menu"  <?php if (($this->_foreach['groupList']['iteration'] == $this->_foreach['groupList']['total'])): ?> class="All"<?php endif; ?>>
+                          
+                                    <li>
+                                       <a href="index.php?module=Calls&action=index">View Activity</a>
+                                    </li>
+                                    <li>
+                                       <a  href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DCalls%26action%3DEditView%26return_module%3DCalls%26return_action%3DDetailView">Create Activity</a>
+                                    </li>
+                              
+                                <?php $_from = $this->_tpl_vars['modules']['extra']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }if (count($_from)):
+    foreach ($_from as $this->_tpl_vars['submodule'] => $this->_tpl_vars['submodulename']):
+?>
+                                    <li>
+                                        <a href="<?php echo smarty_function_sugar_link(array('module' => $this->_tpl_vars['submodule'],'link_only' => 1,'extraparams' => $this->_tpl_vars['extraparams']), $this);?>
+"><?php echo $this->_tpl_vars['submodulename']; ?>
+</a>
+                                    </li>
+                                <?php endforeach; endif; unset($_from); ?>
+                            </ul>
+                        </li>
+                    <?php endforeach; endif; unset($_from); ?>
+                    
+<li><button class="button" id="feed" href="#">Report Issue</button></li>
                 </ul>
                             <?php echo '
                 <script>
@@ -617,35 +683,7 @@ if ($this->_foreach['lastViewed']['total'] > 0):
         <!-- Right side of the main navigation -->
         <div class="mobile-bar">
             <ul id="toolbar" class="toolbar">
-                <li id="quickcreatetop" class="create dropdown nav navbar-nav quickcreatetop">
-                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                        <?php echo $this->_tpl_vars['APP']['LBL_CREATE_BUTTON_LABEL']; ?>
-<span class="suitepicon suitepicon-action-caret"></span>
-                    </a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="index.php?module=Accounts&action=EditView&return_module=Accounts&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Accounts','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                        <li><a href="index.php?module=Contacts&action=EditView&return_module=Contacts&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Contacts','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                        <li><a href="index.php?module=Opportunities&action=EditView&return_module=Opportunities&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Opportunities','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                        <li><a href="index.php?module=Leads&action=EditView&return_module=Leads&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Leads','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                        <li><a href="index.php?module=Documents&action=EditView&return_module=Documents&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Documents','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                        <li><a href="index.php?module=Calls&action=EditView&return_module=Calls&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Calls','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                        <li><a href="index.php?module=Tasks&action=EditView&return_module=Tasks&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Tasks','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                    </ul>
-                </li>
+               
                 <li id="" class="dropdown nav navbar-nav navbar-search">
                     <button id="searchbutton" class="dropdown-toggle btn btn-default searchbutton suitepicon suitepicon-action-search" data-toggle="dropdown" aria-expanded="true">
                     </button>
@@ -741,35 +779,7 @@ _link"
         </div>
         <div class="tablet-bar">
             <ul id="toolbar" class="toolbar">
-                <li id="quickcreatetop" class="create dropdown nav navbar-nav quickcreatetop">
-                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                        <?php echo $this->_tpl_vars['APP']['LBL_CREATE_BUTTON_LABEL']; ?>
-<span class="suitepicon suitepicon-action-caret"></span>
-                    </a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="index.php?module=Accounts&action=EditView&return_module=Accounts&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Accounts','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                        <li><a href="index.php?module=Contacts&action=EditView&return_module=Contacts&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Contacts','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                        <li><a href="index.php?module=Opportunities&action=EditView&return_module=Opportunities&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Opportunities','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                        <li><a href="index.php?module=Leads&action=EditView&return_module=Leads&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Leads','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                        <li><a href="index.php?module=Documents&action=EditView&return_module=Documents&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Documents','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                        <li><a href="index.php?module=Calls&action=EditView&return_module=Calls&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Calls','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                        <li><a href="index.php?module=Tasks&action=EditView&return_module=Tasks&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Tasks','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                    </ul>
-                </li>
+                
                 <li id="" class="dropdown nav navbar-nav navbar-search">
                     <button id="searchbutton" class="dropdown-toggle btn btn-default searchbutton suitepicon suitepicon-action-search" data-toggle="dropdown" aria-expanded="true">
                     </button>
@@ -866,35 +876,7 @@ _link"
         </div>
         <div class="desktop-bar">
             <ul id="toolbar" class="toolbar">
-                <li id="quickcreatetop" class="create dropdown nav navbar-nav quickcreatetop">
-                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                        <?php echo $this->_tpl_vars['APP']['LBL_CREATE_BUTTON_LABEL']; ?>
-<span class="suitepicon suitepicon-action-caret"></span>
-                    </a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="index.php?module=Accounts&action=EditView&return_module=Accounts&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Accounts','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                        <li><a href="index.php?module=Contacts&action=EditView&return_module=Contacts&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Contacts','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                        <li><a href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3DEditView%26return_module%3DOpportunities%26return_action%3DDetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Opportunities','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                       <!-- <li><a href="index.php?module=Leads&action=EditView&return_module=Leads&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Leads','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>-->
-                        <li><a href="index.php?module=Documents&action=EditView&return_module=Documents&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Documents','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                        <li><a href="index.php?module=Calls&action=EditView&return_module=Calls&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Calls','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                        <li><a href="index.php?module=Tasks&action=EditView&return_module=Tasks&return_action=DetailView"><?php echo $this->_tpl_vars['APP']['LBL_QUICK_CREATE']; ?>
-<?php echo smarty_function_sugar_translate(array('module' => 'Tasks','label' => 'LBL_MODULE_NAME'), $this);?>
-</a></li>
-                    </ul>
-                </li>
+               
                 <li id="" class="dropdown nav navbar-nav navbar-search">
                     <button id="searchbutton" class="dropdown-toggle btn btn-default searchbutton suitepicon suitepicon-action-search" data-toggle="dropdown" aria-expanded="true">
                     </button>
@@ -1062,7 +1044,7 @@ if ($this->_foreach['lastViewed']['total'] > 0):
                                                href="<?php echo smarty_function_sugar_link(array('module' => $this->_tpl_vars['item']['module_name'],'action' => 'DetailView','record' => $this->_tpl_vars['item']['item_id'],'link_only' => 1), $this);?>
 "
                                                class="recent-links-detail">
-                                                <span class="suitepicon suitepicon-module-<?php echo ((is_array($_tmp=((is_array($_tmp=$this->_tpl_vars['item']['module_name'])) ? $this->_run_mod_handler('lower', true, $_tmp) : smarty_modifier_lower($_tmp)))) ? $this->_run_mod_handler('replace', true, $_tmp, '_', '-') : smarty_modifier_replace($_tmp, '_', '-')); ?>
+                                                <span style="display:none" class="suitepicon suitepicon-module-<?php echo ((is_array($_tmp=((is_array($_tmp=$this->_tpl_vars['item']['module_name'])) ? $this->_run_mod_handler('lower', true, $_tmp) : smarty_modifier_lower($_tmp)))) ? $this->_run_mod_handler('replace', true, $_tmp, '_', '-') : smarty_modifier_replace($_tmp, '_', '-')); ?>
 "></span>
                                                 <span><?php echo $this->_tpl_vars['item']['item_summary_short']; ?>
 </span>
@@ -1071,7 +1053,7 @@ if ($this->_foreach['lastViewed']['total'] > 0):
 <?php $this->_smarty_vars['capture']['default'] = ob_get_contents();  $this->assign('access', ob_get_contents());ob_end_clean(); ?>
                                             <?php if ($this->_tpl_vars['access']): ?>
                                                 <a href="<?php echo smarty_function_sugar_link(array('module' => $this->_tpl_vars['item']['module_name'],'action' => 'EditView','record' => $this->_tpl_vars['item']['item_id'],'link_only' => 1), $this);?>
-" class="recent-links-edit"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+" class="recent-links-edit"><span style="display:none" class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
                                             <?php endif; ?>
                                         </li>
                                     </div>
@@ -1107,7 +1089,7 @@ if ($this->_foreach['lastViewed']['total'] > 0):
 <?php $this->_smarty_vars['capture']['default'] = ob_get_contents();  $this->assign('access', ob_get_contents());ob_end_clean(); ?>
                                     <?php if ($this->_tpl_vars['access']): ?>
                                         <a href="<?php echo smarty_function_sugar_link(array('module' => $this->_tpl_vars['item']['module_name'],'action' => 'EditView','record' => $this->_tpl_vars['item']['id'],'link_only' => 1), $this);?>
-" class="favorite-links-edit"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+" class="favorite-links-edit"><span style="display:none"  class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
                                     <?php endif; ?>
                                 </li>
                             </div>

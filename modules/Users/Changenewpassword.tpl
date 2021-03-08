@@ -49,6 +49,7 @@ var ERR_REENTER_PASSWORDS = '{/literal}{$MOD.ERR_REENTER_PASSWORDS}{literal}';
 -->
 </script>
 <script type='text/javascript' src='{/literal}{sugar_getjspath file="modules/Users/PasswordRequirementBox.js"}{literal}'></script>
+
 <style type="text/css">
 <!--
 .body 
@@ -109,8 +110,8 @@ form
 <td align="center">
 
 		<table cellpadding="0" cellspacing="2" border="0" align="center" width="100%" class="edit view">
-		<tr>
-			<td colspan="2" width="100%" style="font-size: 12px; padding-bottom: 5px; font-weight: normal;">{$INSTRUCTION}</td>
+	<tr>
+			<td colspan="2" width="100%" style="font-size: 15px; padding: 5px;   text-align: center;font-weight: normal;"><b>{$INSTRUCTION}</b></td>
 		</tr>
 		<tr>
 			<td colspan="2" width="100%" style="font-size: 12px; padding-bottom: 5px; font-weight: normal; color: red;">{$ERRORS}</td>

@@ -1,5 +1,5 @@
 <?php
-// created: 2020-12-07 11:31:50
+// created: 2021-03-08 16:28:10
 $mod_strings = array (
   'LBL_ID' => 'ID',
   'LBL_DATE_ENTERED' => 'Date Created:',
@@ -104,4 +104,5 @@ $mod_strings = array (
   'LBL_CONTACT_CREATED_BY' => 'Created by',
   'LBL_CASE_UPDATE_FORM' => 'Updates - Attachment form',
   'LBL_ACCOUNT' => 'Department',
+  'LBL_CALLS' => 'Activities',
 );

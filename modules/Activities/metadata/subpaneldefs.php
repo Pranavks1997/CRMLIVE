@@ -48,10 +48,10 @@ $layout_defs['Activities'] = array( // the key to the layout_defs must be the na
     'default_subpanel_define' => array(
         'subpanel_title' => 'LBL_DEFAULT_SUBPANEL_TITLE',
         'top_buttons' => array(
-            array('widget_class' => 'SubPanelTopCreateTaskButton'),
-            array('widget_class' => 'SubPanelTopScheduleMeetingButton'),
+            // array('widget_class' => 'SubPanelTopCreateTaskButton'),
+            // array('widget_class' => 'SubPanelTopScheduleMeetingButton'),
             array('widget_class' => 'SubPanelTopScheduleCallButton'),
-            array('widget_class' => 'SubPanelTopComposeEmailButton'),
+            // array('widget_class' => 'SubPanelTopComposeEmailButton'),
         ),
         'list_fields' => array(
             'Meetings' => array(

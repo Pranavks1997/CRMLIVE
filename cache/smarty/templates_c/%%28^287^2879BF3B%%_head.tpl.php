@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2020-12-07 11:32:04
+<?php /* Smarty version 2.6.31, created on 2021-03-04 18:48:08
          compiled from themes/SuiteP/tpls/_head.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_getimagepath', 'themes/SuiteP/tpls/_head.tpl', 68, false),array('function', 'sugar_getjspath', 'themes/SuiteP/tpls/_head.tpl', 79, false),)), $this); ?>
@@ -31,7 +31,7 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_getim
 
     <?php echo '
     <script type="text/javascript">
-        <!--
+        
         SUGAR.themes.theme_name = \''; ?>
 <?php echo $this->_tpl_vars['THEME']; ?>
 <?php echo '\';
@@ -50,7 +50,7 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_getim
         
         if (YAHOO.env.ua)
             UA = YAHOO.env.ua;
-        -->
+        
     </script>
     '; ?>
 

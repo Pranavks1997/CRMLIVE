@@ -40,6 +40,7 @@ if (!defined('sugarEntry') || !sugarEntry) {
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Powered by SugarCRM" and "Supercharged by SuiteCRM".
  */
+echo '<script type="text/javascript" src="custom/modules/Calls/custom_advanced_filter.js"></script>';
 $searchFields['Calls'] = array(
   'name' =>
   array(

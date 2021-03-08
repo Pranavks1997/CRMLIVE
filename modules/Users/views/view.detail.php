@@ -190,6 +190,8 @@ class UsersViewDetail extends ViewDetail
 
     public function display()
     {
+        
+         echo '<link rel="stylesheet" type="text/css" href="custom/modules/Users/custom.css">';
         if ($this->bean->portal_only == 1 || $this->bean->is_group == 1) {
             $this->options['show_subpanels'] = false;
             $this->dv->formName = 'DetailViewGroup';

@@ -1,5 +1,5 @@
 <?php
-// created: 2020-11-21 18:50:34
+// created: 2021-01-18 12:44:07
 $sugar_config = array (
   'addAjaxBannedModules' => 
   array (
@@ -68,10 +68,11 @@ $sugar_config = array (
     'min_cron_interval' => 30,
     'allowed_cron_users' => 
     array (
-      0 => 'www-data',
+      0 => 'ubuntu',
     ),
   ),
   'currency' => '',
+  'dashlet_auto_refresh_min' => '30',
   'dashlet_display_row_options' => 
   array (
     0 => '1',
@@ -98,7 +99,7 @@ $sugar_config = array (
     'db_host_instance' => 'SQLEXPRESS',
     'db_user_name' => 'xelp',
     'db_password' => 'xelp@123',
-    'db_name' => 'crm',
+    'db_name' => 'development',
     'db_type' => 'mysql',
     'db_port' => '',
     'db_manager' => 'MysqliManager',
@@ -223,6 +224,7 @@ $sugar_config = array (
   'default_locale_name_format' => 's f l',
   'default_max_tabs' => 10,
   'default_module' => 'Home',
+  'default_module_favicon' => false,
   'default_navigation_paradigm' => 'gm',
   'default_number_grouping_seperator' => ',',
   'default_password' => '',
@@ -242,7 +244,7 @@ $sugar_config = array (
   'default_user_is_admin' => false,
   'default_user_name' => '',
   'demoData' => 'no',
-  'developerMode' => false,
+  'developerMode' => true,
   'disable_convert_lead' => false,
   'disable_export' => false,
   'disable_persistent_connections' => false,
@@ -250,13 +252,15 @@ $sugar_config = array (
   'display_inbound_email_buttons' => false,
   'dump_slow_queries' => false,
   'email_address_separator' => ',',
+  'email_allow_send_as_user' => false,
   'email_confirm_opt_in_email_template_id' => '6914917a-1533-910d-fa9b-5f8e9541eb23',
   'email_default_client' => 'sugar',
-  'email_default_delete_attachments' => true,
+  'email_default_delete_attachments' => false,
   'email_default_editor' => 'html',
   'email_enable_auto_send_opt_in' => false,
   'email_enable_confirm_opt_in' => 'not-opt-in',
-  'email_warning_notifications' => true,
+  'email_warning_notifications' => false,
+  'email_xss' => 'YToxMzp7czo2OiJhcHBsZXQiO3M6NjoiYXBwbGV0IjtzOjQ6ImJhc2UiO3M6NDoiYmFzZSI7czo1OiJlbWJlZCI7czo1OiJlbWJlZCI7czo0OiJmb3JtIjtzOjQ6ImZvcm0iO3M6NToiZnJhbWUiO3M6NToiZnJhbWUiO3M6ODoiZnJhbWVzZXQiO3M6ODoiZnJhbWVzZXQiO3M6NjoiaWZyYW1lIjtzOjY6ImlmcmFtZSI7czo2OiJpbXBvcnQiO3M6ODoiXD9pbXBvcnQiO3M6NToibGF5ZXIiO3M6NToibGF5ZXIiO3M6NDoibGluayI7czo0OiJsaW5rIjtzOjY6Im9iamVjdCI7czo2OiJvYmplY3QiO3M6MzoieG1wIjtzOjM6InhtcCI7czo2OiJzY3JpcHQiO3M6Njoic2NyaXB0Ijt9',
   'enable_action_menu' => true,
   'enable_line_editing_detail' => false,
   'enable_line_editing_list' => false,
@@ -300,6 +304,12 @@ $sugar_config = array (
     ),
   ),
   'google_auth_json' => '',
+  'hide_history_contacts_emails' => 
+  array (
+    'Cases' => false,
+    'Accounts' => false,
+    'Opportunities' => false,
+  ),
   'hide_subpanels' => true,
   'history_max_viewed' => 50,
   'host_name' => '13.235.114.35',
@@ -315,7 +325,7 @@ $sugar_config = array (
     'timeout' => 86400,
   ),
   'js_custom_version' => 1,
-  'js_lang_version' => 26,
+  'js_lang_version' => 38,
   'languages' => 
   array (
     'en_us' => 'English (US)',
@@ -326,7 +336,7 @@ $sugar_config = array (
   'list_max_entries_per_subpanel' => 10,
   'lock_default_user_name' => false,
   'lock_homepage' => false,
-  'lock_subpanels' => false,
+  'lock_subpanels' => true,
   'log_dir' => '.',
   'log_file' => 'suitecrm.log',
   'log_memory_usage' => false,
@@ -410,6 +420,7 @@ $sugar_config = array (
   'search_wildcard_infront' => false,
   'securitysuite_additive' => true,
   'securitysuite_filter_user_list' => false,
+  'securitysuite_inbound_email' => false,
   'securitysuite_inherit_assigned' => true,
   'securitysuite_inherit_creator' => true,
   'securitysuite_inherit_parent' => true,
@@ -421,8 +432,9 @@ $sugar_config = array (
   'session_dir' => '',
   'showDetailData' => true,
   'showThemePicker' => true,
-  'site_url' => 'http://13.235.114.35',
+  'site_url' => 'http://15.206.54.38:8080/v2',
   'slow_query_time_msec' => '100',
+  'stack_trace_errors' => false,
   'strict_id_validation' => false,
   'sugar_version' => '6.5.25',
   'sugarbeet' => false,
@@ -430,6 +442,13 @@ $sugar_config = array (
   'system_email_templates' => 
   array (
     'confirm_opt_in_template_id' => '6914917a-1533-910d-fa9b-5f8e9541eb23',
+  ),
+  'theme_settings' => 
+  array (
+    'SuiteP' => 
+    array (
+      'display_sidebar' => false,
+    ),
   ),
   'time_formats' => 
   array (
@@ -472,16 +491,4 @@ $sugar_config = array (
   'use_real_names' => true,
   'vcal_time' => '2',
   'verify_client_ip' => true,
-  'email_allow_send_as_user' => false,
-  'email_xss' => 'YToxMzp7czo2OiJhcHBsZXQiO3M6NjoiYXBwbGV0IjtzOjQ6ImJhc2UiO3M6NDoiYmFzZSI7czo1OiJlbWJlZCI7czo1OiJlbWJlZCI7czo0OiJmb3JtIjtzOjQ6ImZvcm0iO3M6NToiZnJhbWUiO3M6NToiZnJhbWUiO3M6ODoiZnJhbWVzZXQiO3M6ODoiZnJhbWVzZXQiO3M6NjoiaWZyYW1lIjtzOjY6ImlmcmFtZSI7czo2OiJpbXBvcnQiO3M6ODoiXD9pbXBvcnQiO3M6NToibGF5ZXIiO3M6NToibGF5ZXIiO3M6NDoibGluayI7czo0OiJsaW5rIjtzOjY6Im9iamVjdCI7czo2OiJvYmplY3QiO3M6MzoieG1wIjtzOjM6InhtcCI7czo2OiJzY3JpcHQiO3M6Njoic2NyaXB0Ijt9',
-  'default_module_favicon' => false,
-  'dashlet_auto_refresh_min' => '30',
-  'stack_trace_errors' => false,
-  'securitysuite_inbound_email' => false,
-  'hide_history_contacts_emails' => 
-  array (
-    'Cases' => false,
-    'Accounts' => false,
-    'Opportunities' => false,
-  ),
 );

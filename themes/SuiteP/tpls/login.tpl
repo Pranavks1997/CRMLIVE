@@ -45,6 +45,7 @@
     var LBL_HIDEOPTIONS = '{sugar_translate module="Users" label="LBL_HIDEOPTIONS"}';
 </script>
 
+
 <!-- Start login container -->
 
 <div class="p_login">

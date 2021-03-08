@@ -1,3 +1,4 @@
+
 <?php
 /**
  *
@@ -39,6 +40,8 @@
  */
 
 global $current_user,$admin_group_header;
+
+
 
 //users and security.
 $admin_option_defs=array();

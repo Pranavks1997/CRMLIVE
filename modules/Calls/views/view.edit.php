@@ -52,6 +52,8 @@ class CallsViewEdit extends ViewEdit
      */
     public function preDisplay()
     {
+        echo '<link rel="stylesheet" type="text/css" href="custom/modules/Calls/quick_create_custom.css">';
+        echo '<script type="text/javascript" src="custom/modules/Calls/view_edit.js"></script>';
         if ($_REQUEST['module'] != 'Calls' && isset($_REQUEST['status']) && empty($_REQUEST['status'])) {
             $this->bean->status = '';
         } //if
@@ -66,6 +68,8 @@ class CallsViewEdit extends ViewEdit
      */
     public function display()
     {
+         echo file_get_contents("custom/modules/Calls/other_multi_select_user/m-select.html");
+        echo '<link rel="stylesheet" type="text/css" href="custom/modules/Calls/editview.css">';
         global $json;
         $json = getJSONobj();
         $json_config = new json_config();

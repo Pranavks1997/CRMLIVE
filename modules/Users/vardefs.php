@@ -461,7 +461,7 @@ $dictionary['User'] = array(
         ),
         'reports_to_name' => array(
             'name' => 'reports_to_name',
-            'rname' => 'last_name',
+            'rname' => 'full_name',
             'id_name' => 'reports_to_id',
             'vname' => 'LBL_REPORTS_TO_NAME',
             'type' => 'relate',
@@ -473,6 +473,18 @@ $dictionary['User'] = array(
             'source' => 'non-db',
             'duplicate_merge' => 'disabled',
             'side' => 'right',
+            'fields' => array(
+                'first_name',
+                'last_name'
+            ),
+            'source' => 'non-db',
+            'sort_on' => 'last_name',
+            'sort_on2' => 'first_name',
+            'db_concat_fields' => array(
+                0 => 'first_name',
+                1 => 'last_name'
+            ),
+            
         ),
         'reports_to_link' => array(
             'name' => 'reports_to_link',

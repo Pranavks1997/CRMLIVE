@@ -73,7 +73,7 @@ class MyCallsDashlet extends DashletGeneric
                                               'sortable' => false,
                                               'related_fields' => array('status'),
                                               'default' => 'true');*/
-        $this->seedBean = BeanFactory::newBean('Calls');
+        $this->seedBean = new Call();
     }
 
     /**
@@ -92,19 +92,19 @@ class MyCallsDashlet extends DashletGeneric
 
     public function process($lvsParams = array(), $id = null)
     {
-        global $current_language, $app_list_strings, $current_user;
-        $mod_strings = return_module_language($current_language, 'Calls');
+        // global $current_language, $app_list_strings, $current_user;
+        // $mod_strings = return_module_language($current_language, 'Calls');
 
-        // handle myitems only differently --  set the custom query to show assigned meetings and invitee meetings
-        if ($this->myItemsOnly) {
-            //join with meeting_users table to process related users
-            $this->seedBean->listview_inner_join = array('LEFT JOIN  calls_users c_u on  c_u.call_id = calls.id');
+        // // handle myitems only differently --  set the custom query to show assigned meetings and invitee meetings
+        // if ($this->myItemsOnly) {
+        //     //join with meeting_users table to process related users
+        //     $this->seedBean->listview_inner_join = array('LEFT JOIN  calls_users c_u on  c_u.call_id = calls.id');
 
-            //set the custom query to include assigned meetings
-            $lvsParams['custom_where'] = ' AND (calls.assigned_user_id = \'' . $current_user->id . '\' OR (c_u.user_id = \'' . $current_user->id . '\' AND c_u.deleted = 0  )) ';
-        }
+        //     //set the custom query to include assigned meetings
+        //     $lvsParams['custom_where'] = ' AND (calls.assigned_user_id = \'' . $current_user->id . '\' OR (c_u.user_id = \'' . $current_user->id . '\' AND c_u.deleted = 0  )) ';
+        // }
 
-        $this->myItemsOnly = false;
+        // $this->myItemsOnly = false;
         //query needs to be distinct to avoid multiple records being returned for the same meeting (one for each invited user),
         //so we need to make sure date entered is also set so the sort can work with the group by
         $lvsParams['custom_select']=', calls.date_entered ';

@@ -1,341 +1,743 @@
 <?php
-if (!defined('sugarEntry') || !sugarEntry) {
-    die('Not A Valid Entry Point');
-}
-/**
- *
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- *
- * SuiteCRM is an extension to SugarCRM Community Edition developed by SalesAgility Ltd.
- * Copyright (C) 2011 - 2018 SalesAgility Ltd.
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- *
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo and "Supercharged by SuiteCRM" logo. If the display of the logos is not
- * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Powered by SugarCRM" and "Supercharged by SuiteCRM".
- */
+    if (!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
+    require_once('include/MVC/Controller/SugarController.php');
+?>
+<html>
+<head>
+    <title> Dashboard </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="modules/Home/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://cdn.jsdelivr.net/npm/handsontable@8.3.1/dist/handsontable.full.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@8.3.1/dist/handsontable.full.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        var jq = jQuery.noConflict();
+    </script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Navbar start -->
+
+    <!-- Navbar end -->
+    <div class="W1400px">
+        <div class="d-flex">
+            <h3 class="page-title">
+                Dashboard
+            </h3>
+            <button onclick="location.href = './index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3DEditView%26return_module%3DOpportunities%26return_action%3DDetailView';" class="oppertunityBtn btn-add-opportunity" id='add_opportunity'>
+                <i class="fa fa-plus" style="padding-right: 1rem; font-size: 20px" aria-hidden="true"></i>
+                <h3 class="add-opportunity-title">Create Opportunity</h3>
+            </button>
+        </div>
+
+        <!-- last 30's day tab -->
+        <div class="tab_30_days">
+            <button class="btn-30-days btn-days-filter" data-day="30" style="color: rgb(0,0,0)">Last 30 days </button>
+            <button class="btn-30-days btn-days-filter" data-day="60">/ Last 60 days </button>
+            <button class="btn-30-days btn-days-filter" data-day="1200">/ All </button>
+        </div>
+
+        <div class="main-content"></div>
+        <button class="get-emp-report-button button" id="get-emp-report-button button" onclick="openUserReport()">GET EMPLOYEE REPORT</button>
+        <div class="form-group" id="team-lead-dropdown-container">
+                <span class="primary-responsibilty-filter-head">Select Team Lead:</span>
+                <select class="" name="filter-team_lead" id="team_lead_dropdown">
+                </select>
+        </div>
+        <div class="report-container" id="report-container">
+            <div class="employee-report-table-container">
+                <div id="example1" class="hot handsontable htRowHeaders"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="setting_myModal" class="setting-modal">
+        <!-- Modal content -->
+        <div class="setting-modal-content">
+            <span class="closeSetting" onclick="openSettingDialog('close')">&times;</span>
+            <h2 class="setting_heading">Drag / Drop Columns to be Displayed / Hidden</h2>
+            <p class="setting_subhead">Select 7 columns for the table</p>
+            <!-- <hr style="color: #D1D0CE"> -->
+            <div class="search-column-container">
+                <input type="text" id="search-column1" placeholder="Search here" />
+                <i class="fa fa-search"></i>
+            </div>
+            <div class="search-column-heading-container">
+                <h2 class="search-column-heading">Displayed</h2>
+                <h2 class="search-column-heading">Hidden</h2>
+            </div>
+            <section class="section">
+                <div class="opportunity-settings" id="opportunity-settings">
+                    <form class="settings-form sort-column">
+                        <input type="hidden" name="settings-section" class="settings-section" value="">
+                        <input type="hidden" name="settings-type" class="settings-type" value="">
+                        <input type="hidden" name="settings-type-value" class="settings-type-value" value="">
+                        <ul id="sortable1" class="sortable1 connectedSortable ui-sortable">
+                            <li style="pointer-events:none;" class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="name" value="name" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Opportunity Name</label>
+                            </li>
+                            <li style="pointer-events:none;" class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Primary-Responsbility" value="Primary-Responsbility" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Primary Responsibility</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Amount" value="Amount" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Amount (in Cr)</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="REP-EOI-Published" value="REP-EOI-Published" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> RFP/EOI Published</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Closed-Date" value="Closed-Date" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified date</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Closed-by" value="Closed-by" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified by</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Date-Created" value="Date-Created" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Created Date</label>
+                            </li>
+                        </ul>
+                    </form>
+                    <ul id="sortable2" class="sortable2 connectedSortable">
+                        <li style="pointer-events:none;" class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="name" value="name" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Opportunity Name</label>
+                            </li>
+                            <li style="pointer-events:none;" class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Primary-Responsbility" value="Primary-Responsbility" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Primary Responsibility</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Amount" value="Amount" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Amount (in Cr)</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="REP-EOI-Published" value="REP-EOI-Published" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> RFP/EOI Published</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Closed-Date" value="Closed-Date" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified date</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Closed-by" value="Closed-by" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified by</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Date-Created" value="Date-Created" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Created Date</label>
+                            </li>
+                    </ul>
+                </div>
+            </section>
+            <div style=" padding-top: 10px;padding-bottom: 20px;padding-left: 20px;">
+                <button class="settings_btn1" type="button" onclick="commitFilter();">Save</button>
+                <button style="margin-left: 10px;" class="settings_btn2" type="button" onclick="openSettingDialog('discard')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pending_setting_myModal" class="setting-modal">
+        <!-- Modal content -->
+        <div class="setting-modal-content">
+            <span class="closeSetting" onclick="openPendingSettingsDialog('close')">&times;</span>
+
+            <h2 class="setting_heading">Drag / Drop Columns to be Displayed / Hidden</h2>
+            <p class="setting_subhead">Select 7 columns for the table</p>
+            <div class="search-column-container">
+                <input type="text" id="search-column2" placeholder="Search here" />
+                <i class="fa fa-search"></i>
+            </div>
+            <div class="search-column-heading-container">
+                <h2 class="search-column-heading">Displayed</h2>
+                <h2 class="search-column-heading">Hidden</h2>
+            </div>
+            <!-- <hr style="color: #D1D0CE"> -->
+            <section class="section">
+                <div class="opportunity-settings" id="pending-settings">
+                    <form class="pending-settings-form sort-column">
+                        <input type="hidden" name="settings-section" class="pending-settings-section" value="">
+                        <input type="hidden" name="settings-type" class="pending-settings-type" value="">
+                        <input type="hidden" name="settings-type-value" class="pending-settings-type-value" value="">
+                        <ul id="sortable1" class="sortable1 connectedSortable ui-sortable">
+                            <li style="pointer-events:none;" class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="name" value="name" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Opportunity Name</label>
+                            </li>
+                            <li style="pointer-events:none;" class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Primary-Responsbility" value="Primary-Responsbility" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Primary Responsibility</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Amount" value="Amount" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Amount (in Cr)</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="REP-EOI-Published" value="REP-EOI-Published" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> RFP/EOI Published</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Closed-Date" value="Closed-Date" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified date</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Closed-by" value="Closed-by" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified by</label>
+                            </li>
+                            <li class="ui-sortable-handle">
+                                <input class="settingInputs" type="checkbox" id="name-select" name="Date-Created" value="Date-Created" checked="True" style="display: none">
+                                <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Created Date</label>
+                            </li>
+                        </ul>
+                    </form>
+                    <ul id="sortable2" class="sortable2 connectedSortable ui-sortable">
+                        <li style="pointer-events:none;" class="ui-sortable-handle">
+                            <input class="settingInputs" type="checkbox" id="name-select" name="name" value="name" checked="True" style="display: none">
+                            <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Opportunity Name</label>
+                        </li>
+                        <li style="pointer-events:none;" class="ui-sortable-handle">
+                            <input class="settingInputs" type="checkbox" id="name-select" name="Primary-Responsbility" value="Primary-Responsbility" checked="True" style="display: none">
+                            <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Primary Responsibility</label>
+                        </li>
+                        <li class="ui-sortable-handle">
+                            <input class="settingInputs" type="checkbox" id="name-select" name="Amount" value="Amount" checked="True" style="display: none">
+                            <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Amount (in Cr)</label>
+                        </li>
+                        <li class="ui-sortable-handle">
+                            <input class="settingInputs" type="checkbox" id="name-select" name="REP-EOI-Published" value="REP-EOI-Published" checked="True" style="display: none">
+                            <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> RFP/EOI Published</label>
+                        </li>
+                        <li class="ui-sortable-handle">
+                            <input class="settingInputs" type="checkbox" id="name-select" name="Closed-Date" value="Closed-Date" checked="True" style="display: none">
+                            <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified date</label>
+                        </li>
+                        <li class="ui-sortable-handle">
+                            <input class="settingInputs" type="checkbox" id="name-select" name="Closed-by" value="Closed-by" checked="True" style="display: none">
+                            <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified by</label>
+                        </li>
+                        <li class="ui-sortable-handle">
+                            <input class="settingInputs" type="checkbox" id="name-select" name="Date-Created" value="Date-Created" checked="True" style="display: none">
+                            <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Created Date</label>
+                        </li>
+                    </ul>
+                </div>
+
+            </section>
+            <div style=" padding-top: 10px;padding-bottom: 20px;padding-left: 20px;">
+                <button class="settings_btn1" type="button" onclick="commitPendingFilter();">Save</button>
+                <button style="margin-left: 10px;" class="settings_btn2" type="button" onclick="openPendingSettingsDialog('discard')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="filter_myModal" class="filter_modal">
+        <!-- Modal content -->
+        <div class="filtermodal-content">
+            <span class="filterclose" onclick="openFilterDialog('close')" style="cursor:pointer;font-size:18px;float: right;">&times;</span>
+            <form class="opportunity-filter">
+
+                <input type="hidden" class="filter-type" name="type" value="" />
+                <input type="hidden" class="filter-value" name="value" value="" />
+                <input type="hidden" class="filter-status" name="status" value="" />
+
+                <h2 class="filterheading">Filter</h2>
+                <p class="filtersubhead">Fill out the following details</p>
+                <hr class="filtersolid">
+                <section class="filtersection" style="margin-top: 10px;">
+                    <div class="filter-body" style="padding-top: 10px; padding-right: 15px; margin-bottom: 20px; display: block; max-height: 350px; overflow: hidden; overflow-y: scroll"></div>
+                    <div>
+                        <button class="btn1" type="button" id="filter_submit" onclick="openFilterDialog('submit')">Filter</button>
+                        <button class="btn2" type="button" id="filter_discard" onclick="openFilterDialog('close')" style="border-color: #8a8a8a">Close</button>
+                        <a id="filter_clear" class="filter_clear">Clear Filter</a>
+                    </div>
+                </section>
+            </form>
+        </div>
+
+    </div>
 
 
-global $current_user, $sugar_version, $sugar_config, $beanFiles;
+    <div id="pending_filter_myModal" class="filter_modal">
+        <!-- Modal content -->
+        <div class="filtermodal-content">
+            <span class="filterclose" onclick="openPendingFilterDialog('close')" style="cursor:pointer;font-size:18px;float: right;">&times;</span>
+            <form class="pending-filter">
+
+                <input type="hidden" class="filter-type" name="type" value="" />
+                <input type="hidden" class="filter-value" name="value" value="" />
+                <input type="hidden" class="filter-status" name="status" value="" />
+
+                <h2 class="filterheading">Filter</h2>
+                <p class="filtersubhead">Fill out the following details</p>
+                <hr class="filtersolid">
+                <section class="filtersection" style="margin-top: 10px;">
+                    <div class="filter-body" style="padding-top: 10px; padding-right: 15px; margin-bottom: 20px; display: block; max-height: 350px; overflow: hidden; overflow-y: scroll"></div>
+                    <div>
+                        <button class="btn1" type="button" id="filter_submit" onclick="openPendingFilterDialog('submit')">Filter</button>
+                        <button class="btn2" type="button" id="filter_discard" onclick="openPendingFilterDialog('close')" style="border-color: #8a8a8a">Close</button>
+                        <a id="filter_clear" class="filter_clear">Clear Filter</a>
+                    </div>        
+                </section>
+            </form>
+        </div>
+
+    </div>
 
 
-require_once('include/MySugar/MySugar.php');
+    <!-- Modal content -->
+    <div id="deSelectModal" class="desModal">
+        <!-- Modal content -->
+        <div class="deselect-modal-content">
+            <span class="deselectclose" onclick="openDeselectDialog('close')">&times;</span>
+            <form>
+                    <div id="opportunity_info">
+                        <!-- /.col-md-12 -->
+                    </div>
+                    <input type="hidden" id="hidden_multi_select" value="" />
+                    <input name="hidden_user" id="hidden_user" style="cursor: pointer;padding-right: 40px;" onclick="deselectDropDownClicked()" readonly/>
+                    <i class="fa fa-caret-down icon-dropdown-deselect" style="cursor: pointer;" id="deselect-drop-icon" onclick="clearDeselectDropDownValue()"></i>
+                    <select id="deselect_members" name="multi_search_filter" onfocusout="deselectDropDownClicked()" multiple class="form-control selectpicker" 
+                                                 style="width:250px;
+                                                        padding: 0px;
+                                                        border-color: #dee0e3;
+                                                        background: white;
+                                                        position: absolute;
+                                                        height: 105px !important;
+                                                        ">
+                    </select>
+                    <br><div style="height: 20px;"></div>
+                    <div>
+                        <button class="saveBtnDeselect" type="button" onclick="openDeselectDialog('submit')">Save</button>
+                        <button class="submitBtnDeselect" type="button" onclick="openDeselectDialog('discard')">Close</button>
+                    </div>
+                </section>
+            </form>
+        </div>
 
-// build dashlet cache file if not found
-if (!is_file($cachefile = sugar_cached('dashlets/dashlets.php'))) {
-    require_once('include/Dashlets/DashletCacheBuilder.php');
+    </div>
 
-    $dc = new DashletCacheBuilder();
-    $dc->buildCache();
-}
-require_once $cachefile;
+    <!-- The Modal -->
+    <div id="delegatemyModel" class="delegatemodal">
+        <!-- Modal content -->
+        <div class="delegatemodal-content">
+            <span class="delegateclose" id="delegateclose">&times;</span>
+            <form>
+                <input type="hidden" id="hidden_value" name="hidden_value" />
+                <h2 class="delegateheading">Delegate</h2>
+                <p class="delegatesubhead">Delegated member will be able to perform action on your behalf</p>
+                <section style="margin-top: 15px;">
+                    <div class="delegatetable-container">
+                        <div class="delegetable-item-table">
+                            <div id="delegated_info"></div>
+                        </div>
+                        <!-- <div class="delegate-item-button">
+                            <button style="margin-left: 100px; margin-bottom: 10px; margin-top: 20px;" class="btn2" type="submit" href="/">Remove</button>
+                        </div> -->
+                    </div>
+                    <div style="margin-top: 30px; margin-left: 20px;">
+                        <div style="width: 36%;float: left;">
+                            <label for="Select_Proxy">Select Proxy</label><br>
+                            <select class="delegateselect" id="Select_Proxy">
 
-require('modules/Home/dashlets.php');
-
-$pages = $current_user->getPreference('pages', 'Home');
-$dashlets = $current_user->getPreference('dashlets', 'Home');
-
-$defaultHomepage = false;
-// BEGIN fill in with default homepage and dashlet selections
-
-$hasUserPreferences = (!isset($pages) || empty($pages) || !isset($dashlets) || empty($dashlets)) ? false : true;
-
-if (!$hasUserPreferences) {
-    $dashlets = array();
-
-    //list of preferences to move over and to where
-    $prefstomove = array(
-        'mypbss_date_start' => 'MyPipelineBySalesStageDashlet',
-        'mypbss_date_end' => 'MyPipelineBySalesStageDashlet',
-        'mypbss_sales_stages' => 'MyPipelineBySalesStageDashlet',
-        'mypbss_chart_type' => 'MyPipelineBySalesStageDashlet',
-        'lsbo_lead_sources' => 'OpportunitiesByLeadSourceByOutcomeDashlet',
-        'lsbo_ids' => 'OpportunitiesByLeadSourceByOutcomeDashlet',
-        'pbls_lead_sources' => 'OpportunitiesByLeadSourceDashlet',
-        'pbls_ids' => 'OpportunitiesByLeadSourceDashlet',
-        'pbss_date_start' => 'PipelineBySalesStageDashlet',
-        'pbss_date_end' => 'PipelineBySalesStageDashlet',
-        'pbss_sales_stages' => 'PipelineBySalesStageDashlet',
-        'pbss_chart_type' => 'PipelineBySalesStageDashlet',
-        'obm_date_start' => 'OutcomeByMonthDashlet',
-        'obm_date_end' => 'OutcomeByMonthDashlet',
-        'obm_ids' => 'OutcomeByMonthDashlet');
-
-    //upgrading from pre-5.0 homepage
-    $old_columns = $current_user->getPreference('columns', 'home');
-    $old_dashlets = $current_user->getPreference('dashlets', 'home');
-
-    if (isset($old_columns) && !empty($old_columns) && isset($old_dashlets) && !empty($old_dashlets)) {
-        $columns = $old_columns;
-        $dashlets = $old_dashlets;
-
-        // resetting old columns and dashlets to have no preference and data
-        $old_columns = array();
-        $old_dashlets = array();
-        $current_user->setPreference('columns', $old_columns, 0, 'home');
-        $current_user->setPreference('dashlets', $old_dashlets, 0, 'home');
-    } else {
-        // This is here to get Sugar dashlets added above the rest
-        $dashlets[create_guid()] = array('className' => 'SugarFeedDashlet',
-            'module' => 'SugarFeed',
-            'forceColumn' => 1,
-            'fileLocation' => $dashletsFiles['SugarFeedDashlet']['file'],
-        );
-
-        foreach ($defaultDashlets as $dashletName=>$module) {
-            // clint - fixes bug #20398
-            // only display dashlets that are from visibile modules and that the user has permission to list
-            $myDashlet = new MySugar($module);
-            $displayDashlet = $myDashlet->checkDashletDisplay();
-            if (isset($dashletsFiles[$dashletName]) && $displayDashlet) {
-                $options = array();
-                $prefsforthisdashlet = array_keys($prefstomove, $dashletName);
-                foreach ($prefsforthisdashlet as $pref) {
-                    $options[$pref] = $current_user->getPreference($pref);
-                }
-                $dashlets[create_guid()] = array('className' => $dashletName,
-                    'module' => $module,
-                    'forceColumn' => 0,
-                    'fileLocation' => $dashletsFiles[$dashletName]['file'],
-                    'options' => $options);
-            }
-        }
-
-        $count = 0;
-        $columns = array();
-        $columns[0] = array();
-        $columns[0]['width'] = '60%';
-        $columns[0]['dashlets'] = array();
-        $columns[1] = array();
-        $columns[1]['width'] = '40%';
-        $columns[1]['dashlets'] = array();
-
-        foreach ($dashlets as $guid=>$dashlet) {
-            if ($dashlet['forceColumn'] == 0) {
-                array_push($columns[0]['dashlets'], $guid);
-            } else {
-                array_push($columns[1]['dashlets'], $guid);
-            }
-            $count++;
-        }
-    }
+                            </select>
 
 
+                            <div style="margin-top: -1px;">
+                                <!-- <a style="color: black;font-size: 10px;" href="#">Delegated Prevlously - <span style="font-size: 10px;font-weight: bold;">No</span></a> -->
+                            </div>
+                        </div>
+                        <div style="width: 50%;float: left; margin-left: 20px;">
+                            <label>Permissions to</label><br>
+                            <input style="width: 15px;" type="checkbox" id="delegate_Edit" name="delegate_Edit" value="Edit" checked>
+                            <label for="Edit" style="margin: 0;"> Edit(Approve/Reject)</label>
+                        </div>
+                    </div>
+                    <div style="margin-top: 130px; margin-left: 20px;">
+                        <!-- <a style="color: #3090C7;" href="#">+ Add another proxy</a> -->
+                    </div>
+
+                    <div style="margin-top: 15px;padding-bottom: 20px;margin-left: 20px;">
+                        <a class="btn1" id="delegate_submit" style="padding: 5px 20px;">Save</a>
+                    </div>
+                </section>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Activity Delegate Modal -->
+    <div id="activityDelegatemyModel" class="delegatemodal">
+        <!-- Modal content -->
+        <div class="delegatemodal-content">
+            <span class="delegateclose" id="activityDelegateclose">&times;</span>
+            <form>
+                <input type="hidden" id="hidden_value" name="hidden_value" />
+                <h2 class="delegateheading">Delegate</h2>
+                <p class="delegatesubhead">Delegated member will be able to perform action on your behalf</p>
+                <section style="margin-top: 15px;">
+                    <div class="delegatetable-container">
+                        <div class="delegetable-item-table">
+                            <div id="activity_delegated_info"></div>
+                        </div>
+                        <!-- <div class="delegate-item-button">
+                            <button style="margin-left: 100px; margin-bottom: 10px; margin-top: 20px;" class="btn2" type="submit" href="/">Remove</button>
+                        </div> -->
+                    </div>
+                    <div style="margin-top: 30px; margin-left: 20px;">
+                        <div style="width: 36%;float: left;">
+                            <label for="Select_Proxy">Select Proxy</label><br>
+                            <select class="delegateselect Select_Proxy" id="activity_Select_Proxy">
+
+                            </select>
+
+                            <div style="margin-top: -1px;">
+                                <!-- <a style="color: black;font-size: 10px;" href="#">Delegated Prevlously - <span style="font-size: 10px;font-weight: bold;">No</span></a> -->
+                            </div>
+                        </div>
+                        <div style="width: 50%;float: left; margin-left: 20px;">
+                            <label>Permissions to</label><br>
+                            <input style="width: 15px;" type="checkbox" id="activity_delegate_Edit" name="activity_delegate_Edit" value="Edit" checked>
+                            <label for="Edit" style="margin: 0;"> Edit(Approve/Reject)</label>
+                        </div>
+                    </div>
+                    <div style="margin-top: 130px; margin-left: 20px;">
+                        <!-- <a style="color: #3090C7;" href="#">+ Add another proxy</a> -->
+                    </div>
+
+                    <div style="margin-top: 15px;padding-bottom: 20px;margin-left: 20px;">
+                        <a class="btn1" id="activity_delegate_submit" style="padding: 5px 20px;">Save</a>
+                    </div>
+                </section>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Sequence Flow -->
+    <div class="backdrop"></div>
+    <section class="white-bg status-display sequence-flow"></section>
 
 
-    $current_user->setPreference('dashlets', $dashlets, 0, 'Home');
-}
+    <!-- The Modal -->
+    <div id="approvalModal" class="approvalmodal">
+        <!-- Modal content -->
+        <div class="approvalmodal-content">
+            <span class="approvalclose" onClick="openApprovalDialog('close');">&times;</span>
+            <form class="approval-form" name="approval-form">
+                <div id="approval-data"></div>
+            </form>
+        </div>
+    </div>
 
-// handles upgrading from versions that had the 'Dashboard' module; move those items over to the Home page
-$pagesDashboard = $current_user->getPreference('pages', 'Dashboard');
-$dashletsDashboard = $current_user->getPreference('dashlets', 'Dashboard');
-if (!empty($pagesDashboard)) {
-    // move dashlets from the dashboard to be at the end of the home screen dashlets
-    foreach ($pagesDashboard[0]['columns'] as $dashboardColumnKey => $dashboardColumn) {
-        foreach ($dashboardColumn['dashlets'] as $dashletItem) {
-            $pages[0]['columns'][$dashboardColumnKey]['dashlets'][] = $dashletItem;
-        }
-    }
-    $pages = array_merge($pages, $pagesDashboard);
-    $current_user->setPreference('pages', $pages, 0, 'Home');
-}
-if (!empty($dashletsDashboard)) {
-    $dashlets = array_merge($dashlets, $dashletsDashboard);
-    $current_user->setPreference('dashlets', $dashlets, 0, 'Home');
-}
-if (!empty($pagesDashboard) || !empty($dashletsDashboard)) {
-    $current_user->resetPreferences('Dashboard');
-}
+    <!-- Activity Approval Modal -->
+    <div id="activityApprovalModal" class="approvalmodal">
+        <!-- Modal content -->
+        <div class="approvalmodal-content">
+            <span class="approvalclose" onClick="openActivityApprovalDialog('close');">&times;</span>
+            <form class="activity-approval-form" name="approval-form">
+                <div id="activity-approval-data"></div>
+            </form>
+        </div>
+    </div>
 
-if (empty($pages)) {
-    $pages = array();
-    $pageIndex = 0;
-    $pages[0]['columns'] = $columns;
-    $pages[0]['numColumns'] = '3';
-    $pages[0]['pageTitleLabel'] = 'LBL_HOME_PAGE_1_NAME';	// "My Sugar"
-    $pageIndex++;
-    $current_user->setPreference('pages', $pages, 0, 'Home');
-    $activePage = 0;
-}
+    <!-- RA Modal Container -->
+    <div id="reassignmentModal" class="raModal">
+        <!-- Modal content -->
+        <div class="ra-modal-content" id="size">
+            <span class="deselectclose" onclick="handleReassignmentDialog('close')">&times;</span>
+           <form>
+                    <!-- <input type="hidden" id="hidden_multi_select" value="" />
+                    <input name="hidden_user" id="hidden_user" style="cursor: pointer;padding-right: 40px;" onclick="deselectDropDownClicked()" readonly/> -->
+                    <input name="hidden_user" type="hidden" id="assigned_opp_id"/>
+                    <div class="reassignmentModal-header" style="margin-bottom: 30px;">
+                        <h3 style="margin:0; padding: 0;font-size: 20px;">Change the Assigned User</h3></br>
+                        <h4 id="ra_op_name" style="margin:0; font-size: 15px;">Opportunity Name</h4> </br>
+                        <h4 id="ass_name" style="margin:0; font-size: 15px;">Assigned User Name</h4> 
+                    </div>
+                    
+                    <h5 style="padding: 0">Re-assign User:</h5>
+                    <input type="text" id="assigned_to_new_c" style="width: 250px; padding: 15px 5px;"/>
+                    <br><div style="height: 20px;"></div>
+                    <div>
+                        <button class="saveBtnDeselect" type="button" onclick="handleReassignmentDialog('submit')">Save</button>
+                        <button class="submitBtnDeselect" type="button" onclick="handleReassignmentDialog('discard')">Close</button>
+                    </div>
+                </section>
+            </form>
+        </div>
 
-$sugar_smarty = new Sugar_Smarty();
+    </div>
 
-$activePage = 0;
+    <!--------------------------ACTIVIY ------------------------------------------->
 
-$divPages[] = $activePage;
+    <!-- Reminder Modal Container -->
+    <div id="reminderModal" class="desModal">
+        <!-- Modal content -->
+        <div class="deselect-modal-content">
+            <span class="deselectclose" onclick="openDeselectReminderDialog('close')">&times;</span>
+            <form>
+                    <div id="opportunity_info">
+                        <!-- /.col-md-12 -->
+                        <h2 class="deselectheading">Remote Teaching</h2><br>
+                <p class="deselectsubhead">Select a frequency and time for the reminder</p>
+                <hr class="deselectsolid">
+                <section class="deselectsection">
+                <table width="100%">
+                    <thead>
+                    <tr class="tabname">
+                        <th>Last updated</th>
+                        <th>Activity</th>
+                        <th>Subject</th>
+                        <th>Assigned to</th>
+                        <th>End Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="tabvalue">
+                        <td>02/03/2021</td>
+                        <td>Video Conference</td>
+                        <td>Had a video confernece with team</td>
+                        <td>Baljinder Singh</td>
+                        <td>23/02/2020</td>
+                        
+                        </tr>
+                    </tbody>
+                    </table>
+                    <br>
+                    <label for="Deselect-Members">Frequency</label><br>
+                    <select name="frequency" id="" style="width:250px;
+                                                        padding: 0px;
+                                                        border-color: #dee0e3;
+                                                        background: white;
+                                                        position: absolute;
+                                                        height: 30px !important;
+                                                        ">
+                    <option value="Daily">Daily</option>
+                    <option value="Onetime">One Time</option>
+                    <option value="weekly">weekly</option>
+                    </select>
+                    <br><div style="height: 20px;"></div>
+                    <label for="Deselect-Members">Time</label><br>
+                    <input type= "time" name="time" id="" style="width:250px;
+                                                        padding: 0px;
+                                                        border-color: #dee0e3;
+                                                        background: white;
+                                                        position: absolute;
+                                                        height: 30px !important;
+                                                        ">
+                    </input>
 
-$numCols = $pages[$activePage]['numColumns'];
+                    </div>
+                
+                    <!-- <input type="hidden" id="hidden_multi_select" value="" />
+                    <input name="hidden_user" id="hidden_user" style="cursor: pointer;padding-right: 40px;" onclick="deselectDropDownClicked()" readonly/>
+                    <i class="fa fa-caret-down icon-dropdown-deselect" style="cursor: pointer;" id="deselect-drop-icon" onclick="clearDeselectDropDownValue()"></i>
+                    <select id="deselect_members" name="multi_search_filter" onfocusout="deselectDropDownClicked()" multiple class="form-control selectpicker" 
+                                                 style="width:250px;
+                                                        padding: 0px;
+                                                        border-color: #dee0e3;
+                                                        background: white;
+                                                        position: absolute;
+                                                        height: 105px !important;
+                                                        ">
+                    </select> -->
+                    <br><div style="height: 20px;"></div>
+                    <div>
+                        <button class="saveBtnDeselect" type="button" onclick="openDeselectReminderDialog('submit')">Save</button>
+                        <button class="submitBtnDeselect" type="button" onclick="openDeselectReminderDialog('discard')">Close</button>
+                    </div>
+                </section>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Activity Columns & Filters -->
+    <div id="activity-settings-modal" class="setting-modal">
+        <!-- Modal content -->
+        <div class="setting-modal-content">
+            <span class="closeSetting" onclick="openActivitySettingDialog('close')">&times;</span>
+            <h2 class="setting_heading">Drag / Drop Columns to be Displayed / Hidden</h2>
+            <p class="setting_subhead">Select 7 columns for the table</p>
+            <!-- <hr style="color: #D1D0CE"> -->
+            <div class="search-column-container">
+                <input type="text" class="activity-search-column1" placeholder="Search here" />
+                <i class="fa fa-search"></i>
+            </div>
+            <div class="search-column-heading-container">
+                <h2 class="search-column-heading">Displayed</h2>
+                <h2 class="search-column-heading">Hidden</h2>
+            </div>
+            <section class="section">
+                <div class="opportunity-settings" id="activity-settings">
+                    
+                </div>
+            </section>
+            <div style=" padding-top: 10px;padding-bottom: 20px;padding-left: 20px;">
+                <button class="settings_btn1" type="button" onclick="commitActivityFilter();">Save</button>
+                <button style="margin-left: 10px;" class="settings_btn2" type="button" onclick="openActivitySettingDialog('discard')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="activity-pending-settings-modal" class="setting-modal">
+        <!-- Modal content -->
+        <div class="setting-modal-content">
+            <span class="closeSetting" onclick="openActivityPendingSettingsDialog('close')">&times;</span>
+
+            <h2 class="setting_heading">Drag / Drop Columns to be Displayed / Hidden</h2>
+            <p class="setting_subhead">Select 7 columns for the table</p>
+            <div class="search-column-container">
+                <input type="text" class="activity-search-column2" placeholder="Search here" />
+                <i class="fa fa-search"></i>
+            </div>
+            <div class="search-column-heading-container">
+                <h2 class="search-column-heading">Displayed</h2>
+                <h2 class="search-column-heading">Hidden</h2>
+            </div>
+            <!-- <hr style="color: #D1D0CE"> -->
+            <section class="section">
+                <div class="opportunity-settings" id="activity-pending-settings">
+                    
+                </div>
+
+            </section>
+            <div style=" padding-top: 10px;padding-bottom: 20px;padding-left: 20px;">
+                <button class="settings_btn1" type="button" onclick="commitActivityPendingFilter();">Save</button>
+                <button style="margin-left: 10px;" class="settings_btn2" type="button" onclick="openActivityPendingSettingsDialog('discard')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="activity-filter" class="filter_modal">
+        <!-- Modal content -->
+        <div class="filtermodal-content">
+            <span class="filterclose" onclick="openActivityFilterDialog('close')" style="cursor:pointer;font-size:18px;float: right;">&times;</span>
+            <form class="activity-filter">
+
+                <input type="hidden" class="filter-type" name="type" value="" />
+                <input type="hidden" class="filter-value" name="value" value="" />
+                <input type="hidden" class="filter-status" name="status" value="" />
+
+                <h2 class="filterheading">Filter</h2>
+                <p class="filtersubhead">Fill out the following details</p>
+                <hr class="filtersolid">
+                <section class="filtersection" style="margin-top: 10px;">
+                    <div class="filter-body" style="padding-top: 10px; padding-right: 15px; margin-bottom: 20px; display: block; max-height: 350px; overflow: hidden; overflow-y: scroll"></div>
+                    <div>
+                        <button class="btn1" type="button" id="filter_submit" onclick="openActivityFilterDialog('submit')">Filter</button>
+                        <button class="btn2" type="button" id="filter_discard" onclick="openActivityFilterDialog('close')" style="border-color: #8a8a8a">Close</button>
+                        <a id="filter_clear" class="clear-filter" data-type="activity">Clear Filter</a>
+                    </div>
+                </section>
+            </form>
+        </div>
+
+    </div>
 
 
-$count = 0;
-$dashletIds = array(); // collect ids to pass to javascript
-$display = array();
+    <div id="activity-pending-filter" class="filter_modal">
+        <!-- Modal content -->
+        <div class="filtermodal-content">
+            <span class="filterclose" onclick="openActivityPendingFilterDialog('close')" style="cursor:pointer;font-size:18px;float: right;">&times;</span>
+            <form class="activity-pending-filter">
 
-foreach ($pages[$activePage]['columns'] as $colNum => $column) {
-    if ($colNum == $numCols) {
-        break;
-    }
-    $display[$colNum]['width'] = $column['width'];
-    $display[$colNum]['dashlets'] = array();
-    foreach ($column['dashlets'] as $num => $id) {
-        // clint - fixes bug #20398
-        // only display dashlets that are from visibile modules and that the user has permission to list
-        if (!empty($id) && isset($dashlets[$id]) && is_file($dashlets[$id]['fileLocation'])) {
-            $module = 'Home';
-            if (!empty($dashletsFiles[$dashlets[$id]['className']]['module'])) {
-                $module = $dashletsFiles[$dashlets[$id]['className']]['module'];
-            }
-            // Bug 24772 - Look into the user preference for the module the dashlet is a part of in case
-            //             of the Report Chart dashlets.
-            elseif (!empty($dashlets[$id]['module'])) {
-                $module = $dashlets[$id]['module'];
-            }
+                <input type="hidden" class="filter-type" name="type" value="" />
+                <input type="hidden" class="filter-value" name="value" value="" />
+                <input type="hidden" class="filter-status" name="status" value="" />
 
-            $myDashlet = new MySugar($module);
+                <h2 class="filterheading">Filter</h2>
+                <p class="filtersubhead">Fill out the following details</p>
+                <hr class="filtersolid">
+                <section class="filtersection" style="margin-top: 10px;">
+                    <div class="filter-body" style="padding-top: 10px; padding-right: 15px; margin-bottom: 20px; display: block; max-height: 350px; overflow: hidden; overflow-y: scroll"></div>
+                    <div>
+                        <button class="btn1" type="button" id="filter_submit" onclick="openActivityPendingFilterDialog('submit')">Filter</button>
+                        <button class="btn2" type="button" id="filter_discard" onclick="openActivityPendingFilterDialog('close')" style="border-color: #8a8a8a">Close</button>
+                        <a id="filter_clear" class="clear-filter" data-type="activity-pending">Clear Filter</a>
+                    </div>        
+                </section>
+            </form>
+        </div>
 
-            if ($myDashlet->checkDashletDisplay()) {
-                require_once($dashlets[$id]['fileLocation']);
+    </div>
 
+    <!-- Modal content Tag pop-up Activity-->
+    <div id="tag-activity-modal" class="desModal">
+        <!-- Modal content -->
+        <div class="deselect-modal-content">
+            <span class="deselectclose" onclick="handleTagDialog('close')">&times;</span>
+            <form>
+                    <div id="opportunity_info">
+                        <!-- /.col-md-12 -->
+                        <h2 class="deselectheading">Opp Name</h2><br>
+                        <p class="deselectsubhead">Tag Users for Edit/View Permissions</p>
+                        <hr class="deselectsolid">
+                        <section class="deselectsection">
+                        <table width="100%">
+                            <thead>
+                                <tr class="tabname">
+                                    <th>Primary Responsbility</th>
+                                    <th>Amount (in Cr)</th>
+                                    <th>RFP/EOI Published</th>
+                                    <th>Modified Date</th>
+                                    <th>Modified By</th>
+                                    <th>Date Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                        <hr class="deselectsolid">
+                        <label for="Deselect-Members">Select Members</label><br>
+                    </div>
+                    <!-- <input type="hidden" id="hidden_multi_select" value="" />
+                    <input name="hidden_user" id="hidden_user" style="cursor: pointer;padding-right: 40px;" onclick="deselectDropDownClicked()" readonly/>
+                    <i class="fa fa-caret-down icon-dropdown-deselect" style="cursor: pointer;" id="deselect-drop-icon" onclick="clearDeselectDropDownValue()"></i>
+                    <select id="deselect_members" name="multi_search_filter" onfocusout="deselectDropDownClicked()" multiple class="form-control selectpicker" 
+                                                 style="width:250px;
+                                                        padding: 0px;
+                                                        border-color: #dee0e3;
+                                                        background: white;
+                                                        position: absolute;
+                                                        height: 105px !important;
+                                                        "> -->
+                    </select>
+                    <br><div style="height: 20px;"></div>
+                    <div>
+                        <button class="saveBtnDeselect" type="button" onclick="handleTagDialog('submit')">Save</button>
+                        <button class="submitBtnDeselect" type="button" onclick="handleTagDialog('discard')">Close</button>
+                    </div>
+                </section>
+            </form>
+        </div>
 
-                $dashlet = new $dashlets[$id]['className']($id, (isset($dashlets[$id]['options']) ? $dashlets[$id]['options'] : array()));
-                // Need to add support to dynamically display/hide dashlets
-                // If it has a method 'shouldDisplay' we will call it to see if we should display it or not
-                if (method_exists($dashlet, 'shouldDisplay')) {
-                    if (!$dashlet->shouldDisplay()) {
-                        // This dashlet doesn't want us to show it, skip it.
-                        continue;
-                    }
-                }
+    </div>
 
-                array_push($dashletIds, $id);
-
-                $dashlets = $current_user->getPreference('dashlets', 'Home'); // Using hardcoded 'Home' because DynamicAction.php $_REQUEST['module'] value is always Home
-                $lvsParams = array();
-                if (!empty($dashlets[$id]['sort_options'])) {
-                    $lvsParams = $dashlets[$id]['sort_options'];
-                }
-
-                $dashlet->process($lvsParams);
-                try {
-                    $display[$colNum]['dashlets'][$id]['display'] = $dashlet->display();
-                    $display[$colNum]['dashlets'][$id]['displayHeader'] = $dashlet->getHeader();
-                    $display[$colNum]['dashlets'][$id]['displayFooter'] = $dashlet->getFooter();
-                    if ($dashlet->hasScript) {
-                        $display[$colNum]['dashlets'][$id]['script'] = $dashlet->displayScript();
-                    }
-                } catch (Exception $ex) {
-                    $display[$colNum]['dashlets'][$id]['display'] = $ex->getMessage();
-                    $display[$colNum]['dashlets'][$id]['displayHeader'] = $dashlet->getHeader();
-                    $display[$colNum]['dashlets'][$id]['displayFooter'] = $dashlet->getFooter();
-                }
-            }
-        }
-    }
-}
-
-
-$i = 0;
-    while ($i < count($pages)) {
-        if ($i == 0) {
-            $pageTabs[$i]['pageTitle'] = $GLOBALS['app_strings']['LBL_SUITE_DASHBOARD'];
-//            $pageTabs[$i]['active'] = 'current';
-        } else {
-            $pageTabs[$i]['pageTitle'] = $pages[$i]['pageTitle'];
-            $divPages[] = $i;
-        }
-        $i++;
-    }
-
-if (!empty($sugar_config['lock_homepage']) && $sugar_config['lock_homepage'] == true) {
-    $sugar_smarty->assign('lock_homepage', true);
-}
-
-$dashboardActions = $GLOBALS['app_strings']['LBL_SUITE_DASHBOARD_ACTIONS'];
-
-$sugar_smarty->assign('sugarVersion', $sugar_version);
-$sugar_smarty->assign('sugarFlavor', $sugar_flavor);
-$sugar_smarty->assign('currentLanguage', $GLOBALS['current_language']);
-$sugar_smarty->assign('serverUniqueKey', $GLOBALS['server_unique_key']);
-$sugar_smarty->assign('imagePath', $GLOBALS['image_path']);
-
-$sugar_smarty->assign('maxCount', empty($sugar_config['max_dashlets_homepage']) ? 15 : $sugar_config['max_dashlets_homepage']);
-$sugar_smarty->assign('dashletCount', $count);
-$sugar_smarty->assign('dashletIds', '["' . implode('","', $dashletIds) . '"]');
-$sugar_smarty->assign('columns', $display);
-
-global $theme;
-$sugar_smarty->assign('theme', $theme);
-
-$sugar_smarty->assign('divPages', $divPages);
-$sugar_smarty->assign('activePage', $activePage);
-$sugar_smarty->assign('dashboardPages', $pageTabs);
-$sugar_smarty->assign('dashboardActions', $dashboardActions);
-$sugar_smarty->assign('current_user', $current_user->id);
-
-$sugar_smarty->assign('lblAdd', $GLOBALS['app_strings']['LBL_ADD_BUTTON']);
-$sugar_smarty->assign('lblAddTab', $GLOBALS['app_strings']['LBL_ADD_TAB']);
-$sugar_smarty->assign('lblAddDashlets', $GLOBALS['app_strings']['LBL_ADD_DASHLETS']);
-$sugar_smarty->assign('lblLnkHelp', $GLOBALS['app_strings']['LNK_HELP']);
-
-$sugar_smarty->assign('mod', return_module_language($GLOBALS['current_language'], 'Home'));
-$sugar_smarty->assign('app', $GLOBALS['app_strings']);
-$sugar_smarty->assign('module', 'Home');
-
-//custom chart code
-//Get the RGraph libraries (add this more elegantly later to check exactly what is needed, not just all).
-require_once('include/SuiteGraphs/RGraphIncludes.php');
-
-require_once('include/SugarCharts/SugarChartFactory.php');
-$sugarChart = SugarChartFactory::getInstance();
-if ($sugarChart) {
-    $resources = $sugarChart->getChartResources();
-    $mySugarResources = $sugarChart->getMySugarChartResources();
-    $sugar_smarty->assign('chartResources', $resources);
-    $sugar_smarty->assign('mySugarChartResources', $mySugarResources);
-}
-
-if (file_exists('custom/themes/' . $theme . '/tpls/MySugar.tpl')) {
-    echo $sugar_smarty->fetch('custom/themes/' . $theme . '/tpls/MySugar.tpl');
-} elseif (file_exists('custom/include/MySugar/tpls/MySugar.tpl')) {
-    echo $sugar_smarty->fetch('custom/include/MySugar/tpls/MySugar.tpl');
-} elseif (file_exists('themes/' . $theme . '/tpls/MySugar.tpl')) {
-    echo $sugar_smarty->fetch('themes/' . $theme . '/tpls/MySugar.tpl');
-} elseif (file_exists('include/MySugar/tpls/MySugar.tpl')) {
-    echo $sugar_smarty->fetch('include/MySugar/tpls/MySugar.tpl');
-} elseif (file_exists('custom/themes/' . $theme . '/include/MySugar/tpls/MySugar.tpl')) {
-    echo $sugar_smarty->fetch('custom/themes/' . $theme . '/include/MySugar/tpls/MySugar.tpl');
-} else {
-    $GLOBALS['log']->fatal('MySugar.tpl not found');
-}
-
-
-//init the quickEdit listeners after the dashlets have loaded on home page the first time
-echo"<script>if(typeof(qe_init) != 'undefined'){qe_init();}</script>";
-echo"<script> $( '#pageNum_'+ 0 +'_anchor').addClass( 'current' );</script>";
-echo"<script> $( '#pageNum_'+ 0).addClass( 'active' );</script>";
+    <script src="modules/Home/js/script.js"></script>
+    <script src="modules/Home/js/functions.js"></script>
+    <script src="modules/Home/js/activityFunction.js"></script>
+</body>
+</html>

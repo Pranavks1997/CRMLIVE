@@ -87,9 +87,160 @@ SUGAR.measurements = {
   }
 };
 
-SUGAR.loaded_once = false;
 
+
+SUGAR.loaded_once = false;
+// $('#check ').hide();
 $(document).ready(function () {
+ 
+  
+  $(document).on('click','#feed',function(){
+    // $('#myModal').html('');
+    $("html").append(`<div id="checkk"><style>
+
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>
+<body>
+
+
+
+
+
+
+<div id="myModal" class="modal">
+
+ 
+  <div class="modal-content">
+    <span id="close_feed" class="close">&times;</span>
+     <center><h3>Issues<span style='color:red;'>*</span></h3></center>
+                               <center>  <textarea id="get_comments_feedback" rows="4" cols="50"></textarea> </center>
+                               <center> <input type="button" class="button" id="submit_comment_feedback" style="margin-top:10px;" value="Submit Issues"/></center>
+                                
+  </div>
+
+</div>
+</div>
+
+
+</body>`);
+
+
+
+
+// Get the modal
+var modal = document.getElementById("myModal");
+
+
+
+
+// Get the <span> element that closes the modal
+var span = document.getElementById("close_feed");
+
+// When the user clicks the button, open the modal 
+
+  
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+var modal = document.getElementById("myModal");
+
+
+
+  modal.style.display = "block";
+
+
+
+
+  });
+  
+  $(document).on('click','#submit_comment_feedback',function(){
+  
+  var date_time=Date();
+  var base_url = window.location.href;
+  var issue=$("#get_comments_feedback").val();
+  var opp_id=$('#EditView input[name=record]').val();
+  if(issue!=''){
+   $.ajax({
+        url : 'index.php?module=Opportunities&action=feedback',
+        type : 'POST',
+        data: {
+            
+            date_time,
+            
+            base_url,
+            issue,
+            opp_id
+            
+        },
+        success : function(data){
+        alert (data);
+       
+          var modal = document.getElementById("myModal");
+            modal.style.display = "none";
+            $("#get_comments_feedback").val('');
+           
+            
+        }
+         
+     });
+  }else{
+    alert ("Please write some issues");
+  }
+  
+});
+  
+  
+  
+  var modal = document.getElementById("myModal");
+ 
+  $(document).on('click','#close_feed',function(){
+    
+    modal.style.display = "none";
+  })
+  
+    
+
+  
   loadSidebar();
   $("ul.clickMenu").each(function (index, node) {
     $(node).sugarActionMenu();

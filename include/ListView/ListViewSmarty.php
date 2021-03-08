@@ -56,7 +56,7 @@ class ListViewSmarty extends ListViewDisplay
     public $tpl;
     public $moduleString;
     public $export = true;
-    public $delete = true;
+    public $delete = false;
     public $select = true;
     public $mailMerge = true;
     public $email = true;

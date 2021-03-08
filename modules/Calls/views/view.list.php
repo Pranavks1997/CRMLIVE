@@ -47,6 +47,7 @@ class CallsViewList extends ViewList
 {
     public function listViewProcess()
     {
+        echo '<script type="text/javascript" src="custom/modules/Calls/view_list.js"></script>';
         $this->processSearchForm();
         $this->lv->searchColumns = $this->searchForm->searchColumns;
 

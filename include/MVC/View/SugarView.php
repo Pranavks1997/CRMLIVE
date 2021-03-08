@@ -108,7 +108,7 @@ class SugarView
         'show_title' => true,
         'show_subpanels' => false,
         'show_search' => true,
-        'show_footer' => true,
+        'show_footer' => false,
         'show_javascript' => true,
         'view_print' => false,
     );

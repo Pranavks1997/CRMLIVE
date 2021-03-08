@@ -566,6 +566,16 @@
       'source' => 'non-db',
       'module' => 'AOS_Contracts',
     ),
+    'opportunities_documents_1' => 
+    array (
+      'name' => 'opportunities_documents_1',
+      'type' => 'link',
+      'relationship' => 'opportunities_documents_1',
+      'source' => 'non-db',
+      'module' => 'Opportunities',
+      'bean_name' => 'Opportunity',
+      'vname' => 'LBL_OPPORTUNITIES_DOCUMENTS_1_FROM_OPPORTUNITIES_TITLE',
+    ),
   ),
   'indices' => 
   array (

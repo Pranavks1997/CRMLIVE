@@ -115,9 +115,6 @@ array(
             'fields' =>
             array(
               array(
-                'name' => 'direction',
-              ),
-              array(
                 'name' => 'status',
               ),
             ),

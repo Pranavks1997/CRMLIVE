@@ -987,6 +987,19 @@ class Scheduler extends SugarBean
         $sched16->modified_user_id = '1';
         $sched16->catch_up = '0';
         $sched16->save();
+        
+        
+        $sched19 = new Scheduler();
+        $sched19->name = $mod_strings['LBL_ACTIVITY'];
+        $sched19->job = 'function::activityDate';
+        $sched19->date_time_start = create_date(2015, 1, 1) . ' ' . create_time(0, 0, 1);
+        $sched19->date_time_end = null;
+        $sched19->job_interval = '*/15::*::*::*::*';
+        $sched19->status = 'Active';
+        $sched19->created_by = '1';
+        $sched19->modified_user_id = '1';
+        $sched19->catch_up = '0';
+        $sched19->save();
     }
 
     ////	END SCHEDULER HELPER FUNCTIONS

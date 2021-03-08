@@ -82,6 +82,7 @@ $job_strings = array(
     16 => 'trimSugarFeeds',
     17 => 'syncGoogleCalendar',
     18 => 'runElasticSearchIndexerScheduler',
+    19 => 'activityDate',
 );
 
 /**
@@ -520,6 +521,49 @@ function trimSugarFeeds()
     return true;
 }
 
+function activityDate(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+        	$GLOBALS['db'];
+    		$sql = 'SELECT * FROM `activity_approval_table` WHERE `approval_status`="0" AND status="Apply For Completed" AND CURRENT_DATE > sent_time + INTERVAL 7 day';
+    		$result = $GLOBALS['db']->query($sql);
+    		if($result->num_rows>0){
+				while($rows = $GLOBALS['db']->fetchByAssoc($result) )
+				{
+					$update_calls_query="UPDATE calls_cstm SET status_new_c ='Overdue' WHERE id_c='".$rows['acc_id']."'";
+					$res_update = $db->query($update_calls_query);
+					$update_activity_query="UPDATE activity_approval_table SET approval_status ='3' WHERE acc_id='".$rows['acc_id']."'";
+					$res_calls_update = $db->query($update_activity_query);
+				}
+    		}
+    	    $sql1 = 'SELECT t1.acc_id,t2.activity_date_c FROM activity_approval_table as t1 LEFT JOIN calls_cstm as t2 ON t2.id_c = t1.acc_id WHERE t1.approval_status="2" AND t1.status="Apply For Completed" AND t2.activity_date_c < CURRENT_DATE';
+    		$result1 = $GLOBALS['db']->query($sql1);
+    		if($result1->num_rows>0){
+				while($rows = $GLOBALS['db']->fetchByAssoc($result1) )
+				{
+				    $update_calls_query1="UPDATE calls_cstm SET status_new_c ='Overdue' WHERE id_c='".$rows['acc_id']."'";
+					$res_update1 = $db->query($update_calls_query1);
+				
+				}
+    		}
+    		
+    		$sql2 = 'SELECT t1.id, t2.id_c,t2.status_new_c,t2.activity_date_c FROM calls as t1 LEFT JOIN calls_cstm as t2 ON t2.id_c = t1.id WHERE deleted=0 AND t2.status_new_c="Upcoming" AND t2.activity_date_c < CURRENT_DATE AND t2.id_c NOT IN (SELECT acc_id FROM activity_approval_table)';
+    		$result2 = $GLOBALS['db']->query($sql2);
+    		if($result2->num_rows>0){
+				while($rows = $GLOBALS['db']->fetchByAssoc($result2) )
+				{
+				    $update_calls_query2="UPDATE calls_cstm SET status_new_c ='Overdue' WHERE id_c='".$rows['id_c']."'";
+					$res_update2 = $db->query($update_calls_query2);
+				
+				}
+    		}
+    		
+    		var_dump($res_update1);
+    	}catch(Exception $e){
+    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    	}
+    	return true;
+    }
 
 /**
  * + * Job 17

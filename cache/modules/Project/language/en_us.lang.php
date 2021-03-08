@@ -1,5 +1,5 @@
 <?php
-// created: 2020-12-07 11:31:50
+// created: 2021-03-08 16:28:10
 $mod_strings = array (
   'LBL_SECURITYGROUPS' => 'Security Groups',
   'LBL_SECURITYGROUPS_SUBPANEL_TITLE' => 'Security Groups',
@@ -127,4 +127,5 @@ $mod_strings = array (
   'LBL_AM_PROJECTTEMPLATES_PROJECT_1_FROM_PROJECT_TITLE' => 'Project Templates: Project from Project Title',
   'LBL_AOS_QUOTES_PROJECT' => 'Quotes: Project',
   'LBL_ACCOUNTS' => 'Departments',
+  'LBL_CALLS' => 'Activities',
 );

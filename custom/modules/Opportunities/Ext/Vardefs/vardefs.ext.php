@@ -2,6 +2,29 @@
  //WARNING: The contents of this file are auto-generated
 
 
+
+$dictionary['Opportunity']['fields']['documents'] = array(
+  'name' => 'documents',
+  'vname' => 'LBL_DOCUMENTS',
+  'type' => 'file',
+  'dbType' => 'varchar',
+  'len' => '255',
+  'reportable'=>true,
+  'importable' => false,
+);
+
+// created: 2021-01-07 14:09:44
+$dictionary["Opportunity"]["fields"]["opportunities_documents_1"] = array (
+  'name' => 'opportunities_documents_1',
+  'type' => 'link',
+  'relationship' => 'opportunities_documents_1',
+  'source' => 'non-db',
+  'module' => 'Documents',
+  'bean_name' => 'Document',
+  'vname' => 'LBL_OPPORTUNITIES_DOCUMENTS_1_FROM_DOCUMENTS_TITLE',
+);
+
+
 // created: 2020-11-03 10:04:46
 $dictionary["Opportunity"]["fields"]["opportunities_users_1"] = array (
   'name' => 'opportunities_users_1',
@@ -63,6 +86,12 @@ $dictionary['Opportunity']['fields']['influencersl1_c']['labelValue']='Influence
 
  
 
+ // created: 2021-01-06 09:43:08
+$dictionary['Opportunity']['fields']['tagged_users_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['tagged_users_c']['labelValue']='Tagged Users';
+
+ 
+
  // created: 2020-11-09 06:05:27
 $dictionary['Opportunity']['fields']['submission_status_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['submission_status_c']['labelValue']='Submission Status';
@@ -75,25 +104,25 @@ $dictionary['Opportunity']['fields']['opportunity_type_new_c']['labelValue']='Op
 
  
 
- // created: 2020-11-13 07:33:38
+ // created: 2021-03-02 11:39:26
 $dictionary['Opportunity']['fields']['product_service_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['product_service_c']['labelValue']='Product/ Service';
 
  
 
- // created: 2020-10-20 11:55:30
+ // created: 2021-03-02 11:38:37
 $dictionary['Opportunity']['fields']['project_implementation_end_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['project_implementation_end_c']['labelValue']='Project Implementation End Date';
 
  
 
- // created: 2020-10-20 11:57:45
+ // created: 2021-01-04 13:05:14
 $dictionary['Opportunity']['fields']['financial_feasibility_l2_c']['inline_edit']='1';
-$dictionary['Opportunity']['fields']['financial_feasibility_l2_c']['labelValue']='Financial Feasbility (L2)';
+$dictionary['Opportunity']['fields']['financial_feasibility_l2_c']['labelValue']='Financial Feasibility (L2)';
 
  
 
- // created: 2020-11-13 07:33:24
+ // created: 2021-03-02 11:39:05
 $dictionary['Opportunity']['fields']['segment_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['segment_c']['labelValue']='Segment';
 
@@ -105,7 +134,7 @@ $dictionary['Opportunity']['fields']['add_new_segment_c']['labelValue']='Add new
 
  
 
- // created: 2020-12-02 10:56:00
+ // created: 2021-03-02 11:14:07
 $dictionary['Opportunity']['fields']['source_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['source_c']['labelValue']='Source';
 
@@ -117,15 +146,21 @@ $dictionary['Opportunity']['fields']['first_of_a_kind_segment_c']['labelValue']=
 
  
 
- // created: 2020-11-18 06:44:41
+ // created: 2021-03-02 11:53:59
 $dictionary['Opportunity']['fields']['funding_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['funding_c']['labelValue']='Funding';
 
  
 
- // created: 2020-10-31 03:32:39
+ // created: 2021-03-02 11:40:13
 $dictionary['Opportunity']['fields']['sub_sector_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['sub_sector_c']['labelValue']='Sub  Sector';
+
+ 
+
+ // created: 2021-01-12 13:22:16
+$dictionary['Opportunity']['fields']['account_name_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['account_name_c']['labelValue']='Departent name';
 
  
 
@@ -164,9 +199,21 @@ $dictionary['Opportunity']['fields']['scope_achieved_c']['labelValue']='scope ac
 
  
 
- // created: 2020-11-17 13:12:54
+ // created: 2020-12-31 13:13:17
+$dictionary['Opportunity']['fields']['multiple_approver_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['multiple_approver_c']['labelValue']='Multiple Approver';
+
+ 
+
+ // created: 2021-01-06 09:41:30
+$dictionary['Opportunity']['fields']['untagged_users_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['untagged_users_c']['labelValue']='Untagged Users';
+
+ 
+
+ // created: 2021-03-02 11:14:59
 $dictionary['Opportunity']['fields']['non_financial_consideration_c']['inline_edit']='1';
-$dictionary['Opportunity']['fields']['non_financial_consideration_c']['labelValue']='Non Financial Consideration';
+$dictionary['Opportunity']['fields']['non_financial_consideration_c']['labelValue']='Non Financial Consideration Options';
 
  
 
@@ -175,13 +222,19 @@ $dictionary['Opportunity']['fields']['jjwg_maps_lat_c']['inline_edit']=1;
 
  
 
- // created: 2020-12-02 03:48:14
+ // created: 2021-03-02 11:40:49
 $dictionary['Opportunity']['fields']['project_scope_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['project_scope_c']['labelValue']='Project Scope';
 
  
 
- // created: 2020-11-11 07:44:42
+ // created: 2021-03-02 12:37:29
+$dictionary['Opportunity']['fields']['expected_inflow_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['expected_inflow_c']['labelValue']='Expected Inflow';
+
+ 
+
+ // created: 2021-03-02 11:55:20
 $dictionary['Opportunity']['fields']['rfp_eoi_projected_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['rfp_eoi_projected_c']['labelValue']='RFP/EOI Initiated Drafting (Projected)';
 
@@ -192,33 +245,61 @@ $dictionary['Opportunity']['fields']['jjwg_maps_address_c']['inline_edit']=1;
 
  
 
- // created: 2020-10-20 11:37:04
+ // created: 2021-02-05 07:28:08
+$dictionary['Opportunity']['fields']['assigned_to_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['assigned_to_c']['labelValue']='Assigned to';
+
+ 
+
+ // created: 2021-03-02 12:02:02
 $dictionary['Opportunity']['fields']['work_order_achieved_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['work_order_achieved_c']['labelValue']='Work Order (Achieved)';
 
  
 
- // created: 2020-11-11 07:45:07
+ // created: 2021-03-02 12:45:06
+$dictionary['Opportunity']['fields']['country_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['country_c']['labelValue']='Country Name';
+
+ 
+
+ // created: 2021-03-02 12:01:31
 $dictionary['Opportunity']['fields']['rfp_eoi_published_achieved_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['rfp_eoi_published_achieved_c']['labelValue']='RFP/EOI Published (Achieved)';
 
  
 
- // created: 2020-11-07 08:18:50
+ // created: 2020-12-28 06:42:15
+$dictionary['Opportunity']['fields']['opportunity_id_c']['inline_edit']=1;
+
+ 
+
+ // created: 2021-03-02 12:12:05
 $dictionary['Opportunity']['fields']['bid_strategy_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['bid_strategy_c']['labelValue']='Bid Strategy';
 
  
 
- // created: 2020-11-11 07:47:31
+ // created: 2021-03-02 12:11:46
 $dictionary['Opportunity']['fields']['rfp_eoi_summary_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['rfp_eoi_summary_c']['labelValue']='RFP/EOI Summary';
 
  
 
- // created: 2020-12-08 06:53:59
+ // created: 2021-03-02 11:12:49
 $dictionary['Opportunity']['fields']['select_approver_c']['inline_edit']='1';
-$dictionary['Opportunity']['fields']['select_approver_c']['labelValue']='Select Approver';
+$dictionary['Opportunity']['fields']['select_approver_c']['labelValue']='Approver';
+
+ 
+
+ // created: 2021-03-02 11:14:34
+$dictionary['Opportunity']['fields']['non_financial_radio_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['non_financial_radio_c']['labelValue']='Non Financial Consideration ';
+
+ 
+
+ // created: 2020-12-17 17:28:09
+$dictionary['Opportunity']['fields']['user_id3_c']['inline_edit']=1;
 
  
 
@@ -232,9 +313,21 @@ $dictionary['Opportunity']['fields']['amount']['merge_filter']='disabled';
 
  
 
- // created: 2020-10-20 11:48:54
+ // created: 2021-03-02 11:36:25
 $dictionary['Opportunity']['fields']['budget_source_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['budget_source_c']['labelValue']='Budget Source';
+
+ 
+
+ // created: 2021-03-02 10:40:43
+$dictionary['Opportunity']['fields']['new_department_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['new_department_c']['labelValue']='Department';
+
+ 
+
+ // created: 2021-03-02 12:39:01
+$dictionary['Opportunity']['fields']['tagged_hiden_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['tagged_hiden_c']['labelValue']='tagged hiden';
 
  
 
@@ -244,8 +337,11 @@ $dictionary['Opportunity']['fields']['bid_checklist_c']['labelValue']='Bid Check
 
  
 
- // created: 2020-11-13 06:58:55
-$dictionary['Opportunity']['fields']['name']['required']=false;
+ // created: 2021-03-02 11:12:12
+$dictionary['Opportunity']['fields']['name']['audited']=true;
+$dictionary['Opportunity']['fields']['name']['inline_edit']=true;
+$dictionary['Opportunity']['fields']['name']['comments']='Name of the opportunity';
+$dictionary['Opportunity']['fields']['name']['merge_filter']='disabled';
 $dictionary['Opportunity']['fields']['name']['full_text_search']=array (
 );
 
@@ -256,25 +352,30 @@ $dictionary['Opportunity']['fields']['user_id_c']['inline_edit']=1;
 
  
 
- // created: 2020-11-11 07:45:24
+ // created: 2021-03-02 11:55:51
 $dictionary['Opportunity']['fields']['rfp_eoi_published_projected_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['rfp_eoi_published_projected_c']['labelValue']='RFP/EOI Published (Projected)';
 
  
 
- // created: 2020-10-20 11:36:07
+ // created: 2021-03-02 11:56:25
 $dictionary['Opportunity']['fields']['work_order_projected_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['work_order_projected_c']['labelValue']='Work Order (projected)';
 
  
 
- // created: 2020-11-26 05:52:43
+ // created: 2021-01-12 13:22:16
+$dictionary['Opportunity']['fields']['account_id_c']['inline_edit']=1;
+
+ 
+
+ // created: 2021-03-02 11:07:26
 $dictionary['Opportunity']['fields']['rfporeoipublished_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['rfporeoipublished_c']['labelValue']='RFP/EOI Published';
 
  
 
- // created: 2020-10-31 03:32:04
+ // created: 2021-03-02 11:39:46
 $dictionary['Opportunity']['fields']['sector_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['sector_c']['labelValue']='Sector';
 
@@ -286,31 +387,49 @@ $dictionary['Opportunity']['fields']['first_of_a_kind_c']['labelValue']='First o
 
  
 
+ // created: 2021-02-03 05:44:53
+$dictionary['Opportunity']['fields']['test_checkbox_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['test_checkbox_c']['labelValue']='Test Checkbox';
+
+ 
+
  // created: 2020-11-06 06:03:59
 $dictionary['Opportunity']['fields']['cash_f_c']['inline_edit']='';
 $dictionary['Opportunity']['fields']['cash_f_c']['labelValue']='Cash F';
 
  
 
- // created: 2020-10-29 07:42:07
+ // created: 2021-01-06 09:39:43
+$dictionary['Opportunity']['fields']['tag_users_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['tag_users_c']['labelValue']='Tag Users';
+
+ 
+
+ // created: 2021-03-02 11:37:20
 $dictionary['Opportunity']['fields']['budget_head_amount_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['budget_head_amount_c']['labelValue']='Budget Head Amount (in Cr)';
 
  
 
- // created: 2020-11-13 07:33:07
+ // created: 2021-01-04 13:05:05
 $dictionary['Opportunity']['fields']['financial_feasibility_l1_c']['inline_edit']='1';
-$dictionary['Opportunity']['fields']['financial_feasibility_l1_c']['labelValue']='Financial Feasbility (L1)';
+$dictionary['Opportunity']['fields']['financial_feasibility_l1_c']['labelValue']='Financial Feasibility (L1)';
 
  
 
- // created: 2020-11-11 07:24:22
+ // created: 2021-03-02 12:38:14
 $dictionary['Opportunity']['fields']['comments_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['comments_c']['labelValue']='Comments';
 
  
 
- // created: 2020-11-11 07:24:33
+ // created: 2021-03-02 12:44:53
+$dictionary['Opportunity']['fields']['currency_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['currency_c']['labelValue']='Currency';
+
+ 
+
+ // created: 2021-03-02 12:37:53
 $dictionary['Opportunity']['fields']['learnings_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['learnings_c']['labelValue']='Learnings';
 
@@ -333,8 +452,9 @@ $dictionary['Opportunity']['fields']['jjwg_maps_lng_c']['inline_edit']=1;
 
  
 
- // created: 2020-12-08 06:53:59
-$dictionary['Opportunity']['fields']['user_id2_c']['inline_edit']=1;
+ // created: 2021-03-02 11:13:26
+$dictionary['Opportunity']['fields']['international_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['international_c']['labelValue']='International Opportunity';
 
  
 
@@ -344,7 +464,7 @@ $dictionary['Opportunity']['fields']['assign_c']['labelValue']='Assign';
 
  
 
- // created: 2020-11-11 07:44:16
+ // created: 2021-03-02 12:01:15
 $dictionary['Opportunity']['fields']['rfp_eoi_achieved_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['rfp_eoi_achieved_c']['labelValue']='RFP/ EOI Initiated Drafting (Achieved)';
 
@@ -356,7 +476,7 @@ $dictionary['Opportunity']['fields']['scope_c']['labelValue']='Scope';
 
  
 
- // created: 2020-11-03 12:01:38
+ // created: 2021-03-02 11:08:30
 $dictionary['Opportunity']['fields']['opportunity_type']['len']=100;
 $dictionary['Opportunity']['fields']['opportunity_type']['inline_edit']=true;
 $dictionary['Opportunity']['fields']['opportunity_type']['options']='opportunity_type';
@@ -371,42 +491,59 @@ $dictionary['Opportunity']['fields']['bidstrategy_c']['labelValue']='Bid Strateg
 
  
 
- // created: 2020-11-11 09:48:36
-$dictionary['Opportunity']['fields']['filename']['required']=false;
+ // created: 2021-03-02 11:11:32
 
  
 
- // created: 2020-10-20 11:58:09
+ // created: 2021-01-04 13:05:25
 $dictionary['Opportunity']['fields']['financial_feasibility_l3_c']['inline_edit']='1';
-$dictionary['Opportunity']['fields']['financial_feasibility_l3_c']['labelValue']='Financial Feasbility (L3)';
+$dictionary['Opportunity']['fields']['financial_feasibility_l3_c']['labelValue']='Financial Feasibility (L3)';
 
  
 
- // created: 2020-11-11 07:54:02
+ // created: 2021-03-02 11:54:53
 $dictionary['Opportunity']['fields']['scope_budget_projected_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['scope_budget_projected_c']['labelValue']='DPR/Scope & Budget Accepted (Projected)';
 
  
 
- // created: 2020-11-30 07:59:54
+ // created: 2020-12-17 17:09:05
+$dictionary['Opportunity']['fields']['example_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['example_c']['labelValue']='example';
+
+ 
+
+ // created: 2021-03-02 12:12:26
 $dictionary['Opportunity']['fields']['submissionstatus_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['submissionstatus_c']['labelValue']='Submission Status';
 
  
 
- // created: 2020-11-02 10:49:20
+ // created: 2021-01-07 07:26:19
+$dictionary['Opportunity']['fields']['multiple_file_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['multiple_file_c']['labelValue']='Multiple File';
+
+ 
+
+ // created: 2021-01-06 09:44:29
+$dictionary['Opportunity']['fields']['tagged_user_comments_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['tagged_user_comments_c']['labelValue']='Tagged User Comments';
+
+ 
+
+ // created: 2020-12-28 17:51:41
 $dictionary['Opportunity']['fields']['test_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['test_c']['labelValue']='test';
 
  
 
- // created: 2020-10-20 11:49:35
+ // created: 2021-03-02 11:36:58
 $dictionary['Opportunity']['fields']['budget_head_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['budget_head_c']['labelValue']='Budget Head';
 
  
 
- // created: 2020-11-18 06:43:51
+ // created: 2021-03-02 11:53:43
 $dictionary['Opportunity']['fields']['selection_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['selection_c']['labelValue']='Selection';
 
@@ -418,7 +555,7 @@ $dictionary['Opportunity']['fields']['financial_c']['labelValue']='Non Financial
 
  
 
- // created: 2020-11-11 11:44:44
+ // created: 2021-03-02 12:36:54
 $dictionary['Opportunity']['fields']['closure_status_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['closure_status_c']['labelValue']='Closure Status';
 
@@ -430,21 +567,24 @@ $dictionary['Opportunity']['fields']['sector1_c']['labelValue']='sector1';
 
  
 
- // created: 2020-11-13 09:02:18
+ // created: 2021-03-02 11:54:26
 $dictionary['Opportunity']['fields']['timing_button_c']['inline_edit']='1';
-$dictionary['Opportunity']['fields']['timing_button_c']['labelValue']='Timing Button';
+$dictionary['Opportunity']['fields']['timing_button_c']['labelValue']='Timing';
 
  
 
- // created: 2020-11-11 07:48:17
-$dictionary['Opportunity']['fields']['description']['inline_edit']=true;
-$dictionary['Opportunity']['fields']['description']['comments']='Full text of the note';
-$dictionary['Opportunity']['fields']['description']['merge_filter']='disabled';
-$dictionary['Opportunity']['fields']['description']['rows']='4';
+ // created: 2021-03-02 18:51:27
+$dictionary['Opportunity']['fields']['critical_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['critical_c']['labelValue']='Critical';
 
  
 
- // created: 2020-10-20 11:54:37
+ // created: 2021-03-02 11:35:49
+$dictionary['Opportunity']['fields']['description']['audited']=true;
+
+ 
+
+ // created: 2021-03-02 11:38:10
 $dictionary['Opportunity']['fields']['project_implementation_start_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['project_implementation_start_c']['labelValue']='Project Implementation Start Date';
 
@@ -456,9 +596,15 @@ $dictionary['Opportunity']['fields']['influencersl2_c']['labelValue']='Influence
 
  
 
- // created: 2020-11-11 07:53:46
+ // created: 2021-03-02 12:00:51
 $dictionary['Opportunity']['fields']['scope_budget_achieved_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['scope_budget_achieved_c']['labelValue']='DPR/Scope & Budget Accepted (Achieved)';
+
+ 
+
+ // created: 2021-01-06 09:42:13
+$dictionary['Opportunity']['fields']['untagged_users_comments_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['untagged_users_comments_c']['labelValue']='Untagged Users Comments';
 
  
 
@@ -471,7 +617,7 @@ $dictionary['Opportunity']['fields']['sales_stage']['merge_filter']='disabled';
 
  
 
- // created: 2020-10-20 12:02:42
+ // created: 2021-03-02 11:35:00
 $dictionary['Opportunity']['fields']['source_details_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['source_details_c']['labelValue']='Source Details';
 
@@ -485,9 +631,33 @@ $dictionary['Opportunity']['fields']['date_closed']['merge_filter']='disabled';
 
  
 
- // created: 2020-10-29 07:42:37
+ // created: 2021-03-02 11:37:38
 $dictionary['Opportunity']['fields']['budget_allocated_oppertunity_c']['inline_edit']='1';
-$dictionary['Opportunity']['fields']['budget_allocated_oppertunity_c']['labelValue']='Budget Allocated for Oportunity (in Cr)';
+$dictionary['Opportunity']['fields']['budget_allocated_oppertunity_c']['labelValue']='Budget Allocated for Opportunity (in Cr)';
+
+ 
+
+ // created: 2021-01-06 09:48:48
+$dictionary['Opportunity']['fields']['untagged_hidden_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['untagged_hidden_c']['labelValue']='untagged hidden';
+
+ 
+
+ // created: 2020-12-28 06:42:15
+$dictionary['Opportunity']['fields']['checking_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['checking_c']['labelValue']='checking';
+
+ 
+
+ // created: 2021-03-02 12:42:29
+$dictionary['Opportunity']['fields']['tagged_users_comments_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['tagged_users_comments_c']['labelValue']='Tagged Users Comments';
+
+ 
+
+ // created: 2021-03-02 11:35:29
+$dictionary['Opportunity']['fields']['assigned_to_new_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['assigned_to_new_c']['labelValue']='Assigned To ';
 
  
 
@@ -514,19 +684,19 @@ $dictionary['Opportunity']['fields']['non_financial_consideration1_c']['labelVal
 
  
 
- // created: 2020-11-13 08:38:55
+ // created: 2021-03-02 11:40:32
 $dictionary['Opportunity']['fields']['risk_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['risk_c']['labelValue']='Risk';
 
  
 
- // created: 2020-11-13 06:59:24
+ // created: 2021-03-02 11:13:43
 $dictionary['Opportunity']['fields']['state_c']['inline_edit']='1';
-$dictionary['Opportunity']['fields']['state_c']['labelValue']='State';
+$dictionary['Opportunity']['fields']['state_c']['labelValue']='State/UTs';
 
  
 
- // created: 2020-11-13 07:34:21
+ // created: 2021-03-02 11:11:44
 $dictionary['Opportunity']['fields']['status_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['status_c']['labelValue']='Status';
 

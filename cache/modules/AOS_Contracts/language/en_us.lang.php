@@ -1,5 +1,5 @@
 <?php
-// created: 2020-12-07 11:31:51
+// created: 2021-03-08 16:28:10
 $mod_strings = array (
   'LBL_ID' => 'ID',
   'LBL_DATE_ENTERED' => 'Date Created',
@@ -96,4 +96,5 @@ $mod_strings = array (
   'LBL_AOS_PRODUCT_QUOTES' => 'Product Quotes',
   'LBL_AOS_QUOTES_AOS_CONTRACTS' => 'Quotes: Contracts',
   'LBL_ACCOUNTS' => 'Departments',
+  'LBL_CALLS' => 'Activities',
 );

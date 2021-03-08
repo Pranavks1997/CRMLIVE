@@ -1,5 +1,5 @@
 <?php
-// created: 2020-12-07 11:31:50
+// created: 2021-03-08 16:28:10
 $mod_strings = array (
   'LBL_SECURITYGROUPS' => 'Security Groups',
   'LBL_SECURITYGROUPS_SUBPANEL_TITLE' => 'Security Groups',
@@ -66,4 +66,5 @@ $mod_strings = array (
   'LBL_DAYS' => 'Days',
   'LBL_HOURS' => 'Hours',
   'LBL_RELATIONSHIP_TYPE' => 'Relationship Type',
+  'LBL_CALLS' => 'Activities',
 );

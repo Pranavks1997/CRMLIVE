@@ -1,5 +1,5 @@
 <?php
- // created: 2020-11-13 07:33:24
+ // created: 2021-03-02 11:39:05
 $dictionary['Opportunity']['fields']['segment_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['segment_c']['labelValue']='Segment';
 

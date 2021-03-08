@@ -407,6 +407,7 @@ class SugarController
         } else {
             $logicHook->call_custom_logic('', "handle_exception", $e);
         }
+         SugarApplication::redirect('index.php?action=index&module=Home');
     }
 
     /**

@@ -1,0 +1,431 @@
+
+2021-02-03 05:53:52...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2021-02-03 05:53:57...Begin System Check Process *************
+2021-02-03 05:53:57...XML Parsing Support Found
+2021-02-03 05:53:57...JSON Parsing Support Found
+2021-02-03 05:53:57...MBString Support Found
+2021-02-03 05:53:57...ZIP Support Found
+2021-02-03 05:53:57...ERROR:: The Custom Directory exists but is not writeable. You may have to change permissions on it (chmod 766) or right click on it and uncheck the read only option, depending on your Operating System. Please take the needed steps to make the file writeable.
+2021-02-03 05:53:57...ERROR:: Some subdirectories in cache subfolder were not read/writeable:
+2021-02-03 05:53:57...<br>/home/ubuntu/environment/CRM/Project/cache/<br>/home/ubuntu/environment/CRM/Project/cache/images<br>/home/ubuntu/environment/CRM/Project/cache/layout<br>/home/ubuntu/environment/CRM/Project/cache/pdf<br>/home/ubuntu/environment/CRM/Project/cache/xml<br>/home/ubuntu/environment/CRM/Project/cache/include/javascript
+2021-02-03 05:53:57...ERROR:: Module directories and the files under them are not writeable.
+2021-02-03 05:53:57...ERROR: Upload directory is not writable.
+2021-02-03 05:53:57.../zip check passed
+2021-02-03 05:53:57...PCRE version check passed
+2021-02-03 05:53:57...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2021-02-03 05:53:57...php.ini location found. /etc/php/7.3/apache2/php.ini
+2021-02-03 05:53:57...Outputting HTML for System check
+2021-02-03 05:53:57...Errors were found *************
+2021-02-03 05:54:22...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2021-02-03 05:54:29...Begin System Check Process *************
+2021-02-03 05:54:29...XML Parsing Support Found
+2021-02-03 05:54:29...JSON Parsing Support Found
+2021-02-03 05:54:29...MBString Support Found
+2021-02-03 05:54:29...ZIP Support Found
+2021-02-03 05:54:29...ERROR:: The Custom Directory exists but is not writeable. You may have to change permissions on it (chmod 766) or right click on it and uncheck the read only option, depending on your Operating System. Please take the needed steps to make the file writeable.
+2021-02-03 05:54:29...ERROR:: Some subdirectories in cache subfolder were not read/writeable:
+2021-02-03 05:54:29...<br>/home/ubuntu/environment/CRM/Project/cache/<br>/home/ubuntu/environment/CRM/Project/cache/images<br>/home/ubuntu/environment/CRM/Project/cache/layout<br>/home/ubuntu/environment/CRM/Project/cache/pdf<br>/home/ubuntu/environment/CRM/Project/cache/xml<br>/home/ubuntu/environment/CRM/Project/cache/include/javascript
+2021-02-03 05:54:29...ERROR:: Module directories and the files under them are not writeable.
+2021-02-03 05:54:29...ERROR: Upload directory is not writable.
+2021-02-03 05:54:29.../zip check passed
+2021-02-03 05:54:29...PCRE version check passed
+2021-02-03 05:54:29...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2021-02-03 05:54:29...php.ini location found. /etc/php/7.3/apache2/php.ini
+2021-02-03 05:54:29...Outputting HTML for System check
+2021-02-03 05:54:29...Errors were found *************
+2021-02-03 05:54:33...Begin System Check Process *************
+2021-02-03 05:54:33...XML Parsing Support Found
+2021-02-03 05:54:33...JSON Parsing Support Found
+2021-02-03 05:54:33...MBString Support Found
+2021-02-03 05:54:33...ZIP Support Found
+2021-02-03 05:54:33...ERROR:: The Custom Directory exists but is not writeable. You may have to change permissions on it (chmod 766) or right click on it and uncheck the read only option, depending on your Operating System. Please take the needed steps to make the file writeable.
+2021-02-03 05:54:33...ERROR:: Some subdirectories in cache subfolder were not read/writeable:
+2021-02-03 05:54:33...<br>/home/ubuntu/environment/CRM/Project/cache/<br>/home/ubuntu/environment/CRM/Project/cache/images<br>/home/ubuntu/environment/CRM/Project/cache/layout<br>/home/ubuntu/environment/CRM/Project/cache/pdf<br>/home/ubuntu/environment/CRM/Project/cache/xml<br>/home/ubuntu/environment/CRM/Project/cache/include/javascript
+2021-02-03 05:54:33...ERROR:: Module directories and the files under them are not writeable.
+2021-02-03 05:54:33...ERROR: Upload directory is not writable.
+2021-02-03 05:54:33.../zip check passed
+2021-02-03 05:54:33...PCRE version check passed
+2021-02-03 05:54:33...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2021-02-03 05:54:33...php.ini location found. /etc/php/7.3/apache2/php.ini
+2021-02-03 05:54:33...Outputting HTML for System check
+2021-02-03 05:54:33...Errors were found *************
+2021-02-03 05:54:50...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2021-02-03 05:54:52...Begin System Check Process *************
+2021-02-03 05:54:52...XML Parsing Support Found
+2021-02-03 05:54:52...JSON Parsing Support Found
+2021-02-03 05:54:52...MBString Support Found
+2021-02-03 05:54:52...ZIP Support Found
+2021-02-03 05:54:52...ERROR:: The Custom Directory exists but is not writeable. You may have to change permissions on it (chmod 766) or right click on it and uncheck the read only option, depending on your Operating System. Please take the needed steps to make the file writeable.
+2021-02-03 05:54:52...ERROR:: Some subdirectories in cache subfolder were not read/writeable:
+2021-02-03 05:54:52...<br>/home/ubuntu/environment/CRM/Project/cache/<br>/home/ubuntu/environment/CRM/Project/cache/images<br>/home/ubuntu/environment/CRM/Project/cache/layout<br>/home/ubuntu/environment/CRM/Project/cache/pdf<br>/home/ubuntu/environment/CRM/Project/cache/xml<br>/home/ubuntu/environment/CRM/Project/cache/include/javascript
+2021-02-03 05:54:52...ERROR:: Module directories and the files under them are not writeable.
+2021-02-03 05:54:52...ERROR: Upload directory is not writable.
+2021-02-03 05:54:52.../zip check passed
+2021-02-03 05:54:52...PCRE version check passed
+2021-02-03 05:54:52...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2021-02-03 05:54:52...php.ini location found. /etc/php/7.3/apache2/php.ini
+2021-02-03 05:54:52...Outputting HTML for System check
+2021-02-03 05:54:52...Errors were found *************
+2021-02-03 05:55:37...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2021-02-03 05:55:43...Begin System Check Process *************
+2021-02-03 05:55:43...XML Parsing Support Found
+2021-02-03 05:55:43...JSON Parsing Support Found
+2021-02-03 05:55:43...MBString Support Found
+2021-02-03 05:55:43...ZIP Support Found
+2021-02-03 05:55:43...ERROR:: The Custom Directory exists but is not writeable. You may have to change permissions on it (chmod 766) or right click on it and uncheck the read only option, depending on your Operating System. Please take the needed steps to make the file writeable.
+2021-02-03 05:55:43...ERROR:: Some subdirectories in cache subfolder were not read/writeable:
+2021-02-03 05:55:43...<br>/home/ubuntu/environment/CRM/Project/cache/<br>/home/ubuntu/environment/CRM/Project/cache/images<br>/home/ubuntu/environment/CRM/Project/cache/layout<br>/home/ubuntu/environment/CRM/Project/cache/pdf<br>/home/ubuntu/environment/CRM/Project/cache/xml<br>/home/ubuntu/environment/CRM/Project/cache/include/javascript
+2021-02-03 05:55:43...ERROR:: Module directories and the files under them are not writeable.
+2021-02-03 05:55:43...ERROR: Upload directory is not writable.
+2021-02-03 05:55:43.../zip check passed
+2021-02-03 05:55:43...PCRE version check passed
+2021-02-03 05:55:43...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2021-02-03 05:55:43...php.ini location found. /etc/php/7.3/apache2/php.ini
+2021-02-03 05:55:43...Outputting HTML for System check
+2021-02-03 05:55:43...Errors were found *************
+2021-02-03 05:56:11...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2021-02-03 05:56:14...Begin System Check Process *************
+2021-02-03 05:56:14...XML Parsing Support Found
+2021-02-03 05:56:14...JSON Parsing Support Found
+2021-02-03 05:56:14...MBString Support Found
+2021-02-03 05:56:14...ZIP Support Found
+2021-02-03 05:56:14.../custom directory and subdirectory check passed
+2021-02-03 05:56:14...cache directory and subdirectory check passed
+2021-02-03 05:56:14.../module  directory and subdirectory check passed
+2021-02-03 05:56:14.../upload directory check passed
+2021-02-03 05:56:14.../zip check passed
+2021-02-03 05:56:14...PCRE version check passed
+2021-02-03 05:56:14...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2021-02-03 05:56:14...php.ini location found. /etc/php/7.3/apache2/php.ini
+2021-02-03 05:56:14...Outputting HTML for System check
+2021-02-03 05:56:14...No Errors were found *************
+2021-02-03 05:56:14...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2021-02-03 05:56:16...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2021-02-03 05:56:51...Begin DB Check Process *************
+2021-02-03 05:56:51...testing with mysql:mysqli
+2021-02-03 05:56:51...Basic form info is valid, continuing Process.
+2021-02-03 05:56:51...Testing user account...
+2021-02-03 05:56:51...Connection made using  host: localhost, usr: xelp
+2021-02-03 05:56:51...SUCCESS:: no errors detected!
+2021-02-03 05:56:51...End DB Check Process *************
+2021-02-03 05:56:51...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute
+2021-02-03 05:56:51...calling handleSugarConfig()
+2021-02-03 05:56:51...calling handleHtaccess()
+2021-02-03 05:56:51...calling handleDbCreateDatabase()
+2021-02-03 05:56:51...looping through all the Beans and create their tables
+2021-02-03 05:56:51...processing table acl_actions
+2021-02-03 05:56:51...creating table acl_actions
+2021-02-03 05:56:51...creating Relationship Meta for ACLAction
+2021-02-03 05:56:51...processing table acl_roles
+2021-02-03 05:56:51...creating table acl_roles
+2021-02-03 05:56:51...creating Relationship Meta for ACLRole
+2021-02-03 05:56:51...processing table relationships
+2021-02-03 05:56:51...creating table relationships
+2021-02-03 05:56:51...creating Relationship Meta for Relationship
+2021-02-03 05:56:51...processing table leads
+2021-02-03 05:56:51...creating table leads
+2021-02-03 05:56:51...creating Relationship Meta for Lead
+2021-02-03 05:56:51...processing table cases
+2021-02-03 05:56:51...creating table cases
+2021-02-03 05:56:51...creating Relationship Meta for Case
+2021-02-03 05:56:51...processing table bugs
+2021-02-03 05:56:51...creating table bugs
+2021-02-03 05:56:51...creating Relationship Meta for Bug
+2021-02-03 05:56:51...processing table users
+2021-02-03 05:56:51...creating table users
+2021-02-03 05:56:51...creating Relationship Meta for User
+2021-02-03 05:56:51...processing table campaign_log
+2021-02-03 05:56:51...creating table campaign_log
+2021-02-03 05:56:51...creating Relationship Meta for CampaignLog
+2021-02-03 05:56:51...processing table project
+2021-02-03 05:56:51...creating table project
+2021-02-03 05:56:51...creating Relationship Meta for Project
+2021-02-03 05:56:51...processing table project_task
+2021-02-03 05:56:51...creating table project_task
+2021-02-03 05:56:51...creating Relationship Meta for ProjectTask
+2021-02-03 05:56:52...processing table campaigns
+2021-02-03 05:56:52...creating table campaigns
+2021-02-03 05:56:52...creating Relationship Meta for Campaign
+2021-02-03 05:56:52...processing table prospect_lists
+2021-02-03 05:56:52...creating table prospect_lists
+2021-02-03 05:56:52...creating Relationship Meta for ProspectList
+2021-02-03 05:56:52...processing table prospects
+2021-02-03 05:56:52...creating table prospects
+2021-02-03 05:56:52...creating Relationship Meta for Prospect
+2021-02-03 05:56:52...processing table email_marketing
+2021-02-03 05:56:52...creating table email_marketing
+2021-02-03 05:56:52...creating Relationship Meta for EmailMarketing
+2021-02-03 05:56:52...processing table campaign_trkrs
+2021-02-03 05:56:52...creating table campaign_trkrs
+2021-02-03 05:56:52...creating Relationship Meta for CampaignTracker
+2021-02-03 05:56:52...processing table releases
+2021-02-03 05:56:52...creating table releases
+2021-02-03 05:56:52...creating Relationship Meta for Release
+2021-02-03 05:56:52...processing table emailman
+2021-02-03 05:56:52...creating table emailman
+2021-02-03 05:56:52...creating Relationship Meta for EmailMan
+2021-02-03 05:56:52...processing table schedulers
+2021-02-03 05:56:52...creating table schedulers
+2021-02-03 05:56:52...creating Relationship Meta for Scheduler
+2021-02-03 05:56:52...processing table job_queue
+2021-02-03 05:56:52...creating table job_queue
+2021-02-03 05:56:52...creating Relationship Meta for SchedulersJob
+2021-02-03 05:56:52...processing table contacts
+2021-02-03 05:56:52...creating table contacts
+2021-02-03 05:56:52...creating Relationship Meta for Contact
+2021-02-03 05:56:52...processing table accounts
+2021-02-03 05:56:52...creating table accounts
+2021-02-03 05:56:52...creating Relationship Meta for Account
+2021-02-03 05:56:52...processing table opportunities
+2021-02-03 05:56:52...creating table opportunities
+2021-02-03 05:56:52...creating Relationship Meta for Opportunity
+2021-02-03 05:56:52...processing table email_templates
+2021-02-03 05:56:52...creating table email_templates
+2021-02-03 05:56:52...creating Relationship Meta for EmailTemplate
+2021-02-03 05:56:52...processing table notes
+2021-02-03 05:56:52...creating table notes
+2021-02-03 05:56:52...creating Relationship Meta for Note
+2021-02-03 05:56:52...processing table calls
+2021-02-03 05:56:52...creating table calls
+2021-02-03 05:56:52...creating Relationship Meta for Call
+2021-02-03 05:56:52...processing table emails
+2021-02-03 05:56:52...creating table emails
+2021-02-03 05:56:52...creating Relationship Meta for Email
+2021-02-03 05:56:52...processing table meetings
+2021-02-03 05:56:52...creating table meetings
+2021-02-03 05:56:52...creating Relationship Meta for Meeting
+2021-02-03 05:56:52...processing table tasks
+2021-02-03 05:56:53...creating table tasks
+2021-02-03 05:56:53...creating Relationship Meta for Task
+2021-02-03 05:56:53...processing table users
+2021-02-03 05:56:53...processing table users
+2021-02-03 05:56:53...processing table currencies
+2021-02-03 05:56:53...creating table currencies
+2021-02-03 05:56:53...creating Relationship Meta for Currency
+2021-02-03 05:56:53...processing table tracker
+2021-02-03 05:56:53...creating table tracker
+2021-02-03 05:56:53...creating Relationship Meta for Tracker
+2021-02-03 05:56:53...processing table import_maps
+2021-02-03 05:56:53...creating table import_maps
+2021-02-03 05:56:53...creating Relationship Meta for ImportMap
+2021-02-03 05:56:53...processing table users_last_import
+2021-02-03 05:56:53...creating table users_last_import
+2021-02-03 05:56:53...creating Relationship Meta for UsersLastImport
+2021-02-03 05:56:53...processing table config
+2021-02-03 05:56:53...creating table config
+2021-02-03 05:56:53...creating Relationship Meta for Administration
+2021-02-03 05:56:53...processing table upgrade_history
+2021-02-03 05:56:53...creating table upgrade_history
+2021-02-03 05:56:53...creating Relationship Meta for UpgradeHistory
+2021-02-03 05:56:53...processing table vcals
+2021-02-03 05:56:53...creating table vcals
+2021-02-03 05:56:53...creating Relationship Meta for vCal
+2021-02-03 05:56:53...processing table alerts
+2021-02-03 05:56:53...creating table alerts
+2021-02-03 05:56:53...creating Relationship Meta for Alert
+2021-02-03 05:56:53...processing table roles
+2021-02-03 05:56:53...creating table roles
+2021-02-03 05:56:53...creating Relationship Meta for Role
+2021-02-03 05:56:53...processing table documents
+2021-02-03 05:56:53...creating table documents
+2021-02-03 05:56:53...creating Relationship Meta for Document
+2021-02-03 05:56:53...processing table document_revisions
+2021-02-03 05:56:53...creating table document_revisions
+2021-02-03 05:56:53...creating Relationship Meta for DocumentRevision
+2021-02-03 05:56:53...processing table fields_meta_data
+2021-02-03 05:56:53...creating table fields_meta_data
+2021-02-03 05:56:53...creating Relationship Meta for FieldsMetaData
+2021-02-03 05:56:53...processing table 
+2021-02-03 05:56:53...processing table inbound_email
+2021-02-03 05:56:53...creating table inbound_email
+2021-02-03 05:56:53...creating Relationship Meta for InboundEmail
+2021-02-03 05:56:53...processing table saved_search
+2021-02-03 05:56:53...creating table saved_search
+2021-02-03 05:56:53...creating Relationship Meta for SavedSearch
+2021-02-03 05:56:53...processing table user_preferences
+2021-02-03 05:56:53...creating table user_preferences
+2021-02-03 05:56:53...creating Relationship Meta for UserPreference
+2021-02-03 05:56:53...processing table 
+2021-02-03 05:56:53...processing table email_addresses
+2021-02-03 05:56:53...creating table email_addresses
+2021-02-03 05:56:53...creating Relationship Meta for EmailAddress
+2021-02-03 05:56:53...processing table emails_text
+2021-02-03 05:56:53...creating table emails_text
+2021-02-03 05:56:53...creating Relationship Meta for EmailText
+2021-02-03 05:56:53...processing table spots
+2021-02-03 05:56:53...creating table spots
+2021-02-03 05:56:53...creating Relationship Meta for Spots
+2021-02-03 05:56:53...processing table aobh_businesshours
+2021-02-03 05:56:53...creating table aobh_businesshours
+2021-02-03 05:56:53...creating Relationship Meta for AOBH_BusinessHours
+2021-02-03 05:56:53...processing table sugarfeed
+2021-02-03 05:56:53...creating table sugarfeed
+2021-02-03 05:56:53...creating Relationship Meta for SugarFeed
+2021-02-03 05:56:53...processing table eapm
+2021-02-03 05:56:53...creating table eapm
+2021-02-03 05:56:53...creating Relationship Meta for EAPM
+2021-02-03 05:56:53...processing table oauth_consumer
+2021-02-03 05:56:53...creating table oauth_consumer
+2021-02-03 05:56:53...creating Relationship Meta for OAuthKey
+2021-02-03 05:56:53...processing table oauth_tokens
+2021-02-03 05:56:53...creating table oauth_tokens
+2021-02-03 05:56:53...creating Relationship Meta for OAuthToken
+2021-02-03 05:56:53...processing table am_projecttemplates
+2021-02-03 05:56:53...creating table am_projecttemplates
+2021-02-03 05:56:53...creating Relationship Meta for AM_ProjectTemplates
+2021-02-03 05:56:53...processing table am_tasktemplates
+2021-02-03 05:56:53...creating table am_tasktemplates
+2021-02-03 05:56:53...creating Relationship Meta for AM_TaskTemplates
+2021-02-03 05:56:53...processing table favorites
+2021-02-03 05:56:53...creating table favorites
+2021-02-03 05:56:53...creating Relationship Meta for Favorites
+2021-02-03 05:56:53...processing table aok_knowledge_base_categories
+2021-02-03 05:56:53...creating table aok_knowledge_base_categories
+2021-02-03 05:56:53...creating Relationship Meta for AOK_Knowledge_Base_Categories
+2021-02-03 05:56:53...processing table aok_knowledgebase
+2021-02-03 05:56:53...creating table aok_knowledgebase
+2021-02-03 05:56:53...creating Relationship Meta for AOK_KnowledgeBase
+2021-02-03 05:56:53...processing table reminders
+2021-02-03 05:56:53...creating table reminders
+2021-02-03 05:56:53...creating Relationship Meta for Reminder
+2021-02-03 05:56:53...processing table reminders_invitees
+2021-02-03 05:56:53...creating table reminders_invitees
+2021-02-03 05:56:53...creating Relationship Meta for Reminder_Invitee
+2021-02-03 05:56:53...processing table fp_events
+2021-02-03 05:56:54...creating table fp_events
+2021-02-03 05:56:54...creating Relationship Meta for FP_events
+2021-02-03 05:56:54...processing table fp_event_locations
+2021-02-03 05:56:54...creating table fp_event_locations
+2021-02-03 05:56:54...creating Relationship Meta for FP_Event_Locations
+2021-02-03 05:56:54...processing table aod_indexevent
+2021-02-03 05:56:54...creating table aod_indexevent
+2021-02-03 05:56:54...creating Relationship Meta for AOD_IndexEvent
+2021-02-03 05:56:54...processing table aod_index
+2021-02-03 05:56:54...creating table aod_index
+2021-02-03 05:56:54...creating Relationship Meta for AOD_Index
+2021-02-03 05:56:54...processing table aop_case_events
+2021-02-03 05:56:54...creating table aop_case_events
+2021-02-03 05:56:54...creating Relationship Meta for AOP_Case_Events
+2021-02-03 05:56:54...processing table aop_case_updates
+2021-02-03 05:56:54...creating table aop_case_updates
+2021-02-03 05:56:54...creating Relationship Meta for AOP_Case_Updates
+2021-02-03 05:56:54...processing table aor_reports
+2021-02-03 05:56:54...creating table aor_reports
+2021-02-03 05:56:54...creating Relationship Meta for AOR_Report
+2021-02-03 05:56:54...processing table aor_fields
+2021-02-03 05:56:54...creating table aor_fields
+2021-02-03 05:56:54...creating Relationship Meta for AOR_Field
+2021-02-03 05:56:54...processing table aor_charts
+2021-02-03 05:56:54...creating table aor_charts
+2021-02-03 05:56:54...creating Relationship Meta for AOR_Chart
+2021-02-03 05:56:54...processing table aor_conditions
+2021-02-03 05:56:54...creating table aor_conditions
+2021-02-03 05:56:54...creating Relationship Meta for AOR_Condition
+2021-02-03 05:56:54...processing table aor_scheduled_reports
+2021-02-03 05:56:54...creating table aor_scheduled_reports
+2021-02-03 05:56:54...creating Relationship Meta for AOR_Scheduled_Reports
+2021-02-03 05:56:54...processing table aos_contracts
+2021-02-03 05:56:54...creating table aos_contracts
+2021-02-03 05:56:54...creating Relationship Meta for AOS_Contracts
+2021-02-03 05:56:54...processing table aos_invoices
+2021-02-03 05:56:54...creating table aos_invoices
+2021-02-03 05:56:54...creating Relationship Meta for AOS_Invoices
+2021-02-03 05:56:54...processing table aos_pdf_templates
+2021-02-03 05:56:54...creating table aos_pdf_templates
+2021-02-03 05:56:54...creating Relationship Meta for AOS_PDF_Templates
+2021-02-03 05:56:54...processing table aos_product_categories
+2021-02-03 05:56:54...creating table aos_product_categories
+2021-02-03 05:56:54...creating Relationship Meta for AOS_Product_Categories
+2021-02-03 05:56:54...processing table aos_products
+2021-02-03 05:56:54...creating table aos_products
+2021-02-03 05:56:54...creating Relationship Meta for AOS_Products
+2021-02-03 05:56:54...processing table aos_products_quotes
+2021-02-03 05:56:55...creating table aos_products_quotes
+2021-02-03 05:56:55...creating Relationship Meta for AOS_Products_Quotes
+2021-02-03 05:56:55...processing table aos_line_item_groups
+2021-02-03 05:56:55...creating table aos_line_item_groups
+2021-02-03 05:56:55...creating Relationship Meta for AOS_Line_Item_Groups
+2021-02-03 05:56:55...processing table aos_quotes
+2021-02-03 05:56:55...creating table aos_quotes
+2021-02-03 05:56:55...creating Relationship Meta for AOS_Quotes
+2021-02-03 05:56:55...processing table aow_actions
+2021-02-03 05:56:55...creating table aow_actions
+2021-02-03 05:56:55...creating Relationship Meta for AOW_Action
+2021-02-03 05:56:55...processing table aow_workflow
+2021-02-03 05:56:55...creating table aow_workflow
+2021-02-03 05:56:55...creating Relationship Meta for AOW_WorkFlow
+2021-02-03 05:56:55...processing table aow_processed
+2021-02-03 05:56:55...creating table aow_processed
+2021-02-03 05:56:55...creating Relationship Meta for AOW_Processed
+2021-02-03 05:56:55...processing table aow_conditions
+2021-02-03 05:56:55...creating table aow_conditions
+2021-02-03 05:56:55...creating Relationship Meta for AOW_Condition
+2021-02-03 05:56:55...processing table jjwg_maps
+2021-02-03 05:56:55...creating table jjwg_maps
+2021-02-03 05:56:55...creating Relationship Meta for jjwg_Maps
+2021-02-03 05:56:55...processing table jjwg_markers
+2021-02-03 05:56:55...creating table jjwg_markers
+2021-02-03 05:56:55...creating Relationship Meta for jjwg_Markers
+2021-02-03 05:56:55...processing table jjwg_areas
+2021-02-03 05:56:55...creating table jjwg_areas
+2021-02-03 05:56:55...creating Relationship Meta for jjwg_Areas
+2021-02-03 05:56:55...processing table jjwg_address_cache
+2021-02-03 05:56:55...creating table jjwg_address_cache
+2021-02-03 05:56:55...creating Relationship Meta for jjwg_Address_Cache
+2021-02-03 05:56:55...processing table calls_reschedule
+2021-02-03 05:56:55...creating table calls_reschedule
+2021-02-03 05:56:55...creating Relationship Meta for Calls_Reschedule
+2021-02-03 05:56:55...processing table securitygroups
+2021-02-03 05:56:55...creating table securitygroups
+2021-02-03 05:56:55...creating Relationship Meta for SecurityGroup
+2021-02-03 05:56:55...processing table outbound_email
+2021-02-03 05:56:55...creating table outbound_email
+2021-02-03 05:56:55...creating Relationship Meta for OutboundEmailAccounts
+2021-02-03 05:56:55...processing table templatesectionline
+2021-02-03 05:56:55...creating table templatesectionline
+2021-02-03 05:56:55...creating Relationship Meta for TemplateSectionLine
+2021-02-03 05:56:55...processing table oauth2tokens
+2021-02-03 05:56:55...creating table oauth2tokens
+2021-02-03 05:56:55...creating Relationship Meta for OAuth2Tokens
+2021-02-03 05:56:55...processing table oauth2clients
+2021-02-03 05:56:55...creating table oauth2clients
+2021-02-03 05:56:55...creating Relationship Meta for OAuth2Clients
+2021-02-03 05:56:55...processing table surveyresponses
+2021-02-03 05:56:56...creating table surveyresponses
+2021-02-03 05:56:56...creating Relationship Meta for SurveyResponses
+2021-02-03 05:56:56...processing table surveys
+2021-02-03 05:56:56...creating table surveys
+2021-02-03 05:56:56...creating Relationship Meta for Surveys
+2021-02-03 05:56:56...processing table surveyquestionresponses
+2021-02-03 05:56:56...creating table surveyquestionresponses
+2021-02-03 05:56:56...creating Relationship Meta for SurveyQuestionResponses
+2021-02-03 05:56:56...processing table surveyquestions
+2021-02-03 05:56:56...creating table surveyquestions
+2021-02-03 05:56:56...creating Relationship Meta for SurveyQuestions
+2021-02-03 05:56:56...processing table surveyquestionoptions
+2021-02-03 05:56:56...creating table surveyquestionoptions
+2021-02-03 05:56:56...creating Relationship Meta for SurveyQuestionOptions
+2021-02-03 05:56:58...Begin creating Defaults
+2021-02-03 05:56:58...insert defaults into config table
+2021-02-03 05:56:58...Creating default users
+2021-02-03 05:56:58...Creating default scheduler jobs
+2021-02-03 05:56:58...Enable SugarFeeds
+2021-02-03 05:56:58...Installation has completed *********
+2021-02-03 05:57:00...populating the db with seed data
+2021-02-03 05:57:00...Save configuration settings..
+2021-02-03 05:57:00...save locale
+2021-02-03 05:57:00...new Administration
+2021-02-03 05:57:00...retrieveSettings
+2021-02-03 05:57:00...AdminWizard OFF
+2021-02-03 05:57:00...saveConfig
+2021-02-03 05:57:00...new Configurator
+2021-02-03 05:57:00...populateFromPost
+2021-02-03 05:57:00...handleOverride
+2021-02-03 05:57:00...addCronAllowedUser
+2021-02-03 05:57:01...saveConfig
+2021-02-03 05:57:01...new Currency
+2021-02-03 05:57:01...retrieve
+2021-02-03 05:57:01...DBG: save currency
+2021-02-03 05:57:01...Save user settings..
+2021-02-03 05:57:01...DBG: SugarThemeRegistry::getDefault
+2021-02-03 05:57:03...installerHook: Info: custom/install/install_hooks.php not present, no custom hooks to execute

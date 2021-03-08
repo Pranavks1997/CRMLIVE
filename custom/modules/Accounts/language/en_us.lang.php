@@ -1,5 +1,5 @@
 <?php
-// created: 2020-10-21 11:38:50
+// created: 2021-02-04 04:50:37
 $mod_strings = array (
   'LNK_NEW_ACCOUNT' => 'Create Department',
   'LNK_ACCOUNT_LIST' => 'View Departments',
@@ -12,8 +12,13 @@ $mod_strings = array (
   'LBL_MEMBERS' => 'Members',
   'LBL_MEMBER_ORG_SUBPANEL_TITLE' => 'Member Organizations',
   'LBL_HOMEPAGE_TITLE' => 'My Departments',
+  'LBL_PARENT_ACCOUNT_ID' => 'Parent Department ID',
   'LBL_MODULE_NAME' => 'Departments',
+  'LBL_CALLS' => 'Activities',
   'LBL_SECURITYGROUPS' => 'Security Groups',
   'LBL_SECURITYGROUPS_SUBPANEL_TITLE' => 'Security Groups',
-  'LBL_PARENT_ACCOUNT_ID' => 'Parent Department ID',
+  'LBL_MEETINGS' => 'Meeting',
+  'LBL_CITY' => 'City',
+  'LBL_STATE' => 'State',
+  'LBL_COUNTRY' => 'Country',
 );

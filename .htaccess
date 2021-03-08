@@ -1,5 +1,7 @@
 
 # BEGIN SUITECRM RESTRICTIONS
+
+# BEGIN SUITECRM RESTRICTIONS
 RedirectMatch 403 (?i).*\.log$
 RedirectMatch 403 (?i)/+not_imported_.*\.txt
 RedirectMatch 403 (?i)/+(soap|cache|xtemplate|data|examples|include|log4php|metadata|modules|vendor)/+.*\.(php|tpl)

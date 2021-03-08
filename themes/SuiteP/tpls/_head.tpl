@@ -62,7 +62,7 @@
     {$SUGAR_JS}
     {literal}
     <script type="text/javascript">
-        <!--
+        
         SUGAR.themes.theme_name = '{/literal}{$THEME}{literal}';
         SUGAR.themes.theme_ie6compat = '{/literal}{$THEME_IE6COMPAT}{literal}';
         SUGAR.themes.hide_image = '{/literal}{sugar_getimagepath file="hide.gif"}{literal}';
@@ -71,7 +71,7 @@
         
         if (YAHOO.env.ua)
             UA = YAHOO.env.ua;
-        -->
+        
     </script>
     {/literal}
     {$SUGAR_CSS}

@@ -38,11 +38,12 @@
  * display the words "Powered by SugarCRM" and "Supercharged by SuiteCRM".
  */
 *}
+
 <!--Start Responsive Top Navigation Menu -->
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="dropdown">
+           <button type="button" class="navbar-toggle collapsed" data-toggle="dropdown">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -58,7 +59,7 @@
                                 <a href="javascript:void(0)" onclick="window.location.href = '{sugar_link id=$moduleTabId module=$modulekey link_only=1 data=$module extraparams=$extraparams}'">
                                     {$module}
                                     {if $modulekey !='Home' && $modulekey !='Calendar'}
-                                        <span class="glyphicon glyphicon-plus"  onclick="window.location.href = 'index.php?action=EditView&module={$modulekey}'"></span>
+                                        <span style="display:none" class="glyphicon glyphicon-plus"  onclick="window.location.href = 'index.php?action=EditView&module={$modulekey}'"></span>
                                         {*<span class="glyphicon glyphicon-plus"  onclick="window.location.href = 'http://google.com'"></span>*}
                                     {/if}
                                 </a>
@@ -68,7 +69,7 @@
                             <li role="presentation" data-test="2">
                                 <a href="javascript:void(0)" onclick="window.location.href = '{sugar_link module=$submodule link_only=1 extraparams=$extraparams}'">
                                     {$submodulename}
-                                    <span class="glyphicon glyphicon-plus"  onclick="window.location.href = 'index.php?action=EditView&module={$submodule}'"></span>
+                                    <span style="display:none" class="glyphicon glyphicon-plus"  onclick="window.location.href = 'index.php?action=EditView&module={$submodule}'"></span>
                                     {*<span class="glyphicon glyphicon-plus"  onclick="window.location.href = 'http://google.com'"></span>*}
                                 </a>
                             </li>
@@ -119,7 +120,7 @@
                                                             </a>
                                                             {capture assign='access'}{suite_check_access module=$item.module_name action='edit' record=$item.item_id }{/capture}
                                                             {if $access}
-                                                                 <a href="{sugar_link module=$item.module_name action='EditView' record=$item.item_id link_only=1}" class="recent-links-edit"><span class=" glyphicon glyphicon-pencil"></a>
+                                                                 <a href="{sugar_link module=$item.module_name action='EditView' record=$item.item_id link_only=1}" class="recent-links-edit"><span style="display:none"class="glyphicon glyphicon-pencil"></a>
                                                             {/if}
                                                         </li>
                                                     {/if}
@@ -145,7 +146,7 @@
                                                             </a>
                                                             {capture assign='access'}{suite_check_access module=$item.module_name action='edit' record=$item.item_id }{/capture}
                                                             {if $access}
-                                                                <a href="{sugar_link module=$item.module_name action='EditView' record=$item.id link_only=1}" class="favorite-links-edit"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></a>
+                                                                <a href="{sugar_link module=$item.module_name action='EditView' record=$item.id link_only=1}" class="favorite-links-edit"><span  style="display:none" class="glyphicon glyphicon-pencil" aria-hidden="true"></a>
                                                             {/if}
                                                         </li>
                                                     {/if}
@@ -232,7 +233,7 @@
                                                                     </a>
                                                                     {capture assign='access'}{suite_check_access module=$item.module_name action='edit' record=$item.item_id }{/capture}
                                                                     {if $access}
-                                                                        <a href="{sugar_link module=$item.module_name action='EditView' record=$item.item_id link_only=1}" class="recent-links-edit"><span class=" glyphicon glyphicon-pencil"></a>
+                                                                        <a href="{sugar_link module=$item.module_name action='EditView' record=$item.item_id link_only=1}" class="recent-links-edit"><span style="display:none" class=" glyphicon glyphicon-pencil"></a>
                                                                     {/if}
                                                                 </li>
                                                                 {counter name="submoduleRecentRecords" print=false}
@@ -286,16 +287,42 @@
                     {foreach from=$groupTabs item=modules key=group name=groupList}
                         {capture name=extraparams assign=extraparams}parentTab={$group}{/capture}
                         <li class="topnav {if $smarty.foreach.groupList.last}all{/if}">
-                            <span class="notCurrentTabLeft">&nbsp;</span><span class="notCurrentTab">
-                            <a href="#" id="grouptab_{$smarty.foreach.groupList.index}" class="dropdown-toggle grouptab">{$group}</a>
+                            <span class="notCurrentTabLeft">&nbsp;</span><span id="check" class="notCurrentTab">
+                            <a href="#" id="grouptab_{$smarty.foreach.groupList.index}" class="dropdown-toggle grouptab opp_hide">opportunities</a>
                             <span class="notCurrentTabRight">&nbsp;</span>
-                            <ul class="dropdown-menu" role="menu" {if $smarty.foreach.groupList.last} class="All"{/if}>
-                                {foreach from=$modules.modules item=module key=modulekey}
+                            <ul class="dropdown-menu" role="menu" id="hide1" {if $smarty.foreach.groupList.last} class="All"{/if}>
+                          
                                     <li>
-                                        {capture name=moduleTabId assign=moduleTabId}moduleTab_{$smarty.foreach.moduleList.index}_{$module}{/capture}
-                                        {sugar_link id=$moduleTabId module=$modulekey data=$module extraparams=$extraparams}
+                                       <a href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3Dindex%26return_module%3DOpportunities%26return_action%3DDetailView">View Opportunities</a>
+                                    </li>
+                                    <li>
+                                       <a id="opp_hide" class="dashboard_opp_hide" href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3DEditView%26return_module%3DOpportunities%26return_action%3DDetailView">Create Opportunity</a>
+                                    </li>
+                              
+                                {foreach from=$modules.extra item=submodulename key=submodule}
+                                    <li>
+                                        <a href="{sugar_link module=$submodule link_only=1 extraparams=$extraparams}">{$submodulename}</a>
                                     </li>
                                 {/foreach}
+                            </ul>
+                            
+                        </li>
+                    {/foreach}
+                      {foreach from=$groupTabs item=modules key=group name=groupList}
+                        {capture name=extraparams assign=extraparams}parentTab={$group}{/capture}
+                        <li class="topnav {if $smarty.foreach.groupList.last}all{/if}">
+                            <span class="notCurrentTabLeft">&nbsp;</span><span id="check_dept" class="notCurrentTab">
+                            <a href="#" id="grouptab_{$smarty.foreach.groupList.index}" class="dropdown-toggle grouptab opp_hide">Departments</a>
+                            <span class="notCurrentTabRight">&nbsp;</span>
+                            <ul class="dropdown-menu" role="menu"  {if $smarty.foreach.groupList.last} class="All"{/if}>
+                          
+                                    <li>
+                                       <a href="index.php?module=Accounts&action=index">View Departments</a>
+                                    </li>
+                                    <li>
+                                       <a  href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DAccounts%26action%3DEditView%26return_module%3DAccounts%26return_action%3Dindex">Create Departments</a>
+                                    </li>
+                              
                                 {foreach from=$modules.extra item=submodulename key=submodule}
                                     <li>
                                         <a href="{sugar_link module=$submodule link_only=1 extraparams=$extraparams}">{$submodulename}</a>
@@ -304,6 +331,31 @@
                             </ul>
                         </li>
                     {/foreach}
+                    {foreach from=$groupTabs item=modules key=group name=groupList}
+                        {capture name=extraparams assign=extraparams}parentTab={$group}{/capture}
+                        <li class="topnav {if $smarty.foreach.groupList.last}all{/if}">
+                            <span class="notCurrentTabLeft">&nbsp;</span><span id="check_activity" class="notCurrentTab">
+                            <a href="#" id="grouptab_{$smarty.foreach.groupList.index}" class="dropdown-toggle grouptab opp_hide">Activity</a>
+                            <span class="notCurrentTabRight">&nbsp;</span>
+                            <ul class="dropdown-menu" role="menu"  {if $smarty.foreach.groupList.last} class="All"{/if}>
+                          
+                                    <li>
+                                       <a href="index.php?module=Calls&action=index">View Activity</a>
+                                    </li>
+                                    <li>
+                                       <a  href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DCalls%26action%3DEditView%26return_module%3DCalls%26return_action%3DDetailView">Create Activity</a>
+                                    </li>
+                              
+                                {foreach from=$modules.extra item=submodulename key=submodule}
+                                    <li>
+                                        <a href="{sugar_link module=$submodule link_only=1 extraparams=$extraparams}">{$submodulename}</a>
+                                    </li>
+                                {/foreach}
+                            </ul>
+                        </li>
+                    {/foreach}
+                    
+<li><button class="button" id="feed" href="#">Report Issue</button></li>
                 </ul>
                 {* 7.8 Hide filter menu items when the window is too small to display them *}
             {literal}
@@ -491,20 +543,7 @@
         <!-- Right side of the main navigation -->
         <div class="mobile-bar">
             <ul id="toolbar" class="toolbar">
-                <li id="quickcreatetop" class="create dropdown nav navbar-nav quickcreatetop">
-                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                        {$APP.LBL_CREATE_BUTTON_LABEL}<span class="suitepicon suitepicon-action-caret"></span>
-                    </a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="index.php?module=Accounts&action=EditView&return_module=Accounts&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Accounts" label="LBL_MODULE_NAME"}</a></li>
-                        <li><a href="index.php?module=Contacts&action=EditView&return_module=Contacts&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Contacts" label="LBL_MODULE_NAME"}</a></li>
-                        <li><a href="index.php?module=Opportunities&action=EditView&return_module=Opportunities&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Opportunities" label="LBL_MODULE_NAME"}</a></li>
-                        <li><a href="index.php?module=Leads&action=EditView&return_module=Leads&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Leads" label="LBL_MODULE_NAME"}</a></li>
-                        <li><a href="index.php?module=Documents&action=EditView&return_module=Documents&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Documents" label="LBL_MODULE_NAME"}</a></li>
-                        <li><a href="index.php?module=Calls&action=EditView&return_module=Calls&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Calls" label="LBL_MODULE_NAME"}</a></li>
-                        <li><a href="index.php?module=Tasks&action=EditView&return_module=Tasks&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Tasks" label="LBL_MODULE_NAME"}</a></li>
-                    </ul>
-                </li>
+               
                 <li id="" class="dropdown nav navbar-nav navbar-search">
                     <button id="searchbutton" class="dropdown-toggle btn btn-default searchbutton suitepicon suitepicon-action-search" data-toggle="dropdown" aria-expanded="true">
                     </button>
@@ -580,20 +619,7 @@
         </div>
         <div class="tablet-bar">
             <ul id="toolbar" class="toolbar">
-                <li id="quickcreatetop" class="create dropdown nav navbar-nav quickcreatetop">
-                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                        {$APP.LBL_CREATE_BUTTON_LABEL}<span class="suitepicon suitepicon-action-caret"></span>
-                    </a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="index.php?module=Accounts&action=EditView&return_module=Accounts&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Accounts" label="LBL_MODULE_NAME"}</a></li>
-                        <li><a href="index.php?module=Contacts&action=EditView&return_module=Contacts&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Contacts" label="LBL_MODULE_NAME"}</a></li>
-                        <li><a href="index.php?module=Opportunities&action=EditView&return_module=Opportunities&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Opportunities" label="LBL_MODULE_NAME"}</a></li>
-                        <li><a href="index.php?module=Leads&action=EditView&return_module=Leads&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Leads" label="LBL_MODULE_NAME"}</a></li>
-                        <li><a href="index.php?module=Documents&action=EditView&return_module=Documents&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Documents" label="LBL_MODULE_NAME"}</a></li>
-                        <li><a href="index.php?module=Calls&action=EditView&return_module=Calls&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Calls" label="LBL_MODULE_NAME"}</a></li>
-                        <li><a href="index.php?module=Tasks&action=EditView&return_module=Tasks&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Tasks" label="LBL_MODULE_NAME"}</a></li>
-                    </ul>
-                </li>
+                
                 <li id="" class="dropdown nav navbar-nav navbar-search">
                     <button id="searchbutton" class="dropdown-toggle btn btn-default searchbutton suitepicon suitepicon-action-search" data-toggle="dropdown" aria-expanded="true">
                     </button>
@@ -670,20 +696,7 @@
         </div>
         <div class="desktop-bar">
             <ul id="toolbar" class="toolbar">
-                <li id="quickcreatetop" class="create dropdown nav navbar-nav quickcreatetop">
-                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                        {$APP.LBL_CREATE_BUTTON_LABEL}<span class="suitepicon suitepicon-action-caret"></span>
-                    </a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="index.php?module=Accounts&action=EditView&return_module=Accounts&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Accounts" label="LBL_MODULE_NAME"}</a></li>
-                        <li><a href="index.php?module=Contacts&action=EditView&return_module=Contacts&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Contacts" label="LBL_MODULE_NAME"}</a></li>
-                        <li><a href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3DEditView%26return_module%3DOpportunities%26return_action%3DDetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Opportunities" label="LBL_MODULE_NAME"}</a></li>
-                       <!-- <li><a href="index.php?module=Leads&action=EditView&return_module=Leads&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Leads" label="LBL_MODULE_NAME"}</a></li>-->
-                        <li><a href="index.php?module=Documents&action=EditView&return_module=Documents&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Documents" label="LBL_MODULE_NAME"}</a></li>
-                        <li><a href="index.php?module=Calls&action=EditView&return_module=Calls&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Calls" label="LBL_MODULE_NAME"}</a></li>
-                        <li><a href="index.php?module=Tasks&action=EditView&return_module=Tasks&return_action=DetailView">{$APP.LBL_QUICK_CREATE}{sugar_translate module="Tasks" label="LBL_MODULE_NAME"}</a></li>
-                    </ul>
-                </li>
+               
                 <li id="" class="dropdown nav navbar-nav navbar-search">
                     <button id="searchbutton" class="dropdown-toggle btn btn-default searchbutton suitepicon suitepicon-action-search" data-toggle="dropdown" aria-expanded="true">
                     </button>
@@ -811,12 +824,12 @@
                                                accessKey="{$smarty.foreach.lastViewed.iteration}"
                                                href="{sugar_link module=$item.module_name action='DetailView' record=$item.item_id link_only=1}"
                                                class="recent-links-detail">
-                                                <span class="suitepicon suitepicon-module-{$item.module_name|lower|replace:'_':'-'}"></span>
+                                                <span style="display:none" class="suitepicon suitepicon-module-{$item.module_name|lower|replace:'_':'-'}"></span>
                                                 <span>{$item.item_summary_short}</span>
                                             </a>
                                             {capture assign='access'}{suite_check_access module=$item.module_name action='edit' record=$item.item_id }{/capture}
                                             {if $access}
-                                                <a href="{sugar_link module=$item.module_name action='EditView' record=$item.item_id link_only=1}" class="recent-links-edit"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+                                                <a href="{sugar_link module=$item.module_name action='EditView' record=$item.item_id link_only=1}" class="recent-links-edit"><span style="display:none" class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
                                             {/if}
                                         </li>
                                     </div>
@@ -840,7 +853,7 @@
                                     </a>
                                     {capture assign='access'}{suite_check_access module=$item.module_name action='edit' record=$item.item_id }{/capture}
                                     {if $access}
-                                        <a href="{sugar_link module=$item.module_name action='EditView' record=$item.id link_only=1}" class="favorite-links-edit"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+                                        <a href="{sugar_link module=$item.module_name action='EditView' record=$item.id link_only=1}" class="favorite-links-edit"><span style="display:none"  class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
                                     {/if}
                                 </li>
                             </div>

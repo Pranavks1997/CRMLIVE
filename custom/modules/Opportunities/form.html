@@ -7,7 +7,7 @@
     </head>
     <body>
       
-       <button class="open-button" id="open_button" onclick="openForm()">Open Form</button><!--for cashflow-->
+       <button class="open-button" id="open_button" >Open Form</button><!--for cashflow-->
       <button class="open-button1" id="open_button1">Open L2 Form</button>
       <button class="open_bidChecklist" id="open_bidChecklist">Open bid form</button><!--for bid checklist-->
       
@@ -25,6 +25,8 @@
     <!--<input  style="float:right; margin-right: 10px;" id="row_add_one" name="one" placeholder="Enter Stage Name"/></span>  <input  style="float:right; margin-right: 10px;" id="row_add_two" name="two" placeholder="Enter Milestones"/></span>  <input  style="float:right; margin-right: 10px;" id="row_add_three" name="third" placeholder="Enter Expenditure Type"/></span></br> &nbsp &nbsp-->
   
         <div id="mtwenty">
+          
+          <center><p style="margin:10px "><b>Financial Feasibility L1 details</b></p></center>
             <form>
               
            <table style="width:100%">
@@ -67,7 +69,7 @@
                       </td>
                       
                      <td><center>
-                       <input name="bid" id="bid" type="text"/></center>
+                       <input name="bid" id="bid" type="number" value="1" min="1"/></center>
                        </td>
                        
                   </tr>
@@ -75,10 +77,10 @@
                 </table></br>
           
            
-           <center><input type="button" class="btn button" id="first_form" value="Submit"><input type="reset" class="btn button" id="reset" value="Reset"></center>&nbsp &nbsp
+           <center><input type="button" class="btn button" id="first_form" style="display:none;" value="Submit"><input type="reset" style="display:none;" class="btn button" id="reset" value="Reset"></center>&nbsp &nbsp
            
            </form>
-            <div id="addValue">
+            <div id="addValue" style="display:none;" >
                 <center>
                   <form method="post" id="checking">
                      <table  id="total_value">
@@ -90,23 +92,35 @@
                       </thead>
                       <tbody>
                         <tr id="tot_values">
-                        <td  name="2" style="min-width: 125px"><center><b>Project Value in Rs</b></center></th>
-                         <td><input class="row_add col_add"  required name="" type="number"/></td>
+                        <td  name="2"  style="min-width: 125px"><center><b>Project Value in ₹ </b></center></td>
+                         <td><input class="row_add col_add"  required name="" type="text"/></td>
                         </tr>
                       </tbody>
                   </table>
                     <input type="button" class="button" id="save1" style="display:none;" value="Save L1"/>
                     
-                  <center> <input type="button" style="margin-top:10px;" class="button" id="close1"  value="Close Form"/></center> 
+                  <!--<center> <input type="button" style="margin-top:10px;" style="display:none;" class="button" id="close1"  value="Close Form"/></center> -->
                   </form>
                 </center> 
             </div>
+            
+            <div id="total_Value_new" >
+             <center>
+                <table>
+                <tr>
+                  <td  id="curr" style="min-width: 125px"><center><b>Project Value in ₹ (in Cr): <span style='color:red;'>*</span></b></center></td>
+                  <td><input id="total_input_value"  required name="" type="text"/></td>
+                </tr>
+              </table></center>
+              <center> <input type="button" style="margin-top:10px; display:none"  class="button" id="close1"  value="Close Form"/></center> 
+              </div>
             
        </div> 
     </br>
       
       
     <table style="text-align: center;" class= "columnIns" id="mtenth">
+      <center><p id="l2p" style="margin:10px "><b>Financial Feasibility L2 details (to be filled in Cr)</b></p></center>
       <thead>
         <tr style="text-align: center;">
             <th></th>
@@ -133,7 +147,7 @@
               Expense
           </td>
           <td>
-            <input class="row_add col_add" required name="" type="number"/>
+            <input class="row_add col_add" required name="" type="text"/>
           </td>
         </tr>
         <tr class="addition" id='two'>
@@ -151,7 +165,7 @@
               Expense
           </td>
           <td>
-            <input class="row_add col_add" id="tender1" required name="TenderFee" type="number"/>
+            <input class="row_add col_add" id="tender1" required name="TenderFee" type="text"/>
           </td>
         </tr>
         <tr class="addition" id="three">
@@ -169,7 +183,7 @@
               Returnable
           </td>
           <td>
-            <input class="row_add col_add" required name="EMD" type="number"/>
+            <input class="row_add col_add" required name="EMD" type="text"/>
           </td>
         </tr>
         <tr class="addition" id="four">
@@ -187,7 +201,7 @@
               Returnable
           </td>
           <td>
-            <input class="row_add col_add"  required name="" type="number"/>
+            <input class="row_add col_add"  required name="" type="text"/>
           </td>
         </tr>
         <tr class="addition" id="five">
@@ -205,7 +219,7 @@
                 --
           </td>
           <td>
-            <input class="row_add col_add" required name="" type="number"/>
+            <input class="row_add col_add" required name="" type="text"/>
           </td>
         </tr>
         <tr class="addition" id="six">
@@ -223,7 +237,7 @@
               Expense
           </td>
           <td>
-            <input class="row_add col_add"  required name="" type="number"/>
+            <input class="row_add col_add"  required name="" type="text"/>
           </td>
         </tr>
         <tr class="addition" id="seven">
@@ -241,7 +255,7 @@
               Expense
           </td>
           <td>
-            <input class="row_add col_add" required name="" type="number"/>
+            <input class="row_add col_add" required name="" type="text"/>
           </td>
         </tr>
         <tr class="addition" id="eight">
@@ -253,13 +267,13 @@
               Project GO-Live
           </td>
           <td >
-              Capex Reimbursement from NMMC
+              Capex Reimbursement
           </td>
           <td >
               Income
           </td>
           <td>
-            <input class="row_add col_add" required name="" type="number"/>
+            <input class="row_add col_add" required name="" type="text"/>
           </td>
         </tr>
         <tr class="addition" id="nine">
@@ -277,7 +291,7 @@
               Expense
           </td>
           <td>
-            <input class="row_add col_add" required name="" type="number"/>
+            <input class="row_add col_add" required name="" type="text"/>
           </td>
         </tr>
         <tr class="addition" id="10">
@@ -295,7 +309,7 @@
               Income
           </td>
           <td>
-            <input  class="row_add col_add" required name="" type="number"/>
+            <input  class="row_add col_add" required name="" type="text"/>
           </td>
         </tr>
      
@@ -344,15 +358,29 @@
     &nbsp &nbsp &nbsp 
      </br>
      </br>
-     
-     <select name="chec" class="chec" id="chec" title="">
+     <table>
+       <tr>
+        <td>  <input required name="Other_three1"  id="stage" style="display:none;" class='new' type="text" placeholder="Enter Stage"  /></td>  
+     <td> <input required name="Other_three1" id="milestone" style="display:none;" class='new' type="text" placeholder="Enter Milestone"  /> </td>
+       </tr>
+       <tr>
+         </br>
+       </tr>
+       
+       <tr >
+         <td><select name="chec" class="chec" style="display:none; "  id="chec" title="">
       <option label="Expense" value="expense">Expense</option>
        <option label="Income" value="income">Income</option>
-      </select>
-      <button  type= "button" id="tenth" class="btn add_rows_cls button">Insert Row</button></br>&nbsp &nbsp
+      </select></td>
+     <td><button  type= "button" id="tenth" style=" margin-top:10px" class="btn add_rows_cls button">Insert Row</button></td>
+       </tr>
+     </table>
+      
+    </br>
+    
       <input type="button" class="button" id="save2" style="display:none;" value="Save L2"/>
       
-      <center> <input type="button" class="button" id="close2"  value="Close Form"/></center> 
+      <center> <input type="button" class="button" id="close2" style="display:none;" value="Close Form"/></center> 
         </form>
     
    
@@ -372,6 +400,8 @@
     
         <div id="Document_Checklist" class="tabcontent1" style="overflow-x:auto;">
           <center><h2>Bid Check-List</h2></center>
+          <center><p>Values prefilled from Cash flow</p></center>
+          </br>
          
       
         <form name="dc" class="all_forms_validation" id="doc_select">
@@ -390,13 +420,13 @@
             <tbody>
             <tr>
              <td><th>EMD</th></td> 
-              <td class="bid"><input type="number" id="dpr_emd" readonly  /></td>
-              <td class="bid"><input type="number" id="bid_emd" readonly /></td>
+              <td class="bid"><input type="text" id="dpr_emd" readonly  /></td>
+              <td class="bid"><input type="text" id="bid_emd" readonly /></td>
             </tr>
             <tr>
              <td><th>PBG</th></td> 
-              <td class="bid"><input type="number" id="dpr_pbg" readonly /></td>
-              <td class="bid"><input type="number" id="bid_pbg" readonly /></td>
+              <td class="bid"><input type="text" id="dpr_pbg" readonly /></td>
+              <td class="bid"><input type="text" id="bid_pbg" readonly /></td>
             </tr>
             <tr>
              <td><th>Project scope</th></td> 
@@ -405,16 +435,17 @@
             </tr>
             <tr>
              <td><th>Tenure of the Project</th></td> 
-              <td class="bid"><input type="number" id="dpr_tenure" readonly  /></td>
-              <td class="bid"><input type="number" id="bid_tenure" readonly /></td>
+              <td class="bid"><input type="text" id="dpr_tenure" readonly  /></td>
+              <td class="bid"><input type="text" id="bid_tenure" readonly /></td>
             </tr>
             <tr>
              <td><th>Total value of the Project</th></td> 
-              <td class="bid"><input type="number" id="dpr_value" readonly /></td>
-              <td class="bid"><input type="number" id="bid_value" readonly /></td>
+              <td class="bid"><input type="text" id="dpr_value" readonly /></td>
+              <td class="bid"><input type="text" id="bid_value" readonly /></td>
             </tr>
             </tbody>
             </table>
+            <center> <input type="button" class="button" id="close_bid"  value="Close Form"/></center> 
           </form>
           </br>
         </div>
@@ -422,6 +453,40 @@
   
   
   <!--***********************************end of Bid Checklist*****************************************************************************************-->
+  
+  
+  
+  <!--***********************************Approve or Reject Comment***********************************************************-->
+                            <div class="form-popup" id="approve_comments"></br>
+                             
+                             <div  class="tabcontent1" style="overflow-x:auto;">
+                               
+                                 <center><h3>Comments<span style='color:red;'>*</span></h3></center>
+                               <center>  <textarea id="get_comments_approve" rows="4" cols="50"></textarea> </center>
+                               <center> <input type="button" class="button" id="submit_comment_approve" style="margin-top:10px;" value="Approve with Comments"/></center>
+                                <center> <input type="button" class="button" id="close_approve"  value="Close"/></center>
+                               <center><div class="loader"></div></center>
+                             </div>
+                            </div>
+                             
+                            <div class="form-popup" id="reject_comments"></br>
+                            
+                              <div  class="tabcontent1" style="overflow-x:auto;">
+                                
+                                 <center><h3>Comments<span style='color:red;'>*</span></h3></center>
+                                <center>  <textarea id="get_comments_reject" rows="4" cols="50"></textarea></center>
+                                <center> <input type="button" class="button" id="submit_comment_reject"  style="margin-top:10px;"  value="Reject with Comments"/></center> 
+                                <center> <input type="button" class="button" id="close_reject"  value="Close"/></center> 
+                               <center> <div class="loader"></div></center>
+                              </div>
+                              
+                            </div>
+  
+  
+  <!--***********************************Approve or Reject Comment*********************END**************************************-->
+  
+  
+  
   <style>
   
   th{
@@ -502,7 +567,7 @@
      .open_bidChecklist,.open-button1,#mtwenty,#mtenth,#tenth{
       display:none;
     }
-     #bidChecklistForm{
+     #bidChecklistForm,#approve_comments,#reject_comments{
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
@@ -516,6 +581,28 @@
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
     }
+    
+  .loader {
+    display:none;
+  border: 10px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 10px solid grey;
+  width: 50px;
+  height: 50px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}  
   </style>
    <script src="custom/modules/Opportunities/form.js"></script>
     </body>

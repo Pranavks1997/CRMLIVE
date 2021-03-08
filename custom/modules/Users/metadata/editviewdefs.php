@@ -45,6 +45,7 @@ array (
           'panelDefault' => 'expanded',
         ),
       ),
+      'syncDetailEditViews' => true,
     ),
     'panels' => 
     array (
@@ -52,15 +53,8 @@ array (
       array (
         0 => 
         array (
-          0 => 
-          array (
-            'name' => 'user_name',
-            'displayParams' => 
-            array (
-              'required' => true,
-            ),
-          ),
-          1 => 'first_name',
+          0 => 'first_name',
+          1 => 'last_name',
         ),
         1 => 
         array (
@@ -73,7 +67,14 @@ array (
               'required' => true,
             ),
           ),
-          1 => 'last_name',
+          1 => 
+          array (
+            'name' => 'user_name',
+            'displayParams' => 
+            array (
+              'required' => true,
+            ),
+          ),
         ),
         2 => 
         array (
@@ -86,25 +87,6 @@ array (
         3 => 
         array (
           0 => 'photo',
-        ),
-        4 => 
-        array (
-          0 => 
-          array (
-            'name' => 'factor_auth',
-            'label' => 'LBL_FACTOR_AUTH',
-          ),
-          1 => 
-          array (
-            'name' => 'opportunities_users_1_name',
-          ),
-        ),
-        5 => 
-        array (
-          0 => 
-          array (
-            'name' => 'opportunities_users_2_name',
-          ),
         ),
       ),
       'LBL_EMPLOYEE_INFORMATION' => 
@@ -145,18 +127,9 @@ array (
             'label' => 'LBL_MC',
             'customCode' => '{if $IS_ADMIN}@@FIELD@@{else}{$fields.mc_c.value}{/if}',
           ),
-          1 => '',
-        ),
-        4 => 
-        array (
-          0 => 
-          array (
-            'name' => 'reports_to_name',
-            'customCode' => '{if $IS_ADMIN}@@FIELD@@{else}{$REPORTS_TO_READONLY}{/if}',
-          ),
           1 => 'phone_other',
         ),
-        5 => 
+        4 => 
         array (
           0 => 
           array (
@@ -167,7 +140,26 @@ array (
           ),
           1 => 'phone_fax',
         ),
+        5 => 
+        array (
+          0 => 
+          array (
+            'name' => 'reports_to_name',
+            'customCode' => '{if $IS_ADMIN}@@FIELD@@{else}{$REPORTS_TO_READONLY}{/if}',
+          ),
+          1 => 'phone_home',
+        ),
         6 => 
+        array (
+          0 => 
+          array (
+            'name' => 'bid_commercial_head_c',
+            'studio' => 'visible',
+            'label' => 'LBL_BID_COMMERCIAL_HEAD',
+          ),
+          1 => 'address_city',
+        ),
+        7 => 
         array (
           0 => 
           array (
@@ -176,28 +168,19 @@ array (
             'label' => 'LBL_TEAMFUNCTION',
             'customCode' => '{if $IS_ADMIN}@@FIELD@@{else}{$fields.teamfunction_c.value}{/if}',
           ),
-          1 => 'phone_home',
-        ),
-        7 => 
-        array (
-          0 => 'messenger_type',
-          1 => 'messenger_id',
+          1 => 'address_street',
         ),
         8 => 
-        array (
-          0 => 'address_street',
-          1 => 'address_city',
-        ),
-        9 => 
         array (
           0 => 'address_state',
           1 => 'address_postalcode',
         ),
-        10 => 
+        9 => 
         array (
           0 => 'address_country',
+          1 => '',
         ),
-        11 => 
+        10 => 
         array (
           0 => 'description',
         ),

@@ -5,13 +5,6 @@ array (
   array (
     'templateMeta' => 
     array (
-      'includes' => 
-      array (
-        0 => 
-        array (
-          'file' => 'custom/modules/Opportunities/detail_view.js',
-        ),
-      ),
       'form' => 
       array (
         'buttons' => 
@@ -42,48 +35,66 @@ array (
           'newTab' => true,
           'panelDefault' => 'expanded',
         ),
-        'LBL_DETAILVIEW_PANEL1' => 
+        'LBL_EDITVIEW_PANEL3' => 
         array (
           'newTab' => false,
           'panelDefault' => 'expanded',
         ),
-        'LBL_DETAILVIEW_PANEL2' => 
+        'LBL_EDITVIEW_PANEL2' => 
         array (
           'newTab' => false,
           'panelDefault' => 'expanded',
         ),
-        'LBL_DETAILVIEW_PANEL7' => 
+        'LBL_EDITVIEW_PANEL7' => 
         array (
           'newTab' => false,
           'panelDefault' => 'expanded',
         ),
-        'LBL_DETAILVIEW_PANEL4' => 
+        'LBL_EDITVIEW_PANEL1' => 
         array (
           'newTab' => false,
           'panelDefault' => 'expanded',
         ),
-        'LBL_DETAILVIEW_PANEL10' => 
+        'LBL_EDITVIEW_PANEL8' => 
         array (
           'newTab' => false,
           'panelDefault' => 'expanded',
         ),
-        'LBL_DETAILVIEW_PANEL8' => 
+        'LBL_EDITVIEW_PANEL6' => 
         array (
           'newTab' => false,
           'panelDefault' => 'expanded',
         ),
-        'LBL_DETAILVIEW_PANEL6' => 
+        'LBL_EDITVIEW_PANEL9' => 
         array (
           'newTab' => false,
           'panelDefault' => 'expanded',
         ),
       ),
+      'includes' => 
+      array (
+        0 => 
+        array (
+          'file' => 'custom/modules/Opportunities/detail_view.js',
+        ),
+      ),
+      'syncDetailEditViews' => true,
     ),
     'panels' => 
     array (
       'default' => 
       array (
         0 => 
+        array (
+          0 => '',
+          1 => '',
+        ),
+        1 => 
+        array (
+          0 => '',
+          1 => '',
+        ),
+        2 => 
         array (
           0 => 
           array (
@@ -97,12 +108,17 @@ array (
             'label' => 'LBL_FILENAME',
           ),
         ),
-        1 => 
+        3 => 
         array (
           0 => 'opportunity_type',
-          1 => '',
+          1 => 
+          array (
+            'name' => 'critical_c',
+            'studio' => 'visible',
+            'label' => 'LBL_CRITICAL',
+          ),
         ),
-        2 => 
+        4 => 
         array (
           0 => 
           array (
@@ -110,29 +126,64 @@ array (
             'studio' => 'visible',
             'label' => 'LBL_STATUS',
           ),
+          1 => 
+          array (
+            'name' => 'applyfor_c',
+            'studio' => 'visible',
+            'label' => 'LBL_APPLYFOR',
+          ),
+        ),
+        5 => 
+        array (
+          0 => 
+          array (
+            'name' => 'assigned_user_name',
+            'label' => 'LBL_ASSIGNED_TO',
+          ),
+          1 => '',
         ),
       ),
-      'lbl_detailview_panel1' => 
+      'lbl_editview_panel3' => 
       array (
         0 => 
         array (
           0 => 'name',
           1 => 
           array (
-            'name' => 'assigned_user_name',
-            'label' => 'LBL_ASSIGNED_TO',
+            'name' => 'select_approver_c',
+            'studio' => 'visible',
+            'label' => 'Approver',
           ),
         ),
         1 => 
         array (
           0 => 
           array (
+            'name' => 'international_c',
+            'studio' => 'visible',
+            'label' => 'LBL_INTERNATIONAL',
+          ),
+          1 => 
+          array (
+            'name' => 'currency_c',
+            'studio' => 'visible',
+            'label' => 'LBL_CURRENCY',
+          ),
+        ),
+        2 => 
+        array (
+          0 => 
+          array (
             'name' => 'state_c',
             'label' => 'LBL_STATE',
           ),
-          1 => 'account_name',
+          1 => 
+          array (
+            'name' => 'country_c',
+            'label' => 'LBL_COUNTRY',
+          ),
         ),
-        2 => 
+        3 => 
         array (
           0 => 
           array (
@@ -142,11 +193,25 @@ array (
           ),
           1 => 
           array (
+            'name' => 'new_department_c',
+            'label' => 'LBL_NEW_DEPARTMENT',
+          ),
+        ),
+        4 => 
+        array (
+          0 => 
+          array (
+            'name' => 'non_financial_radio_c',
+            'studio' => 'visible',
+            'label' => 'LBL_NON_FINANCIAL_RADIO',
+          ),
+          1 => 
+          array (
             'name' => 'source_details_c',
             'label' => 'LBL_SOURCE_DETAILS',
           ),
         ),
-        3 => 
+        5 => 
         array (
           0 => 
           array (
@@ -154,8 +219,13 @@ array (
             'studio' => 'visible',
             'label' => 'LBL_NON_FINANCIAL_CONSIDERATION',
           ),
+          1 => 
+          array (
+            'name' => 'assigned_to_new_c',
+            'label' => 'LBL_ASSIGNED_TO_NEW',
+          ),
         ),
-        4 => 
+        6 => 
         array (
           0 => 
           array (
@@ -164,9 +234,22 @@ array (
           ),
         ),
       ),
-      'lbl_detailview_panel2' => 
+      'lbl_editview_panel2' => 
       array (
         0 => 
+        array (
+          0 => 
+          array (
+            'name' => 'financial_feasibility_l1_c',
+            'label' => 'LBL_FINANCIAL_FEASIBILITY_L1',
+          ),
+          1 => 
+          array (
+            'name' => 'financial_feasibility_l2_c',
+            'label' => 'LBL_FINANCIAL_FEASIBILITY_L2',
+          ),
+        ),
+        1 => 
         array (
           0 => 
           array (
@@ -179,7 +262,7 @@ array (
             'label' => 'LBL_BUDGET_HEAD',
           ),
         ),
-        1 => 
+        2 => 
         array (
           0 => 
           array (
@@ -192,8 +275,30 @@ array (
             'label' => 'LBL_BUDGET_ALLOCATED_OPPERTUNITY',
           ),
         ),
+        3 => 
+        array (
+          0 => 
+          array (
+            'name' => 'project_implementation_start_c',
+            'label' => 'LBL_PROJECT_IMPLEMENTATION_START',
+          ),
+          1 => 
+          array (
+            'name' => 'project_implementation_end_c',
+            'label' => 'LBL_PROJECT_IMPLEMENTATION_END',
+          ),
+        ),
+        4 => 
+        array (
+          0 => 
+          array (
+            'name' => 'financial_feasibility_l3_c',
+            'label' => 'LBL_FINANCIAL_FEASIBILITY_L3',
+          ),
+          1 => '',
+        ),
       ),
-      'lbl_detailview_panel7' => 
+      'lbl_editview_panel7' => 
       array (
         0 => 
         array (
@@ -212,6 +317,19 @@ array (
         array (
           0 => 
           array (
+            'name' => 'add_new_segment_c',
+            'label' => 'LBL_ADD_NEW_SEGMENT',
+          ),
+          1 => 
+          array (
+            'name' => 'add_new_product_service_c',
+            'label' => 'LBL_ADD_NEW_PRODUCT_SERVICE',
+          ),
+        ),
+        2 => 
+        array (
+          0 => 
+          array (
             'name' => 'sector_c',
             'label' => 'LBL_SECTOR',
           ),
@@ -221,7 +339,7 @@ array (
             'label' => 'LBL_SUB_SECTOR',
           ),
         ),
-        2 => 
+        3 => 
         array (
           0 => 
           array (
@@ -230,7 +348,7 @@ array (
             'label' => 'LBL_RISK',
           ),
         ),
-        3 => 
+        4 => 
         array (
           0 => 
           array (
@@ -239,7 +357,7 @@ array (
             'label' => 'LBL_PROJECT_SCOPE',
           ),
         ),
-        4 => 
+        5 => 
         array (
           0 => 
           array (
@@ -249,7 +367,7 @@ array (
           ),
           1 => '',
         ),
-        5 => 
+        6 => 
         array (
           0 => 
           array (
@@ -265,7 +383,7 @@ array (
           ),
         ),
       ),
-      'lbl_detailview_panel4' => 
+      'lbl_editview_panel1' => 
       array (
         0 => 
         array (
@@ -319,26 +437,13 @@ array (
             'label' => 'LBL_WORK_ORDER_ACHIEVED',
           ),
         ),
-      ),
-      'lbl_detailview_panel10' => 
-      array (
-        0 => 
+        4 => 
         array (
-          0 => 
-          array (
-            'name' => 'influencersl1_c',
-            'studio' => 'visible',
-            'label' => 'LBL_INFLUENCERSL1',
-          ),
-          1 => 
-          array (
-            'name' => 'influencersl2_c',
-            'studio' => 'visible',
-            'label' => 'LBL_INFLUENCERSL2',
-          ),
+          0 => '',
+          1 => '',
         ),
       ),
-      'lbl_detailview_panel8' => 
+      'lbl_editview_panel8' => 
       array (
         0 => 
         array (
@@ -363,8 +468,23 @@ array (
             'label' => 'LBL_SUBMISSIONSTATUS',
           ),
         ),
+        2 => 
+        array (
+          0 => 
+          array (
+            'name' => 'bid_checklist_c',
+            'label' => 'LBL_BID_CHECKLIST',
+          ),
+          1 => 
+          array (
+            'name' => 'multiple_file',
+            'label' => 'Bid Files',
+            'studio' => 'visible',
+            'customCode' => '{include file=$FILEUPLOAD filename=$ATTACHMENTS}',
+          ),
+        ),
       ),
-      'lbl_detailview_panel6' => 
+      'lbl_editview_panel6' => 
       array (
         0 => 
         array (
@@ -373,6 +493,11 @@ array (
             'name' => 'closure_status_c',
             'studio' => 'visible',
             'label' => 'LBL_CLOSURE_STATUS',
+          ),
+          1 => 
+          array (
+            'name' => 'expected_inflow_c',
+            'label' => 'LBL_EXPECTED_INFLOW',
           ),
         ),
         1 => 
@@ -391,6 +516,44 @@ array (
             'name' => 'comments_c',
             'studio' => 'visible',
             'label' => 'LBL_COMMENTS',
+          ),
+        ),
+      ),
+      'lbl_editview_panel9' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            'name' => 'tagged_users_c',
+            'label' => 'LBL_TAGGED_USERS',
+          ),
+          1 => 
+          array (
+            'name' => 'multiple_approver_c',
+            'label' => 'LBL_MULTIPLE_APPROVER',
+          ),
+        ),
+        1 => 
+        array (
+          0 => 
+          array (
+            'name' => 'tagged_users_comments_c',
+            'studio' => 'visible',
+            'label' => 'LBL_TAGGED_USERS_COMMENTS',
+          ),
+        ),
+        2 => 
+        array (
+          0 => 
+          array (
+            'name' => 'tagged_hiden_c',
+            'label' => 'LBL_TAGGED_HIDEN',
+          ),
+          1 => 
+          array (
+            'name' => 'untagged_hidden_c',
+            'label' => 'LBL_UNTAGGED_HIDDEN',
           ),
         ),
       ),

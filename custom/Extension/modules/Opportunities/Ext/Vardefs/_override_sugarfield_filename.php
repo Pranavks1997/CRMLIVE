@@ -1,5 +1,4 @@
 <?php
- // created: 2020-11-11 09:48:36
-$dictionary['Opportunity']['fields']['filename']['required']=false;
+ // created: 2021-03-02 11:11:32
 
  ?>

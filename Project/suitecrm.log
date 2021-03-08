@@ -1,0 +1,13 @@
+Wed Feb  3 05:56:53 2021 [13536][-none-][FATAL] SugarBean::populateDefaultValues $field_defs should be an array
+Wed Feb  3 05:56:58 2021 [13536][-none-][FATAL] User update error: Temp User is not retrieved at ID 1, boolean given
+Wed Feb  3 05:56:58 2021 [13536][-none-][FATAL] Email address save error
+Wed Feb  3 05:57:00 2021 [13536][1][FATAL] SugarBean::populateDefaultValues $field_defs should be an array
+Wed Feb  3 05:57:00 2021 [13536][1][FATAL] SugarBean::populateDefaultValues $field_defs should be an array
+Wed Feb  3 05:57:00 2021 [13536][1][FATAL] SugarBean::populateDefaultValues $field_defs should be an array
+Wed Feb  3 05:57:01 2021 [13536][1][FATAL] SugarBean::populateDefaultValues $field_defs should be an array
+Wed Feb  3 05:57:53 2021 [14250][1][FATAL] SugarBean::populateDefaultValues $field_defs should be an array
+Wed Feb  3 06:00:21 2021 [14252][1][FATAL] log call at: modules/EmailMan/tpls/config.tpl:465 - styleChecked is not set
+Mon Mar  8 14:33:59 2021 [23098][1][FATAL] SugarBean::populateDefaultValues $field_defs should be an array
+Mon Mar  8 14:34:45 2021 [23084][1][FATAL] User update error: Temp User is not retrieved at ID 554515a4-a1b3-a263-8c98-6045e88358f5, boolean given
+Mon Mar  8 14:34:45 2021 [23084][1][FATAL] Email address save error
+Mon Mar  8 14:35:00 2021 [23092][554515a4-a1b3-a263-8c98-6045e88358f5][FATAL] SugarBean::populateDefaultValues $field_defs should be an array

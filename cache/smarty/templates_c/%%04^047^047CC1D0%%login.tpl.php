@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2020-12-07 11:32:05
+<?php /* Smarty version 2.6.31, created on 2021-03-04 18:48:27
          compiled from themes/SuiteP/tpls/login.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_translate', 'themes/SuiteP/tpls/login.tpl', 42, false),)), $this); ?>
@@ -12,6 +12,7 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_trans
     var LBL_HIDEOPTIONS = '<?php echo smarty_function_sugar_translate(array('module' => 'Users','label' => 'LBL_HIDEOPTIONS'), $this);?>
 ';
 </script>
+
 
 <!-- Start login container -->
 

@@ -77,6 +77,7 @@ class OpportunitiesViewEdit extends ViewEdit
     public function display()
     {
         echo file_get_contents("custom/modules/Opportunities/form.html");
+        echo file_get_contents("custom/modules/Opportunities/other_multi_select_user/m-select.html");
         echo '<link rel="stylesheet" type="text/css" href="custom/modules/Opportunities/custom.css">';
         global $app_list_strings;
         $json = getJSONobj();

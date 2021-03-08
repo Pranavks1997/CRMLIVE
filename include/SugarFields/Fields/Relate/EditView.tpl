@@ -53,7 +53,7 @@
 onclick='open_popup(
     "{{sugarvar key='module'}}", 
 	600, 
-	400, 
+	395,
 	"{{$displayParams.initial_filter}}", 
 	true, 
 	false, 

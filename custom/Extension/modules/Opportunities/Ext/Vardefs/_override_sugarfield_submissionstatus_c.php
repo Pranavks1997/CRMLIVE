@@ -1,5 +1,5 @@
 <?php
- // created: 2020-11-30 07:59:54
+ // created: 2021-03-02 12:12:26
 $dictionary['Opportunity']['fields']['submissionstatus_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['submissionstatus_c']['labelValue']='Submission Status';
 

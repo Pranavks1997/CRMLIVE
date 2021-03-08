@@ -48,8 +48,10 @@
                                 aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">{$APP.LBL_COLUMNS_FILTER_HEADER_TITLE}</h4>
                 </div>
-                <div class="modal-body" id="columnsFilterList">
-
+             <center><input type="text" id="search-term" style="margin:5px 0"placeholder="Search Here" /></center>  
+                
+                <div class="modal-body content" id="columnsFilterList">
+                
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn button purple btn-default"
@@ -210,7 +212,42 @@
             };
 
         }
+        
 
+     
+     
+ $('#search-term').keyup(function(){
+ 
+  // Search text
+  var text = $(this).val();
+  
+ if(text!=''){
+  // Hide all content class element
+ $('.red li').hide();
+
+  // Search and show
+  $('ul li:contains("'+text+'")').show();
+
+     
+ }
+ else{
+     $('.red li').show();
+ }
+ 
+ 
+ 
+ 
+ });
+ 
+
+
+$.expr[":"].contains = $.expr.createPseudo(function(arg) {
+  return function( elem ) {
+  return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+  };
+  
+});
+ 
     </script>
 {/literal}
 

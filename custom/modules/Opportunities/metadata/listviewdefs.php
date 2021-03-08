@@ -8,13 +8,21 @@ array (
     'link' => true,
     'default' => true,
   ),
-  'DESCRIPTION' => 
+  'OPPORTUNITY_TYPE' => 
   array (
-    'type' => 'text',
-    'label' => 'LBL_DESCRIPTION',
-    'sortable' => false,
-    'width' => '10%',
+    'width' => '15%',
+    'label' => 'LBL_TYPE',
     'default' => true,
+  ),
+  'SELECT_APPROVER_C' => 
+  array (
+    'type' => 'relate',
+    'default' => true,
+    'studio' => 'visible',
+    'label' => 'LBL_SELECT_APPROVER',
+    'id' => 'USER_ID2_C',
+    'link' => true,
+    'width' => '10%',
   ),
   'RFPOREOIPUBLISHED_C' => 
   array (
@@ -24,34 +32,12 @@ array (
     'label' => 'LBL_RFP/EOIPUBLISHED',
     'width' => '10%',
   ),
-  'ACCOUNT_NAME' => 
+  'NEW_DEPARTMENT_C' => 
   array (
-    'width' => '20%',
-    'label' => 'LBL_LIST_ACCOUNT_NAME',
-    'id' => 'ACCOUNT_ID',
-    'module' => 'Accounts',
-    'link' => true,
+    'type' => 'varchar',
     'default' => true,
-    'sortable' => true,
-    'ACLTag' => 'ACCOUNT',
-    'contextMenu' => 
-    array (
-      'objectType' => 'sugarAccount',
-      'metaData' => 
-      array (
-        'return_module' => 'Contacts',
-        'return_action' => 'ListView',
-        'module' => 'Accounts',
-        'parent_id' => '{$ACCOUNT_ID}',
-        'parent_name' => '{$ACCOUNT_NAME}',
-        'account_id' => '{$ACCOUNT_ID}',
-        'account_name' => '{$ACCOUNT_NAME}',
-      ),
-    ),
-    'related_fields' => 
-    array (
-      0 => 'account_id',
-    ),
+    'label' => 'LBL_NEW_DEPARTMENT',
+    'width' => '10%',
   ),
   'SOURCE_C' => 
   array (
@@ -59,163 +45,6 @@ array (
     'default' => true,
     'studio' => 'visible',
     'label' => 'LBL_SOURCE',
-    'width' => '10%',
-  ),
-  'FILENAME' => 
-  array (
-    'type' => 'file',
-    'label' => 'LBL_FILENAME',
-    'width' => '10%',
-    'default' => true,
-  ),
-  'SOURCE_DETAILS_C' => 
-  array (
-    'type' => 'varchar',
-    'default' => true,
-    'label' => 'LBL_SOURCE_DETAILS',
-    'width' => '10%',
-  ),
-  'SCOPE_BUDGET_PROJECTED_C' => 
-  array (
-    'type' => 'date',
-    'default' => true,
-    'label' => 'LBL_SCOPE_BUDGET_PROJECTED',
-    'width' => '10%',
-  ),
-  'SCOPE_BUDGET_ACHIEVED_C' => 
-  array (
-    'type' => 'date',
-    'default' => true,
-    'label' => 'LBL_SCOPE_BUDGET_ACHIEVED',
-    'width' => '10%',
-  ),
-  'RFP_EOI_PROJECTED_C' => 
-  array (
-    'type' => 'date',
-    'default' => true,
-    'label' => 'LBL_RFP_EOI_PROJECTED',
-    'width' => '10%',
-  ),
-  'RFP_EOI_ACHIEVED_C' => 
-  array (
-    'type' => 'date',
-    'default' => true,
-    'label' => 'LBL_RFP_EOI_ACHIEVED',
-    'width' => '10%',
-  ),
-  'RFP_EOI_PUBLISHED_PROJECTED_C' => 
-  array (
-    'type' => 'date',
-    'default' => true,
-    'label' => 'LBL_RFP_EOI_PUBLISHED_PROJECTED',
-    'width' => '10%',
-  ),
-  'RFP_EOI_PUBLISHED_ACHIEVED_C' => 
-  array (
-    'type' => 'date',
-    'default' => true,
-    'label' => 'LBL_RFP_EOI_PUBLISHED_ACHIEVED',
-    'width' => '10%',
-  ),
-  'WORK_ORDER_PROJECTED_C' => 
-  array (
-    'type' => 'date',
-    'default' => true,
-    'label' => 'LBL_WORK_ORDER_PROJECTED',
-    'width' => '10%',
-  ),
-  'WORK_ORDER_ACHIEVED_C' => 
-  array (
-    'type' => 'date',
-    'default' => true,
-    'label' => 'LBL_WORK_ORDER_ACHIEVED',
-    'width' => '10%',
-  ),
-  'BUDGET_SOURCE_C' => 
-  array (
-    'type' => 'varchar',
-    'default' => true,
-    'label' => 'LBL_BUDGET_SOURCE',
-    'width' => '10%',
-  ),
-  'BUDGET_HEAD_C' => 
-  array (
-    'type' => 'varchar',
-    'default' => true,
-    'label' => 'LBL_BUDGET_HEAD',
-    'width' => '10%',
-  ),
-  'BUDGET_HEAD_AMOUNT_C' => 
-  array (
-    'type' => 'float',
-    'default' => true,
-    'label' => 'LBL_BUDGET_HEAD_AMOUNT',
-    'width' => '10%',
-  ),
-  'BUDGET_ALLOCATED_OPPERTUNITY_C' => 
-  array (
-    'type' => 'float',
-    'default' => true,
-    'label' => 'LBL_BUDGET_ALLOCATED_OPPERTUNITY',
-    'width' => '10%',
-  ),
-  'PROJECT_IMPLEMENTATION_START_C' => 
-  array (
-    'type' => 'date',
-    'default' => true,
-    'label' => 'LBL_PROJECT_IMPLEMENTATION_START',
-    'width' => '10%',
-  ),
-  'PROJECT_IMPLEMENTATION_END_C' => 
-  array (
-    'type' => 'date',
-    'default' => true,
-    'label' => 'LBL_PROJECT_IMPLEMENTATION_END',
-    'width' => '10%',
-  ),
-  'FINANCIAL_FEASIBILITY_L1_C' => 
-  array (
-    'type' => 'varchar',
-    'default' => true,
-    'label' => 'LBL_FINANCIAL_FEASIBILITY_L1',
-    'width' => '10%',
-  ),
-  'FINANCIAL_FEASIBILITY_L2_C' => 
-  array (
-    'type' => 'varchar',
-    'default' => true,
-    'label' => 'LBL_FINANCIAL_FEASIBILITY_L2',
-    'width' => '10%',
-  ),
-  'FINANCIAL_FEASIBILITY_L3_C' => 
-  array (
-    'type' => 'varchar',
-    'default' => true,
-    'label' => 'LBL_FINANCIAL_FEASIBILITY_L3',
-    'width' => '10%',
-  ),
-  'CASH_FLOW_C' => 
-  array (
-    'type' => 'varchar',
-    'default' => true,
-    'label' => 'LBL_CASH_FLOW',
-    'width' => '10%',
-  ),
-  'CLOSURE_STATUS_C' => 
-  array (
-    'type' => 'enum',
-    'default' => true,
-    'studio' => 'visible',
-    'label' => 'LBL_CLOSURE_STATUS',
-    'width' => '10%',
-  ),
-  'LEARNINGS_C' => 
-  array (
-    'type' => 'text',
-    'default' => true,
-    'studio' => 'visible',
-    'label' => 'LBL_LEARNINGS',
-    'sortable' => false,
     'width' => '10%',
   ),
   'SECTOR_C' => 
@@ -246,16 +75,48 @@ array (
     'label' => 'LBL_PRODUCT_SERVICE',
     'width' => '10%',
   ),
-  'OPPORTUNITY_TYPE' => 
+  'ASSIGNED_TO_NEW_C' => 
   array (
-    'width' => '15%',
-    'label' => 'LBL_TYPE',
-    'default' => false,
+    'type' => 'varchar',
+    'default' => true,
+    'label' => 'LBL_ASSIGNED_TO_NEW',
+    'width' => '10%',
   ),
-  'LEAD_SOURCE' => 
+  'CASH_FLOW_C' => 
   array (
-    'width' => '15%',
-    'label' => 'LBL_LEAD_SOURCE',
+    'type' => 'varchar',
+    'default' => false,
+    'label' => 'LBL_CASH_FLOW',
+    'width' => '10%',
+  ),
+  'COMMENT_C' => 
+  array (
+    'type' => 'text',
+    'default' => false,
+    'studio' => 'visible',
+    'label' => 'LBL_COMMENT',
+    'sortable' => false,
+    'width' => '10%',
+  ),
+  'FUNDING_C' => 
+  array (
+    'type' => 'enum',
+    'default' => false,
+    'studio' => 'visible',
+    'label' => 'LBL_FUNDING',
+    'width' => '10%',
+  ),
+  'PROJECT_IMPLEMENTATION_END_C' => 
+  array (
+    'type' => 'date',
+    'default' => false,
+    'label' => 'LBL_PROJECT_IMPLEMENTATION_END',
+    'width' => '10%',
+  ),
+  'SALES_STAGE' => 
+  array (
+    'width' => '10%',
+    'label' => 'LBL_LIST_SALES_STAGE',
     'default' => false,
   ),
   'NEXT_STEP' => 
@@ -264,11 +125,187 @@ array (
     'label' => 'LBL_NEXT_STEP',
     'default' => false,
   ),
-  'PROBABILITY' => 
+  'DATE_CLOSED' => 
   array (
     'width' => '10%',
-    'label' => 'LBL_PROBABILITY',
+    'label' => 'LBL_LIST_DATE_CLOSED',
     'default' => false,
+  ),
+  'LEAD_SOURCE' => 
+  array (
+    'width' => '15%',
+    'label' => 'LBL_LEAD_SOURCE',
+    'default' => false,
+  ),
+  'ASSIGNED_USER_NAME' => 
+  array (
+    'width' => '5%',
+    'label' => 'LBL_LIST_ASSIGNED_USER',
+    'module' => 'Employees',
+    'id' => 'ASSIGNED_USER_ID',
+    'default' => false,
+  ),
+  'COMMENTS_C' => 
+  array (
+    'type' => 'text',
+    'default' => false,
+    'studio' => 'visible',
+    'label' => 'LBL_COMMENTS',
+    'sortable' => false,
+    'width' => '10%',
+  ),
+  'LEARNINGS_C' => 
+  array (
+    'type' => 'text',
+    'default' => false,
+    'studio' => 'visible',
+    'label' => 'LBL_LEARNINGS',
+    'sortable' => false,
+    'width' => '10%',
+  ),
+  'INTERNATIONAL_C' => 
+  array (
+    'type' => 'radioenum',
+    'default' => false,
+    'studio' => 'visible',
+    'label' => 'LBL_INTERNATIONAL',
+    'width' => '10%',
+  ),
+  'SELECTION_C' => 
+  array (
+    'type' => 'enum',
+    'default' => false,
+    'studio' => 'visible',
+    'label' => 'LBL_SELECTION',
+    'width' => '10%',
+  ),
+  'DESCRIPTION' => 
+  array (
+    'type' => 'text',
+    'label' => 'LBL_DESCRIPTION',
+    'sortable' => false,
+    'width' => '10%',
+    'default' => false,
+  ),
+  'RISK_C' => 
+  array (
+    'type' => 'text',
+    'default' => false,
+    'studio' => 'visible',
+    'label' => 'LBL_RISK',
+    'sortable' => false,
+    'width' => '10%',
+  ),
+  'STATE_C' => 
+  array (
+    'type' => 'varchar',
+    'default' => false,
+    'label' => 'LBL_STATE',
+    'width' => '10%',
+  ),
+  'TIMING_BUTTON_C' => 
+  array (
+    'type' => 'enum',
+    'default' => false,
+    'studio' => 'visible',
+    'label' => 'LBL_TIMING_BUTTON',
+    'width' => '10%',
+  ),
+  'STATUS_C' => 
+  array (
+    'type' => 'enum',
+    'default' => false,
+    'studio' => 'visible',
+    'label' => 'LBL_STATUS',
+    'width' => '10%',
+  ),
+  'CLOSURE_STATUS_C' => 
+  array (
+    'type' => 'enum',
+    'default' => false,
+    'studio' => 'visible',
+    'label' => 'LBL_CLOSURE_STATUS',
+    'width' => '10%',
+  ),
+  'SUBMISSIONSTATUS_C' => 
+  array (
+    'type' => 'enum',
+    'default' => false,
+    'studio' => 'visible',
+    'label' => 'LBL_SUBMISSIONSTATUS',
+    'width' => '10%',
+  ),
+  'RFP_EOI_ACHIEVED_C' => 
+  array (
+    'type' => 'date',
+    'default' => false,
+    'label' => 'LBL_RFP_EOI_ACHIEVED',
+    'width' => '10%',
+  ),
+  'BUDGET_HEAD_AMOUNT_C' => 
+  array (
+    'type' => 'float',
+    'default' => false,
+    'label' => 'LBL_BUDGET_HEAD_AMOUNT',
+    'width' => '10%',
+  ),
+  'WORK_ORDER_PROJECTED_C' => 
+  array (
+    'type' => 'date',
+    'default' => false,
+    'label' => 'LBL_WORK_ORDER_PROJECTED',
+    'width' => '10%',
+  ),
+  'RFP_EOI_PUBLISHED_PROJECTED_C' => 
+  array (
+    'type' => 'date',
+    'default' => false,
+    'label' => 'LBL_RFP_EOI_PUBLISHED_PROJECTED',
+    'width' => '10%',
+  ),
+  'BUDGET_SOURCE_C' => 
+  array (
+    'type' => 'varchar',
+    'default' => false,
+    'label' => 'LBL_BUDGET_SOURCE',
+    'width' => '10%',
+  ),
+  'RFP_EOI_SUMMARY_C' => 
+  array (
+    'type' => 'text',
+    'default' => false,
+    'studio' => 'visible',
+    'label' => 'LBL_RFP_EOI_SUMMARY',
+    'sortable' => false,
+    'width' => '10%',
+  ),
+  'BID_STRATEGY_C' => 
+  array (
+    'type' => 'varchar',
+    'default' => false,
+    'label' => 'LBL_BID_STRATEGY',
+    'width' => '10%',
+  ),
+  'RFP_EOI_PUBLISHED_ACHIEVED_C' => 
+  array (
+    'type' => 'date',
+    'default' => false,
+    'label' => 'LBL_RFP_EOI_PUBLISHED_ACHIEVED',
+    'width' => '10%',
+  ),
+  'COUNTRY_C' => 
+  array (
+    'type' => 'varchar',
+    'default' => false,
+    'label' => 'LBL_COUNTRY',
+    'width' => '10%',
+  ),
+  'WORK_ORDER_ACHIEVED_C' => 
+  array (
+    'type' => 'date',
+    'default' => false,
+    'label' => 'LBL_WORK_ORDER_ACHIEVED',
+    'width' => '10%',
   ),
   'CREATED_BY_NAME' => 
   array (
@@ -276,10 +313,75 @@ array (
     'label' => 'LBL_CREATED',
     'default' => false,
   ),
+  'PROJECT_SCOPE_C' => 
+  array (
+    'type' => 'text',
+    'default' => false,
+    'studio' => 'visible',
+    'label' => 'LBL_PROJECT_SCOPE',
+    'sortable' => false,
+    'width' => '10%',
+  ),
+  'NON_FINANCIAL_CONSIDERATION_C' => 
+  array (
+    'type' => 'multienum',
+    'default' => false,
+    'studio' => 'visible',
+    'label' => 'LBL_NON_FINANCIAL_CONSIDERATION',
+    'width' => '10%',
+  ),
+  'BUDGET_ALLOCATED_OPPERTUNITY_C' => 
+  array (
+    'type' => 'float',
+    'default' => false,
+    'label' => 'LBL_BUDGET_ALLOCATED_OPPERTUNITY',
+    'width' => '10%',
+  ),
+  'SCOPE_BUDGET_ACHIEVED_C' => 
+  array (
+    'type' => 'date',
+    'default' => false,
+    'label' => 'LBL_SCOPE_BUDGET_ACHIEVED',
+    'width' => '10%',
+  ),
+  'PROJECT_IMPLEMENTATION_START_C' => 
+  array (
+    'type' => 'date',
+    'default' => false,
+    'label' => 'LBL_PROJECT_IMPLEMENTATION_START',
+    'width' => '10%',
+  ),
+  'BUDGET_HEAD_C' => 
+  array (
+    'type' => 'varchar',
+    'default' => false,
+    'label' => 'LBL_BUDGET_HEAD',
+    'width' => '10%',
+  ),
+  'FILENAME' => 
+  array (
+    'type' => 'file',
+    'label' => 'LBL_FILENAME',
+    'width' => '10%',
+    'default' => false,
+  ),
   'MODIFIED_BY_NAME' => 
   array (
     'width' => '5%',
     'label' => 'LBL_MODIFIED',
+    'default' => false,
+  ),
+  'DATE_MODIFIED' => 
+  array (
+    'type' => 'datetime',
+    'label' => 'LBL_DATE_MODIFIED',
+    'width' => '10%',
+    'default' => false,
+  ),
+  'DATE_ENTERED' => 
+  array (
+    'width' => '10%',
+    'label' => 'LBL_DATE_ENTERED',
     'default' => false,
   ),
 );

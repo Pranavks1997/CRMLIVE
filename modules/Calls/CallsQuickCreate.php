@@ -52,6 +52,7 @@ class CallsQuickCreate extends QuickCreate
 
     public function process()
     {
+       
         global $current_user, $timedate, $app_list_strings, $current_language, $mod_strings;
         $mod_strings = return_module_language($current_language, 'Calls');
 
@@ -72,7 +73,7 @@ class CallsQuickCreate extends QuickCreate
         $this->javascript = new javascript();
         $this->javascript->setFormName('callsQuickCreate');
 
-        $focus = BeanFactory::newBean('Calls');
+        $focus = new Call();
         $this->javascript->setSugarBean($focus);
         $this->javascript->addAllFields('');
 

@@ -1,5 +1,5 @@
 <?php
-// created: 2020-12-07 11:31:51
+// created: 2021-03-04 18:48:08
 $mod_strings = array (
   'ERR_NO_2FACTOR_EMAIL_TMPL' => 'Two-factor email template is not set, please change settings on password management page.',
   'ERR_NO_2FACTOR_EMAIL_TMPL_CODE' => 'Two-factor email template should contain a $code at least.',
@@ -226,7 +226,7 @@ If you are not setting up Inbound Email, please clear all fields in that section
   'LBL_REPORTS_TO_NAME' => 'Reports to',
   'LBL_REPORTS_TO' => 'Reports to',
   'LBL_REPORTS_TO_ID' => 'Reports to ID:',
-  'LBL_REQUEST_SUBMIT' => 'Your request has been submitted.',
+  'LBL_REQUEST_SUBMIT' => 'Password Reset Link has been sent to your Email',
   'LBL_RESET_PREFERENCES' => 'Reset User Preferences',
   'LBL_RESET_PREFERENCES_WARNING' => 'Are you sure you want reset all of your user preferences? Warning: This will also log you out of the application.',
   'LBL_RESET_PREFERENCES_WARNING_USER' => 'Are you sure you want reset all of the preferences for this user?',
@@ -634,6 +634,8 @@ If you are not setting up Inbound Email, please clear all fields in that section
   'LBL_TEAMFUNCTION' => 'Team Function',
   'LBL_TEAMHEIRARCHY' => 'Team Heirarchy',
   'LBL_MC' => 'Management Committee',
+  'LBL_CALLS' => 'Activities',
+  'LBL_BID_COMMERCIAL_HEAD' => 'Bid/Commercial Head',
   'LBL_OPPORTUNITIES_USERS_1_FROM_OPPORTUNITIES_TITLE' => 'Opportunities',
   'LBL_OPPORTUNITIES_USERS_2_FROM_OPPORTUNITIES_TITLE' => 'Opportunities',
 );

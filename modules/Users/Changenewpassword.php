@@ -41,7 +41,6 @@
 if (!defined('sugarEntry') || !sugarEntry) {
     die('Not A Valid Entry Point');
 }
-
 global $app_language;
 global $sugar_config;
 global $app_list_strings;
@@ -50,6 +49,8 @@ global $mod_strings;
 global $current_language;
 /** @var DBManager $db */
 $db = DBManagerFactory::getInstance();
+echo '<link rel="stylesheet" type="text/css" media="all" href="' . getJSPath('custom/modules/Users/custom.css') . '">';
+
 
 require_once('modules/Users/language/en_us.lang.php');
 $mod_strings = return_module_language('', 'Users');
@@ -98,7 +99,17 @@ if (isset($_REQUEST['guid'])) {
         if (!$expired) {
             // if the form is filled and we want to login
             if (isset($_REQUEST['login']) && $_REQUEST['login'] == '1') {
-                if ($row['username'] == $_POST['user_name']) {
+              
+                if($row['username'] !== $_POST['user_name']){
+                   echo '<script>
+                   
+                  alert("Please Enter Valid Email");
+                   
+                   </script>';
+                   $redirect='0';
+                   
+                }
+              else  if ($row['username'] == $_POST['user_name']) {
                     $password = $_POST['new_password'];
                     $usr = new user();
                     $errors = $usr->passwordValidationCheck($password);
@@ -137,14 +148,15 @@ if (isset($_REQUEST['guid'])) {
 }
 
 if ($redirect != '0') {
-    header('location:index.php?action=Login&module=Users');
-    exit();
+  header('location:index.php?action=Login&module=Users');
+  exit();
 }
 
 ////	PASSWORD GENERATED LINK CHECK USING
 ///////////////////////////////////////////////////////////////////////////////
 
 require_once('include/MVC/View/SugarView.php');
+
 $view = new SugarView();
 $view->init();
 $view->displayHeader();
@@ -180,4 +192,5 @@ if (!empty($_REQUEST['guid'])) {
     $sugar_smarty->assign("GUID", $_REQUEST['guid']);
 }
 $sugar_smarty->display('modules/Users/Changenewpassword.tpl');
+
 $view->displayFooter();

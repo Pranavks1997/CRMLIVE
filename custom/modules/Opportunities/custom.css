@@ -19,3 +19,34 @@ td {
     /* border: 1px solid #888; */
     width: 66%;
 }
+
+/*.add_field_button {*/
+/*    background-color: #4CAF50;*/
+/*    width:100%;*/
+    
+/*}*/
+.downloadAttachment{
+    font-size: 135%;
+}
+
+.ui-autocomplete { 
+          /*  cursor:pointer; */
+            height:120px; 
+            overflow-y:scroll;
+            width: 270px;
+        }    
+
+
+
+input[type=file] {
+  font-size: 15px;
+  margin-bottom: 10px;
+  
+ 
+}
+
+div[type=radioenum] {
+   padding-top: 10px;
+}
+
+

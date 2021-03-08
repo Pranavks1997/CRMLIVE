@@ -427,3 +427,4 @@
 	</script>
 	{/literal}
 {/if}
+

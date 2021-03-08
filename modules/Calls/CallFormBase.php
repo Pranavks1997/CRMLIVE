@@ -139,7 +139,7 @@ EOQ;
 
         $javascript = new javascript();
         $javascript->setFormName($formname);
-        $javascript->setSugarBean(BeanFactory::newBean('Calls'));
+        $javascript->setSugarBean(new Call());
         $javascript->addRequiredFields($prefix);
         $form .=$javascript->getScript();
         $form .= "<td align=\"left\" valign=top><input title='$lbl_save_button_title' accessKey='$lbl_save_button_key' class='button' type='submit' name='button' value=' $lbl_save_button_label ' ></td></tr></table></form>";
@@ -207,16 +207,50 @@ EOQ;
     public function handleSave($prefix, $redirect=true, $useRequired=false)
     {
         require_once('include/formbase.php');
-
         global $current_user;
         global $timedate;
+        
+        //custom ---------------------------------------------------------------------------------------------------------
+        // $current_status = $_POST['new_current_status_c'];
+        // $related_to = $_POST['parent_type'];
+        // $parent_id = $_POST['parent_id'];
+        // $activity_record_id_for_edit = $_POST['relate_id'];
+        // $for_quick_create = $_POST['for_quick_create_c'];
+        // if($for_quick_create != 'yes'){
+        //     if($activity_record_id_for_edit != ''){
+        //         $sql = "SELECT id, parent_type, parent_id FROM calls WHERE id='".$activity_record_id_for_edit."' LIMIT 1";
+        //      	$result = $GLOBALS['db']->query($sql);
+        //     	if($result->num_rows>0){
+        //     		while($row = $GLOBALS['db']->fetchByAssoc($result))
+        //     		{
+        //         		$saved_parent_typ = $row['parent_type'];
+        //         		if($saved_parent_typ == 'Opportunities'){
+        //         		    $saved_opp_parent_id = $row['parent_id'];
+        //         		}
+        //     		}
+        //     	}else{
+        //     	    die('some error occured');
+        //     	}
+        //     	if($related_to == 'Opportunities' && $saved_parent_typ == 'Opportunities'){
+        //             if($saved_opp_parent_id == $parent_id){
+        //                 $same_or_not = 'same';
+        //             }else{
+        //                  $same_or_not = 'not';
+        //             }
+        //         }
+        //     }
+        // }
+        
+        //custom -------------------------------------------------------------------------------------------------------
+        
+        
 
         //BUG 17418 MFH
         if (isset($_POST[$prefix.'duration_hours'])) {
             $_POST[$prefix.'duration_hours'] = trim($_POST[$prefix.'duration_hours']);
         }
 
-        $focus = BeanFactory::newBean('Calls');
+        $focus = new Call();
 
         if ($useRequired && !checkRequired($prefix, array_keys($focus->required_fields))) {
             return null;
@@ -517,6 +551,288 @@ EOQ;
             echo $json->encode(array('status' => 'success', 'get' => ''));
             exit;
         }
+        
+        
+        
+        //--------------------------------------------------------------------------------------------------------------------------------------------- 
+//         // custom logic - not by suite crm
+        
+//         $db = \DBManagerFactory::getInstance();
+// 	    $GLOBALS['db'];
+       
+//         if($related_to == 'Opportunities'){
+// 			$update_query="UPDATE opportunities SET description ='".$current_status."' WHERE id='".$parent_id."'";
+// 			$res = $db->query($update_query);
+// 			if($res != 1){
+// 			    die('some error occured');
+// 			}
+			
+// 			function change_date_format($var_date) {
+//                 $date_array = (explode("-",$var_date));
+// 		        $new_format_date = $date_array[2].'/'.$date_array[1].'/'.$date_array[0];
+// 		        return $new_format_date;
+//             }
+            
+// 		    $activity_date_array = (explode("-",$focus->activity_date_c));
+// 		    $activity_date = $activity_date_array[2].'/'.$activity_date_array[1].'/'.$activity_date_array[0];
+			
+// 			$sql = "SELECT CONCAT(IFNULL(first_name,''), ' ', IFNULL(last_name,'')) AS fullname FROM users WHERE id='".$focus->created_by."' LIMIT 1";
+// 		 	$result = $GLOBALS['db']->query($sql);
+//     		if($result->num_rows>0){
+// 				while($row = $GLOBALS['db']->fetchByAssoc($result))
+// 				{
+// 		    		$created_by = $row['fullname'];
+// 				}
+//     		}else{
+//     		    die('some error occured');
+//     		}
+    		
+//     // 		echo $created_by;
+    		
+//     		$sql = "SELECT * FROM opportunities WHERE id='".$parent_id."' LIMIT 1";
+// 		 	$result = $GLOBALS['db']->query($sql);
+//     		if($result->num_rows>0){
+// 				while($row = $GLOBALS['db']->fetchByAssoc($result))
+// 				{
+// 		    		$opp_name = $row['name'];
+// 		    		$type_of_opp = $row['opportunity_type'];
+// 		    		$primary_responsibility_id = $row['assigned_user_id'];
+// 		    		$sales_stage = $row['sales_stage'];
+// 		    		$expected_close_dat = $row['date_closed'];
+// 				}
+//     		}else{
+//     		    die('some error occured');
+//     		}
+    		
+//     		$expected_close_date = change_date_format($expected_close_dat);
+    		
+//     		$sql = "SELECT * FROM accounts_opportunities WHERE opportunity_id='".$parent_id."' LIMIT 1";
+// 		 	$result = $GLOBALS['db']->query($sql);
+//     		if($result->num_rows>0){
+// 				while($row = $GLOBALS['db']->fetchByAssoc($result))
+// 				{
+// 		    		$department_id = $row['account_id'];
+// 				}
+//     		}else{
+//     		    die('some error occured');
+//     		}
+    		
+//     		$sql = "SELECT * FROM accounts WHERE id='".$department_id."' LIMIT 1";
+// 		 	$result = $GLOBALS['db']->query($sql);
+//     		if($result->num_rows>0){
+// 				while($row = $GLOBALS['db']->fetchByAssoc($result))
+// 				{
+// 		    		$department_name = $row['name'];
+// 				}
+//     		}else{
+//     		    die('some error occured');
+//     		}
+    		
+//     		$sql = "SELECT CONCAT(IFNULL(first_name,''), ' ', IFNULL(last_name,'')) AS fullname FROM users WHERE id='".$primary_responsibility_id."' LIMIT 1";
+// 		 	$result = $GLOBALS['db']->query($sql);
+//     		if($result->num_rows>0){
+// 				while($row = $GLOBALS['db']->fetchByAssoc($result))
+// 				{
+// 		    		$primary_responsibility_name = $row['fullname'];
+// 				}
+//     		}else{
+//     		    die('some error occured');
+//     		}
+    		
+//     		$sql = "SELECT * FROM opportunities_cstm WHERE id_c='".$parent_id."' LIMIT 1";
+// 		 	$result = $GLOBALS['db']->query($sql);
+//     		if($result->num_rows>0){
+// 				while($row = $GLOBALS['db']->fetchByAssoc($result))
+// 				{
+// 		    		$opportunity_number = $row['opportunitiesnumber_c'];
+// 		    		$state = $row['new_state_c'];
+// 		    		$country = $row['countryid_c'];
+// 		    		$segment = $row['new_segment_c'];
+// 		    		$product_service = $row['new_service_c'];
+// 		    		$business_vertical_of_lead_spoc = $row['vertical_name_c'];
+// 		    		$channel_partner = $row['channelpartner_c'];
+// 		    		$target_quarter_for_closure = $row['targetquarterforclosure_c'];
+// 		    		$lead_origination_dat = $row['lead_origination_date_c'];
+// 		    		$probability = $row['probablity_csmt_c'];
+// 		    		$expected_sales_value = $row['new_sales_vale_c'];
+// 		    		$projected_turn_over = $row['finance_yr_c'];
+// 		    		$expected_start_date_of_project = $row['duplicate_exp_start_date_c'];
+// 		    		$expected_close_date_of_project = $row['duplicate_exp_end_date_c'];
+// 		    		$projected_net_profit = $row['projected_net_profit_c'];
+// 				}
+//     		}else{
+//     		    die('some error occured');
+//     		}
+//     		$lead_origination_date = change_date_format($lead_origination_dat);
+//         }else{
+//             if($related_to == 'Accounts'){
+//                 $sql = "SELECT id, name FROM accounts WHERE id='".$parent_id."' LIMIT 1";
+// 		 	    $result = $GLOBALS['db']->query($sql);
+//     		    if($result->num_rows>0){
+// 				    while($row = $GLOBALS['db']->fetchByAssoc($result))
+// 				{
+// 		    		$opp_name = $row['name'];
+// 				}
+//         		}else{
+//         		    die('some error occured');
+//         		}
+//             }else if($related_to == 'Contacts'){
+//                 $sql = "SELECT CONCAT(IFNULL(first_name,''), ' ', IFNULL(last_name,'')) AS fullname FROM contacts WHERE id='".$parent_id."' LIMIT 1";
+// 		 	    $result = $GLOBALS['db']->query($sql);
+//     		    if($result->num_rows>0){
+// 				    while($row = $GLOBALS['db']->fetchByAssoc($result))
+// 				{
+// 		    		$opp_name = $row['fullname'];
+// 				}
+//         		}else{
+//         		    die('some error occured');
+//         		}
+//             }else if($related_to == 'Tasks'){
+//                  $sql = "SELECT id, name FROM tasks WHERE id='".$parent_id."' LIMIT 1";
+// 		 	    $result = $GLOBALS['db']->query($sql);
+//     		    if($result->num_rows>0){
+// 				    while($row = $GLOBALS['db']->fetchByAssoc($result))
+// 				{
+// 		    		$opp_name = $row['name'];
+// 				}
+//         		}else{
+//         		    die('some error occured');
+//         		}
+//             }
+//             $created_by = '';
+//     		$type_of_opp = '';
+//     		$primary_responsibility_id = '';
+//     		$sales_stage = '';
+//     		$expected_close_date = '';
+//     		$department_id = '';
+//     		$department_name = '';
+//     		$primary_responsibility_name = '';
+//     		$opportunity_number = '';
+//     		$state = '';
+//     		$country = '';
+//     		$segment = '';
+//     		$product_service = '';
+//     		$business_vertical_of_lead_spoc = '';
+//     		$channel_partner = '';
+//     		$target_quarter_for_closure = '';
+//     		$lead_origination_date = '';
+//     		$probability = '';
+//     		$expected_sales_value = '';
+//     		$projected_turn_over ='';
+//     		$expected_start_date_of_project = '';
+//     		$expected_close_date_of_project = '';
+//     		$projected_net_profit = '';
+//         }
+        
+//     	$sql = "SELECT CONCAT(IFNULL(first_name,''), ' ', IFNULL(last_name,'')) AS fullname FROM users WHERE id='".$focus->assigned_user_id."' LIMIT 1";
+// 	 	$result = $GLOBALS['db']->query($sql);
+// 		if($result->num_rows>0){
+// 			while($row = $GLOBALS['db']->fetchByAssoc($result))
+// 			{
+// 	    		$assign_full_name = $row['fullname'];
+// 			}
+// 		}else{
+// 		    die('some error occured');
+// 		}
+		
+// // 		echo $assign_full_name;
+		
+// 		$sql = "SELECT CONCAT(IFNULL(first_name,''), ' ', IFNULL(last_name,'')) AS fullname FROM users WHERE id='".$focus->modified_user_id."' LIMIT 1";
+// 	 	$result = $GLOBALS['db']->query($sql);
+// 		if($result->num_rows>0){
+// 			while($row = $GLOBALS['db']->fetchByAssoc($result))
+// 			{
+// 	    		$modified_full_name = $row['fullname'];
+// 			}
+// 		}else{
+// 		    die('some error occured');
+// 		}
+		
+// // 			echo $modified_full_name;
+		
+// // 			die();
+// 		$activity_status = $focus->status;
+// 		if($activity_status == 'Held'){
+// 		    $activity_status = 'Completed';
+// 		}else if($activity_status == 'Not Held'){
+// 		    $activity_status = 'Delayed';
+// 		}
+		
+// 		$type_of_interact = $focus->type_of_interaction_c;
+// 		if($type_of_interact == 'EMail'){
+// 		    $type_of_interact = 'E-Mail';
+// 		}else if($type_of_interact == 'EMeeting'){
+// 		    $type_of_interact = 'E-Meeting';
+// 		}else if($type_of_interact == 'Physical_Meeting'){
+// 		    $type_of_interact = 'Physical Meeting';
+// 		}else if($type_of_interact == 'Phone_Email'){
+// 		    $type_of_interact = 'Phone & Email';
+// 		}
+		
+// 		$activity_date_array = (explode("-",$focus->activity_date_c));
+// 		$activity_date = $activity_date_array[2].'/'.$activity_date_array[1].'/'.$activity_date_array[0];
+		
+// 		$related_to_module = $focus->parent_type;
+// 		if($related_to_module == 'Accounts'){
+// 		    $related_to_module = 'Department';
+// 		}
+		
+// // 		echo html_entity_decode($focus->new_current_status_c);
+// // // 		echo $db->quote($product_service);
+// // // 		echo $db->quote($focus->new_current_status_c);
+// // //         // echo 'ds';
+// // 		die();
+		
+// 		$sql = 'SELECT * FROM ak1_activity_report where activity_id ="'.$return_id.'" LIMIT 1';
+// 		$result = $GLOBALS['db']->query($sql);
+// 		if($result->num_rows>0 && $for_quick_create != 'yes'){
+// 			while($row = $GLOBALS['db']->fetchByAssoc($result) )
+// 			{
+// 			    if($same_or_not == 'same'){
+// 			        $update_query="UPDATE ak1_activity_report SET related_to='".$db->quote($related_to_module)."', activity_date='".$activity_date."', activity_status='".$db->quote($activity_status)."', activity_name='".$db->quote(html_entity_decode($focus->name))."' , opp_id='".$parent_id."', activity_date_modified ='".$focus->date_modified."', activity_assigned_user_name ='".$db->quote(html_entity_decode($assign_full_name))."', activity_modified_user_name ='".$db->quote(html_entity_decode($modified_full_name))."', name_of_person_contacted ='".$db->quote(html_entity_decode($focus->name_of_person_c))."', 
+// 		   	        type_of_interaction ='".$db->quote(html_entity_decode($type_of_interact))."', summary_of_interaction ='".$db->quote(html_entity_decode($focus->description))."', key_actionable ='".$db->quote(html_entity_decode($focus->new_key_action_c))."', next_follow_up ='".$focus->next_date_c."',current_status_of_the_opportun ='".$db->quote(html_entity_decode($focus->new_current_status_c))."' WHERE activity_id='".$return_id."'";
+// 				    $res = $db->query($update_query);
+// 			    }else{
+// 			        $update_query="UPDATE ak1_activity_report SET opp_id='".$parent_id."', activity_name='".$db->quote(html_entity_decode($focus->name))."', activity_date_modified='".$focus->date_modified."', activity_assigned_user_name='".$db->quote(html_entity_decode($assign_full_name))."',
+// 			        activity_modified_user_name='".$db->quote(html_entity_decode($modified_full_name))."', name_of_person_contacted='".$db->quote(html_entity_decode($focus->name_of_person_c))."', type_of_interaction='".$db->quote(html_entity_decode($type_of_interact))."', summary_of_interaction='".$db->quote(html_entity_decode($focus->description))."', 
+// 			        key_actionable='".$db->quote(html_entity_decode($focus->new_key_action_c))."', next_follow_up='".$focus->next_date_c."', activity_date_entered='".$focus->date_entered."', activity_created_by='".$created_by."', current_status_of_the_opportun='".$db->quote(html_entity_decode($focus->new_current_status_c))."', 
+// 			        opportunity_number='".$db->quote(html_entity_decode($opportunity_number))."', opportunity_name='".$db->quote(html_entity_decode($opp_name))."', state='".$db->quote(html_entity_decode($state))."', country='".$db->quote(html_entity_decode($country))."', 
+// 			        department='".$db->quote($department_name)."', type_of_opportunity='".$db->quote($type_of_opp)."', segment='".$db->quote($segment)."', product_service='".$db->quote($product_service)."', 
+// 			        primary_responsibility='".$db->quote(html_entity_decode($primary_responsibility_name))."', business_vertical_of_lead_spoc='".$db->quote(html_entity_decode($business_vertical_of_lead_spoc))."', channel_partner='".$db->quote(html_entity_decode($channel_partner))."', 
+// 			        target_quarter_for_closure='".$target_quarter_for_closure."', sales_stage='".$db->quote(html_entity_decode($sales_stage))."', new_lead_origination_date='".$lead_origination_date."',
+// 			        new_expected_close_date='".$expected_close_date."',probability='".$probability."',expected_sales_value='".$expected_sales_value."',projected_turn_over='".$projected_turn_over."',
+// 			        expected_close_date_of_projec='".$expected_close_date_of_project."',expected_start_date_of_projec='".$expected_start_date_of_project."',projected_net_profit='".$projected_net_profit."', related_to='".$db->quote($related_to_module)."',
+// 			        activity_date='".$activity_date."',activity_status='".$activity_status."' WHERE activity_id='".$return_id."'";
+// 				    $res = $db->query($update_query);
+// 			    }
+// 			}
+// 		}else{
+// 		    $insert_query="Insert into ak1_activity_report (opp_id, activity_name, activity_date_modified, 
+// 		    activity_assigned_user_name, activity_modified_user_name, name_of_person_contacted, type_of_interaction, 
+// 		    summary_of_interaction, key_actionable, next_follow_up, activity_date_entered, activity_created_by, 
+// 		    current_status_of_the_opportun, opportunity_number, opportunity_name, state, country, department, 
+// 		    type_of_opportunity, segment, product_service, primary_responsibility, business_vertical_of_lead_spoc, 
+// 		    channel_partner, target_quarter_for_closure, sales_stage, new_lead_origination_date, 
+// 		    new_expected_close_date, probability, expected_sales_value, projected_turn_over, expected_close_date_of_projec, 
+// 		    expected_start_date_of_projec, projected_net_profit, activity_id, related_to, activity_date, activity_status) 
+// 		    value('".$parent_id."', '".$db->quote(html_entity_decode($focus->name))."' , '".$focus->date_modified."', '".$db->quote(html_entity_decode($assign_full_name))."', '".$db->quote(html_entity_decode($modified_full_name))."', 
+// 		    '".$db->quote(html_entity_decode($focus->name_of_person_c))."', '".$db->quote(html_entity_decode($type_of_interact))."', '".$db->quote(html_entity_decode($focus->description))."', '".$db->quote(html_entity_decode($focus->new_key_action_c))."', 
+// 		    '".$focus->next_date_c."', '".$focus->date_entered."', '".$created_by."', '".$db->quote(html_entity_decode($focus->new_current_status_c))."', '".$opportunity_number."',
+// 		    '".$db->quote(html_entity_decode($opp_name))."', '".$db->quote(html_entity_decode($state))."', '".$db->quote(html_entity_decode($country))."', '".$db->quote(html_entity_decode($department_name))."', '".$db->quote(html_entity_decode($type_of_opp))."', '".$db->quote(html_entity_decode($segment))."', '".$db->quote(html_entity_decode($product_service))."', 
+// 		    '".$db->quote(html_entity_decode($primary_responsibility_name))."', '".$db->quote(html_entity_decode($business_vertical_of_lead_spoc))."', '".$db->quote(html_entity_decode($channel_partner))."', '".$target_quarter_for_closure."', 
+// 		    '".$db->quote(html_entity_decode($sales_stage))."', '".$lead_origination_date."', '".$expected_close_date."', '".$probability."', '".$expected_sales_value."', 
+// 		    '".$projected_turn_over."', '".$expected_close_date_of_project."', '".$expected_start_date_of_project."', '".$projected_net_profit."', 
+// 		    '".$return_id."', '".$db->quote(html_entity_decode($related_to_module))."', '".$activity_date."', '".$activity_status."')";
+// 			$res = $db->query($insert_query);
+// 		}
+        
+//         if($res != 1 ){
+//             die('Due to some error report for this activity is not recorded');
+//         }
+        
+//          // custom logic end here.
+//--------------------------------------------------------------------------------------------------------------------------------------------- a
+        
 
         if (isset($_REQUEST['return_module']) && $_REQUEST['return_module'] == 'Home') {
             $_REQUEST['return_action'] = 'index';
@@ -646,7 +962,7 @@ EOQ;
 
         $javascript = new javascript();
         $javascript->setFormName($formname);
-        $javascript->setSugarBean(BeanFactory::newBean('Calls'));
+        $javascript->setSugarBean(new Call());
         $javascript->addRequiredFields($prefix);
         $form .=$javascript->getScript();
         $mod_strings = $temp_strings;

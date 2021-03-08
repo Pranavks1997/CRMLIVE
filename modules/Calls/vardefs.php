@@ -42,7 +42,7 @@ if (!defined('sugarEntry') || !sugarEntry) {
  */
 
 $dictionary['Call'] = array('table' => 'calls', 'comment' => 'A Call is an activity representing a phone call',
-    'unified_search' => true, 'full_text_search' => true, 'unified_search_default_enabled' => true, 'fields' => array(
+    'unified_search' => true, 'full_text_search' => true, 'unified_search_default_enabled' => true,'audited' => true , 'fields' => array(
 
         'name' =>
             array(

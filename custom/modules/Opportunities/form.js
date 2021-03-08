@@ -12,251 +12,119 @@ $( document ).ready(function() {
    
     var bidChecklistForm = document.getElementById("bidChecklistForm");
    
-  window.onclick = function(event) {
+//   window.onclick = function(event) {
       
-          if (event.target == myForm || event.target == bidChecklistForm) {
-            myForm.style.display = "none";
+//           if (event.target == myForm || event.target == bidChecklistForm) {
+//             myForm.style.display = "none";
             
-            bidChecklistForm.style.display = "none";
+//             bidChecklistForm.style.display = "none";
             
-         //   $('#EditView').show();
+//          //   $('#EditView').show();
             
-          }
-    };
+//           }
+//     };
     
-     $(document).on('click', '#close1,#close2', function(){
-         document.getElementById("myForm").style.display = "none";
-         
-     });
+     
+     
+   
+     
+     
+ //-----decode function--------------
     var decodeHTML = function (html) {
   	var txt = document.createElement('textarea');
   	txt.innerHTML = html;
   	return txt.value;
   };
+  
+  //-----------------decode function-----END--------------------
     
-    openForm = function() {
+    $(document).on('click','#open_button', function() {
         
+        document.getElementById("first_form").style.display = "none";
+        document.getElementById("reset").style.display = "none";
+        document.getElementById("myForm").style.display = "block";
+        document.getElementById("mtwenty").style.display = "block";
+        document.getElementById("close1").style.display = "block";
+        document.getElementById("close2").style.display = "none";
+        document.getElementById("tenth").style.display = "none";
+         document.getElementById("chec").style.display = "none";
+         document.getElementById("stage").style.display = "none";
+           document.getElementById("milestone").style.display = "none";
+         document.getElementById("mtenth").style.display = "none";
+         document.getElementById("l2p").style.display = "none";
          var id=$('#EditView input[name=record]').val();
          
-          $.ajax({
-        url : 'index.php?module=Opportunities&action=fetch_l1',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
-                
-            },
-            success: function (return_data) {
-                
-                if(return_data.status == true ){
-                    console.log('in');
-          if(return_data.l1_html != ''&& return_data.l1_input!=""){
-              
-               $("#myForm").css("display", "block");
-                $("#mtwenty").css("display", "block");
-                $("#mtenth").css("display", "none");
-                $("#tenth").css("display", "none");
-                $("#chec").css("display","none");
-                $("#save1").css("display","none");
-                $("#save2").css("display","none");
-                 $("#close2").css("display","none");
-                
-               var l1HTML_decoded = decodeHTML(return_data.l1_html);
-               //var l1INPUT_decoded = decodeHTML(return_data.l1_input);
-              $('#total_value').html(l1HTML_decoded);
-               $('#total_value input').each(function(index) {
-                  $(this).val(decodeHTML(return_data.l1_input[index]));
-                });
-              
-                 }else{
-                      $("#myForm").css("display", "block");
-                $("#mtwenty").css("display", "block");
-                $("#mtenth").css("display", "none");
-                $("#tenth").css("display", "none");
-                $("#chec").css("display","none");
-                $("#save1").css("display","none");
-                $("#save2").css("display","none");
-                 $("#close2").css("display","none");
-                 }
-                }
-                
-            }
+         
   });
-  //------------fetch year and quarter for l1---------------------       
-   $.ajax({
-        url : 'index.php?module=Opportunities&action=fetch_year_quarters',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
-                
-            },
-            success: function (return_data) {
-                var start_year=return_data.start_year;
-                var start_quarter=return_data.start_quarter;
-                var end_year=return_data.end_year;
-                var end_quarter=return_data.end_quarter;
-                var num_of_bidders=return_data.num_of_bidders;
-                
-                 if(start_year!=''&& start_quarter !=''&& end_quarter!=''&& end_year !=''&& num_of_bidders!=''){
-                     
-                            $('#startYear').val(start_year);
-                            $('#endYear').val(end_year);
-                            $('#start_quarter').val(start_quarter);
-                            $('#end_quarter').val(end_quarter);
-                            $('#bid').val( num_of_bidders);
-                           // $('#first_form').attr('disabled',true);
-                 }else{
-                            $('#startYear').val("");
-                            $('#endYear').val("");
-                            $('#start_quarter').val("");
-                            $('#end_quarter').val("");
-                            $('#bid').val("");
-                           //  $('#first_form').attr('disabled',false);
-                 }
-                 
-                
-            }
-         
-         
-     });
-      //------------fetch year and quarter for l1--END-------------------  
-  };
   
   
   //-----------------Saving L1 template--END--------------------
   
   $(document).on('click', '#open_button1', function(){
       
-      var id=$('#EditView input[name=record]').val();
-      
-      //------------for L2---------------------
-          $.ajax({
-        url : 'index.php?module=Opportunities&action=fetch_l2',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
-                
-            },
-            success: function (return_data) {
-                
-                if(return_data.status == true ){
-                    console.log('in');
-          if(return_data.l2_html != ''&& return_data.l2_input!=""){
-              
-               $("#myForm").css("display", "block");
-                  $("#mtwenty").css("display", "block");
-                  $("#mtenth").css("display", "block");
-                  $("#tenth").css("display", "block");
-                  $("#chec").css("display","block");
-                  $("#save1").css("display","none");
-                  $("#save2").css("display","none");
-                  $("#first_form").css("display","none");
-                   $("#reset").css("display","none");
-                    $("#close1").css("display","none");
-                     $("#close2").css("display","block");
-               var l2HTML_decoded = decodeHTML(return_data.l2_html);
-               //var l1INPUT_decoded = decodeHTML(return_data.l1_input);
-              $('#mtenth').html(l2HTML_decoded);
-               $('#mtenth input').each(function(index) {
-                  $(this).val(decodeHTML(return_data.l2_input[index]));
-                });
-                
-             }
-                 else{
-                      $("#myForm").css("display", "block");
-                      $("#mtwenty").css("display", "block");
-                      $("#mtenth").css("display", "block");
-                      $("#tenth").css("display", "block");
-                      $("#chec").css("display","block");
-                      $("#save1").css("display","none");
-                      $("#save2").css("display","none");
-                       $("#first_form").css("display","none");
-                      $("#reset").css("display","none");
-                       $("#close1").css("display","none");
-                        $("#close2").css("display","block");
-                 }
-                }
-                
-            }
-  });
-  //-----------for l1---------------------------------------
-   $.ajax({
-        url : 'index.php?module=Opportunities&action=fetch_l1',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
-                
-            },
-            success: function (return_data) {
-                
-                if(return_data.status == true ){
-                    console.log('in');
-          if(return_data.l1_html != ''&& return_data.l1_input!=""){
-              
+       document.getElementById("myForm").style.display = "block";
+       document.getElementById("mtwenty").style.display = "block";
+       document.getElementById("mtenth").style.display = "block";
+       document.getElementById("close2").style.display = "block";
+        document.getElementById("tenth").style.display = "inline";
+         document.getElementById("chec").style.display = "inline";
+          document.getElementById("stage").style.display = "inline";
+           document.getElementById("milestone").style.display = "inline";
+        document.getElementById("close1").style.display = "none";
+         if($('#rfporeoipublished_c').val()=='yes' && $('#status_c').val()=='QualifiedLead'){
              
-               var l1HTML_decoded = decodeHTML(return_data.l1_html);
-               //var l1INPUT_decoded = decodeHTML(return_data.l1_input);
-              $('#total_value').html(l1HTML_decoded);
-               $('#total_value input').each(function(index) {
-                  $(this).val(decodeHTML(return_data.l1_input[index]));
-                });
               
-                 }
-                }
+              var al=$('#cum ').find('td').length;
+
+ 
+                              if(al==6){
+                                  $('#first_form').trigger('click');
+                              }
+            
+                    
+         }
+        document.getElementById("reset").style.display = "inline";
+        document.getElementById("l2p").style.display = "block";
+      
+      
+      var id=$('#EditView input[name=record]').val();
+       var decodeHTML = function (html) {
+  	var txt = document.createElement('textarea');
+  	txt.innerHTML = html;
+  	return txt.value;
+  };
+      
+//       //------------for L2---------------------
+//           $.ajax({
+//         url : 'index.php?module=Opportunities&action=fetch_l2',
+//         type : 'POST',
+//         dataType: "json",
+//           data :
+//             {
+//                 id,
                 
-            }
-  });
-    //-------------------for l1-End----------------  
-    
-    //------------------for year and quarter----------
-     $.ajax({
-        url : 'index.php?module=Opportunities&action=fetch_year_quarters',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
+//             },
+//             success: function (return_data) {
                 
-            },
-            success: function (return_data) {
-                var start_year=return_data.start_year;
-                var start_quarter=return_data.start_quarter;
-                var end_year=return_data.end_year;
-                var end_quarter=return_data.end_quarter;
-                var num_of_bidders=return_data.num_of_bidders;
+//                 if(return_data.status == true ){
+//                     console.log('in');
+//           if(return_data.l2_html != ''&& return_data.l2_input!=""){
+              
+              
+//               var l2HTML_decoded = decodeHTML(return_data.l2_html);
+//               //var l1INPUT_decoded = decodeHTML(return_data.l1_input);
+//               $('#mtenth').html(l2HTML_decoded);
+//               $('#mtenth input').each(function(index) {
+//                   $(this).val(decodeHTML(return_data.l2_input[index]));
+//                 });
                 
-                 if(start_year!=''&& start_quarter !=''&& end_quarter!=''&& end_year !=''&& num_of_bidders!=''){
-                     
-                            $('#startYear').val(start_year);
-                            $('#endYear').val(end_year);
-                            $('#start_quarter').val(start_quarter);
-                            $('#end_quarter').val(end_quarter);
-                            $('#bid').val( num_of_bidders);
-                         //   $('#first_form').attr('disabled',true);
-                 }else{
-                            $('#startYear').val("");
-                            $('#endYear').val("");
-                            $('#start_quarter').val("");
-                            $('#end_quarter').val("");
-                            $('#bid').val("");
-                          //   $('#first_form').attr('disabled',false);
-                 }
+//              }
                  
+//                 }
                 
-            }
-         
-         
-     });
-  
-     
-     //------------------for year and quarter--End--------
+//             }
+//   });
+
    
 });
  
@@ -266,7 +134,7 @@ $(document).on('click', '#open_bidChecklist', function(){
    
    $("#bidChecklistForm").css("display", "block");
    
-   console.log(id);
+   //console.log(id);
  //--------------fetch dpr data -----------------------------------------------  
    $.ajax({
         url : 'index.php?module=Opportunities&action=fetch_bidchecklist',
@@ -286,17 +154,17 @@ $(document).on('click', '#open_bidChecklist', function(){
                  var tenure = return_data.tenure;
                  var project_value = return_data.project_value;
                  var project_scope = return_data.project_scope;
-                 
+                 var total_input_value=return_data.total_input_value;
                   var emd1 = return_data.emd1;
                  var pbg1 = return_data.pbg1;
                  var tenure1 = return_data.tenure1;
                  var project_value1 = return_data.project_value1;
                  var project_scope1 = return_data.project_scope1;
-                 
+                  var total_input_value1=return_data.total_input_value1;
                  $("#dpr_emd").val(emd);
                  $("#dpr_pbg").val(pbg);
                  $("#dpr_tenure").val(tenure);
-                 $("#dpr_value").val(project_value);
+                 $("#dpr_value").val(total_input_value);
                  $("#dpr_scope").val(project_scope);
                  
                  
@@ -305,7 +173,7 @@ $(document).on('click', '#open_bidChecklist', function(){
             if($("#status_c").val() == "QualifiedDpr"||$("#status_c").val() == "QualifiedBid"||$("#status_c").val()=="Closed") {
                        
                    
-                 console.log("bid if");
+              //   console.log("bid if");
                  
                             
                             
@@ -330,11 +198,11 @@ $(document).on('click', '#open_bidChecklist', function(){
                                  $("#bid_tenure").val(tenure);
                             }   
                             
-                            if(project_value1!=project_value ) {
-                                  $("#bid_value").val(project_value1);
+                            if(total_input_value1!=total_input_value ) {
+                                  $("#bid_value").val(total_input_value1);
                                          
                             } else{
-                                 $("#bid_value").val(project_value);
+                                 $("#bid_value").val(total_input_value);
                             }  
                             
                             
@@ -378,26 +246,25 @@ $(document).on('click', '#open_bidChecklist', function(){
 //------------------insert row in cash flow------------------------------------
 
   $('.add_rows_cls').click(function(){
+      var stage=$("#stage").val();
+      var milestone=$("#milestone").val();
        var select_value = $("#chec").val();
       var last_sno = Number($('#mtenth tbody tr:last-child td:eq(1)').html());
        var id_no =Number($('#mtenth tbody tr:last').attr('id'));
-      
+      if (stage!='' && milestone!=''){
    $('#mtenth tbody tr:last').after(`<tr class="addition ir" id="`+(Number(id_no)+1)+`">
            <td class="ExportLabelTD"><a class=" remove-row pull-right pointer"><i class="glyphicon glyphicon-trash"></i></a></td>
           <td class="ExportLabelTD">
             `+(Number(last_sno)+1)+`
           </td>
-          <td>
-      <input required name="Other_three1"   type="text" placeholder="Other(Please  Specify )"  />
-          </td><td>
-      <input required name="Other_three1"   type="text" placeholder="Other(Please  Specify )"  />
-          </td>
+          <td>`+stage+`</td>
+          <td>`+milestone+`</td>
           <td class="valuee">
       
-      <input required name="Other_three1"   type="text" placeholder="Other(Please  Specify )"  />
+      <input required name="Other_three1"  class='new' type="text" placeholder="Other(Please  Specify )"  />
           </td>
           <td >
-            <input  class="row_add col_add" required name="" type="number"/>
+            <input  class="row_add col_add" required name="" type="text"/>
           </td>
         </tr>`);
         
@@ -412,7 +279,7 @@ $(document).on('click', '#open_bidChecklist', function(){
    
     // console.log(no_of_bidders);
     
-    if(start_year!=''&& start_quarter !=''&& end_quarter!=''&& end_year !=''&& no_of_bidders!=''){
+    if(start_year!=''&& start_quarter !=''&& end_quarter!=''&& end_year !=''){
       // console.log('as');
      
       var start_quarter_col;
@@ -478,7 +345,11 @@ $(document).on('click', '#open_bidChecklist', function(){
       }
     
     }
-   $('#mtenth tbody .addition:last').find('td:last-child input').attr('readonly',true); 
+   $('#mtenth tbody .addition:last').find('td:last-child input').attr('readonly',true);
+      }else{
+          
+          alert("Please fille Stage and Milestone before inserting new row");
+      }
   });
   
   //----------------------------------------------------------------------------------------------------------
@@ -548,6 +419,9 @@ $(document).on('click', '#open_bidChecklist', function(){
   
   //*********************************** delete rows function for cashflow and bid Checklist********************
  $('#mcheckst,#mtenth').on('click', '.remove-row', function(){
+     
+    
+      
     var row_length =$(this).closest('table').find('tr').length;
     // console.log(row_length);
     var form_nam = $(this).closest('form').attr('name');
@@ -561,20 +435,14 @@ $(document).on('click', '#open_bidChecklist', function(){
     		var check = confirm(WRN_PROFILE_DELETE);
     		// $(this).closest('table').find('tr').length;
     		if(check == true){
+    	
     		  var row_index = $(this).closest('tr').index();
     			$(this).closest('table tbody').find("tr:gt("+row_index+")").each(function(){
     			   var prev_val = Number($(this).find("td:eq(1)").text());
     			   var new_value = prev_val - 1;
     			   $(this).find("td:eq(1)").text(new_value);
     			});
-    		  var table_id =$(this).closest('table').attr('id');
-    			if(table_id == 'mcost' || table_id == 'mtq'){
-    			  var row_position = $(this).closest('tbody tr').index();
-    			  max_marks_allocated = Number($('#'+table_id+' tbody tr:eq('+row_position+')').find('td:eq(5) input').val());
-    			  var total_before_delete  = Number($('[name='+form_nam+'] .total_count').val());
-    			  var total_after_delete = total_before_delete - max_marks_allocated;
-    			  $('[name='+form_nam+'] .total_count').val(total_after_delete);
-    			}
+    		 
     			$(this).closest('tr').remove();
     		}
     }else{
@@ -582,25 +450,127 @@ $(document).on('click', '#open_bidChecklist', function(){
     }
   });
   
+
+  
+  
  //*********************************** delete rows function for cashflow and bid Checklist********************** 
-  var startYear = 2010;
-  var nextYear = 2011; 
+  var startYear = 2020;
+  var nextYear = 2021; 
   for (var i = 0; i < 50; i++) {
   startYear = startYear + 1;
   nextYear = nextYear + 1;
+  
   $('#startYear').append(
     $('<option></option>').val(startYear + "-" + nextYear).html(startYear + "-" + nextYear)
      );
      
-  $('#endYear').append(
-    $('<option></option>').val(startYear + "-" + nextYear).html(startYear + "-" + nextYear)
-     );   
+    //  $('#endYear').append(
+    // $('<option></option>').val(startYear + "-" + nextYear).html(startYear + "-" + nextYear)
+    //  ); 
   }
+  
+  $("#startYear").on("change",function(){
+      
+     var start_year=$('#startYear').val();
+     
+     var fields1= start_year.split(/-/);
+     
+    var start1 = parseInt(fields1[0]);
+    
+    // start1=start1+1;
+     
+     var text = '<option value=""></option>';
+      for (var i = 0; i < 50; i++) {
+           
+          
+          text += '<option value="'+start1 + '-' + (start1+1)+'">'+start1 + '-' + (start1+1)+'</option>';
+         
+    //       $('#endYear').replaceWith('<option value="start1 + "-" + (start1+1)"></option>'
+    // $('<option></option>').val(start1 + "-" + (start1+1)).html(start1 + "-" + (start1+1))
+    //  );  
+         start1=start1+1;  
+      }
+      $('#endYear').replaceWith('<select name="endYear" id="endYear"></select>');
+      $('#endYear').html(text);
+     
+      
+  });
+  
+   $("#start_quarter").on("change",function(){
+     if($('#startYear').val()==$('#endYear').val())  {
+   if( $("#start_quarter").val()=='Q1'){
+          
+          $('#end_quarter option[value=Q1]').attr("disabled", false);
+           $('#end_quarter option[value=Q2]').attr("disabled", false);
+            $('#end_quarter option[value=Q3]').attr("disabled", false);
+             $('#end_quarter option[value=Q4]').attr("disabled", false);
+      }  
+      else if( $("#start_quarter").val()=='Q2'){
+          
+          $('#end_quarter option[value=Q1]').attr("disabled", "disabled");
+           $('#end_quarter option[value=Q2]').attr("disabled", false);
+            $('#end_quarter option[value=Q3]').attr("disabled", false);
+             $('#end_quarter option[value=Q4]').attr("disabled", false);
+      }
+      else if( $("#start_quarter").val()=='Q3'){
+          
+          $('#end_quarter option[value=Q1]').attr("disabled", "disabled");
+           $('#end_quarter option[value=Q2]').attr("disabled", "disabled");
+            $('#end_quarter option[value=Q3]').attr("disabled", false);
+             $('#end_quarter option[value=Q4]').attr("disabled", false);
+      }
+       else if( $("#start_quarter").val()=='Q4'){
+          
+          $('#end_quarter option[value=Q1]').attr("disabled", "disabled");
+           $('#end_quarter option[value=Q2]').attr("disabled", "disabled");
+            $('#end_quarter option[value=Q3]').attr("disabled", "disabled");
+             
+             $('#end_quarter option[value=Q4]').attr("disabled", false);
+      }
+   }
+       
+   });
+   
+       $(document).on("change","#endYear",function(){
+           
+           console.log("in");
+           
+     if($('#startYear').val()==$('#endYear').val())  {
+      if( $("#start_quarter").val()=='Q2'){
+          
+          $('#end_quarter option[value=Q1]').attr("disabled", "disabled");
+      }
+      else if( $("#start_quarter").val()=='Q3'){
+          
+          $('#end_quarter option[value=Q1]').attr("disabled", "disabled");
+           $('#end_quarter option[value=Q2]').attr("disabled", "disabled");
+      }
+       else if( $("#start_quarter").val()=='Q4'){
+          
+          $('#end_quarter option[value=Q1]').attr("disabled", "disabled");
+           $('#end_quarter option[value=Q2]').attr("disabled", "disabled");
+            $('#end_quarter option[value=Q3]').attr("disabled", "disabled");
+      }
+   }
+   else{
+       console.log("else");
+        $('#end_quarter option[value=Q1]').attr("disabled",false);
+         $('#end_quarter option[value=Q2]').attr("disabled", false);
+          $('#end_quarter option[value=Q3]').attr("disabled", false);
+           $('#end_quarter option[value=Q4]').attr("disabled",false);
+   }
+       
+   });
+      
+  
 
 //***************************************************For Column Insert Cash Flow*********************************  
   $('#first_form').click(function(){
     
-    $('#first_form').attr('disabled',true);
+    
+     $('#first_form').hide();
+     //$('#first_form').attr('disabled',true);
+    
     
     var start_year=$('#startYear').val();
     var end_year=$('#endYear').val();
@@ -610,33 +580,33 @@ $(document).on('click', '#open_bidChecklist', function(){
    
     
    
-    // console.log(no_of_bidders);
+ //console.log(end_year);
     
-    if(start_year!=''&& start_quarter !=''&& end_quarter!=''&& end_year !=''&& no_of_bidders!=''){
+    if(start_year!=''&& start_quarter !=''&& end_quarter!=''&& end_year !=''){
       // console.log('as');
       
       //----------------------- sending data to backend controller ---------------//
       
         // console.log('year');
-      var id=$('#EditView input[name=record]').val();
-    //   console.log(id);
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=year_quarters',
-        type : 'POST',
-          data :
-            {
-                id,
-                start_year,
-                end_year,
-                start_quarter,
-                 end_quarter,
-                 no_of_bidders
-            },
-            success: function (data) {
+//       var id=$('#EditView input[name=record]').val();
+//     //   console.log(id);
+//       $.ajax({
+//         url : 'index.php?module=Opportunities&action=year_quarters',
+//         type : 'POST',
+//           data :
+//             {
+//                 id,
+//                 start_year,
+//                 end_year,
+//                 start_quarter,
+//                  end_quarter,
+//                  no_of_bidders
+//             },
+//             success: function (data) {
                 
-                console.log(data);
-            }
-  });
+//                 console.log(data);
+//             }
+//   });
       
       //----------------------- sending data to backend controller--end ---------------//
      
@@ -690,19 +660,19 @@ $(document).on('click', '#open_bidChecklist', function(){
       
     // console.log(end_quarter_col,start_quarter_col,inbtw,no_of_col);
     
-    for(var i=1; i<Number(no_of_years); i++) {
+    // for(var i=1; i<Number(no_of_years); i++) {
       
-       $('#addValue tbody tr').each(function(){
-       $(this).append($(this).find("td:last").clone(true).find('input, textarea').val('').end());   
+    //   $('#addValue tbody tr').each(function(){
+    //   $(this).append($(this).find("td:last").clone(true).find('input, textarea').val('').end());   
          
          
-       });
-       $('#addValue thead tr').each(function(){
-       $(this).append($(this).find("th:last").clone(true).find('input, textarea').val('').end());   
+    //   });
+    //   $('#addValue thead tr').each(function(){
+    //   $(this).append($(this).find("th:last").clone(true).find('input, textarea').val('').end());   
          
         
-    });
-    }
+    // });
+    // }
     
     
      
@@ -759,33 +729,39 @@ $(document).on('click', '#open_bidChecklist', function(){
       
       //console.log(dynamic_column);
       
-      var year_column = ['year'];
+    //   var year_column = ['year'];
       
       
-    var i=Number(start1);
-    var j = 1;
+    // var i=Number(start1);
+    // var j = 1;
     
-    for(i; i<Number(end2); i++) {
+    // for(i; i<Number(end2); i++) {
         
-         year_column.push(i+'-'+(i+1));
+    //      year_column.push(i+'-'+(i+1));
          
-      }
-     // console.log(year_column);
+    //   }
+    //  // console.log(year_column);
       
-       year_column.push('Total');
-        $('#addValue thead tr th').each(function(index){
-        $(this).text(year_column[index]);
+    //   year_column.push('Total');
+    //     $('#addValue thead tr th').each(function(index){
+    //     $(this).text(year_column[index]);
         
-      });
-      $('#addValue tbody tr').each(function(){
-        $(this).find('td:last-child input').attr('readonly',true);
-    });
+    //   });
+    //   $('#addValue tbody tr').each(function(){
+    //     $(this).find('td:last-child input').attr('readonly',true);
+    // });
       
       
       // -------------------------------------------------------------------
       
       
-    }else{alert("fill all the fields")}
+    }
+    
+    else{
+        
+        alert("fill all the fields");
+        
+    };
     
     
     
@@ -809,7 +785,7 @@ $(document).on('click', '#open_bidChecklist', function(){
  });
  
  //---------------------------------------------------------------
- 
+
   //---------------changing the value of expense ----------------------------------------------
    $(document).on('change','#cash_flow  .row_add,#two  .row_add,#six .row_add,#seven .row_add,#nine .row_add',function(){
        
@@ -829,6 +805,19 @@ $(document).on('click', '#open_bidChecklist', function(){
        }
        
        $(this).val(input_row_position);
+       
+        $(this).val(function(index, value) {
+                                         
+                                         
+                                          
+                                         
+                                          return value
+                                          
+                                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                                          
+                                          ;
+                                          
+                                        })
    });
    
  //---------------changing the value of expense ---------------------------------------------- 
@@ -852,8 +841,22 @@ $(document).on('click', '#open_bidChecklist', function(){
        }
        
        $(this).val(input_row_position);
+       
+        $(this).val(function(index, value) {
+                                         
+                                         
+                                          
+                                         
+                                          return value
+                                          
+                                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                                          
+                                          ;
+                                          
+                                        });  
+         
    });
-        //---------------changing the value of income ----------------------------------------------
+        //---------------changing the color of income ----------------------------------------------
   
   //--------------for EMD row 3------------------------------------------ 
   $(document).on('change','#three .row_add',function(){
@@ -926,19 +929,24 @@ $(document).on('click', '#open_bidChecklist', function(){
  
   // adding total and cumalitive total  logic==================================================================
   
-  $(document).on('change', '#mtenth .row_add', function(){
+  $(document).on('blur', '#mtenth  .row_add', function(){
      var input_pos_rev = $(this).closest('td').index();
      var input_row_position = $(this).closest("tr").index();
      var count_row =0;
      var count_col = 0;
     // column total ------------------------------------------------
-     $('#mtenth tbody tr').each(function(index){ 
-      var column_input = Number($(this).find("td:eq("+input_pos_rev+") input").val());
+     $('#mtenth tbody tr ').each(function(index){ 
+      var column_input1 = $(this).find("td:eq("+input_pos_rev+") input").val();
+          column_input1 = column_input1.replace(/[\, ]/g, "");
+      
+       var column_input = Number(column_input1);
       if(column_input == ''){
         column_input = 0;
       }
       count_col = count_col + column_input;
      });
+      count_col=count_col.toString();
+    count_col=count_col.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
      
   // console.log(count_col);
    $('#mtenth tfoot tr').find("td:eq("+input_pos_rev+") .total").val(count_col);
@@ -946,7 +954,12 @@ $(document).on('click', '#open_bidChecklist', function(){
   // row total ----------------------------------------------------------------------
    var td_length = Number($('#mtenth tbody tr:eq('+input_row_position+') td').length);
     $('#mtenth tbody tr:eq('+input_row_position+') td input').each(function(index){
-      row_inputs= Number($(this).val());
+        
+     // row_inputs= Number($(this).val());
+     row_inputs1= $(this).val();
+      row_inputs1=row_inputs1.replace(/[\, ]/g, "")
+     
+       row_inputs=Number(row_inputs1);
       if(row_inputs == ''){
         row_inputs = 0;
       }
@@ -955,16 +968,17 @@ $(document).on('click', '#open_bidChecklist', function(){
          count_row = count_row + row_inputs;
       }
     });
-    console.log('my');
-    console.log(count_row);
+    count_row=count_row.toString();
+    count_row=count_row.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  //  console.log(count_row);
     $('#mtenth tbody tr:eq('+input_row_position+') td:last-child input').val(count_row);
     
-    //-----------vertical total column color change---------------------------  
+    //-----------horizontal total column color change---------------------------  
     
    var z= $('#mtenth tbody tr:eq('+input_row_position+') td:last-child input').val();
    
-   //console.log(z);
-   
+   z=z.replace(/[\, ]/g, "");
+ //  console.log(z,typeof z)
  
    if(Math.sign(z)==-1){
        //console.log(Math.sign(z));
@@ -978,15 +992,27 @@ $(document).on('click', '#open_bidChecklist', function(){
     
     // current cummalative total by adding prevoius cummaltive and current total -----------------------------------------------------
     if(input_pos_rev == 5){
+        
+        
        current_cum = count_col;
        $('#cum').find('td:eq('+input_pos_rev+') input').val(current_cum);
      }else{
+         count_col=count_col.replace(/[\, ]/g, "");
+         count_col=Number(count_col);
+        
        change_input_pos_for_cum = input_pos_rev - 1;
-       var previous_cum = Number($('#cum').find('td:eq('+change_input_pos_for_cum+') input').val());
+       
+       var previous_cum1 = $('#cum').find('td:eq('+change_input_pos_for_cum+') input').val();
+       previous_cum1=previous_cum1.replace(/[\, ]/g, "");
+       previous_cum=Number(previous_cum1);
+       
        if(previous_cum == ''){
         previous_cum = 0;
        }
        current_cum = count_col + previous_cum;
+        current_cum=current_cum.toString();
+    current_cum=current_cum.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+       
        $('#cum').find('td:eq('+input_pos_rev+') input').val(current_cum);
        
      }
@@ -994,7 +1020,12 @@ $(document).on('click', '#open_bidChecklist', function(){
     // total of row 'total' ----------------------------------------------------
     var row_total = 0;
     $('.total').each(function(index){
-      current_total = Number($(this).val());
+        
+        current_total1=$(this).val();
+         current_total1=current_total1.replace(/[\, ]/g, "");
+        //console.log(current_total1);
+      current_total = Number(current_total1);
+      
       if(current_total == ''){
         current_total = 0;
       }
@@ -1003,6 +1034,8 @@ $(document).on('click', '#open_bidChecklist', function(){
          row_total = row_total+current_total;
       }
     });
+     row_total=row_total.toString();
+    row_total=row_total.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     $('#tot td:last-child input').val(row_total);
     // --------------------------------------------------------------------------------------
     
@@ -1010,37 +1043,59 @@ $(document).on('click', '#open_bidChecklist', function(){
       
     var k;
     for (k = input_pos_rev; k < $('#mtenth th').length ; k++) {
-      var curr_cum = Number($('#cum').find('td:eq('+k+') input').val());
+        
+    if(k==($('#mtenth th').length)-1){
+        break;
+    }
+      var curr_cum1 = $('#cum').find('td:eq('+k+') input').val();
+      curr_cum1=curr_cum1.replace(/[\, ]/g, "");
+      var curr_cum=Number(curr_cum1);
       if(curr_cum == ''){
         curr_cum = 0;
       }
-      var next_column_net_flow = Number($('#tot').find('td:eq('+(k+1)+') input').val());
+      
+      var next_column_net_flow1 = $('#tot').find('td:eq('+(k+1)+') input').val();
+          console.log(typeof next_column_net_flow1,next_column_net_flow1);
+          
+            next_column_net_flow1=next_column_net_flow1.replace(/[\, ]/g, "");
+            
+             //console.log(typeof next_column_net_flow1,next_column_net_flow1);
+      var next_column_net_flow = Number(next_column_net_flow1);
        if(next_column_net_flow == ''){
         next_column_net_flow = 0;
        }
       next_column_cumulative = curr_cum + next_column_net_flow;
+       next_column_cumulative=next_column_cumulative.toString();
+    next_column_cumulative=next_column_cumulative.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      
       $('#cum').find('td:eq('+(k+1)+') input').val(next_column_cumulative);
+      
     }
     //--------------------------------------------------------------
     
     //---------------- total and cummulative color change-------------------------------- 
        var x= $('#cum').find('td:eq('+input_pos_rev+') input').val();
-       
+        x=x.replace(/[\, ]/g, "");
+        console.log(typeof x,x);
         if(Math.sign(x)==-1){
+           // alert("cumal");
             $('#cum').find('td:eq('+input_pos_rev+') input').css('background','#FFB6C1');
         }else{
            $('#cum').find('td:eq('+input_pos_rev+') input').css('background','#90EE90');
         }
         
          var y=$('#tot').find('td:eq('+input_pos_rev+') input').val();
-       
+        y=y.replace(/[\, ]/g, "");
+         console.log(typeof y,y);
         if(Math.sign(x)==-1){
+          // alert("cumal");
            $('#tot').find('td:eq('+input_pos_rev+') input').css('background','#FFB6C1');
         }else{
             $('#tot').find('td:eq('+input_pos_rev+') input').css('background','#90EE90');
         }
         
         var x1=  $('#cum td:last-child input').val();
+         x1=x1.replace(/[\, ]/g, "");
             if(Math.sign(x)==-1){
            $('#cum td:last-child input').css('background','#FFB6C1');
         }else{
@@ -1048,6 +1103,7 @@ $(document).on('click', '#open_bidChecklist', function(){
         }
         
         var y1=  $('#tot td:last-child input').val();
+         y1=y1.replace(/[\, ]/g, "");
             if(Math.sign(x)==-1){
            $('#tot td:last-child input').css('background','#FFB6C1');
         }else{
@@ -1100,7 +1156,7 @@ $(document).on('click', '#open_bidChecklist', function(){
   
    //------------for saving template l1 data--------------------------------
   $(document).on('click', '#save1', function(){
-      console.log('save1');
+      
       var id=$('#EditView input[name=record]').val();
       var l1_html;
       var l1_input=[];
@@ -1122,45 +1178,19 @@ $(document).on('click', '#open_bidChecklist', function(){
             success: function (data) {
                 
                // alert(data.message);
-                $("#myForm").css("display","none");
+               // $("#myForm").css("display","none");
                 
                 // console.log(data.message);
             }
   });
   
-  var id=$('#EditView input[name=record]').val();
-      var l2_html;
-      var l2_input=[];
-      $('#mtenth input').each(function() {
-        l2_input.push($(this).val());
-      });
-      l2_html=$('#mtenth').html();
-    
-      $.ajax({
-        url : 'index.php?module=Opportunities&action=l2',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
-                l2_html,
-                l2_input
-            },
-            success: function (data) {
-                    
-                //  alert(data.message);
-                // $("#myForm").css("display","none");
-                
-                // console.log(data);
-            }
-  });
-  
+ 
   });
   //-------------------------saving l1 template---END-----------------------
   
   //-------------------------saving L2 template---------------------------
    $(document).on('click', '#save2', function(){
-    //   console.log('save1');
+     
       var id=$('#EditView input[name=record]').val();
       var l2_html;
       var l2_input=[];
@@ -1182,7 +1212,7 @@ $(document).on('click', '#open_bidChecklist', function(){
             success: function (data) {
                     
                 // alert(data.message);
-                $("#myForm").css("display","none");
+               // $("#myForm").css("display","none");
                 
                 // console.log(data);
             }
@@ -1326,7 +1356,6 @@ pbg_array = pbg_array.filter(rex.test.bind(rex));
 
   });
 //  ------------for saving template data--End------------------------------
-
 
 
 
