@@ -5815,7 +5815,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                     $assigned_name=$_POST['assigned_name'];
                     $activity_id=$_POST['opp_id'];
                     
-                
+              
                     $sql="SELECT id,reports_to_id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
                     
                     $result = $GLOBALS['db']->query($sql);
@@ -5838,27 +5838,28 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $approvers_new = $reports_to_id;
             
             
-            $sql41='SELECT * FROM calls_cstm WHERE id_c="'.$activity_id.'"';	    
+            $sql41='SELECT calls_cstm.status_new_c,calls_cstm.activity_type_c,calls.assigned_user_id  FROM calls_cstm INNER JOIN calls ON calls.id=calls_cstm.id_c WHERE calls_cstm.id_c="'.$activity_id.'"';	    
             $result41 = $GLOBALS['db']->query($sql41);
             while($row41 = $GLOBALS['db']->fetchByAssoc($result41)) 
             { 
                $activity_status=$row41['status_new_c'];
                $activity_type=$row41['activity_type_c'];
+               $assigned_id=$row41['assigned_user_id'];
            
             }
-            
+           
         
-            $sql51 ='SELECT t.id, t.acc_id, t.assigned_by, t.assigned_to_id FROM activity_assign_flow AS t WHERE t.acc_id="'.$activity_id.'" AND t.assigned_to_id="'.$assigned_to.'" AND t.id=(SELECT MAX(id) FROM activity_assign_flow WHERE acc_id="'.$activity_id.'")';
+            $sql51 ='SELECT id, acc_id, assigned_by, assigned_to_id FROM activity_assign_flow  WHERE acc_id="'.$activity_id.'" AND assigned_to_id="'.$assigned_id.'" AND id=(SELECT MAX(id) FROM activity_assign_flow WHERE acc_id="'.$activity_id.'")';
                 $result51 = $GLOBALS['db']->query($sql51);
                 
                 $count=$result51->num_rows;
-                echo $count;
+              // echo $count;
                 if($count>0){
                     
                 }
                 else{ 
                     
-                    $sql25='INSERT INTO `activity_assign_flow`(`acc_id`, `assigned_by`, `assigned_to_id`, `approver_ids`,`status`,acc_type) VALUES ("'.$opp_id.'","'.$log_in_user_id.'","'.$assigned_to_new.'","'.$approvers_new.'","'.$opp_status.'","'.$rfp.'")';
+                    $sql25='INSERT INTO `activity_assign_flow`(`acc_id`, `assigned_by`, `assigned_to_id`, `approver_ids`,`status`,acc_type) VALUES ("'.$activity_id.'","'.$log_in_user_id.'","'.$assigned_to_new.'","'.$approvers_new.'","'.$activity_status.'","'.$activity_type.'")';
                     //$result25 = $GLOBALS['db']->query($sql25);
                     if($db->query($sql25)==TRUE){
                         

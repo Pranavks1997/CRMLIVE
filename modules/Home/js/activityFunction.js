@@ -61,7 +61,7 @@ function activitydateBetween(dateBetween, searchTerm = null, page = null, filter
             page: page,
         },
         success: function (check) {
-            debugger;
+            
             if (dateBetween == '1200') {
                 $('#daysFilterAllLabelAct').html('All Activities');
                 $('#daysFilterAct').html('');
@@ -676,7 +676,7 @@ function fetchActivityDelegateDialog() {
         type: 'GET',
         data: {},
         success: function (data) {
-            debugger
+            
             var parsed_data = JSON.parse(data);
             $('#activity_delegated_info').html(parsed_data.delegated_info);
             // dialog.style.display = "block";

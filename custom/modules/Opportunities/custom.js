@@ -3501,7 +3501,9 @@ $( ".module-title-text" ).replaceWith( '<h2 class="module-title-text"> CREATE Op
     
     if($('#rfporeoipublished_c').val()=='yes' && $('#status_c').val()=='QualifiedLead'){
      
-     if( $('#startYear').val()!='' && $('#endYear').val()!='' && $('#total_input_value').val()!=''){
+     //&& $('#total_input_value').val()!=''
+     
+     if( $('#startYear').val()!='' && $('#endYear').val()!='' ){
      
     var t= $('#bid').val();
     

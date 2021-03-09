@@ -3,7 +3,7 @@
             $log_in_user_id = $current_user->id;
             // $test = isset($_GET['isCritical']) ? $_GET['isCritical'] : false;
             foreach($response as $row):
-                $created_by_id          = $row['created_by'];
+                $created_by_id          = $row['assigned_user_id'];
                 $full_name              = getUsername($created_by_id);
                 $closed_by              = '';
                 $reports_to_full_name   = '';
@@ -25,10 +25,10 @@
                 $tagged_users = $tagged_user_query_fetch_row && $tagged_user_query_fetch_row['user_id'];
         ?>
         <tr>
-            <td class="table-data"><?php echo $row['name'];
+            <td class="table-data"><a href="index.php?action=DetailView&module=Opportunities&record=<?php echo $row['id']?>"><?php echo $row['name'];
             if ((strpos($tagged_users, $log_in_user_id) !== false)) { ?>
             <i class="fa fa-tag" style="font-size: 12px; color:green"></i>
-            <?php } ?></td>
+            <?php } ?></a></td>
             <td class="table-data"><?php echo $full_name . $reports_to_full_name?></td>
 
             <?php if(!@$_GET['customColumns']): ?>

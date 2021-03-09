@@ -19,7 +19,7 @@
 
         <li class="tableHeader-Content">
             <?php if ($check_mc == 'yes'): ?> 
-                <div id="critical-status" class="critical-status <?php echo $isCritical ? 'active': ''; ?>" onclick="dateBetween('<?php echo $day; ?>', '', '' ,'', '', 'critical', 1)" >Critical Status   (<span id="criticalStatusCount"></span>)</div>
+                <div id="critical-status" class="critical-status <?php echo $isCritical ? 'active': ''; ?>" onclick="dateBetween('<?php echo $day; ?>', '', '' ,'', '', 'critical', 1)" >Critical Opportunities   (<span id="criticalStatusCount"></span>)</div>
             <?php endif ?>
         </li>
 

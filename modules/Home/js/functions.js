@@ -639,8 +639,10 @@ function getUserDetails() {
         url: "index.php?module=Home&action=get_user_details",
         method: "GET",
         success: function (data) {
+            var addOpportunity = document.getElementById('add_opportunity');
             var parsed_data = JSON.parse(data);
-            if (parsed_data && parsed_data.user_team && !(parsed_data.user_team.includes('^sales^'))) {
+            if ((parsed_data && parsed_data.user_team && !(parsed_data.user_team.includes('^sales^')))
+                    || parsed_data.user_id == '1') {
                 addOpportunity.style.display = "none";
                 setTimeout(function () {
                     var hideOpportunity = document.getElementsByClassName('dashboard_opp_hide');

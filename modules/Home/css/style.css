@@ -930,7 +930,7 @@ li a:hover {
 }
 
 .global-opportunities {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     font-weight: bold;
     padding: 10px 10px;
     color: white;
@@ -944,7 +944,7 @@ li a:hover {
 }
 
 .non-global-opportunities, .critical-status, .prt-top-headings {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     font-weight: bold;
     padding: 10px 10px;
     opacity: 0.8;
@@ -2171,4 +2171,9 @@ padding: 15px 5px;
     border: none !important;
     margin: 0;
     font-size: 1.5rem;
+}
+
+.filter-name {
+            background-color: white !important;
+            border: 1px solid #aaa !important;
 }
