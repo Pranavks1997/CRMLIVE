@@ -1991,7 +1991,7 @@ input {
 .status-display h4{ padding: 0; font-size: 13px; }
 .status-display hr{ margin: 0; border-color: #cccccc; background-color: #cccccc; }
 
-.close-sequence-flow{ cursor: pointer; position: absolute; top: 0px; right: 5px; font-size: 34px; z-index: 999999; }
+.close-sequence-flow,.close-sequence-flow-activity{ cursor: pointer; position: absolute; top: 0px; right: 5px; font-size: 34px; z-index: 999999; }
 /* End Sequence Flow */
 
 .form-group{ display: block; }

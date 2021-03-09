@@ -1551,7 +1551,7 @@ input[type='range']:nth-child(1)::-webkit-slider-thumb {
     margin-right: 10px;
 }
 
-#delegate_submit:hover {
+#activity_delegate_submit:hover,#delegate_submit:hover {
     color: #fff;
     text-decoration: none;
     cursor: pointer;
@@ -2024,7 +2024,7 @@ input {
 .status-display h4{ padding: 0; font-size: 13px; }
 .status-display hr{ margin: 0; border-color: #cccccc; background-color: #cccccc; }
 
-.close-sequence-flow{ cursor: pointer; position: absolute; top: 0px; right: 5px; font-size: 34px; z-index: 999999; }
+.close-sequence-flow, .close-sequence-flow-activity{ cursor: pointer; position: absolute; top: 0px; right: 5px; font-size: 34px; z-index: 999999; }
 /* End Sequence Flow */
 
 .form-group{ display: block; }
@@ -2142,7 +2142,7 @@ padding: 15px 5px;
 }
 
 /* width */
-::-webkit-scrollbar {
+#report-container ::-webkit-scrollbar {
     width: 0px !important;
     height: 0px !important;
   }

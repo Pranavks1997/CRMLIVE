@@ -145,19 +145,19 @@ function fetchReminderDialog(id) {
     var dialog = document.getElementById('reminderModal');
     console.log("bharat")
     $.ajax({
-        url: 'index.php?module=Home&action=activity_dialog_info',
+        url: 'index.php?module=Home&action=activity_reminder_dialog_info',
         type: 'GET',
         data: {
             id: id
         },
         success: function (data) {
             var parsed_data = JSON.parse(data);
-            $('#opportunity_info').html(parsed_data.opportunity_info);
-            document.getElementById('hidden_value').value = parsed_data.opportunity_id;
+            $('#activity_info').html(parsed_data.activity_info);
+            document.getElementById('hidden_value').value = parsed_data.activity_id;
             dialog.style.display = "block";
-            $('#hidden_user').val(parsed_data.msuname);
-            var temp = parsed_data.msuid.split(',');
-            $('#deselect_members').val(temp);
+            // $('#hidden_user').val(parsed_data.msuname);
+            // var temp = parsed_data.msuid.split(',');
+            // $('#deselect_members').val(temp);
         }
     })
 
@@ -169,25 +169,42 @@ function fetchReminderDialog(id) {
  */
 
 function fetchTagDialog(id) {
-    var dialog = document.getElementById('deSelectModal');
+    var dialog = document.getElementById('tag-activity-modal');
 
     $.ajax({
-        url: 'index.php?module=Home&action=opportunity_dialog_info',
+         url: 'index.php?module=Home&action=activity_tag_dialog_info',
         type: 'GET',
         data: {
             id: id
         },
         success: function (data) {
             var parsed_data = JSON.parse(data);
-            $('#opportunity_info').html(parsed_data.opportunity_info);
-            document.getElementById('hidden_value').value = parsed_data.opportunity_id;
+            $('#activity_tag_info').html(parsed_data.activity_info);
+            $('#activity_member_info').html(parsed_data.optionList);
+            document.getElementById('hidden_value').value = parsed_data.activity_id;
             dialog.style.display = "block";
-            $('#hidden_user').val(parsed_data.msuname);
-            var temp = parsed_data.msuid.split(',');
-            $('#deselect_members').val(temp);
+            // $('#hidden_user').val(parsed_data.msuname);
+            // var temp = parsed_data.msuid.split(',');
+            // $('#deselect_members').val(temp);
+        },
+        error: function(data, errorThrown){
+            alert(errorThrown)
         }
     })
 
+}
+function activitydeselectDropDownClicked() {
+    document.getElementById('activity_member_info').style.display == "none" ?
+        document.getElementById('activity_member_info').style.display = "block" :
+        document.getElementById('activity_member_info').style.display = "none";
+}
+function activitydeselectDropDownUnclicked() {
+    document.getElementById('activity_member_info').style.display = "none";
+}
+function activityclearDeselectDropDownValue() {
+    $('#activity_hidden_user').val('');
+    $('#activity_member_info').val('');
+    $('#activity_hidden_multi_select').val('');
 }
 
 /**
@@ -197,21 +214,21 @@ function fetchTagDialog(id) {
 
 function handleTagDialog(event) {
 
-    var dialog = document.getElementById('deSelectModal');
+    var dialog = document.getElementById('tag-activity-modal');
     if (event === "discard") {
         dialog.style.display = "none";
     } else if (event === "close") {
         dialog.style.display = "none";
     } else if (event === "submit") {
         var hidden_id = document.getElementById('hidden_value').value;
-        var user_id = document.getElementById('hidden_multi_select').value;
+        var user_id = document.getElementById('activity_hidden_multi_select').value;
         console.log(hidden_id);
         console.log(user_id);
         $.ajax({
-            url: 'index.php?module=Home&action=deselect_members_from_global_opportunity',
+            url: 'index.php?module=Home&action=set_activity_for_tag',
             type: 'POST',
             data: {
-                opportunityId: hidden_id,
+                activity_id: hidden_id,
                 userIdList: user_id
             },
             success: function (data) {
@@ -233,15 +250,17 @@ function openDeselectReminderDialog(event) {
         dialog.style.display = "none";
     } else if (event === "submit") {
         var hidden_id = document.getElementById('hidden_value').value;
-        var user_id = document.getElementById('hidden_multi_select').value;
+        var frequency = document.getElementById('frequency').value;
+        var time = document.getElementById('time').value;
         console.log(hidden_id);
         console.log(user_id);
         $.ajax({
-            url: 'index.php?module=Home&action=deselect_members_from_global_opportunity',
+            url: 'index.php?module=Home&action=set_activity_reminder',
             type: 'POST',
             data: {
-                opportunityId: hidden_id,
-                userIdList: user_id
+                activityId: hidden_id,
+                frequency: frequency,
+                time: time
             },
             success: function (data) {
                 console.log(data);
@@ -420,6 +439,14 @@ function openActivityPendingFilterDialog(event) {
         dialog.style.display = "block"
     }
 }
+function changeAddLabel(evnt) {
+    $('.add-opportunity-title').html(evnt);
+    var redirectLink = "'./index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3DEditView%26return_module%3DOpportunities%26return_action%3DDetailView'";
+    if (evnt == 'Create Activity') {
+        redirectLink = "'index.php?module=Calls&action=EditView'";
+    }
+    $("#add_opportunity").attr("onclick","location.href = "+ redirectLink);
+}
 
 function activityFilterHelper(ref) {
     if (ref == 'activity-filter') {
@@ -466,6 +493,28 @@ function openActivityApprovalDialog(event, id = null) {
     }
 }
 
+/* Sequence Flow */
+function getActivitySequenceFlow(accID) {
+    $.ajax({
+        url: "index.php?module=Home&action=getActivityStatusTimeline",
+        method: "POST",
+        data: { accID: accID },
+        success: function (response) {
+            var html = JSON.parse(response).data;
+            $('.sequence-flow-activity').html(html);
+            $('.backdrop-activity').fadeIn();
+            $('.sequence-flow-activity').fadeIn();
+            $('body').addClass('no-scroll');
+        }
+    });
+}
+$(document).on('click', '.close-sequence-flow-activity', function(){
+    $('.backdrop').fadeOut();
+    $('.sequence-flow-activity').slideUp();
+    $('.sequence-flow-activity').html('');
+    $('body').removeClass('no-scroll');
+})
+
 /* Approve / Reject Opportunity */
 function updateActivityStatus() {
     var Status = $('.changed-status').val();
@@ -486,7 +535,138 @@ function updateActivityStatus() {
         }
     });
 }
+/* reassignment model */
 
+function activityfetchReassignmentDialog(accID) {
+    var dialog = document.getElementById('activityreassignmentModal');
+    dialog.style.display = "block";
+    var res1;
+    var acc_id = accID;
+    $.ajax({
+        url: 'index.php?module=Home&action=activity_new_assigned_list',
+        type: 'POST',
+        data: {
+            acc_id,
+        },
+
+        success: function (data1) {
+            datw = JSON.parse(data1);
+            res1 = datw.a;
+            var acc_name = datw.acc_name;
+            var user_list = [];
+            $('#ra_ac_name').html("Activity Name: " + acc_name);
+            $('#assigned_activity_id').val(datw.id);
+            $('#activity_assigned_name').html("Assigned User Name: " + datw.present_assigned_user);
+
+            for (var z in res1) {
+                res1[z] = res1[z].replace(/\^/g, ' ');
+                res1[z] = res1[z].replace('team_lead', 'TL');
+                res1[z] = res1[z].replace('team_member_l1', 'TM L1');
+                res1[z] = res1[z].replace('team_member_l2', 'TM L2');
+                res1[z] = res1[z].replace('team_member_l3', 'TM L3');
+
+            }
+
+            for (var i in res1) {
+                user_list.push(res1[i])
+            };
+
+
+
+            $('#activity_assigned_to_new_c').autocomplete({
+                source: user_list,
+                minLength: 0,
+                scroll: true
+            }).keydown(function () {
+                $(this).autocomplete("search", "");
+            });
+
+        }
+
+    });
+}
+
+$(document).on('click', '.ui-autocomplete', function () {
+    var f = $('#activity_assigned_to_new_c').val();
+
+    var e = f.length;
+
+    var s = f.indexOf("/");
+
+    f = f.slice(0, s);
+
+    f = f.replace(/[^ \, a-zA-Z]+/g, '');
+
+    f = f.replace(/^\s+/g, '');
+    $('#activity_assigned_to_new_c').val(f);
+});
+
+function activityhandleReassignmentDialog(event) {
+    var dialog = document.getElementById('activityreassignmentModal');
+    switch (event) {
+        case "discard":
+        case "close":
+            dialog.style.display = "none";
+            break;
+        case "submit":
+            if (document.getElementById('hidden_value') && document.getElementById('hidden_multi_select')) {
+                var assigned_opportunity_id = document.getElementById('assigned_activity_id').value;
+                var assigned_name = document.getElementById('activity_assigned_to_new_c').value;
+            }
+            $.ajax({
+                url: 'index.php?module=Home&action=activity_update_assigned',
+                type: 'POST',
+                data: {
+                    opp_id: assigned_opportunity_id,
+                    assigned_name: assigned_name
+                },
+                success: function (data) {
+                    dat = JSON.parse(data)
+                    if (dat.message == "false") {
+                        alert("Please check assigned user name");
+                    }
+
+                    else {
+                        
+                        
+
+                        $.ajax({
+                            url: 'index.php?module=Home&action=activity_assigned_history',
+                            type: 'POST',
+                            data: {
+                                opp_id: assigned_opportunity_id,
+                                assigned_name: assigned_name
+                            },
+                            success: function (data) {
+                            }
+                        });
+
+                        dialog.style.display = "none";
+                        location.reload();
+                    }
+                }
+            });
+            break;
+        default:
+            dialog.style.display = "block";
+    }
+}
+
+function getDelegateMembersActivity() {
+    $.ajax({
+        url: "index.php?module=Home&action=delegate_members",
+        method: "GET",
+        success: function (data) {
+            var parsed_data = JSON.parse(data);
+            // console.log(parsed_data);
+            $('#activity_Select_Proxy').html(parsed_data.members);
+            $('#activity_Select_Proxy').val('');
+            $('.responsibility').html(parsed_data.members);
+            document.getElementById('responsibility1').value = null;
+            document.getElementById('responsibility').value = null;
+        }
+    });
+}
 /* Delegate */
 function fetchActivityDelegateDialog() {
     var dialog = document.getElementById('activityDelegatemyModel');
@@ -496,6 +676,7 @@ function fetchActivityDelegateDialog() {
         type: 'GET',
         data: {},
         success: function (data) {
+            debugger
             var parsed_data = JSON.parse(data);
             $('#activity_delegated_info').html(parsed_data.delegated_info);
             // dialog.style.display = "block";
@@ -542,6 +723,7 @@ $(document).on('click', '.remove-activity-delegate', function () {
         getPendingActivityRequestCount();
         activitydateBetween('30');
         getActivityGraph('30');
+        getDelegateMembersActivity();
     });
     $('.btn-days-filter').on('click', function () {
         var day = $(this).data('day');
@@ -582,5 +764,7 @@ $(document).on('click', '.remove-activity-delegate', function () {
         $('.responsibility').val('');
         $('.filterdatebox').val('');
     });
+    
+    
 
 })(jQuery);

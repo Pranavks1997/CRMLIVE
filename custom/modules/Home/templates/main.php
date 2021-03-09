@@ -6,9 +6,9 @@
         <input class="input_radio_insideTab" id="two" name="group" type="radio">
         <input class="input_radio_insideTab" id="three" name="group" type="radio">
         <div class="tabs_container">
-            <label class="tab_header_btn" id="one-tab" for="one">Opportunity</label>
-            <label class="tab_header_btn" id="two-tab" for="two">Activity</label>
-            <label class="tab_header_btn disabled" id="three-tab" for="three">Document</label>
+            <label class="tab_header_btn" id="one-tab" for="one" onclick="changeAddLabel('Create Opportunity')">Opportunity</label>
+            <label class="tab_header_btn" id="two-tab" for="two" onclick="changeAddLabel('Create Activity')">Activity</label>
+            <label class="tab_header_btn disabled">Document</label>
         </div>
         <div class="tab_panels_container">
             <div class="tab_panel_inside" id="one-panel">

@@ -559,6 +559,7 @@ function openPendingFilterDialog(event) {
  */
 
 function fetchDelegateDialog() {
+    getDelegateMembers();
     var dialog = document.getElementById('delegatemyModel');
     dialog.style.display = "block";
     $.ajax({
@@ -664,8 +665,8 @@ function getDelegateMembers() {
         success: function (data) {
             var parsed_data = JSON.parse(data);
             // console.log(parsed_data);
-            $('.Select_Proxy').html(parsed_data.members);
-            $('.Select_Proxy').val('');
+            $('#Select_Proxy').html(parsed_data.members);
+            $('#Select_Proxy').val('');
             $('.responsibility').html(parsed_data.members);
             document.getElementById('responsibility1').value = null;
             document.getElementById('responsibility').value = null;

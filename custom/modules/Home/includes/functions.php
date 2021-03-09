@@ -7,6 +7,8 @@
         $closure    = isset( $_GET['closure'] ) ? $_GET['closure'] : '';
         $isCritical = isset( $_GET['isCritical'] ) ? $_GET['isCritical'] : '';
         $day        = $_GET['days'];
+        global $current_user;
+        $log_in_user_id = $current_user->id;
         
         $fetch_query = "SELECT opportunities.*, opportunities_cstm.*,
                 CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value 
@@ -31,11 +33,11 @@
         }
 
         if($type){
-            $fetch_query .= " AND opportunity_type = '$type'";
+            $fetch_query .= " AND opportunity_type = '$type' ";
         }
 
         if($isCritical){
-            $fetch_query .= " AND critical_c = 'yes' ";
+            $fetch_query .= " AND critical_c LIKE '%$log_in_user_id%' AND critical_c LIKE '%yes%'";
         }
 
         if($searchTerm) /* Check if SearchTerm is there or not */

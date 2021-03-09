@@ -491,6 +491,34 @@
     </div>
 
     <!--------------------------ACTIVIY ------------------------------------------->
+    
+    
+    <div id="activityreassignmentModal" class="raModal">
+        <!-- Modal content -->
+        <div class="ra-modal-content" id="size">
+            <span class="deselectclose" onclick="activityhandleReassignmentDialog('close')">&times;</span>
+           <form>
+                    <!-- <input type="hidden" id="hidden_multi_select" value="" />
+                    <input name="hidden_user" id="hidden_user" style="cursor: pointer;padding-right: 40px;" onclick="deselectDropDownClicked()" readonly/> -->
+                    <input name="hidden_user" type="hidden" id="assigned_activity_id"/>
+                    <div class="activityreassignmentModal-header" style="margin-bottom: 30px;">
+                        <h3 style="margin:0; padding: 0;font-size: 20px;">Change the Assigned User</h3></br>
+                        <h4 id="ra_ac_name" style="margin:0; font-size: 15px;">Activity Name</h4> </br>
+                        <h4 id="activity_assigned_name" style="margin:0; font-size: 15px;">Assigned User Name</h4> 
+                    </div>
+                    
+                    <h5 style="padding: 0">Re-assign User:</h5>
+                    <input type="text" id="activity_assigned_to_new_c" style="width: 250px; padding: 15px 5px;"/>
+                    <br><div style="height: 20px;"></div>
+                    <div>
+                        <button class="saveBtnDeselect" type="button" onclick="activityhandleReassignmentDialog('submit')">Save</button>
+                        <button class="submitBtnDeselect" type="button" onclick="activityhandleReassignmentDialog('discard')">Close</button>
+                    </div>
+                </section>
+            </form>
+        </div>
+
+    </div>
 
     <!-- Reminder Modal Container -->
     <div id="reminderModal" class="desModal">
@@ -498,72 +526,11 @@
         <div class="deselect-modal-content">
             <span class="deselectclose" onclick="openDeselectReminderDialog('close')">&times;</span>
             <form>
-                    <div id="opportunity_info">
-                        <!-- /.col-md-12 -->
-                        <h2 class="deselectheading">Remote Teaching</h2><br>
-                <p class="deselectsubhead">Select a frequency and time for the reminder</p>
-                <hr class="deselectsolid">
-                <section class="deselectsection">
-                <table width="100%">
-                    <thead>
-                    <tr class="tabname">
-                        <th>Last updated</th>
-                        <th>Activity</th>
-                        <th>Subject</th>
-                        <th>Assigned to</th>
-                        <th>End Date</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="tabvalue">
-                        <td>02/03/2021</td>
-                        <td>Video Conference</td>
-                        <td>Had a video confernece with team</td>
-                        <td>Baljinder Singh</td>
-                        <td>23/02/2020</td>
-                        
-                        </tr>
-                    </tbody>
-                    </table>
-                    <br>
-                    <label for="Deselect-Members">Frequency</label><br>
-                    <select name="frequency" id="" style="width:250px;
-                                                        padding: 0px;
-                                                        border-color: #dee0e3;
-                                                        background: white;
-                                                        position: absolute;
-                                                        height: 30px !important;
-                                                        ">
-                    <option value="Daily">Daily</option>
-                    <option value="Onetime">One Time</option>
-                    <option value="weekly">weekly</option>
-                    </select>
-                    <br><div style="height: 20px;"></div>
-                    <label for="Deselect-Members">Time</label><br>
-                    <input type= "time" name="time" id="" style="width:250px;
-                                                        padding: 0px;
-                                                        border-color: #dee0e3;
-                                                        background: white;
-                                                        position: absolute;
-                                                        height: 30px !important;
-                                                        ">
-                    </input>
+                    <div id="activity_info">
 
                     </div>
                 
-                    <!-- <input type="hidden" id="hidden_multi_select" value="" />
-                    <input name="hidden_user" id="hidden_user" style="cursor: pointer;padding-right: 40px;" onclick="deselectDropDownClicked()" readonly/>
-                    <i class="fa fa-caret-down icon-dropdown-deselect" style="cursor: pointer;" id="deselect-drop-icon" onclick="clearDeselectDropDownValue()"></i>
-                    <select id="deselect_members" name="multi_search_filter" onfocusout="deselectDropDownClicked()" multiple class="form-control selectpicker" 
-                                                 style="width:250px;
-                                                        padding: 0px;
-                                                        border-color: #dee0e3;
-                                                        background: white;
-                                                        position: absolute;
-                                                        height: 105px !important;
-                                                        ">
-                    </select> -->
-                    <br><div style="height: 20px;"></div>
+                    <br><div style="height: 40px;"></div>
                     <div>
                         <button class="saveBtnDeselect" type="button" onclick="openDeselectReminderDialog('submit')">Save</button>
                         <button class="submitBtnDeselect" type="button" onclick="openDeselectReminderDialog('discard')">Close</button>
@@ -683,6 +650,10 @@
         </div>
 
     </div>
+     <!-- Sequence Flow Activity-->
+    <div class="backdrop-activity"></div>
+    <section class="white-bg status-display sequence-flow-activity"></section>
+
 
     <!-- Modal content Tag pop-up Activity-->
     <div id="tag-activity-modal" class="desModal">
@@ -690,33 +661,14 @@
         <div class="deselect-modal-content">
             <span class="deselectclose" onclick="handleTagDialog('close')">&times;</span>
             <form>
-                    <div id="opportunity_info">
-                        <!-- /.col-md-12 -->
-                        <h2 class="deselectheading">Opp Name</h2><br>
-                        <p class="deselectsubhead">Tag Users for Edit/View Permissions</p>
-                        <hr class="deselectsolid">
-                        <section class="deselectsection">
-                        <table width="100%">
-                            <thead>
-                                <tr class="tabname">
-                                    <th>Primary Responsbility</th>
-                                    <th>Amount (in Cr)</th>
-                                    <th>RFP/EOI Published</th>
-                                    <th>Modified Date</th>
-                                    <th>Modified By</th>
-                                    <th>Date Created</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                        <hr class="deselectsolid">
-                        <label for="Deselect-Members">Select Members</label><br>
+                    <div id="activity_tag_info">
+                        
                     </div>
-                    <!-- <input type="hidden" id="hidden_multi_select" value="" />
-                    <input name="hidden_user" id="hidden_user" style="cursor: pointer;padding-right: 40px;" onclick="deselectDropDownClicked()" readonly/>
-                    <i class="fa fa-caret-down icon-dropdown-deselect" style="cursor: pointer;" id="deselect-drop-icon" onclick="clearDeselectDropDownValue()"></i>
-                    <select id="deselect_members" name="multi_search_filter" onfocusout="deselectDropDownClicked()" multiple class="form-control selectpicker" 
+                    <br><div style="height: 20px;"></div>
+                    <input type="hidden" id="activity_hidden_multi_select" value="" />
+                    <input name="hidden_user" id="activity_hidden_user" style="cursor: pointer;padding-right: 40px;" onclick="activitydeselectDropDownClicked()" readonly/>
+                    <i class="fa fa-caret-down icon-dropdown-deselect" style="cursor: pointer;" id="deselect-drop-icon" onclick="activityclearDeselectDropDownValue()"></i>
+                    <select id="activity_member_info" name="multi_search_filter" onfocusout="activitydeselectDropDownClicked()" multiple class="form-control selectpicker" 
                                                  style="width:250px;
                                                         padding: 0px;
                                                         border-color: #dee0e3;
@@ -724,6 +676,8 @@
                                                         position: absolute;
                                                         height: 105px !important;
                                                         "> -->
+                                                        display:None;
+                                                        "> 
                     </select>
                     <br><div style="height: 20px;"></div>
                     <div>

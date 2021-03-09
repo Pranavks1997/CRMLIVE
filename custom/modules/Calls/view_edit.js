@@ -11,15 +11,20 @@ $( document ).ready(function() {
     var assigned_id=$('#assigned_user_id').val();
     var approver_id=$('#user_id_c').val();
     
+    
     //------------------------for global----------------------
     
+    if( $("#status_new_c").val()=="Overdue"){
+        $('#activity_date_c').attr("disabled",true);
+         $('#assigned_to_c').attr("disabled",true);
+    }
     
     
     $("#status_new_c").attr("readonly",true);
     
     if( $("#status_new_c").val()=="Completed"){
         $('#activity_date_c').attr("disabled",true);
-         $('#assigned_to_c').attr("readonly",true);
+         $('#assigned_to_c').attr("disabled",true);
     }
    
     $('input[name="apply_for_complete_button"]').hide();

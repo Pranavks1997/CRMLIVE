@@ -67,8 +67,11 @@
     function executeCountQuery($query){
         $result = $GLOBALS['db']->query($query);
         $total = $GLOBALS['db']->fetchByAssoc($result);
-        if($total)
+        if($total) {
             return $total['totalCount'];
+        } else {
+            return 0;
+        }
     }
     function executeQuery($query){
         $result = $GLOBALS['db']->query($query);

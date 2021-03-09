@@ -88,7 +88,18 @@ jQuery(document).ready(function($){
         var query = $('#hidden_user').val();
         load_data(query);
     });
+    
+    $('#activity_member_info').change(function(){
+        var csu = $('#activity_member_info').val();
+        display = trimLeft(csu);
+        actual = trimRight(csu);
+        $('#activity_hidden_multi_select').val(actual);
+        $('#activity_hidden_user').val(display);
+        var query = $('#activity_hidden_user').val();
+        load_data(query);
 
+
+    })
     function trimLeft(csu) {
         if (csu && csu.length > 0) {
             csu = csu.map(x => x.split('---')[1]);
