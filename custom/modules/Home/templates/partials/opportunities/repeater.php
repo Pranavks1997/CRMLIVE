@@ -68,7 +68,7 @@
             <?php echo $this->getColumnFiltersBody($_GET, $row); ?>
 
             <td class="table-data">
-                <div style="display: flex; width: 80%; align-items: center; padding: 10px; justify-content: space-between; margin-left: 20px;">
+                <div style="display: flex; width: 90%; align-items: center; padding: 10px; justify-content: space-between; margin-left: 20px;">
                 
                     <button class="tag1" id="reassignmentBtn" style="margin-right: 7px;width: 15px;" onclick="fetchReassignmentDialog('<?php echo $row['id']; ?>')">
                         <?php if ($this->is_reassignment_applicable($row['id'])): ?>
@@ -88,17 +88,16 @@
                     <a style="width: 15px;" href="index.php?action=DetailView&module=Opportunities&record=<?php echo $row['id']; ?>" class="eye" id="search-btn">
                         <i id="search-icon" class="fa fa-eye" aria-hidden="true"> </i>
                     </a>
-                    <button class="tag1" id="criticalBtn" style="margin-right: 1px;width: 15px;" onclick="criticalStatus('<?php echo $row['id']; ?>')">
-                    <?php if (($this->is_critical_applicable($log_in_user_id, $row['id'], 'no')) && ($check_mc=='yes')): ?>     
-                        <i id=<?php echo $row['id'];?> class="fa fa-exclamation-triangle" aria-hidden="true"> </i>
+                    <?php if (($this->is_critical_applicable($log_in_user_id, $row['id'], 'no')) && ($check_mc=='yes')): ?>    
+                        <button class="tag1" id="criticalBtn" style="margin-right: 1px;width: 15px;" onclick="criticalStatus('<?php echo $row['id']; ?>')">
+                            <i id=<?php echo $row['id'];?> class="fa fa-exclamation-triangle" aria-hidden="true"> </i>
+                        </button>
                     <?php endif ?>
-                    </button>
-
-                    <button class="tag1" id="criticalBtn" onclick="criticalStatusChanged('<?php echo $row['id']; ?>')">
-                    <?php if (($this->is_critical_applicable($log_in_user_id, $row['id'], 'yes'))&& ($check_mc=='yes')) : ?>    
-                        <i id="<?php echo $row['id'];?>" style="color: red; cursor: pointer; margin-left: -11px;" class="fa fa-exclamation-triangle" aria-hidden="true"> </i>
+                    <?php if (($this->is_critical_applicable($log_in_user_id, $row['id'], 'yes'))&& ($check_mc=='yes')) : ?>
+                        <button class="tag1" id="criticalBtn"  style="margin-right: 1px;width: 15px;" onclick="criticalStatusChanged('<?php echo $row['id']; ?>')">
+                            <i id="<?php echo $row['id'];?>" style="color: red; cursor: pointer; margin-left: -11px;" class="fa fa-exclamation-triangle" aria-hidden="true"> </i>
+                        </button>
                     <?php endif ?>
-                    </button>
                 </div>
             </td>
         </tr>

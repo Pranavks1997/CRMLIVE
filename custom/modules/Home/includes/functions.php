@@ -26,7 +26,7 @@
                     $fetch_query .= " AND opportunities_cstm.closure_status_c = '$closure'";
                 }
             }else if($status == 'Dropped' ){
-                $fetch_query .= " AND ( opportunities_cstm.status_c = 'Dropped' OR ( opportunities_cstm.status_c = 'Closed' AND opportunities_cstm.closure_status_c = 'lost' ) )";
+                $fetch_query .= " AND ( opportunities_cstm.status_c = 'Dropped' )";
             }else{
                 $fetch_query .= " AND opportunities_cstm.status_c='$status'";
             }

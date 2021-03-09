@@ -54,11 +54,12 @@ $mod_strings = array(
     'LBL_OOTB_SUITEFEEDS' => 'Prune SuiteCRM Feed Tables',
     'LBL_OOTB_LUCENE_INDEX' => 'Perform Lucene Index',
     'LBL_OOTB_OPTIMISE_INDEX' => 'Optimise AOD Index',
-    'LBL_OOTB_SEND_EMAIL_REMINDERS' => 'Run Email Reminder Notifications',
+    'LBL_OOTB_SEND_EMAIL_REMINDERS' => 'Run Activity Reminder',
     'LBL_OOTB_CLEANUP_QUEUE' => 'Clean Jobs Queue',
     'LBL_OOTB_REMOVE_DOCUMENTS_FROM_FS' => 'Removal of documents from filesystem',
-    'LBL_OOTB_GOOGLE_CAL_SYNC' => 'Google Calendar Sync',
+    'LBL_OOTB_GOOGLE_CAL_SYNC' => 'Activity Reminder',
     'LBL_ACTIVITY' => 'Activity Status Job',
+    'LBL_ACTIVITY_REMINDER' => 'Activity Reminder Job',
 
 // List Labels
     'LBL_LIST_JOB_INTERVAL' => 'Interval:',

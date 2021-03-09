@@ -76,7 +76,7 @@ $job_strings = array(
     8 => 'aodOptimiseIndex',
     9 => 'aorRunScheduledReports',
     10 => 'processAOW_Workflow',
-    12 => 'sendEmailReminders',
+    12 => 'activityReminder',
     14 => 'cleanJobQueue',
     15 => 'removeDocumentsFromFS',
     16 => 'trimSugarFeeds',
@@ -428,12 +428,122 @@ function pollMonitoredInboxesForBouncedCampaignEmails()
 /**
  * Job 12
  */
-function sendEmailReminders()
+function activityReminder()
 {
-    $GLOBALS['log']->info('----->Scheduler fired job of type sendEmailReminders()');
-    require_once("modules/Activities/EmailReminder.php");
-    $reminder = new EmailReminder();
-    return $reminder->process();
+   try{
+        
+    $db = \DBManagerFactory::getInstance();
+    $GLOBALS['db'];
+    $GLOBALS['log']->info('----->Scheduler fired job of type reminderForActivity()');
+    //  print_r("hello");
+    // die();
+    $db = DBManagerFactory::getInstance();
+
+    //get date
+    $tz = 'Asia/Kolkata';
+    
+    $timestamp = time();
+    $dt = new DateTime("now", new DateTimeZone($tz)); //first argument "must" be a string
+    $dt->setTimestamp($timestamp);
+    $selectedTime = $dt->format('G:i:s');
+ //   $startTime =  strtotime("+1 minutes", strtotime($selectedTime));
+   // $endTime = strtotime("-2 minutes", strtotime($selectedTime)); 
+  //  $start = date('G:i:s',$startTime);
+    //$end = date('G:i:s', $endTime)
+
+    // $now_time = "15:53:00";
+    $now_time =  $dt->format('G:i:00');
+    $GLOBALS['log']->info("--------> Schedular present time for the activity : '.$now_time.'");
+    $now_date = $dt->format('Y-m-d');
+    $now_month = $dt->format('m');
+    
+    //get data from db
+    
+    $sql = 'SELECT * from activity_reminder WHERE time = "'.$now_time.'" ';
+    $result = $db->query($sql);
+   while ($row = $GLOBALS['db']->fetchByAssoc($result)){ 
+       
+      
+  
+
+      // daily 
+      if  (strtolower($row['frequency']) == 'daily'){
+          
+           activityQuery($row['activity_id'],$db );
+
+      }
+
+      // weekly
+      elseif (strtolower($row['frequency']) == 'weekly') {
+          $created_date = $row['updated_at'];
+          $activity_date_time = strtotime($created_date);
+          $activity_date = date("Y-m-d", $activity_date_time);
+          $diff = date_diff(date_create($activity_date), date_create($now_date));
+          if ((int)$diff->format('%a') % 7 == 0){
+            activityQuery($row['activity_id'],$db );
+          }         
+      }
+
+      // montly
+      elseif (strtolower($row['frequency']) == 'monthly') {
+          # code...
+          $created_date = $row['updated_at'];
+          $activity_date_time = strtotime($created_date);
+          $activity_month = date("m", $activity_date_time);
+
+          if (abs((int)$now_month - (int)$activity_month) != 0){
+              $now_day = $dt->format('d');
+              $activity_day =  date("d", $activity_date_time);
+              if ( $now_day == $activity_day){
+                    activityQuery($row['activity_id'],$db );
+              }
+          }
+         	elseif(abs((int)$now_month - (int)$activity_month) == 0){
+             $now_year = $dt->format('Y');
+             $activity_year =  date("Y", $activity_date_time);
+             if ( $now_day == $activity_day && abs((int)$activity_year - (int)$now_year) != 0 ){
+                  activityQuery($row['activity_id'],$db );
+           
+           	}
+           
+         }
+      }
+   }
+   
+     }catch(Exception $e){
+    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    	}
+    	return true;
+}
+ function activityQuery($activity_id,$db){
+    //  print_r($activity_id);
+    //       die();
+    $get_activity_name_sql = 'SELECT * from calls WHERE id = "'.$activity_id.'"';
+    $result = $db->query($get_activity_name_sql);
+    $row = $GLOBALS['db']->fetchByAssoc($result);
+  	$created_by = $row['created_by'];
+    $get_user_email = 'SELECT user_name from users where id = "'.$created_by.'"' ;
+    $result1 = $db->query($get_user_email);
+    $data = $GLOBALS['db']->fetchByAssoc($result1);
+  send_email($row['name'], $data['user_name']);
+}
+ function send_email($activity_name,$email){
+     		$template = "Remainder for '$activity_name' is to be completed";
+            require_once('include/SugarPHPMailer.php');
+            include_once('include/utils/db_utils.php');
+            $emailObj = new Email();  
+            $defaults = $emailObj->getSystemDefaultEmail();  
+            $mail = new SugarPHPMailer();  
+            $mail->setMailerForSystem();  
+            $mail->From = $defaults['xelpmocdeveloper@gmail.com'];  
+            $mail->FromName = $defaults['xelpmoc'];  
+            $mail->Subject = "Reminder for activity"; 
+            $mail->Body =$template;
+            $mail->prepForOutbound();  
+            $mail->AddAddress($email); 
+            $mail->Send();                 
+	
+    
 }
 
 function removeDocumentsFromFS()
@@ -521,50 +631,7 @@ function trimSugarFeeds()
     return true;
 }
 
-function activityDate(){
-        try{
-            $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-    		$sql = 'SELECT * FROM `activity_approval_table` WHERE `approval_status`="0" AND status="Apply For Completed" AND CURRENT_DATE > sent_time + INTERVAL 7 day';
-    		$result = $GLOBALS['db']->query($sql);
-    		if($result->num_rows>0){
-				while($rows = $GLOBALS['db']->fetchByAssoc($result) )
-				{
-					$update_calls_query="UPDATE calls_cstm SET status_new_c ='Overdue' WHERE id_c='".$rows['acc_id']."'";
-					$res_update = $db->query($update_calls_query);
-					$update_activity_query="UPDATE activity_approval_table SET approval_status ='3' WHERE acc_id='".$rows['acc_id']."'";
-					$res_calls_update = $db->query($update_activity_query);
-				}
-    		}
-    	    $sql1 = 'SELECT t1.acc_id,t2.activity_date_c FROM activity_approval_table as t1 LEFT JOIN calls_cstm as t2 ON t2.id_c = t1.acc_id WHERE t1.approval_status="2" AND t1.status="Apply For Completed" AND t2.activity_date_c < CURRENT_DATE';
-    		$result1 = $GLOBALS['db']->query($sql1);
-    		if($result1->num_rows>0){
-				while($rows = $GLOBALS['db']->fetchByAssoc($result1) )
-				{
-				    $update_calls_query1="UPDATE calls_cstm SET status_new_c ='Overdue' WHERE id_c='".$rows['acc_id']."'";
-					$res_update1 = $db->query($update_calls_query1);
-				
-				}
-    		}
-    		
-    		$sql2 = 'SELECT t1.id, t2.id_c,t2.status_new_c,t2.activity_date_c FROM calls as t1 LEFT JOIN calls_cstm as t2 ON t2.id_c = t1.id WHERE deleted=0 AND t2.status_new_c="Upcoming" AND t2.activity_date_c < CURRENT_DATE AND t2.id_c NOT IN (SELECT acc_id FROM activity_approval_table)';
-    		$result2 = $GLOBALS['db']->query($sql2);
-    		if($result2->num_rows>0){
-				while($rows = $GLOBALS['db']->fetchByAssoc($result2) )
-				{
-				    $update_calls_query2="UPDATE calls_cstm SET status_new_c ='Overdue' WHERE id_c='".$rows['id_c']."'";
-					$res_update2 = $db->query($update_calls_query2);
-				
-				}
-    		}
-    		
-    		var_dump($res_update1);
-    	}catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
-    	return true;
-    }
-
+ 
 /**
  * + * Job 17
  * + * this will sync the Google Calendars of users who are configured to do so

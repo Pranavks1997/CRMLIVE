@@ -309,7 +309,7 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 
 .search-box-block {
-    max-width: calc(100% - 580px);
+    max-width: calc(100% - 600px);
     width: 100%;
     float: none;
     /* text-align: right; */
@@ -2156,7 +2156,7 @@ padding: 15px 5px;
   }
 
 /* Activity Fixes*/
-.activity-title{ font-size: 13px; color: #000000; margin: 5px 0; }
+.activity-title{ font-size: 13px; color: #F08377; margin: 5px 0; }
 .activity-type,
 .activity-related-type{ color: #9e9e9e; }
 .activity-related-name{ font-size: 13px; color: #000000; margin: 5px 0; }

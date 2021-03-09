@@ -20,8 +20,10 @@
         return preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amount);
     }
     function date_format_helper($date) {
-        $dateArr = explode('/', $date);
-        return $dateArr[2].'-'.$dateArr[1].'-'.$dateArr[0];
+        if($date){
+            $dateArr = explode('/', $date);
+            return $dateArr[2].'-'.$dateArr[1].'-'.$dateArr[0];
+        }
     }
     function split_camel_case($label) {
         if($label == 'QualifiedDpr') {
@@ -164,13 +166,11 @@
             $responsibility = $_GET['filter-responsibility'];
             $fetch_query .= " AND (";
             foreach($responsibility as $key => $res){
-                $arr = explode('andTeam',$res,0);
+                
                 if($key)
                     $fetch_query .= " OR ";
-                if($res == 'MyTeam') {
-                    $fetch_query .= " opportunities.assigned_user_id IN 
-                    (SELECT id FROM users WHERE reports_to_id = '$log_in_user_id' OR id = '$log_in_user_id')";
-                } else if ($arr && count($arr) > 0) {
+                if (strpos($res, 'andTeam') !== false) {
+                    $arr = explode('andTeam',$res,0);
                     $arr[0] = chop($arr[0],"andTeam");
                     $fetch_query .= " opportunities.assigned_user_id IN 
                     (SELECT id FROM users WHERE reports_to_id = '$arr[0]' OR id = '$arr[0]')";

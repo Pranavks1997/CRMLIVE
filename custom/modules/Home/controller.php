@@ -82,14 +82,24 @@ class HomeController extends SugarController{
                 WHERE assigned_user_id = '$log_in_user_id' AND deleted != 1 AND date_entered >= now() - interval '".$day."' day";
             $self_count = executeCountQuery($selfCountQuery);
 
+            $user_manager = '';
+            $result2 = $this->getDbData('users_cstm', '*', "id_c = '$log_in_user_id' ");
+            foreach($result2 as $s){
+                $teamHierarchy = $s['teamheirarchy_c'];
+                if ($teamHierarchy == 'team_lead') {
+                    $user_manager = $log_in_user_id;
+                } else {
+                    $user_manager = explode(",", $s['user_lineage']);
+                    $user_manager = end($user_manager);
+                }
+            }
             $teamCountQuery = "SELECT count(*) as totalCount from opportunities 
                 LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
                 WHERE  deleted != 1 AND date_entered >= now() - interval '".$day."' day AND 
                 assigned_user_id IN (
-                    SELECT id_c FROM users_cstm WHERE teamfunction_c = (
-                        SELECT teamfunction_c FROM users_cstm WHERE id_c = '$log_in_user_id'
-                    )
+                    SELECT id_c FROM users_cstm WHERE user_lineage LIKE '%$user_manager%' OR id_c ='$user_manager' 
                 )";
+            
             $team_count = executeCountQuery($teamCountQuery);
 
             $fetch_by_status    = "";
@@ -258,10 +268,14 @@ class HomeController extends SugarController{
 
         $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
+        // $query = "SELECT count(*) as delegate FROM users WHERE id = '$log_in_user_id' AND reports_to_id != '' ";
+        $is_reporting_manager_query = "SELECT count(*) as reporting_manager FROM users WHERE reports_to_id = '$log_in_user_id' ";
+        $result1 = $GLOBALS['db']->query($is_reporting_manager_query);
+        $result1 = $GLOBALS['db']->fetchByAssoc($result1);
         $query = "SELECT count(*) as delegate FROM users_cstm WHERE id_c = '$log_in_user_id' AND (teamheirarchy_c = 'team_lead' OR mc_c = 'yes')";
         $result = $GLOBALS['db']->query($query);
         $result = $GLOBALS['db']->fetchByAssoc($result);
-        return $result['delegate'] ? true : false;
+        return (($result['delegate'] > 0) || ($result1['reporting_manager'] > 0)) ? true : false;
 
     }
 
@@ -1072,10 +1086,12 @@ class HomeController extends SugarController{
             $oppID = $_POST['oppID']; 
             $data = '<span class="close-sequence-flow">×</span><div class="wrap padding-tb black-color">';
 
-            $query = "SELECT name,created_by,assigned_user_id FROM opportunities WHERE id = '$oppID'";
+            $query = "SELECT name,created_by,assigned_user_id,date_entered FROM opportunities WHERE id = '$oppID'";
             $result = $GLOBALS['db']->query($query);
             $result = $GLOBALS['db']->fetchByAssoc($result);
             $created_by = $result['created_by'];
+            $created_date = substr($result['date_entered'],0,10);
+            $created_date = date('d/m/Y', strtotime($created_date));
             $data .= '<div class="d-block padding">
                     <h2 class="">'.$result['name'].'</h2>
                     <h3 class="gray-color">Approval/Rejection Audit Trail</h3>
@@ -1138,7 +1154,7 @@ class HomeController extends SugarController{
                             <span style="font-size: 12px;margin:0">'.$full_name.'</span></h5> 
                         </div>
                         <div class="d-inline-block w-50 align-self-end text-right">
-                            <h5 class="gray-color">'.$updateDate.'</h5>
+                            <h5 class="gray-color">'.$created_date.'</h5>
                         </div>
                     </div>';
             $query = "select u.first_name, u.last_name, ap.opp_id, ap.date_time, ap.apply_for,ap.assigned_by, ap.Approved, ap.Rejected, ap.pending, ap.assign from 
@@ -1555,7 +1571,7 @@ class HomeController extends SugarController{
 
     function getColumnFilters($status = null, $type = null){
         /* Default Columns */
-        if($type){
+        if($type == 'pending'){
             $columnFilterHtml = '<form class="pending-settings-form sort-column">';
             $columnFilterHtml .= '<input type="hidden" name="settings-section" class="pending-settings-section" value="" />
             <input type="hidden" name="settings-type" class="pending-settings-type" value="" />
@@ -3143,6 +3159,9 @@ class HomeController extends SugarController{
             
             $update_query = "UPDATE opportunities_cstm SET critical_c = '$string_critical_data' WHERE id_c = '$id'";
             $GLOBALS['db']->query($update_query);
+            
+            $critical_status_count_query = "SELECT count(*) as totalCount FROM opportunities_cstm WHERE critical_c LIKE '%$log_in_user_id%' AND critical_c LIKE '%yes%'";
+            $critical_status_count = executeCountQuery($critical_status_count_query);
 
 
             // ob_start();
@@ -3151,7 +3170,7 @@ class HomeController extends SugarController{
             // ob_end_clean();
 
 
-            echo json_encode(array('status'=>true, 'message' => 'Success','data'=>$string_critical_data));
+            echo json_encode(array('status'=>true, 'message' => 'Success','data'=>$string_critical_data,'critical_status_count'=>$critical_status_count));
 
             die;
         }catch(Exception $e){
@@ -4653,8 +4672,8 @@ public function action_assigned_history(){
                                                         ">
                         <option value='.$data1['frequency'].' selected>'.$data1['frequency'].'</option>
                         <option value="Daily">Daily</option>
-                        <option value="Onetime">One Time</option>
-                        <option value="weekly">weekly</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="Monthly">Monthly</option>
                     </select>
                     <br>
                     <div style="height: 20px;"></div>
@@ -4680,9 +4699,9 @@ public function action_assigned_history(){
                                                             position: absolute;
                                                             height: 30px !important;
                                                             ">
-                            <option value="Daily">Daily</option>
-                            <option value="Onetime">One Time</option>
-                            <option value="weekly">weekly</option>
+                        <option value="Daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="Monthly">Monthly</option>
                         </select>
                         <br>
                         <div style="height: 20px;"></div>
@@ -4888,7 +4907,8 @@ public function action_assigned_history(){
         switch($column){
             case 'name':
                 $data .= '<td class="table-data">';
-                $data .= '<h2 class="activity-title">'. $row['name'] .'</h2>';
+                $data .= '<a href="index.php?module=Calls&action=DetailView&record='.$row['id'].'">';
+                $data .= '<h2 class="activity-title">'. $row['name'] .'</h2></a>';
                 $data .= '<span class="activity-type d-block">'. $row['type_of_interaction_c'] .'</span></td>';
                 break; 
             case 'related_to':

@@ -968,23 +968,29 @@ function teamFilterForReport() {
 
 function criticalStatus(id) {
     var criticalIcon = document.getElementById(id);
-    $.ajax({
-        url: 'index.php?module=Home&action=update_critical_status',
-        type: 'GET',
-        data: {
-            id: id
-        },
-        success: function (data) {
-            var main_data = JSON.parse(data);
-            alert("Opportunity added to Critical List");
-            $('#criticalStatusCount').html(main_data.critical_status_count)
-            criticalIcon.style.color = main_data.color;
-        }
-    })
+    if (criticalIcon.style.color == "red") {
+        criticalStatusChanged(id, 'no');
+    } else {
+        $.ajax({
+            url: 'index.php?module=Home&action=update_critical_status',
+            type: 'GET',
+            data: {
+                id: id
+            },
+            success: function (data) {
+                var main_data = JSON.parse(data);
+                alert("Opportunity added to Critical List");
+                $('#criticalStatusCount').html(main_data.critical_status_count);
+                criticalIcon.style.color = main_data.color;
+            }
+        })
+    }
+    
 }
 
-function criticalStatusChanged(id) {
+function criticalStatusChanged(id, noRefresh = null) {
     var day = Cookies.get('day');
+    var criticalIcon = document.getElementById(id);
     $.ajax({
         url: 'index.php?module=Home&action=update_critical_status_changed',
         type: 'GET',
@@ -994,7 +1000,12 @@ function criticalStatusChanged(id) {
         success: function (data) {
             var main_data = JSON.parse(data);
             alert("Removed Opportunity from Critical List");
-            dateBetween(day, '', '', '', '', 'critical', 1)
+            debugger
+            $('#criticalStatusCount').html(main_data.critical_status_count);
+            criticalIcon.style.color = "black";
+            if(!noRefresh) {
+                dateBetween(day, '', '', '', '', 'critical', 1);
+            }
         }
     })
 }

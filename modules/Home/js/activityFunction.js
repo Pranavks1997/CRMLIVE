@@ -253,7 +253,6 @@ function openDeselectReminderDialog(event) {
         var frequency = document.getElementById('frequency').value;
         var time = document.getElementById('time').value;
         console.log(hidden_id);
-        console.log(user_id);
         $.ajax({
             url: 'index.php?module=Home&action=set_activity_reminder',
             type: 'POST',

@@ -462,9 +462,9 @@ $('#timing_button_c').find('option').css('background-color','white');
                           var endq = $('#end_quarter').val();
                           // var total = $('#total_input_value').val();
                    
-                   //alert(starty+" "+startq+" "+endy+" "+endq+""+total)
+                   //alert(starty+" "+startq+" "+endy+" "+endq+""+total)  && total!=''
                    
-                   if( starty!='' &&  endy!='' && startq!='' && endq!='' && total!='' ){
+                   if( starty!='' &&  endy!='' && startq!='' && endq!=''){
                    
                    
                    $('#financial_feasibility_l1_c').text("View L1 Details");
@@ -711,9 +711,10 @@ $('#timing_button_c').find('option').css('background-color','white');
      var endq = $('#end_quarter').val();
      var total = $('#total_input_value').val();
      
+     // && total!=''
      
      
-     if( starty!='' &&  endy!='' && startq!='' && endq!='' && total!='' ){
+     if( starty!='' &&  endy!='' && startq!='' && endq!=''){
       
     
       $('#financial_feasibility_l1_c').css("background","#2ecc71")
