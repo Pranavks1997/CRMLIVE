@@ -27,7 +27,7 @@ $hook_array['before_save'][] = Array(90, 'Attachments', 'custom/modules/Opportun
 
 $hook_array['after_save'] = Array();
 $hook_array['after_save'][] = Array(
-    80,
+    79,
     'Retrieve and compare values',
     'custom/modules/Opportunities/updateHistory.php',
     'updateHistory',
