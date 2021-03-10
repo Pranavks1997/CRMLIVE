@@ -18,7 +18,7 @@
                 WHERE deleted != 1 ";
                 
         $opp_id_show = private_opps();
-        $fetch_query .= " AND (opportunities.opportunity_type = 'global' OR opportunities.id IN ('".implode("','",$opp_id_show)."')) ";
+        
         /* Check if status is set. This will be firing if we click on the cards above the table */
         if($status){
             if($status == 'ClosedWin' || $status == 'ClosedLost'){
@@ -33,9 +33,13 @@
                 $fetch_query .= " AND opportunities_cstm.status_c='$status'";
             }
         }
-
-        if($type){
-            $fetch_query .= " AND opportunity_type = '$type' ";
+        if($type && $type!= ''){
+            if ($type == 'global')
+                $fetch_query .= " AND opportunity_type = '$type' ";
+            else
+                $fetch_query .= " AND opportunity_type = 'non_global' AND (opportunities.id IN ('".implode("','",$opp_id_show)."')) ";
+        } else {
+            $fetch_query .= " AND (opportunities.opportunity_type = 'global' OR opportunities.id IN ('".implode("','",$opp_id_show)."')) ";
         }
 
         if($isCritical){

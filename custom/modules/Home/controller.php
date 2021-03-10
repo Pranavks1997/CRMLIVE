@@ -82,23 +82,8 @@ class HomeController extends SugarController{
                 WHERE assigned_user_id = '$log_in_user_id' AND deleted != 1 AND date_entered >= now() - interval '".$day."' day";
             $self_count = executeCountQuery($selfCountQuery);
 
-            $user_manager = '';
-            $result2 = $this->getDbData('users_cstm', '*', "id_c = '$log_in_user_id' ");
-            foreach($result2 as $s){
-                $teamHierarchy = $s['teamheirarchy_c'];
-                if ($teamHierarchy == 'team_lead') {
-                    $user_manager = $log_in_user_id;
-                } else {
-                    if (strpos($s['user_lineage'], ',') !== false) {
-                        $user_manager = explode(",", $s['user_lineage']);
-                        $user_manager = end($user_manager);
-                    } else {
-                        $user_manager = $s['user_lineage'];
-                    }
-                }
-            }
+            $user_manager = $this->get_user_manager();
             $teamCountQuery = "SELECT count(*) as totalCount from opportunities 
-                LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
                 WHERE  deleted != 1 AND date_entered >= now() - interval '".$day."' day AND 
                 assigned_user_id IN (
                     SELECT id_c FROM users_cstm WHERE user_lineage LIKE '%$user_manager%' OR id_c ='$user_manager' 
@@ -232,13 +217,12 @@ class HomeController extends SugarController{
         }else{
             $query = "SELECT count(oc.id_c) as totalCount FROM opportunities o LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c WHERE o.deleted != 1 AND o.date_entered >= now() - interval '".$day."' day AND oc.status_c = '$status' GROUP BY oc.status_c";
             $default_count  = executeCountQuery($query);
-
+            $user_manager = $this->get_user_manager();
             $teamCountQuery = "SELECT count(*) as totalCount from opportunities 
                 LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
-                WHERE  deleted != 1 AND date_entered >= now() - interval '".$day."' day AND status_c= '".$status."' AND assigned_user_id IN (
-                    SELECT id_c FROM users_cstm WHERE teamfunction_c = (
-                        SELECT teamfunction_c FROM users_cstm WHERE id_c = '$log_in_user_id'
-                    )
+                WHERE  deleted != 1 AND date_entered >= now() - interval '".$day."' day AND status_c= '".$status."' AND 
+                assigned_user_id IN (
+                    SELECT id_c FROM users_cstm WHERE user_lineage LIKE '%$user_manager%' OR id_c ='$user_manager' 
                 )";
             $selfCountQuery = "SELECT count(*) as totalCount FROM opportunities 
                 LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
@@ -1660,7 +1644,7 @@ class HomeController extends SugarController{
         $QualifiedLead = array_merge($default2, $QualifiedLead);
 
         $QualifiedOpportunity = array(
-            'budget_head_c'                     => 'Budget Head Amount (In Cr)',
+            'budget_head_amount_c'                     => 'Budget Head Amount (In Cr)',
             'budget_allocated_oppertunity_c'    => 'Budget Allocated For Opportunity (in Cr)',
             'project_implementation_start_c'    => 'Project Implementation Start Date',
             'project_implementation_end_c'      => 'Project Implementation End Date',
@@ -1841,7 +1825,7 @@ class HomeController extends SugarController{
                 $data .= '<th class="table-header">Work Order (Projected)</th>';
                 break;
 
-            case 'budget_head_c':
+            case 'budget_head_amount_c':
                 $data .= '<th class="table-header">Budget Head Amount (In Cr)</th>';
                 break;
 
@@ -2000,8 +1984,8 @@ class HomeController extends SugarController{
                 $data .= '<td class="table-data" >'.$work_order_projected_c.'</td>';
                 break;
 
-            case 'budget_head_c':
-                $data .= '<td class="table-data" >'.beautify_label( $row['budget_head_c'] ).'</td>';
+            case 'budget_head_amount_c':
+                $data .= '<td class="table-data" >'.$this->append_currency($row['currency_c'], $this->beautify_amount(( $row['budget_head_amount_c'] ))).'</td>';
                 break;
 
             case 'budget_allocated_oppertunity_c':
@@ -2087,7 +2071,7 @@ class HomeController extends SugarController{
         $rfp_eoi_published_projected_c  = @$columnFilter['rfp_eoi_published_projected_c'];
         $work_order_projected_c         = @$columnFilter['work_order_projected_c'];
 
-        $budget_head_c                  = @$columnFilter['budget_head_c'];
+        $budget_head_c                  = @$columnFilter['budget_head_amount_c'];
         $budget_allocated_oppertunity_c = @$columnFilter['budget_allocated_oppertunity_c'];
         $project_implementation_start_c = @$columnFilter['project_implementation_start_c'];
         $project_implementation_end_c   = @$columnFilter['project_implementation_end_c'];
@@ -2810,7 +2794,7 @@ class HomeController extends SugarController{
         }
 
         if($budget_head_c_min && $budget_head_c_max){
-            $fetch_query .= " AND opportunities_cstm.budget_head_c BETWEEN '$budget_head_c_min' AND '$budget_head_c_max' ";
+            $fetch_query .= " AND opportunities_cstm.budget_head_amount_c BETWEEN '$budget_head_c_min' AND '$budget_head_c_max' ";
         }
 
         if($budget_allocated_oppertunity_c_min && $budget_allocated_oppertunity_c_max){
@@ -3353,7 +3337,7 @@ class HomeController extends SugarController{
                 $row['rfp_eoi_projected_c'] ? beautify_label( date('dS F Y', strtotime($row['rfp_eoi_projected_c']) ) ) : '',
                 $row['rfp_eoi_published_projected_c'] ? beautify_label( date('dS F Y', strtotime($row['rfp_eoi_published_projected_c']) ) ) : '',
                 $row['work_order_projected_c'] ? beautify_label( date('dS F Y', strtotime($row['work_order_projected_c']) ) ) : '',
-                $this->beautify_amount( $row['budget_head_amount_c'] ),
+                $this->append_currency($row['currency_c'], $this->beautify_amount( $row['budget_head_amount_c'] )),
                 beautify_label( $row['budget_allocated_oppertunity_c'] ),
                 $row['project_implementation_start_c'] ? beautify_label( date('dS F Y', strtotime($row['project_implementation_start_c']) ) ) : '',
                 $row['project_implementation_end_c'] ? beautify_label( date('dS F Y', strtotime($row['project_implementation_end_c']) ) ) : '',
@@ -4285,6 +4269,27 @@ public function action_assigned_history(){
         die;
     }
 
+    function get_user_manager() {
+        global $current_user; 
+        $log_in_user_id = $current_user->id;
+        $user_manager = '';
+            $result2 = $this->getDbData('users_cstm', '*', "id_c = '$log_in_user_id' ");
+            foreach($result2 as $s){
+                $teamHierarchy = $s['teamheirarchy_c'];
+                if ($teamHierarchy == 'team_lead') {
+                    $user_manager = $log_in_user_id;
+                } else {
+                    if (strpos($s['user_lineage'], ',') !== false) {
+                        $user_manager = explode(",", $s['user_lineage']);
+                        $user_manager = end($user_manager);
+                    } else {
+                        $user_manager = $s['user_lineage'];
+                    }
+                }
+            }
+            return $user_manager;
+    }
+
     /**
      * Activity Functions////////////////////////////////////////////////////////////////////////////////
      * 
@@ -4911,14 +4916,15 @@ public function is_activity_reassignment_applicable($activity_id) {
             'status'                => 'Status',
             'activity_date_c'       => 'Activity Due Date',
             'assigned_to_c'         => 'Assigned To',
+            'next_date_c'           => 'Next Follow-Up / Interaction Date',
+            'name_of_person_c'      => 'Name of Person Contacted'
         );
 
         $default2 = array(
             'new_current_status_c'          => 'Comments',
             // 'description'                   => 'Summary of Interaction',
             // 'new_key_action_c'              => 'Key Actionable / Next Steps identified from the Interaction',
-            'next_date_c'                   => 'Next Follow-Up / Interaction Date',
-            'name_of_person_c'              => 'Name of Person Contacted'
+            
 
         );
 
@@ -4956,9 +4962,9 @@ public function is_activity_reassignment_applicable($activity_id) {
             case 'activity_date_c':
                 $data .= '<th class="table-header">Activity Due Date</th>';
                 break;
-            case 'date_modified':
-                $data .= '<th class="table-header">Last Modified</th>';
-                break;
+            // case 'date_modified':
+            //     $data .= '<th class="table-header">Last Modified</th>';
+            //     break;
             case 'assigned_to_c':
                 $data .= '<th class="table-header">Assigned To</th>';
                 break;
@@ -5027,9 +5033,9 @@ public function is_activity_reassignment_applicable($activity_id) {
             case 'activity_date_c':
                 $data .= '<td class="table-data">'. date( 'd/m/Y', strtotime($row['activity_date_c']) ) .'</td>';
                 break;
-            case 'date_modified':
-                $data .= '<td class="table-data">'. date( 'd/m/Y', strtotime($row['date_modified']) ) .'</td>';
-                break;
+            // case 'date_modified':
+            //     $data .= '<td class="table-data">'. date( 'd/m/Y', strtotime($row['date_modified']) ) .'</td>';
+            //     break;
             case 'assigned_to_c':
                 $data .= '<td class="table-data">'. $row['assigned_to_c'] .'</td>';
                 break;
@@ -5173,7 +5179,7 @@ public function is_activity_reassignment_applicable($activity_id) {
                         To: <input class="filterdatebox" name="filter-next_date_c_to" id="closed_date_to" width="300" />
                     </div>
                 </div>';
-
+                break;
             case 'name_of_person_c':
                 $data = '<div class="form-group">
                     <span class="primary-responsibilty-filter-head">Name of contact person</span>
@@ -5333,21 +5339,7 @@ public function is_activity_reassignment_applicable($activity_id) {
                 WHERE assigned_user_id = '$log_in_user_id' AND deleted != 1 AND date_entered >= now() - interval '".$day."' day";
             $response['self_count'] = executeCountQuery($self_count);
 
-            $user_manager = '';
-            $result2 = $this->getDbData('users_cstm', '*', "id_c = '$log_in_user_id' ");
-            foreach($result2 as $s){
-                $teamHierarchy = $s['teamheirarchy_c'];
-                if ($teamHierarchy == 'team_lead') {
-                    $user_manager = $log_in_user_id;
-                } else {
-                    if (strpos($s['user_lineage'], ',') !== false) {
-                        $user_manager = explode(",", $s['user_lineage']);
-                        $user_manager = end($user_manager);
-                    } else {
-                        $user_manager = $s['user_lineage'];
-                    }
-                }
-            }
+            $user_manager = $this->get_user_manager();
 
             $team_count = "SELECT count(*) as totalCount from calls LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c WHERE  deleted != 1 AND date_entered >= now() - interval '".$day."' day AND assigned_user_id IN (SELECT id_c FROM users_cstm WHERE user_lineage LIKE '%$user_manager%' OR id_c='$user_manager')";
             $response['team'] = executeCountQuery($team_count);
