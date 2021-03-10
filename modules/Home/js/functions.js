@@ -12,6 +12,8 @@ function initSortable() {
 
     $(".sortable1 .nondrag").disableSelection();
 }
+
+
 /* Fetch Opportuinities */
 function dateBetween(dateBetween, searchTerm = null, page = null, filter = 0, status = null, type = null, dropped = null, changeColumns = 1) {
     Cookies.set('day', dateBetween, { expires: 1 });
@@ -38,7 +40,11 @@ function dateBetween(dateBetween, searchTerm = null, page = null, filter = 0, st
             dropped: dropped,
             isCritical: isCritical,
         },
+        // beforeSend: function(){
+        //     $('.spinner').fadeIn();
+        // },
         success: function (check) {
+            debugger;
             if (dateBetween == '1200') {
                 $('#daysFilterAllLabel').html('All Opportunities');
                 $('#daysFilterOpp').html('');
@@ -115,7 +121,11 @@ function dateBetween(dateBetween, searchTerm = null, page = null, filter = 0, st
 
             }
             document.getElementById('search-icon').style.color = "green";
-        }
+        },
+    //     complete: function(){
+    // 	$('.spinner').fadeOut();
+    //         console.log('Data Loaded');
+    //     }
     });
     var i, tabcontent, tablinks;
 

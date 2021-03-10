@@ -16,7 +16,9 @@
                 LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c
                 LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
                 WHERE deleted != 1 ";
-
+                
+        $opp_id_show = private_opps();
+        $fetch_query .= " AND (opportunities.opportunity_type = 'global' OR opportunities.id IN ('".implode("','",$opp_id_show)."')) ";
         /* Check if status is set. This will be firing if we click on the cards above the table */
         if($status){
             if($status == 'ClosedWin' || $status == 'ClosedLost'){

@@ -487,26 +487,13 @@ function activityReminder()
       // montly
       elseif (strtolower($row['frequency']) == 'monthly') {
           # code...
-          $created_date = $row['updated_at'];
-          $activity_date_time = strtotime($created_date);
-          $activity_month = date("m", $activity_date_time);
-
-          if (abs((int)$now_month - (int)$activity_month) != 0){
-              $now_day = $dt->format('d');
-              $activity_day =  date("d", $activity_date_time);
-              if ( $now_day == $activity_day){
-                    activityQuery($row['activity_id'],$db );
-              }
-          }
-         	elseif(abs((int)$now_month - (int)$activity_month) == 0){
-             $now_year = $dt->format('Y');
-             $activity_year =  date("Y", $activity_date_time);
-             if ( $now_day == $activity_day && abs((int)$activity_year - (int)$now_year) != 0 ){
-                  activityQuery($row['activity_id'],$db );
-           
-           	}
-           
-         }
+            $created_date = $row['updated_at'];
+              $activity_date_time = strtotime($created_date);
+              $activity_date = date("Y-m-d", $activity_date_time);
+              $diff = date_diff(date_create($activity_date), date_create($now_date));
+              if ((int)$diff->format('%a') % 30 == 0){
+                activityQuery($row['activity_id'],$db );
+              }   
       }
    }
    

@@ -7,11 +7,11 @@ function getPendingActivityRequestCount() {
             res = JSON.parse(res)
             $('.pending-activity-request-count').html(res.count+" <i class='fa fa-angle-double-down' aria-hidden='true'></i>");
             if (res && res.count == 0) {
-                $('#click-here-text').html('');
-                $('#approve-pending-text').html('No Requests Pending For Approval');
+                $('#click-here-text-activity').html('');
+                $('#approve-pending-text-activity').html('No Requests Pending For Approval');
             } else {
-                $('#click-here-text').html('Click here');
-                $('#approve-pending-text').html('to Approve Pending request');
+                $('#click-here-text-activity').html('Click here');
+                $('#approve-pending-text-activity').html('to Approve Pending request');
             }
         }
     });
@@ -38,8 +38,10 @@ function fetchActivityByStatus(filter = 0, page = null, changeColumns = 1) {
                 $('.activity-pending-filter .filter-body').html(data.filters);
                 initSelect2();
             }
-            document.getElementById(status).style.background = "black";
-            document.getElementById(status).style.borderRadius = "4px";
+            if(document.getElementById(status)) {
+                document.getElementById(status).style.background = "black";
+                document.getElementById(status).style.borderRadius = "4px";
+            }
             $('.activity-pending-filter .filter-method').val('pending');
             $('.activity-pending-filter .filter-day').val('30');
             $('.activity-pending-filter .filter-status').val(status);
@@ -61,7 +63,7 @@ function activitydateBetween(dateBetween, searchTerm = null, page = null, filter
             page: page,
         },
         success: function (check) {
-            
+            var i, tabcontent, tablinks;
             if (dateBetween == '1200') {
                 $('#daysFilterAllLabelAct').html('All Activities');
                 $('#daysFilterAct').html('');
@@ -92,7 +94,7 @@ function activitydateBetween(dateBetween, searchTerm = null, page = null, filter
             /* Filter Values */
             $('.activity-filter .filter-method').val('activity');
             $('.activity-filter .filter-day').val(dateBetween);
-
+            debugger
             $('#activitytableContent').html(data.data);
             $('#orgActivityCount').html(data.total);
             $('#selfActivityCount').html(data.self_count);
@@ -102,7 +104,9 @@ function activitydateBetween(dateBetween, searchTerm = null, page = null, filter
             if (data.delegateDetails != '') {
                 $('#delegateActivityName').html(data.delegateDetails);
             }
-            tabContent.style.display = 'block';
+            if(tabContent) {
+                tabContent.style.display = 'block';
+            }
 
             if (dateBetween === '30') {
                 
@@ -215,15 +219,16 @@ function activityclearDeselectDropDownValue() {
 function handleTagDialog(event) {
 
     var dialog = document.getElementById('tag-activity-modal');
+    var select_dialogue = document.getElementById('activity_member_info');
     if (event === "discard") {
         dialog.style.display = "none";
+        select_dialogue.style.display = "none";
     } else if (event === "close") {
         dialog.style.display = "none";
+        select_dialogue.style.display = "none";
     } else if (event === "submit") {
         var hidden_id = document.getElementById('hidden_value').value;
         var user_id = document.getElementById('activity_hidden_multi_select').value;
-        console.log(hidden_id);
-        console.log(user_id);
         $.ajax({
             url: 'index.php?module=Home&action=set_activity_for_tag',
             type: 'POST',
@@ -232,8 +237,8 @@ function handleTagDialog(event) {
                 userIdList: user_id
             },
             success: function (data) {
-                console.log(data);
                 dialog.style.display = "none";
+                select_dialogue.style.display = "none";
             }
         });
     } else {
@@ -641,7 +646,10 @@ function activityhandleReassignmentDialog(event) {
                         });
 
                         dialog.style.display = "none";
-                        location.reload();
+                        
+                       location.reload();
+                       
+                      
                     }
                 }
             });

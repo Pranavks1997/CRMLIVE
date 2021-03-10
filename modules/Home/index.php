@@ -32,7 +32,7 @@
 </head>
 
 <body>
-
+    <!--<div class="spinner"><div class="loader"></div></div>-->
     <!-- Navbar start -->
 
     <!-- Navbar end -->
@@ -675,7 +675,6 @@
                                                         background: white;
                                                         position: absolute;
                                                         height: 105px !important;
-                                                        "> -->
                                                         display:None;
                                                         "> 
                     </select>

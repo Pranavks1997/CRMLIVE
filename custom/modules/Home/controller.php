@@ -330,12 +330,11 @@ class HomeController extends SugarController{
         global $current_user;
         $log_in_user_id = $current_user->id;
         $organiztion_non_global_count = "SELECT count(*) as org_non_global_count FROM opportunities WHERE opportunity_type = 'non_global' AND deleted != 1 AND date_entered >= now() - interval '".$day."' day";
+        $opp_id_show = private_opps();
+        $organiztion_non_global_count .= " AND opportunities.id IN ('".implode("','",$opp_id_show)."')";
         $organiztion_count_result = $GLOBALS['db']->query($organiztion_non_global_count);
         $fetch_organization_count = $GLOBALS['db']->fetchByAssoc($organiztion_count_result);
         $non_global_organization_count = $fetch_organization_count['org_non_global_count'];
-        // AND opportunities.id NOT IN(
-        //     SELECT opp_id FROM untagged_user WHERE user_id LIKE '%$log_in_user_id%'
-        //     )
         return $non_global_organization_count;
     }
 
@@ -1209,6 +1208,7 @@ class HomeController extends SugarController{
         }
         die();
     }
+    
     function getApproverNames($oppID, $status, $rejected){
         $query = "SELECT u.first_name, u.last_name, ap.date_time, ap.apply_for, ap.Approved, ap.Rejected, ap.pending FROM approval_table ap JOIN users u ON u.id = ap.approver_rejector WHERE ap.opp_id = '$oppID' AND ap.pending = 0 AND ap.Rejected = '$rejected' AND ap.apply_for = '$status'";
         $result = $GLOBALS['db']->query($query);
@@ -3225,10 +3225,15 @@ class HomeController extends SugarController{
         }
 
         if($type){
-            $query .= " AND opportunities.opportunity_type='$type' AND opportunities.id NOT IN(
-                SELECT opp_id FROM untagged_user WHERE user_id LIKE '%$log_in_user_id%'
-            )";
+            $opp_id_show = private_opps();
+            if($type == 'non_global') {
+                $query .= " opportunities.id  IN ('".implode("','",$opp_id_show)."'))";
+            }
+            else {
+                $query .= " AND opportunities.opportunity_type='$type' ";
+            }
         }
+        
 
         if($status_c == 'Closed'){
             $query .= ' AND opportunities_cstm.closure_status_c = "won" ';
@@ -3391,6 +3396,7 @@ class HomeController extends SugarController{
     
 
         //--------------------------------------for re-assignment----------------------//
+        
 public function is_reassignment_applicable($opportunity_id) {
     global $current_user;
      $db = \DBManagerFactory::getInstance();
@@ -3420,6 +3426,7 @@ public function is_reassignment_applicable($opportunity_id) {
          return (($pending_count <= 0) && ($reporting_count > 0) && ($reporting_count1 > 0));
     }
 }
+
 
 public function action_new_assigned_list(){
  try{
@@ -4283,6 +4290,88 @@ public function action_assigned_history(){
      *-----------------------------------------------------------------------------------------------------------
 
     */
+    
+    
+    //-----------------------------------------------Activity Reassignment----------------------------------------
+            
+public function is_activity_reassignment_applicable($activity_id) {
+   
+             global $current_user;
+            $log_in_user_id = $current_user->id;
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            $team_func_array = $team_func_array1 = $others_id_array = array();
+
+            $sql ="SELECT assigned_user_id FROM calls where id ='$activity_id' "; 
+            $result = $GLOBALS['db']->query($sql);
+            $row = $result->fetch_assoc();
+            $user_id = $row['assigned_user_id'];
+            
+             $sql_status ="SELECT * FROM calls_cstm where id_c='$activity_id' "; 
+            $result_status = $GLOBALS['db']->query($sql_status);
+            $row_status = $result_status->fetch_assoc();
+            $status= $row_status['status_new_c'];
+
+            $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
+            $result1 = $GLOBALS['db']->query($sql1);
+            $row1 = $result1->fetch_assoc();
+            if (strpos($row1['user_lineage'], ',') !== false) {
+                $team_func_array = explode(',',  $row1['user_lineage']);
+            }
+            $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+            $result3 = $GLOBALS['db']->query($sql3);
+            while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
+            {
+                $check_sales = $row3['teamfunction_c'];
+                $check_mc = $row3['mc_c'];
+                $check_team_lead = $row3['teamheirarchy_c'];
+
+            }
+            
+              $sql_pending ='SELECT * FROM `activity_approval_table` WHERE `acc_id`="'.$activity_id.'" AND `approval_status`="0"';
+                 $result_pending = $GLOBALS['db']->query($sql_pending);
+                $pending_count=$result_pending->num_rows;
+            
+        if($pending_count<=0){
+            
+            if($status=="Upcoming"||$status=="Apply For Completed"){
+            
+            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) ){
+                return true;
+            }
+            else if($log_in_user_id==$user_id){
+                
+                $sql_reports_id = "SELECT * FROM users WHERE reports_to_id='".$log_in_user_id."'";
+                 $result_reports_id= $GLOBALS['db']->query($sql_reports_id);
+                $reports_count=$result_reports_id->num_rows;
+                
+                if($reports_count>0){
+                     return true;
+                }
+                else{
+                    return false;
+                }
+            
+            }
+            else {
+                return false;
+            }
+            
+            }
+            else{
+                return false;
+            }
+        }else{
+             return false;
+        }
+
+    
+}
+
+
+    
+    //-------------------------------------------------------------------------------------------------------------
     public function action_getActivity(){
         try
         {
@@ -4485,6 +4574,7 @@ public function action_assigned_history(){
         }
         die();
     }
+    
     public function action_get_activity_graph(){
         $day = $_GET['dateBetween'];
         $totalCount = 0;
@@ -4492,7 +4582,7 @@ public function action_assigned_history(){
         // $leadCount = round($this->getActivityStatusCountGraph('Lead') / $totalCount * 100, 0);
         if ($totalCount > 0) {
             $UpcomingCount  = round($this->getActivityStatusCountGraph('Upcoming', $day) / $totalCount * 100, 0);
-            $DelayedCount   = round($this->getActivityStatusCountGraph('Delayed', $day) / $totalCount * 100, 0);
+            $DelayedCount   = round($this->getActivityStatusCountGraph('Overdue', $day) / $totalCount * 100, 0);
             $CompletedCount = round($this->getActivityStatusCountGraph('Completed', $day) / $totalCount * 100, 0);
         }
         $UpcomingCount      = $UpcomingCount ?? 0;
@@ -4525,6 +4615,7 @@ public function action_assigned_history(){
         echo json_encode(array("data"=>$data, "message" => "Success"));
         die;
     }
+    
     function getActivityStatusCountGraph($status = null, $day, $closure_status = null){
         $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
@@ -5461,7 +5552,7 @@ public function action_assigned_history(){
 
         $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
-        $query = "SELECT u.first_name, u.last_name, cs.user_id_c FROM calls c JOIN calls_cstm cs ON cs.id_c = c.id JOIN users u ON u.id = oc.user_id_c WHERE c.deleted != 1 AND c.date_entered >= now() - interval '1200' day AND cs.delegate_id = '$log_in_user_id' GROUP BY cs.user_id_c ";
+        $query = "SELECT u.first_name, u.last_name, cs.user_id_c FROM calls c JOIN calls_cstm cs ON cs.id_c = c.id JOIN users u ON u.id = cs.user_id_c WHERE c.deleted != 1 AND c.date_entered >= now() - interval '1200' day AND cs.delegate_id = '$log_in_user_id' GROUP BY cs.user_id_c ";
         $result = $GLOBALS['db']->query($query);
         $delegateData = array();
         while($row = $GLOBALS['db']->fetchByAssoc($result)){
@@ -5484,7 +5575,7 @@ public function action_assigned_history(){
         $GLOBALS['db'];
         $query = "SELECT count(*) as count FROM activity_approval_table ap";
         $query .= " JOIN calls c ON c.id = ap.acc_id";
-        $query .= " WHERE ap.approval_status = 0 AND c.deleted != 1 AND c.date_entered >= now() - interval '1200' day AND ap.approver = '$userID' AND ap.delegate_id = '$log_in_user_id' ";
+        $query .= " WHERE ap.approval_status = '0' AND c.deleted != 1 AND c.date_entered >= now() - interval '1200' day AND ap.approver = '$userID' AND ap.delegate_id = '$log_in_user_id' ";
         $result = $GLOBALS['db']->query($query);
         $count = $GLOBALS['db']->fetchByAssoc($result);
         return $count['count'];
@@ -5547,7 +5638,7 @@ public function action_assigned_history(){
         try {
             global $current_user;
             $log_in_user_id = $current_user->id;
-            $fetch_query = "SELECT * FROM users WHERE `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC";
+            $fetch_query = "SELECT * FROM users WHERE deleted = 0 AND `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC";
             $result = $GLOBALS['db']->query($fetch_query);
             $data = '<option value="" disabled selected>Tag User</option>';
             if ($result->num_rows > 0) {
@@ -5960,65 +6051,96 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         try{
             $accID = $_POST['accID']; 
             $data = '<span class="close-sequence-flow-activity">×</span><div class="wrap padding-tb black-color">';
-
-            $query = "SELECT name,created_by,assigned_user_id FROM calls WHERE id = '$accID'";
+  
+            $query = "SELECT name,created_by,assigned_user_id,date_entered FROM calls WHERE id = '$accID'";
             $result = $GLOBALS['db']->query($query);
             $result = $GLOBALS['db']->fetchByAssoc($result);
             $created_by = $result['created_by'];
+  
+            $updatedDate = date('d/m/Y', strtotime($result['date_entered']));
+  
             $data .= '<div class="d-block padding">
                     <h2 class="">'.$result['name'].'</h2>
                     <h3 class="gray-color">Approval/Rejection Audit Trail</h3>
                 </div>
                 <hr>';
-
-            $query1 = "select u.first_name, u.last_name, ap.acc_id, ap.updated_at, ap.apply_for,ap.assigned_by, ap.Approved, ap.Rejected, ap.pending, ap.assign from 
+  
+            $query1 = "select u.first_name, u.last_name, ap.acc_id, ap.updated_at, ap.datetime, ap.apply_for,ap.assigned_by, ap.Approved, ap.Rejected, ap.pending, ap.assign from 
             ( (select acc_id , assigned_to_id, date_time as updated_at, 'Reassignment' as apply_for, assigned_by, 0 as Approved, 0 as Rejected, 0 as pending, 1 as assign from activity_assign_flow where acc_id ='$accID'
             and (NOT (assigned_to_id ='$created_by' and status='Lead' and assigned_by ='$created_by')))
             union (select acc_id , approver as assigned_to_id,updated_at as updated_at, '' as apply_for, '' as assigned_by,0 as Approved,0 as Rejected,0 as pending, 0 as assign from activity_approval_table where acc_id ='$accID') ) ap 
             JOIN users u ON u.id = ap.assigned_to_id order by updated_at DESC LIMIT 1";
             $result = $GLOBALS['db']->query($query1);
             $result = $GLOBALS['db']->fetchByAssoc($result);
-            
-            // if($result):
-            
-                $dateExtracted = substr($result['updated_at'],0,10);
+  
+            $data .= '<div class="approved">';
+  
+  
+            $query = "
+            select u.first_name, u.last_name, ac.acc_id, ac.date_time, ac.apply_for,ac.assigned_by, ac.pending, ac.Approved, ac.Rejected, ac.assign 
+  
+            from 
+  
+            ((select acc_id , assigned_to_id, date_time, 'Reassignment' as apply_for, assigned_by,  0 as pending, 0 as Approved, 0 as Rejected, 1 as assign
+            from activity_assign_flow 
+            where acc_id ='$accID' and (NOT (assigned_to_id ='$created_by' and status='Lead' and assigned_by ='$created_by')))
+  
+            union
+  
+            (select acc_id , approver as assigned_to_id,updated_at as date_time, '' as apply_for, '' as assigned_by, if(approval_status = 0,1,0) as pending, if(approval_status = 1,1,0) as approved, if(approval_status = 2,1,0) as rejected, 1 as assign
+            from 
+            activity_approval_table where acc_id ='$accID')) as ac
+            JOIN 
+            users u ON u.id = ac.assigned_to_id ";
+            $recentUpdate = $query;
+            $recentUpdate .= " order by date_time DESC LIMIT 1";
+  
+            $result = $GLOBALS['db']->query($recentUpdate);
+            $result = $GLOBALS['db']->fetchByAssoc($result);
+            if($result):
+  
+                $full_name = $result['first_name'].' '.$result['last_name'];
+                $class = '';
+  
+                if($result['Approved'] == 1){
+                    $class = 'status-badge-green-b';
+                    $lineClass = 'green';
+                }else if($result['Rejected'] == 1){
+                    $class = 'status-badge-red-b';
+                    $lineClass = 'red';
+                } else if($result['pending'] == 1) {
+                    $class = 'status-badge-yellow-b';
+                    $result = 'yellow';
+                } else if ($result['assign'] == 1) {
+                    $class = 'status-badge-blue-b';
+                    $lineClass = 'blue';
+                    $assigned_by = $this->getUserName($result['assigned_by']);
+                    $full_name = $assigned_by. ' <i class="fa fa-arrow-right"></i> ' . $full_name;
+                }
+                $dateExtracted = substr($result['date_time'],0,10);
                 $updateDate = date('d/m/Y', strtotime($dateExtracted));
-            
-                // if($result['approval_status'] == 0){
-                //     $class = 'label-yellow';
-                //     $circleClass = 'black-color yellow-bg';
-                //     $status = 'Pending';
-                // }else if($result['approval_status'] == 1){
-                //     $class = 'label-green';
-                //     $circleClass = 'gray-color green-bg';
-                //     $status = 'Approved';
-                // }else if($result['approval_status'] == 2){
-                //     $class = 'label-red';
-                //     $circleClass = 'red-color red-bg';
-                //     $status = 'Rejected';
-                // } else if($result['assign'] == 1) {
-                //     $class = 'label-blue';
-                //     $circleClass = 'blue-color blue-bg';
-                //     $status = 'Reassigned';
-                // }
-
-            //     $data .= '<div class="row padding">
-            //             <div class="d-inline-block w-50 py-2">
-            //                 <h4 class="">Recent Update</h4>
-            //                 <h5 class="'.$class.'">'.$status.'</h5>
-            //                 <h5>'.$result['first_name'].' '.$result['last_name'].'<span class="status-badge '.$circleClass.'">'.$this->getStatusCharActivity($result['apply_for'], $accID).'</span></h5> 
-            //             </div>
-            //             <div class="d-inline-block w-50 align-self-end text-right">
-            //                 <h5 class="gray-color">'.$updateDate.'</h5>
-            //             </div>
-            //         </div>
-            //         <hr>';
-            // endif;
+  
+                $dateExtracted = substr($result['date_time'],0,10);
+                $updateDate = date('d/m/Y', strtotime($dateExtracted));
+  
+                $data .= '<div class="row padding">
+                        <div class="d-inline-block w-50 py-2">
+                            <h4 class="">Recent Update</h4>
+                            <!--<h5 class="'.$class.'">'.$this->getStatusCharActivity($result['apply_for'],$result['acc_id']).'</h5>-->
+                            <h5>'.$result['first_name'].' '.$result['last_name'].'<span class="status-badge '.$class.'">'.$this->getStatusCharActivity($result['apply_for'],$result['acc_id']).'</span></h5> 
+                        </div>
+                        <div class="d-inline-block w-50 align-self-end text-right">
+                            <h5 class="gray-color">'.$updateDate.'</h5>
+                        </div>
+                    </div>
+                    <hr>';
+            endif;
+  
             $user = $this->get_user_details_by_id($created_by);
             $first_name = $user['first_name'];
             $last_name = $user['last_name'];
             $full_name = "$first_name $last_name";
-            $data .= '<div class="approved">';
+  
             $data .= '<!-- For Lead stage -->
                     <div class="row half-padding-tb">
                         <div class="d-inline-block w-50">                            
@@ -6027,36 +6149,16 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                             <span style="font-size: 12px;margin:0">'.$full_name.'</span></h5> 
                         </div>
                         <div class="d-inline-block w-50 align-self-end text-right">
-                            <h5 class="gray-color">'.$updateDate.'</h5>
+                            <h5 class="gray-color">'.$updatedDate.'</h5>
                         </div>
                     </div>';
-            $query = "
-            select u.first_name, u.last_name, ac.acc_id, ac.date_time, ac.apply_for,ac.assigned_by, ac.pending, ac.Approved, ac.Rejected, ac.assign 
-
-            from 
-
-            ((select acc_id , assigned_to_id, date_time, 'Reassignment' as apply_for, assigned_by,  0 as pending, 0 as Approved, 0 as Rejected, 1 as assign
-            from activity_assign_flow 
-            where acc_id ='$accID' and (NOT (assigned_to_id ='$created_by' and status='Lead' and assigned_by ='$created_by')))
-
-            union
-
-            (select acc_id , approver as assigned_to_id,updated_at as date_time, '' as apply_for, '' as assigned_by, if(approval_status = 0,1,0) as pending, if(approval_status = 1,1,0) as approved, if(approval_status = 2,1,0) as rejected, 1 as assign
-            from 
-            activity_approval_table where acc_id ='$accID')) as ac
-            JOIN 
-            users u ON u.id = ac.assigned_to_id order by date_time DESC LIMIT 1";
-
-            // $query = "select u.first_name, u.last_name, ap.opp_id, ap.date_time, ap.apply_for,ap.assigned_by, ap.Approved, ap.Rejected, ap.pending, ap.assign from 
-            // ( (select opp_id , assigned_to_id, date_time, 'Reassignment' as apply_for, assigned_by, 0 as Approved, 0 as Rejected, 0 as pending, 1 as assign from assign_flow where opp_id ='$accID'
-            // and (NOT (assigned_to_id ='$created_by' and status='Lead' and assigned_by ='$created_by')))
-            // union (select opp_id , approver_rejector as assigned_to_id,updated_at as date_time, apply_for, '' as assigned_by, Approved, Rejected, pending, 0 as assign from approval_table where opp_id ='$oppID') ) ap 
-            // JOIN users u ON u.id = ap.assigned_to_id order by date_time ASC";
+  
+            $query .= " order by date_time ASC ";
             $result = $GLOBALS['db']->query($query);
             while($row = $GLOBALS['db']->fetchByAssoc($result)){
                 $full_name = $row['first_name'].' '.$row['last_name'];
                 $class = '';
-                
+  
                 if($row['Approved'] == 1){
                     $class = 'status-badge-green-b';
                     $lineClass = 'green';
@@ -6074,13 +6176,13 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 }
                 $dateExtracted = substr($row['date_time'],0,10);
                 $updateDate = date('d/m/Y', strtotime($dateExtracted));
-
+  
                 $data .= '<!-- single -->
                     <div class="row half-padding-tb">
                         <div class="d-inline-block" style="width:75%">
                             <!--<h5><span class="status-badge-green-b">'.$this->getStatusCharActivity($row['apply_for'],$row['acc_id']).'</span> 
                             <span class="line-bottom"></span> '.$this->getApproverNames($row['acc_id'], $row['apply_for'], 0).'</h5> -->
-                            
+  
                             <h5><span class="'.$class.'">'.$this->getStatusCharActivity($row['apply_for'],$row['acc_id']).'</span> 
                             <span class="line-bottom '.$lineClass.'"></span> 
                             <span style="font-size: 12px;margin:0">'.$full_name.'</span></h5> 
@@ -6091,7 +6193,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                     </div>';
             }
             $data .= '</div>';
-
+  
             $data .= '</div>';
             echo json_encode(array('data' => $data, 'query' => $query1));
         }catch(Exception $e){
@@ -6099,6 +6201,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         }
         die();
     }
+    
     function checkRecentActivityForActivity($accID){
         $query = "SELECT u.first_name, u.last_name, ap.updated_at, ap.approval_status FROM activity_approval_table ap JOIN users u ON u.id = ap.approver WHERE ap.acc_id = '$accID' AND ap.approval_status > 0 ORDER BY ap.id DESC LIMIT 1";
         $recentActivity = $GLOBALS['db']->query($query);
@@ -6115,6 +6218,75 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 break;
         }
         return $statusChar;
+    }
+    
+     public function is_activity_tagging_applicable($activity_id) {
+        try {
+
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            $team_func_array = $team_func_array1 = $others_id_array = array();
+
+            $sql ="SELECT assigned_user_id FROM calls where id ='$activity_id' "; 
+            $result = $GLOBALS['db']->query($sql);
+            $row = $result->fetch_assoc();
+            $user_id = $row['assigned_user_id'];
+
+            $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
+            $result1 = $GLOBALS['db']->query($sql1);
+            $row = $result1->fetch_assoc();
+            if (strpos($row['user_lineage'], ',') !== false) {
+                $team_func_array = explode(',',  $row['user_lineage']);
+            }
+            $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+            $result3 = $GLOBALS['db']->query($sql3);
+            while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
+            {
+                $check_sales = $row3['teamfunction_c'];
+                $check_mc = $row3['mc_c'];
+                $check_team_lead = $row3['teamheirarchy_c'];
+
+            }
+
+            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) ){
+                return true;
+            }
+            else {
+                return false;
+            }
+
+
+        }catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+
+    public function is_activity_reminder_applicable($activity_id){
+        try{
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            $sql ="SELECT * FROM calls  where assigned_user_id= '$log_in_user_id' AND id='$activity_id'";
+            $result = $GLOBALS['db']->query($sql);
+            if ($result){
+                if ($result->num_rows > 0){
+                    return True;
+                }
+                else {
+                    return false;
+                }
+            }
+        }catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
     }
     
     

@@ -1,9 +1,9 @@
 <div style="display: flex;flex-direction: column;width: 220px;background-color: white;border-radius: 5px;padding: 10px;width: 170px;">
     <div style="color: grey; padding: 5px" id="click-pending-request">
-        <b id="click-here-text" style="float: left; padding-right: 5px;">
+        <b id="click-here-text-activity" style="float: left; padding-right: 5px;">
                 Click here
         </b>
-        <p id="approve-pending-text">No Requests Pending For Approval</p>
+        <p id="approve-pending-text-activity">No Requests Pending For Approval</p>
     </div>
 
     <div style="display: flex;margin-top: 10px;justify-content: space-around;" class="pending-button-class">

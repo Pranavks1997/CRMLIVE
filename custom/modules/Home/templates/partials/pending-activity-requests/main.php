@@ -1,6 +1,8 @@
 <ul class="table-ul" style="display: flex; align-items: center;height: 50px;justify-content: space-between;">
     <div class="option_tabs_container">
-        
+        <li class="tableHeader-Content option_tab_header_btn" id="activityComplete" for="option_one">
+            <div class="prt-top-headings" style="font-size:1.6rem;font-weight: 900">Pending Activity Approvals</div>        
+        </li>
     </div>
     <div>
         <li class="search-box-block">

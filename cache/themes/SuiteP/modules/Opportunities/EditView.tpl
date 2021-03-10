@@ -414,7 +414,7 @@ onclick="SUGAR.clearRelateField(this.form, '{$fields.rfporeoipublished_c.name}-i
 <div class="col-xs-12 col-sm-8 edit-view-field " type="file" field="filename"  >
 {counter name="panelFieldCount" print=false}
 
-<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=hLpXo64gLFMTSjy5wptbOw'></script>
+<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=y7rtC1UBkByE3ofvvxmcvw'></script>
 {if !empty($fields.filename.value) }
 {assign var=showRemove value=true}
 {else}
