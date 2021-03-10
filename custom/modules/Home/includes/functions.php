@@ -105,7 +105,6 @@
             $fetch_query .= " AND calls.name LIKE '%$searchTerm%' ";
 
         /* Checking if any filters are set or not */
-        
         /* End filter check */
         if($_GET['filter'])
             $fetch_query .= getActivityFilterQuery();

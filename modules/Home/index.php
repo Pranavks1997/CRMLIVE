@@ -32,7 +32,7 @@
 </head>
 
 <body>
-    <!--<div class="spinner"><div class="loader"></div></div>-->
+    <div class="spinner"><div class="loader"></div></div>
     <!-- Navbar start -->
 
     <!-- Navbar end -->
@@ -604,9 +604,9 @@
             <span class="filterclose" onclick="openActivityFilterDialog('close')" style="cursor:pointer;font-size:18px;float: right;">&times;</span>
             <form class="activity-filter">
 
-                <input type="hidden" class="filter-type" name="type" value="" />
-                <input type="hidden" class="filter-value" name="value" value="" />
-                <input type="hidden" class="filter-status" name="status" value="" />
+                <input type="hidden" class="filter-type" name="filter-type" value="" />
+                <input type="hidden" class="filter-value" name="filter-value" value="" />
+                <input type="hidden" class="filter-status" name="filter-status" value="" />
 
                 <h2 class="filterheading">Filter</h2>
                 <p class="filtersubhead">Fill out the following details</p>

@@ -97,9 +97,9 @@ $sugar_config = array (
   array (
     'db_host_name' => 'localhost',
     'db_host_instance' => 'SQLEXPRESS',
-    'db_user_name' => 'xelp',
-    'db_password' => 'xelp@123',
-    'db_name' => 'development',
+    'db_user_name' => 'root',
+    'db_password' => '',
+    'db_name' => 'suite_crm_new',
     'db_type' => 'mysql',
     'db_port' => '',
     'db_manager' => 'MysqliManager',

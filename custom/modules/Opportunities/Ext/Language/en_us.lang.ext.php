@@ -18,11 +18,11 @@ $mod_strings['LBL_OPPORTUNITIES_USERS_2_FROM_USERS_TITLE'] = 'Untag Users';
 
 
 
-$mod_strings[‘LBL_FILE_MIME_TYPE’] = 'File Mime Type';
+// $mod_strings[‘LBL_FILE_MIME_TYPE’] = 'File Mime Type';
 
-$mod_strings[‘LBL_FILE_URL’] = 'File URL';
+// $mod_strings[‘LBL_FILE_URL’] = 'File URL';
 
-$mod_strings[‘LBL_FILENAME’] = 'UploadFile';
+// $mod_strings[‘LBL_FILENAME’] = 'UploadFile';
 
 
 ?>

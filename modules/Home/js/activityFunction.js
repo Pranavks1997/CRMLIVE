@@ -110,14 +110,18 @@ function activitydateBetween(dateBetween, searchTerm = null, page = null, filter
                 tabContent.style.display = 'block';
             }
 
-            if (dateBetween === '30') {
+            /*if (dateBetween === '30') {
                 
             } else if (dateBetween === '60') {
                 document.getElementsByClassName('btn-30-days').style.color = "#c2c2c2";
             } else {
                 document.getElementsByClassName('btn-30-days').style.color = "#c2c2c2";
             }
-            document.getElementById('search-icon').style.color = "green";
+            document.getElementById('search-icon').style.color = "green";*/
+        },
+        complete: function(){
+    	    $('.spinner').fadeOut();
+            console.log('Data Loaded');
         }
     });
     
@@ -457,6 +461,7 @@ function changeAddLabel(evnt) {
 }
 
 function activityFilterHelper(ref) {
+    var day = Cookies.get('day') ? Cookies.get('day') : 30;
     if (ref == 'activity-filter') {
         var filterMethod = $('.activity-filter .filter-method').val();
         var filterDay = $('.activity-filter .filter-day').val();
@@ -469,7 +474,7 @@ function activityFilterHelper(ref) {
     }
 
     if (ref == 'activity-filter') {
-        activitydateBetween(30, '', '', 1, filterStatus, filterType, '', 0);
+        activitydateBetween(day, '', '', 1, filterStatus, filterType, '', 0);
     } else {
         fetchActivityByStatus(1, '', 0);
     }
@@ -676,6 +681,9 @@ function activityhandleReassignmentDialog(event) {
                        
                       
                     }
+                },
+                complete: function(){
+                    activitydateBetween(Cookies.get("day"));
                 }
             });
             break;
@@ -750,13 +758,17 @@ $(document).on('click', '.remove-activity-delegate', function () {
 });
 
 (function ($) {
-    $(window).on('load', function () {
+    
+    $(document).on('click', '#two-tab', function () {
+        var day = Cookies.get('day') ? Cookies.get('day') : 30;
+        $('.spinner').fadeIn();
         fetchActivityByStatus();
         getPendingActivityRequestCount();
-        activitydateBetween('30');
-        getActivityGraph('30');
+        activitydateBetween(day);
+        getActivityGraph(day);
         getDelegateMembersActivity();
     });
+
     $('.btn-days-filter').on('click', function () {
         var day = $(this).data('day');
         activitydateBetween(day);

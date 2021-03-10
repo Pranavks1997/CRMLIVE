@@ -5077,7 +5077,7 @@ public function is_activity_reassignment_applicable($activity_id) {
         }
         $html .= '</select></div>';
 
-        $html .= '<div class="form-group">
+        /*$html .= '<div class="form-group">
                 <span class="primary-responsibilty-filter-head">Related to</span>
                 <select class="activity-filter" name="filter-related_to">
                     <option value="">Select</option>
@@ -5085,7 +5085,7 @@ public function is_activity_reassignment_applicable($activity_id) {
                     <option value="Opportunities">Opportunities</option>
                     <option value="Calls">Calls</option>
                     <option value="Document">Document</option>
-                </select></div>';
+                </select></div>';*/
 
         $columns = $this->ActivityColumns();
         foreach($columns['default'] as $key => $c){
@@ -5106,6 +5106,17 @@ public function is_activity_reassignment_applicable($activity_id) {
     function ActivityfilterFields($type, $columnFilter){
         $data = '';
         switch($columnFilter){
+            case 'related_to':
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Related to</span>
+                    <select class="activity-filter-related-to" name="filter-related_to_new">
+                        <option value="">Select</option>
+                        <option value="Accounts">Accounts</option>
+                        <option value="Opportunities">Opportunities</option>
+                        <option value="Calls">Activity</option>
+                        <option value="Document">Document</option>
+                    </select></div>';
+                break;
             case 'status':
                 $data = '<div class="form-group">
                     <span class="primary-responsibilty-filter-head">Status</span>
@@ -5113,7 +5124,7 @@ public function is_activity_reassignment_applicable($activity_id) {
                         <option value="">Select</option>
                         <option value="Upcoming">Upcoming</option>
                         <option value="Completed">Completed</option>
-                        <option value="Delayed">Delayed</option>
+                        <option value="Overdue">Overdue</option>
                     </select>
                     
                 </div>';
@@ -5835,12 +5846,9 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         	    $log_in_user_id = $current_user->id;
         	    $assigned_name=$_POST['assigned_name'];  // fetch the name of assignee here
         	   $activity_id=$_POST['opp_id'];  // fetch the activity id to update the table
-        	 //  $tagged_user_frontend=$_POST[''];// fetch tagged users id from frontend in comma separated string
-        	   
-        	   
-        	  
-        	   
-        	   $tagged_user_frontend_array=explode(',',$tagged_user_frontend);
+        	//  $tagged_user_frontend=$_POST[''];// fetch tagged users id from frontend in comma separated string
+        	           	   
+        	   //$tagged_user_frontend_array=explode(',',$tagged_user_frontend);
         	   
         	   
         	   $tagged_users_array = array();
@@ -6079,8 +6087,65 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                     <h3 class="gray-color">Approval/Rejection Audit Trail</h3>
                 </div>
                 <hr>';
+
+            /* Approval Query */
+            $approvalQuery = 
+                "SELECT 
+                    'approval' as type, '' as apply_for, ap.acc_id, u.first_name, u.last_name, ap.acc_id, ap.approval_status, ap.updated_at as date_time, UNIX_TIMESTAMP(ap.updated_at) as timestamp
+                FROM 
+                    activity_approval_table ap
+                JOIN
+                    users u ON u.id = ap.delegate_id OR u.id = approver
+                WHERE 
+                    ap.acc_id ='$accID'
+                ORDER BY ap.updated_at ASC
+            ";
+            $result = $GLOBALS['db']->query($approvalQuery);
+            $ApprovalData = $this->mysql_fetch_assoc_all($result);
+
+            /* Call Audits */
+            $auditQuery = 
+                "SELECT 
+                    'audit' as type, u.first_name, ca.parent_id as acc_id, u.last_name, ca.field_name, ca.before_value_string, ca.after_value_string as apply_for, ca.date_created as date_time, UNIX_TIMESTAMP(ca.date_created) as timestamp
+                FROM 
+                    calls_audit ca
+                JOIN 
+                    calls c ON c.id = ca.parent_id
+                JOIN
+                    users u ON u.id = c.assigned_user_id
+                WHERE 
+                    ca.parent_id ='$accID' AND ca.field_name = 'status_new_c' AND ca.after_value_string != 'Completed'
+                ORDER BY ca.date_created ASC
+            ";
+            $result = $GLOBALS['db']->query($auditQuery);
+            $auditData = $this->mysql_fetch_assoc_all($result);
+
+            $sequenceArray = array_merge($ApprovalData, $auditData);
+
+            /* assign flow */
+            $assignFlowQuery = 
+                "SELECT 
+                    'reassignment' as type, 'Reassignment' as apply_for, ra.acc_id, u.first_name, u.last_name, ra.assigned_by, ra.assigned_to_id, ra.date_time, UNIX_TIMESTAMP(ra.date_time) as timestamp
+                FROM 
+                    activity_assign_flow ra
+                JOIN
+                    users u ON u.id = ra.assigned_to_id
+                WHERE 
+                    ra.acc_id ='$accID'
+                ORDER BY ra.date_time ASC
+            ";
+            $result = $GLOBALS['db']->query($assignFlowQuery);
+            $assignFlowData = $this->mysql_fetch_assoc_all($result);
+
+            $sequenceArray = array_merge($sequenceArray, $assignFlowData);
+            
+            $sortArray = usort($sequenceArray, function($a, $b) {
+                return $a['timestamp'] <=> $b['timestamp'];
+            });
+            //print_r( $sequenceArray );
+            //die;
   
-            $query1 = "select u.first_name, u.last_name, ap.acc_id, ap.updated_at, ap.datetime, ap.apply_for,ap.assigned_by, ap.Approved, ap.Rejected, ap.pending, ap.assign from 
+            /*$query1 = "select u.first_name, u.last_name, ap.acc_id, ap.updated_at, ap.datetime, ap.apply_for,ap.assigned_by, ap.Approved, ap.Rejected, ap.pending, ap.assign from 
             ( (select acc_id , assigned_to_id, date_time as updated_at, 'Reassignment' as apply_for, assigned_by, 0 as Approved, 0 as Rejected, 0 as pending, 1 as assign from activity_assign_flow where acc_id ='$accID'
             and (NOT (assigned_to_id ='$created_by' and status='Lead' and assigned_by ='$created_by')))
             union (select acc_id , approver as assigned_to_id,updated_at as updated_at, '' as apply_for, '' as assigned_by,0 as Approved,0 as Rejected,0 as pending, 0 as assign from activity_approval_table where acc_id ='$accID') ) ap 
@@ -6136,13 +6201,43 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 $updateDate = date('d/m/Y', strtotime($dateExtracted));
   
                 $dateExtracted = substr($result['date_time'],0,10);
+                $updateDate = date('d/m/Y', strtotime($dateExtracted));*/
+            if(!empty($sequenceArray)):
+                $recentUpdate = end( $sequenceArray );
+                $full_name = $recentUpdate['first_name'].' '.$recentUpdate['last_name'];
+                $class = '';
+  
+                if( $recentUpdate['type'] == 'approval' && $recentUpdate['approval_status'] == 1 ){
+                    $class = 'status-badge-green-b';
+                    $lineClass = 'green';
+                }else if( $recentUpdate['type'] == 'approval' && $recentUpdate['approval_status'] == 2 ){
+                    $class = 'status-badge-red-b';
+                    $lineClass = 'red';
+                } else if( $recentUpdate['type'] == 'approval' && $recentUpdate['approval_status'] == 0 ) {
+                    $class = 'status-badge-yellow-b';
+                    $result = 'yellow';
+                } else if ($recentUpdate['type'] == 'reassignment') {
+                    $class = 'status-badge-blue-b';
+                    $lineClass = 'blue';
+                    $assigned_by = $this->getUserName($recentUpdate['assigned_by']);
+                    $full_name = $assigned_by. ' <i class="fa fa-arrow-right"></i> ' . $full_name;
+                }else if ($recentUpdate['type'] == 'audit' && $recentUpdate['apply_for'] == 'Upcoming'){
+                    $class = 'status-badge-orange-b';
+                    $lineClass = 'orange';
+                }else{
+                    $class = 'status-badge-gray-b';
+                    $lineClass = 'gray';
+                }
+                $dateExtracted = substr($recentUpdate['date_time'],0,10);
                 $updateDate = date('d/m/Y', strtotime($dateExtracted));
   
+                $dateExtracted = substr($recentUpdate['date_time'],0,10);
+                $updateDate = date('d/m/Y', strtotime($dateExtracted));
                 $data .= '<div class="row padding">
                         <div class="d-inline-block w-50 py-2">
                             <h4 class="">Recent Update</h4>
-                            <!--<h5 class="'.$class.'">'.$this->getStatusCharActivity($result['apply_for'],$result['acc_id']).'</h5>-->
-                            <h5>'.$result['first_name'].' '.$result['last_name'].'<span class="status-badge '.$class.'">'.$this->getStatusCharActivity($result['apply_for'],$result['acc_id']).'</span></h5> 
+                            <!--<h5 class="'.$class.'">'.$this->getStatusCharActivity($recentUpdate['apply_for'],$recentUpdate['acc_id']).'</h5>-->
+                            <h5>'.$recentUpdate['first_name'].' '.$recentUpdate['last_name'].'<span class="status-badge '.$class.'">'.$this->getStatusCharActivity($recentUpdate['apply_for'],$recentUpdate['acc_id']).'</span></h5> 
                         </div>
                         <div class="d-inline-block w-50 align-self-end text-right">
                             <h5 class="gray-color">'.$updateDate.'</h5>
@@ -6155,7 +6250,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $first_name = $user['first_name'];
             $last_name = $user['last_name'];
             $full_name = "$first_name $last_name";
-  
+            $data .= '<div class="approved">';
             $data .= '<!-- For Lead stage -->
                     <div class="row half-padding-tb">
                         <div class="d-inline-block w-50">                            
@@ -6167,8 +6262,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                             <h5 class="gray-color">'.$updatedDate.'</h5>
                         </div>
                     </div>';
-  
-            $query .= " order by date_time ASC ";
+            
+            /*$query .= " order by date_time ASC ";
             $result = $GLOBALS['db']->query($query);
             while($row = $GLOBALS['db']->fetchByAssoc($result)){
                 $full_name = $row['first_name'].' '.$row['last_name'];
@@ -6207,10 +6302,67 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                         </div>
                     </div>';
             }
+            $data .= '</div>';*/
+
+            foreach( $sequenceArray as $row ){
+                $full_name = $row['first_name'].' '.$row['last_name'];
+                $class = '';
+                $lineClass = '';
+                if( $row['type'] == 'approval' && $row['approval_status'] == 1 ){
+                    
+                    $class = 'status-badge-green-b';
+                    $lineClass = 'green';
+
+                }else if( $row['type'] == 'approval' && $row['approval_status'] == 2 ){
+                    
+                    $class = 'status-badge-red-b';
+                    $lineClass = 'red';
+
+                } else if($row['type'] == 'approval' && $row['approval_status'] == 0 ) {
+                    
+                    $class = 'status-badge-yellow-b';
+                    $lineClass = 'yellow';
+
+                } else if ($row['type'] == 'reassignment' && $row['type'] == 'reassignment' ) {
+                    
+                    $class = 'status-badge-blue-b';
+                    $lineClass = 'blue';
+                    $assigned_by = $this->getUserName($row['assigned_by']);
+                    $full_name = $assigned_by. ' <i class="fa fa-arrow-right"></i> ' . $full_name;
+
+                }else if ($row['type'] == 'audit' && $row['apply_for'] == 'Upcoming'){
+                    
+                    $class = 'status-badge-orange-b';
+                    $lineClass = 'orange';
+
+                }else{
+                    
+                    $class = 'status-badge-gray-b';
+                    $lineClass = 'gray';
+
+                }
+                $dateExtracted = substr($row['date_time'],0,10);
+                $updateDate = date('d/m/Y', strtotime($dateExtracted));
+  
+                $data .= '<!-- single -->
+                    <div class="row half-padding-tb">
+                        <div class="d-inline-block" style="width:75%">
+                            <!--<h5><span class="status-badge-green-b">'.$this->getStatusCharActivity($row['apply_for'],$row['acc_id']).'</span> 
+                            <span class="line-bottom"></span> '.$this->getApproverNames($row['acc_id'], $row['apply_for'], 0).'</h5> -->
+  
+                            <h5><span class="'.$class.'">'.$this->getStatusCharActivity($row['apply_for'],$row['acc_id']).'</span> 
+                            <span class="line-bottom '.$lineClass.'"></span> 
+                            <span style="font-size: 12px;margin:0">'.$full_name.'</span></h5> 
+                        </div>
+                        <div class="d-inline-block align-self-end text-right" style="width:25%">
+                            <h5 class="gray-color">'.$updateDate.'</h5>
+                        </div>
+                    </div>';
+            }
             $data .= '</div>';
   
             $data .= '</div>';
-            echo json_encode(array('data' => $data, 'query' => $query1));
+            echo json_encode(array('data' => $data, 'array' => $sequenceArray));
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
@@ -6227,6 +6379,12 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         switch ($status){
             case 'Reassignment':
                 $statusChar = 'R';
+                break;
+            case 'Upcoming':
+                $statusChar = 'U';
+                break;
+            case 'Overdue':
+                $statusChar = 'OD';
                 break;
             default:
                 $statusChar = 'AC';

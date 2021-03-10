@@ -572,8 +572,8 @@
             $name           = $_GET['filter-name'] ?? '';
             $fetch_query    .= " AND calls.name LIKE '%$name%' ";
         }
-        if( isset( $_GET['filter'] ) && isset( $_GET['filter-related_to'] ) && $_GET['filter-related_to'] ){
-            $relatedTo      = $_GET['filter-related_to'] ?? '';
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-related_to_new'] ) && $_GET['filter-related_to_new'] ){
+            $relatedTo      = $_GET['filter-related_to_new'] ?? '';
             $fetch_query    .= " AND calls.parent_type = '$relatedTo' ";
         }
         if( isset( $_GET['filter'] ) && isset( $_GET['filter-status'] ) && $_GET['filter-status'] ){

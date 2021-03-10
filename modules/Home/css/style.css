@@ -2006,6 +2006,7 @@ input {
 .status-display .status-badge-yellow-b{position: relative; display: inline-block; width: 22px; height: 22px; border-radius: 50%; margin-right: 8px; font-size: 8px; vertical-align: middle; line-height: 22px; text-align: center; border: solid 1px #e91e63; background-color: #ffea00; color: #e91e63;}
 .status-display .status-badge-blue-b{position: relative; display: inline-block; width: 22px; height: 22px; border-radius: 50%; margin-right: 8px; font-size: 8px; vertical-align: middle; line-height: 22px; text-align: center; border: solid 1px #0000ff; background-color: #ccccff; color: #0000ff;}
 .status-display .status-badge-gray-b{position: relative; display: inline-block; width: 22px; height: 22px; border-radius: 50%; margin-right: 8px; font-size: 8px; vertical-align: middle; line-height: 22px; text-align: center; border: solid 1px #999999; background-color: #e1e1e1; color: #999999;}
+.status-display .status-badge-orange-b{position: relative; display: inline-block; width: 22px; height: 22px; border-radius: 50%; margin-right: 8px; font-size: 8px; vertical-align: middle; line-height: 22px; text-align: center; border: solid 1px orange; background-color: #ffffff; color: orange;}
 .status-display .red-bg{background-color: #ffe3e3;}
 .status-display .green-bg{background-color: #e9fce6;}
 .status-display .yellow-bg{background-color: #ebc034;}

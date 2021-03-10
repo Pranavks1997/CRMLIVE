@@ -4,8 +4,8 @@
     >
 
         <?php 
-            $type = $_GET['type']; 
-            $status = $_GET['status'];
+            $type = $_GET['type'] ?? ''; 
+            $status = $_GET['status'] ?? '';
         ?>   
         <li class="tableHeader-Content">
             <h2 style="margin: 10px; color: white; font-size: 2.4rem; font-weight: bold; ">Activities </h2>
