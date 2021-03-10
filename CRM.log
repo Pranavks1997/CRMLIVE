@@ -16066,3 +16066,80 @@ Wed Mar 10 20:54:01 2021 [28413][1][FATAL] Job b6d68aee-0387-3702-f035-6048e4fb0
 Wed Mar 10 20:54:01 2021 [28413][1][FATAL] Job bbdbe86e-381d-fc98-042e-6048e44055de (Activity Test) failed in CRON run
 Wed Mar 10 20:55:02 2021 [28490][1][FATAL] Job 22f3fbd0-4458-2107-6a38-6048e43dbaf6 (Run Email Reminder Notifications) failed in CRON run
 Wed Mar 10 20:55:02 2021 [28490][1][FATAL] Job 281b96b4-5e70-cd03-3fc2-6048e45f37e4 (Activity Test) failed in CRON run
+Wed Mar 10 20:56:01 2021 [28574][1][FATAL] Job 83decacd-cec3-4271-407a-6048e59d8b46 (Run Email Reminder Notifications) failed in CRON run
+Wed Mar 10 20:56:01 2021 [28574][1][FATAL] Job 88f89289-c6e6-46db-690b-6048e50d65ed (Activity Test) failed in CRON run
+Wed Mar 10 20:57:02 2021 [28717][1][FATAL] Job e534f192-5229-b99a-20d9-6048e56cf940 (Run Email Reminder Notifications) failed in CRON run
+Wed Mar 10 20:57:02 2021 [28717][1][FATAL] Job e96a0552-1b6a-5434-cc57-6048e5b47981 (Activity Test) failed in CRON run
+Wed Mar 10 20:58:01 2021 [28785][1][FATAL] Job 5393930b-331b-b8d0-a6c4-6048e5bbea93 (Run Email Reminder Notifications) failed in CRON run
+Wed Mar 10 20:58:01 2021 [28785][1][FATAL] Job 5a0519a5-437c-d5b2-fcca-6048e546ffd9 (Activity Test) failed in CRON run
+Wed Mar 10 20:59:01 2021 [28869][1][FATAL] Job b380a944-0fdc-dd92-c593-6048e5e3ba93 (Run Email Reminder Notifications) failed in CRON run
+Wed Mar 10 20:59:01 2021 [28869][1][FATAL] Job b8a729f3-e22f-6af7-27f8-6048e58fbae8 (Activity Test) failed in CRON run
+Wed Mar 10 20:59:48 2021 [19614][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 20:59:48 2021 [19614][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: SELECT row_count FROM approval_table WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' OR ap.delegate_id = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' ) AND ap.apply_for = 'qualifylead' ORDER BY row_count DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.Approved' in 'where clause'
+Wed Mar 10 20:59:48 2021 [19614][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 20:59:48 2021 [19614][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: SELECT row_count FROM approval_table WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' OR ap.delegate_id = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' ) AND ap.apply_for = 'qualifyOpportunity' ORDER BY row_count DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.Approved' in 'where clause'
+Wed Mar 10 20:59:48 2021 [19614][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 20:59:48 2021 [19614][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: SELECT row_count FROM approval_table WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' OR ap.delegate_id = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' ) AND ap.apply_for = 'qualifyDpr' ORDER BY row_count DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.Approved' in 'where clause'
+Wed Mar 10 20:59:48 2021 [19614][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 20:59:48 2021 [19614][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: SELECT row_count FROM approval_table WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' OR ap.delegate_id = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' ) AND ap.apply_for = 'qualifyBid' ORDER BY row_count DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.Approved' in 'where clause'
+Wed Mar 10 20:59:48 2021 [19614][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 20:59:48 2021 [19614][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: SELECT row_count FROM approval_table WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' OR ap.delegate_id = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' ) AND ap.apply_for = 'closure' ORDER BY row_count DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.Approved' in 'where clause'
+Wed Mar 10 20:59:48 2021 [19614][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 20:59:48 2021 [19614][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: SELECT row_count FROM approval_table WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' OR ap.delegate_id = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' ) AND ap.apply_for = 'Dropping' ORDER BY row_count DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.Approved' in 'where clause'
+Wed Mar 10 20:59:48 2021 [24624][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 20:59:48 2021 [24624][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: SELECT row_count FROM approval_table WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' OR ap.delegate_id = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' ) AND ap.apply_for = 'qualifylead' ORDER BY row_count DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.Approved' in 'where clause'
+Wed Mar 10 20:59:48 2021 [24624][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 20:59:48 2021 [24624][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: SELECT row_count FROM approval_table WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' OR ap.delegate_id = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' ) AND ap.apply_for = 'qualifyOpportunity' ORDER BY row_count DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.Approved' in 'where clause'
+Wed Mar 10 20:59:48 2021 [24624][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 20:59:48 2021 [24624][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: SELECT row_count FROM approval_table WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' OR ap.delegate_id = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' ) AND ap.apply_for = 'qualifyDpr' ORDER BY row_count DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.Approved' in 'where clause'
+Wed Mar 10 20:59:48 2021 [24624][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 20:59:48 2021 [24624][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: SELECT row_count FROM approval_table WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' OR ap.delegate_id = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' ) AND ap.apply_for = 'qualifyBid' ORDER BY row_count DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.Approved' in 'where clause'
+Wed Mar 10 20:59:48 2021 [24624][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 20:59:48 2021 [24624][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: SELECT row_count FROM approval_table WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' OR ap.delegate_id = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' ) AND ap.apply_for = 'closure' ORDER BY row_count DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.Approved' in 'where clause'
+Wed Mar 10 20:59:48 2021 [24624][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 20:59:48 2021 [24624][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: SELECT row_count FROM approval_table WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' OR ap.delegate_id = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' ) AND ap.apply_for = 'Dropping' ORDER BY row_count DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.Approved' in 'where clause'
+Wed Mar 10 20:59:48 2021 [24624][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 20:59:48 2021 [24624][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: SELECT row_count FROM approval_table 
+                    WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 
+                    AND ( ap.approver_rejector = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' OR ap.delegate_id = '8e2e705e-792d-a2af-30b0-5fed78ac2d15' ) 
+                    AND ap.apply_for = 'qualifylead' 
+                    ORDER BY row_count 
+                    DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.Approved' in 'where clause'
+Wed Mar 10 21:00:02 2021 [28980][1][FATAL] Job 1ee86281-d264-b5e0-e17e-6048e59ce272 (Run Email Reminder Notifications) failed in CRON run
+Wed Mar 10 21:00:02 2021 [28980][1][FATAL] Job 2649e9ba-d181-ce8e-cd6b-6048e5740a1c (Activity Test) failed in CRON run
+Wed Mar 10 21:00:09 2021 [28948][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 21:00:09 2021 [28948][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: select u.first_name, u.last_name, ap.acc_id, ap.updated_at, ap.datetime, ap.apply_for,ap.assigned_by, ap.Approved, ap.Rejected, ap.pending, ap.assign from 
+            ( (select acc_id , assigned_to_id, date_time as updated_at, 'Reassignment' as apply_for, assigned_by, 0 as Approved, 0 as Rejected, 0 as pending, 1 as assign from activity_assign_flow where acc_id ='97a1effd-3b45-1846-ce48-6045b1c8fcf5'
+            and (NOT (assigned_to_id ='7dd625f1-3b28-993a-93fa-5fed8726fe79' and status='Lead' and assigned_by ='7dd625f1-3b28-993a-93fa-5fed8726fe79')))
+            union (select acc_id , approver as assigned_to_id,updated_at as updated_at, '' as apply_for, '' as assigned_by,0 as Approved,0 as Rejected,0 as pending, 0 as assign from activity_approval_table where acc_id ='97a1effd-3b45-1846-ce48-6045b1c8fcf5') ) ap 
+            JOIN users u ON u.id = ap.assigned_to_id order by updated_at DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.datetime' in 'field list'
+Wed Mar 10 21:00:15 2021 [28949][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 21:00:15 2021 [28949][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: select u.first_name, u.last_name, ap.acc_id, ap.updated_at, ap.datetime, ap.apply_for,ap.assigned_by, ap.Approved, ap.Rejected, ap.pending, ap.assign from 
+            ( (select acc_id , assigned_to_id, date_time as updated_at, 'Reassignment' as apply_for, assigned_by, 0 as Approved, 0 as Rejected, 0 as pending, 1 as assign from activity_assign_flow where acc_id ='ae8da5ec-4b46-ea5e-34de-6048568e3384'
+            and (NOT (assigned_to_id ='eda3f747-4163-6799-c2bb-5fe1ac8de8a2' and status='Lead' and assigned_by ='eda3f747-4163-6799-c2bb-5fe1ac8de8a2')))
+            union (select acc_id , approver as assigned_to_id,updated_at as updated_at, '' as apply_for, '' as assigned_by,0 as Approved,0 as Rejected,0 as pending, 0 as assign from activity_approval_table where acc_id ='ae8da5ec-4b46-ea5e-34de-6048568e3384') ) ap 
+            JOIN users u ON u.id = ap.assigned_to_id order by updated_at DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.datetime' in 'field list'
+Wed Mar 10 21:00:18 2021 [28949][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 21:00:18 2021 [28949][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: select u.first_name, u.last_name, ap.acc_id, ap.updated_at, ap.datetime, ap.apply_for,ap.assigned_by, ap.Approved, ap.Rejected, ap.pending, ap.assign from 
+            ( (select acc_id , assigned_to_id, date_time as updated_at, 'Reassignment' as apply_for, assigned_by, 0 as Approved, 0 as Rejected, 0 as pending, 1 as assign from activity_assign_flow where acc_id ='97a1effd-3b45-1846-ce48-6045b1c8fcf5'
+            and (NOT (assigned_to_id ='7dd625f1-3b28-993a-93fa-5fed8726fe79' and status='Lead' and assigned_by ='7dd625f1-3b28-993a-93fa-5fed8726fe79')))
+            union (select acc_id , approver as assigned_to_id,updated_at as updated_at, '' as apply_for, '' as assigned_by,0 as Approved,0 as Rejected,0 as pending, 0 as assign from activity_approval_table where acc_id ='97a1effd-3b45-1846-ce48-6045b1c8fcf5') ) ap 
+            JOIN users u ON u.id = ap.assigned_to_id order by updated_at DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.datetime' in 'field list'
+Wed Mar 10 21:00:20 2021 [28949][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 21:00:20 2021 [28949][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: select u.first_name, u.last_name, ap.acc_id, ap.updated_at, ap.datetime, ap.apply_for,ap.assigned_by, ap.Approved, ap.Rejected, ap.pending, ap.assign from 
+            ( (select acc_id , assigned_to_id, date_time as updated_at, 'Reassignment' as apply_for, assigned_by, 0 as Approved, 0 as Rejected, 0 as pending, 1 as assign from activity_assign_flow where acc_id ='d796b2c1-54b2-1820-e36c-60420d38f47d'
+            and (NOT (assigned_to_id ='8e2e705e-792d-a2af-30b0-5fed78ac2d15' and status='Lead' and assigned_by ='8e2e705e-792d-a2af-30b0-5fed78ac2d15')))
+            union (select acc_id , approver as assigned_to_id,updated_at as updated_at, '' as apply_for, '' as assigned_by,0 as Approved,0 as Rejected,0 as pending, 0 as assign from activity_approval_table where acc_id ='d796b2c1-54b2-1820-e36c-60420d38f47d') ) ap 
+            JOIN users u ON u.id = ap.assigned_to_id order by updated_at DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.datetime' in 'field list'
+Wed Mar 10 21:00:28 2021 [19614][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 21:00:28 2021 [19614][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: select u.first_name, u.last_name, ap.acc_id, ap.updated_at, ap.datetime, ap.apply_for,ap.assigned_by, ap.Approved, ap.Rejected, ap.pending, ap.assign from 
+            ( (select acc_id , assigned_to_id, date_time as updated_at, 'Reassignment' as apply_for, assigned_by, 0 as Approved, 0 as Rejected, 0 as pending, 1 as assign from activity_assign_flow where acc_id ='f2463f91-37c3-7702-a0fe-60465cb66e2a'
+            and (NOT (assigned_to_id ='21e91b20-51f6-fc80-6897-5fed7f541505' and status='Lead' and assigned_by ='21e91b20-51f6-fc80-6897-5fed7f541505')))
+            union (select acc_id , approver as assigned_to_id,updated_at as updated_at, '' as apply_for, '' as assigned_by,0 as Approved,0 as Rejected,0 as pending, 0 as assign from activity_approval_table where acc_id ='f2463f91-37c3-7702-a0fe-60465cb66e2a') ) ap 
+            JOIN users u ON u.id = ap.assigned_to_id order by updated_at DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.datetime' in 'field list'
+Wed Mar 10 21:00:39 2021 [24809][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL] Mysqli_query failed.
+Wed Mar 10 21:00:39 2021 [24809][8e2e705e-792d-a2af-30b0-5fed78ac2d15][FATAL]  Query Failed: select u.first_name, u.last_name, ap.acc_id, ap.updated_at, ap.datetime, ap.apply_for,ap.assigned_by, ap.Approved, ap.Rejected, ap.pending, ap.assign from 
+            ( (select acc_id , assigned_to_id, date_time as updated_at, 'Reassignment' as apply_for, assigned_by, 0 as Approved, 0 as Rejected, 0 as pending, 1 as assign from activity_assign_flow where acc_id ='d796b2c1-54b2-1820-e36c-60420d38f47d'
+            and (NOT (assigned_to_id ='8e2e705e-792d-a2af-30b0-5fed78ac2d15' and status='Lead' and assigned_by ='8e2e705e-792d-a2af-30b0-5fed78ac2d15')))
+            union (select acc_id , approver as assigned_to_id,updated_at as updated_at, '' as apply_for, '' as assigned_by,0 as Approved,0 as Rejected,0 as pending, 0 as assign from activity_approval_table where acc_id ='d796b2c1-54b2-1820-e36c-60420d38f47d') ) ap 
+            JOIN users u ON u.id = ap.assigned_to_id order by updated_at DESC LIMIT 1: MySQL error 1054: Unknown column 'ap.datetime' in 'field list'

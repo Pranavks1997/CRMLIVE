@@ -38,9 +38,9 @@
                         <?php endif; ?>
                     </button>
                     <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="getActivitySequenceFlow('<?php echo $row['id']; ?>')">
-                        <?php if($this->checkRecentActivityForActivity($row['id'])): ?>
+                        <?php // if($this->checkRecentActivityForActivity($row['id'])): ?>
                             <img id="search-icon" src="modules/Home/assets/Frame-12.svg" alt="svg" style="color: #333333;"/>
-                        <?php endif; ?>
+                        <?php // endif; ?>
                     </button>
                     <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="fetchTagDialog('<?php echo $row['id']; ?>')">
                         <?php if ($this->is_activity_tagging_applicable($row['id'])) { ?>
