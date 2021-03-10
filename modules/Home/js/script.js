@@ -16,26 +16,30 @@ jQuery(document).ready(function($){
         var rangeGroup = $(this).attr('range_1'),
         minBtn = $(this).parent().children('.min'),
         maxBtn = $(this).parent().children('.max'),
-        range_min = $(this).parent().children('.range_min'),
-        range_max = $(this).parent().children('.range_max'),
+        isUSD = $(this).parent()[0].classList.contains('usd'),
+        currency = isUSD ? ' Mn' : ' Cr';
+        difference = isUSD ? 5 : 10;
+        range_min = $(this).parent().parent().find('.range_min'),
+        range_max = $(this).parent().parent().find('.range_max'),
+
         minVal = parseInt($(minBtn).val()),
         maxVal = parseInt($(maxBtn).val()),
-        origin = $(this).context.className;
-        if (origin === 'min lowerVal' && minVal >= (maxVal - 10)) {
-            $(minBtn).val(maxVal - 10);
+        origin = $(this).className;
+        if (origin === 'min lowerVal' && minVal >= (maxVal - difference)) {
+            $(minBtn).val(maxVal - difference);
         }
         var minVal = parseInt($(minBtn).val());
-        $(range_min).html(addSeparator(minVal * 1) + ' Cr');
+        $(range_min).html(addSeparator(minVal * 1) + currency);
 
 
-        if (origin === 'max upperVal' && (maxVal - 10) < minVal) {
-            $(maxBtn).val(10 + minVal);
+        if (origin === 'max upperVal' && (maxVal - difference) < minVal) {
+            $(maxBtn).val(difference + minVal);
         }
         var maxVal = parseInt($(maxBtn).val());
-        $(range_max).html(addSeparator(maxVal * 1) + ' Cr');
+        $(range_max).html(addSeparator(maxVal * 1) + currency);
     }
-
-    $('input[type="range"]').on('input', rangeInputChangeEventHandler);
+    $(document).on('input', 'input[type="range"]', rangeInputChangeEventHandler);
+    // $('input[type="range"]').on('input', rangeInputChangeEventHandler);
     /* end amount range slider */
 
     /* date picker start date */

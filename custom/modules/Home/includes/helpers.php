@@ -241,8 +241,9 @@
                 if (strpos($res, 'andTeam') !== false) {
                     $arr = explode('andTeam',$res,0);
                     $arr[0] = chop($arr[0],"andTeam");
+                    $a = $arr[0];
                     $fetch_query .= " opportunities.assigned_user_id IN 
-                    (SELECT id FROM users WHERE reports_to_id = '$arr[0]' OR id = '$arr[0]')";
+                    (SELECT id_c FROM users_cstm WHERE user_lineage LIKE '%$a%' OR id_c = '$a') ";
                 } else {
                     $fetch_query .= " opportunities.assigned_user_id = '$res' ";
                 }
@@ -591,7 +592,21 @@
         }
         if( isset( $_GET['filter'] ) && isset( $_GET['filter-assigned_to_c'] ) && $_GET['filter-assigned_to_c'] ){
             $assignedTo      = $_GET['filter-assigned_to_c'] ?? '';
-            $fetch_query    .= " AND calls.assigned_user_id = '$assignedTo' ";
+            $fetch_query .= " AND (";
+            foreach($assignedTo as $key => $res){
+                if($key)
+                    $fetch_query .= " OR ";
+                if (strpos($res, 'andTeam') !== false) {
+                    $arr = explode('andTeam',$res,0);
+                    $arr[0] = chop($arr[0],"andTeam");
+                    $a = $arr[0];
+                    $fetch_query .= " calls.assigned_user_id IN 
+                    (SELECT id_c FROM users_cstm WHERE user_lineage LIKE '%$a%' OR id_c = '$a') ";
+                } else {
+                    $fetch_query .= " calls.assigned_user_id = '$res' ";
+                }
+            }
+            $fetch_query .= " )";
         }
         if( isset( $_GET['filter'] ) && isset( $_GET['filter-new_current_status_c'] ) && $_GET['filter-new_current_status_c'] ){
             $comments       = $_GET['filter-new_current_status_c'] ?? '';

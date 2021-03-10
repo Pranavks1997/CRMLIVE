@@ -48,12 +48,14 @@ function fetchActivityByStatus(filter = 0, page = null, changeColumns = 1) {
         }
     });
 }
+
 function activitydateBetween(dateBetween, searchTerm = null, page = null, filter = 0, changeColumns = 1) {
     Cookies.set('day', dateBetween, { expires: 1 });
     if (changeColumns) // reset columns
         getDefaultActivityColumns('activity');
 
     var tabContent = document.getElementById('tab_30days_content');
+    
     $.ajax({
         url: 'index.php?module=Home&action=getActivity&' + $('.activity-settings-form').serialize() + '&' + $('.activity-filter').serialize() + '&filter=' + filter,
         type: 'GET',
@@ -118,6 +120,7 @@ function activitydateBetween(dateBetween, searchTerm = null, page = null, filter
             document.getElementById('search-icon').style.color = "green";
         }
     });
+    
     var i, tabcontent, tablinks;
 
 }
@@ -647,7 +650,28 @@ function activityhandleReassignmentDialog(event) {
 
                         dialog.style.display = "none";
                         
-                       location.reload();
+    
+    
+                    // $.ajax({
+                    //     url: 'index.php?module=Home&action=getActivity',
+                    //     type: 'GET',
+                    //     data: {
+                           
+                    //     },
+                    //     success: function (data) {
+                    //         alert(total);
+                    //         $('.table-header-row').html(data.result);
+                           
+                    //     }
+                    // });
+    
+   
+
+                    
+                      
+                    //  $('#two-tab').trigger('click');
+                      
+                    //  location.reload();
                        
                       
                     }

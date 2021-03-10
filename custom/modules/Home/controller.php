@@ -89,8 +89,12 @@ class HomeController extends SugarController{
                 if ($teamHierarchy == 'team_lead') {
                     $user_manager = $log_in_user_id;
                 } else {
-                    $user_manager = explode(",", $s['user_lineage']);
-                    $user_manager = end($user_manager);
+                    if (strpos($s['user_lineage'], ',') !== false) {
+                        $user_manager = explode(",", $s['user_lineage']);
+                        $user_manager = end($user_manager);
+                    } else {
+                        $user_manager = $s['user_lineage'];
+                    }
                 }
             }
             $teamCountQuery = "SELECT count(*) as totalCount from opportunities 
@@ -4473,6 +4477,7 @@ public function is_activity_reassignment_applicable($activity_id) {
                 'fetched_by_status'         =>  $fetch_by_status,
                 'columnFilter'              => $columnFilterHtml,
                 'filters'                   => $filters
+            
             ));
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
@@ -4901,18 +4906,17 @@ public function is_activity_reassignment_applicable($activity_id) {
         $fields = array();
 
         $default = array(
-            'name'                  => 'Activity',
+            'name'                  => 'Activity Name',
             'related_to'            => 'Related To',
             'status'                => 'Status',
-            'activity_date_c'       => 'Activity Date',
-            'date_modified'         => 'Last Updated',
+            'activity_date_c'       => 'Activity Due Date',
             'assigned_to_c'         => 'Assigned To',
         );
 
         $default2 = array(
             'new_current_status_c'          => 'Comments',
-            'description'                   => 'Summary of Interaction',
-            'new_key_action_c'              => 'Key Actionable / Next Steps identified from the Interaction',
+            // 'description'                   => 'Summary of Interaction',
+            // 'new_key_action_c'              => 'Key Actionable / Next Steps identified from the Interaction',
             'next_date_c'                   => 'Next Follow-Up / Interaction Date',
             'name_of_person_c'              => 'Name of Person Contacted'
 
@@ -4941,7 +4945,7 @@ public function is_activity_reassignment_applicable($activity_id) {
         $data = '';
         switch($column){
             case 'name':
-                $data .= '<th class="table-header">Activity</th>';
+                $data .= '<th class="table-header">Activity Name</th>';
                 break; 
             case 'related_to':
                 $data .= '<th class="table-header">Related To</th>';
@@ -4950,7 +4954,7 @@ public function is_activity_reassignment_applicable($activity_id) {
                 $data .= '<th class="table-header">Status</th>';
                 break;
             case 'activity_date_c':
-                $data .= '<th class="table-header">Activity Date</th>';
+                $data .= '<th class="table-header">Activity Due Date</th>';
                 break;
             case 'date_modified':
                 $data .= '<th class="table-header">Last Modified</th>';
@@ -5003,9 +5007,19 @@ public function is_activity_reassignment_applicable($activity_id) {
                 $data .= '<span class="activity-type d-block">'. $row['type_of_interaction_c'] .'</span></td>';
                 break; 
             case 'related_to':
+                $parent_type = '';
                 $data .= '<td class="table-data">';
                 $data .= '<h2 class="activity-related-name">'. getActivityRelatedTo($row['parent_type'], $row['parent_id']) .'</h2>';
-                $data .= '<span class="activity-related-type">'. $row['parent_type'] .'</span></td>';
+                if( strtolower($row['parent_type']) == 'calls'){
+                    $parent_type = 'Activity';
+                }
+                elseif( strtolower($row['parent_type']) == 'accounts'){
+                    $parent_type = 'Department';
+                }
+                else{
+                    $parent_type = $row['parent_type'];
+                }
+                $data .= '<span class="activity-related-type">'. $parent_type .'</span></td>';
                 break;
             case 'status':
                 $data .= '<td class="table-data">'. $row['status_new_c'] .'</td>';
@@ -5029,7 +5043,7 @@ public function is_activity_reassignment_applicable($activity_id) {
                 $data .= '<td class="table-data">'. $row['new_key_action_c'] .'</td>';
                 break;
             case 'next_date_c':
-                $data .= '<td class="table-data">'. $row['next_date_c'] .'</td>';
+                $data .= '<td class="table-data">'. date( 'd/m/Y', strtotime($row['next_date_c'] ) ) .'</td>';
                 break;
             case 'name_of_person_c':
                 $data .= '<td class="table-data">'. $row['name_of_person_c'] .'</td>';
@@ -5123,7 +5137,7 @@ public function is_activity_reassignment_applicable($activity_id) {
                 $users = $this->get_users_with_team_options();
                 $data = '<div class="form-group">
                     <span class="primary-responsibilty-filter-head">Assigned To</span>
-                    <select class="select2" name="filter-assigned_to_c" id="" multiple>
+                    <select class="select2" name="filter-assigned_to_c[]" id="" multiple>
                         '.$users.'
                     </select>
                 </div>';
@@ -5320,13 +5334,22 @@ public function is_activity_reassignment_applicable($activity_id) {
             $response['self_count'] = executeCountQuery($self_count);
 
             $user_manager = '';
-            $result2 = $this->getDbData('users_cstm', 'user_lineage', "id_c = '$log_in_user_id' ");
+            $result2 = $this->getDbData('users_cstm', '*', "id_c = '$log_in_user_id' ");
             foreach($result2 as $s){
-                $user_manager = explode(",", $s['user_lineage']);
-                $user_manager = end($user_manager);
+                $teamHierarchy = $s['teamheirarchy_c'];
+                if ($teamHierarchy == 'team_lead') {
+                    $user_manager = $log_in_user_id;
+                } else {
+                    if (strpos($s['user_lineage'], ',') !== false) {
+                        $user_manager = explode(",", $s['user_lineage']);
+                        $user_manager = end($user_manager);
+                    } else {
+                        $user_manager = $s['user_lineage'];
+                    }
+                }
             }
 
-            $team_count = "SELECT count(*) as totalCount from calls LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c WHERE  deleted != 1 AND date_entered >= now() - interval '".$day."' day AND assigned_user_id IN (SELECT id_c FROM users_cstm WHERE user_lineage LIKE '%$user_manager%')";
+            $team_count = "SELECT count(*) as totalCount from calls LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c WHERE  deleted != 1 AND date_entered >= now() - interval '".$day."' day AND assigned_user_id IN (SELECT id_c FROM users_cstm WHERE user_lineage LIKE '%$user_manager%' OR id_c='$user_manager')";
             $response['team'] = executeCountQuery($team_count);
 
             $sql4 = "SELECT count(DISTINCT(id)) as totalCount FROM `calls` WHERE deleted != 1 AND date_entered >= now() - interval '$day' day ";
