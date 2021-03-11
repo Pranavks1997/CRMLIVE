@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-03-11 00:21:03
+<?php /* Smarty version 2.6.31, created on 2021-03-11 18:27:03
          compiled from cache/themes/SuiteP/modules/Calls/SearchForm_basic.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', 'cache/themes/SuiteP/modules/Calls/SearchForm_basic.tpl', 31, false),array('function', 'math', 'cache/themes/SuiteP/modules/Calls/SearchForm_basic.tpl', 32, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Calls/SearchForm_basic.tpl', 38, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Calls/SearchForm_basic.tpl', 114, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', 'cache/themes/SuiteP/modules/Calls/SearchForm_basic.tpl', 31, false),array('function', 'math', 'cache/themes/SuiteP/modules/Calls/SearchForm_basic.tpl', 32, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Calls/SearchForm_basic.tpl', 38, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Calls/SearchForm_basic.tpl', 64, false),)), $this); ?>
 
 <input type='hidden' id="orderByInput" name='orderBy' value=''/>
 <input type='hidden' id="sortOrder" name='sortOrder' value=''/>
@@ -56,64 +56,6 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', '
     maxlength='50' 
     value='<?php echo $this->_tpl_vars['value']; ?>
 ' title=''      accesskey='9'  >
-		</div>
-		<div class="search-clear"></div>
-	</div>
-    
-      
-	<?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
-
-	<?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['basicMaxColumns'],'assign' => 'modVal'), $this);?>
-
-	<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 search_fields_basic">
-		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
-						<label for='current_user_only_basic' ><?php echo smarty_function_sugar_translate(array('label' => 'LBL_CURRENT_USER_FILTER','module' => 'Calls'), $this);?>
-</label>
-					</div>
-		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-8">
-		
-<?php if (strval ( $this->_tpl_vars['fields']['current_user_only_basic']['value'] ) == '1' || strval ( $this->_tpl_vars['fields']['current_user_only_basic']['value'] ) == 'yes' || strval ( $this->_tpl_vars['fields']['current_user_only_basic']['value'] ) == 'on'): ?> 
-<?php $this->assign('checked', 'checked="checked"'); ?>
-<?php else: ?>
-<?php $this->assign('checked', ""); ?>
-<?php endif; ?>
-<input type="hidden" name="<?php echo $this->_tpl_vars['fields']['current_user_only_basic']['name']; ?>
-" value="0"> 
-<input type="checkbox" id="<?php echo $this->_tpl_vars['fields']['current_user_only_basic']['name']; ?>
-" 
-name="<?php echo $this->_tpl_vars['fields']['current_user_only_basic']['name']; ?>
-" 
-value="1" title='' tabindex="" <?php echo $this->_tpl_vars['checked']; ?>
- >
-		</div>
-		<div class="search-clear"></div>
-	</div>
-    
-      
-	<?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
-
-	<?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['basicMaxColumns'],'assign' => 'modVal'), $this);?>
-
-	<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 search_fields_basic">
-		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
-						<label for='favorites_only_basic' ><?php echo smarty_function_sugar_translate(array('label' => 'LBL_FAVORITES_FILTER','module' => 'Calls'), $this);?>
-</label>
-					</div>
-		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-8">
-		
-<?php if (strval ( $this->_tpl_vars['fields']['favorites_only_basic']['value'] ) == '1' || strval ( $this->_tpl_vars['fields']['favorites_only_basic']['value'] ) == 'yes' || strval ( $this->_tpl_vars['fields']['favorites_only_basic']['value'] ) == 'on'): ?> 
-<?php $this->assign('checked', 'checked="checked"'); ?>
-<?php else: ?>
-<?php $this->assign('checked', ""); ?>
-<?php endif; ?>
-<input type="hidden" name="<?php echo $this->_tpl_vars['fields']['favorites_only_basic']['name']; ?>
-" value="0"> 
-<input type="checkbox" id="<?php echo $this->_tpl_vars['fields']['favorites_only_basic']['name']; ?>
-" 
-name="<?php echo $this->_tpl_vars['fields']['favorites_only_basic']['name']; ?>
-" 
-value="1" title='' tabindex="" <?php echo $this->_tpl_vars['checked']; ?>
- >
 		</div>
 		<div class="search-clear"></div>
 	</div>

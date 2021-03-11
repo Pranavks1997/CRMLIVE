@@ -335,15 +335,15 @@
                         {capture name=extraparams assign=extraparams}parentTab={$group}{/capture}
                         <li class="topnav {if $smarty.foreach.groupList.last}all{/if}">
                             <span class="notCurrentTabLeft">&nbsp;</span><span id="check_activity" class="notCurrentTab">
-                            <a href="#" id="grouptab_{$smarty.foreach.groupList.index}" class="dropdown-toggle grouptab opp_hide">Activity</a>
+                            <a href="#" id="grouptab_{$smarty.foreach.groupList.index}" class="dropdown-toggle grouptab opp_hide">Activities</a>
                             <span class="notCurrentTabRight">&nbsp;</span>
                             <ul class="dropdown-menu" role="menu"  {if $smarty.foreach.groupList.last} class="All"{/if}>
                           
                                     <li>
-                                       <a href="index.php?module=Calls&action=index">View Activity</a>
+                                       <a href="index.php?module=Calls&action=index">View Activities</a>
                                     </li>
                                     <li>
-                                       <a  href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DCalls%26action%3DEditView%26return_module%3DCalls%26return_action%3DDetailView">Create Activity</a>
+                                       <a  href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DCalls%26action%3DEditView%26return_module%3DCalls%26return_action%3DDetailView">Create Activities</a>
                                     </li>
                               
                                 {foreach from=$modules.extra item=submodulename key=submodule}

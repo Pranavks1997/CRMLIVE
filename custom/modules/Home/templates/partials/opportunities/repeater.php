@@ -1,4 +1,4 @@
-        <?php 
+<?php 
             global $current_user;
             $log_in_user_id = $current_user->id;
             // $test = isset($_GET['isCritical']) ? $_GET['isCritical'] : false;
@@ -22,11 +22,11 @@
                 $tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
                 $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
                 $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
-                $tagged_users = $tagged_user_query_fetch_row && $tagged_user_query_fetch_row['user_id'];
+                $tagged_users = ($tagged_user_query_fetch_row['user_id']) ? $tagged_user_query_fetch_row['user_id'] : '';
         ?>
         <tr>
             <td class="table-data"><a href="index.php?action=DetailView&module=Opportunities&record=<?php echo $row['id']?>"><?php echo $row['name'];
-            if ((strpos($tagged_users, $log_in_user_id) !== false)) { ?>
+            if ((strpos($tagged_users, $log_in_user_id) !== false) && $log_in_user_id != 1) { ?>
             <i class="fa fa-tag" style="font-size: 12px; color:green"></i>
             <?php } ?></a></td>
             <td class="table-data"><?php echo $full_name . $reports_to_full_name?></td>
@@ -95,7 +95,7 @@
                     <?php endif ?>
                     <?php if (($this->is_critical_applicable($log_in_user_id, $row['id'], 'yes'))&& ($check_mc=='yes')) : ?>
                         <button class="tag1 deselectBtn" id="criticalBtn<?php echo $row['id'];?>"  style="margin-right: 1px;width: 15px;" onclick="criticalStatusChanged('<?php echo $row['id']; ?>')">
-                            <i id="<?php echo $row['id'];?>" style="color: red; cursor: pointer; margin-left: -11px;" class="fa fa-exclamation-triangle search-icon" aria-hidden="true"> </i>
+                            <i id="<?php echo $row['id'];?>" style="color: red; cursor: pointer;" class="fa fa-exclamation-triangle search-icon" aria-hidden="true"> </i>
                         </button>
                     <?php endif ?>
                 </div>

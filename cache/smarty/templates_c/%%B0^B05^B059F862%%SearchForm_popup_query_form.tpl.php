@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-03-10 10:47:12
+<?php /* Smarty version 2.6.31, created on 2021-03-11 18:31:53
          compiled from cache/themes/SuiteP/modules/Calls/SearchForm_popup_query_form.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', 'cache/themes/SuiteP/modules/Calls/SearchForm_popup_query_form.tpl', 27, false),array('function', 'math', 'cache/themes/SuiteP/modules/Calls/SearchForm_popup_query_form.tpl', 28, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Calls/SearchForm_popup_query_form.tpl', 34, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Calls/SearchForm_popup_query_form.tpl', 69, false),array('function', 'sugar_getimage', 'cache/themes/SuiteP/modules/Calls/SearchForm_popup_query_form.tpl', 264, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Calls/SearchForm_popup_query_form.tpl', 345, false),array('modifier', 'default', 'cache/themes/SuiteP/modules/Calls/SearchForm_popup_query_form.tpl', 161, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', 'cache/themes/SuiteP/modules/Calls/SearchForm_popup_query_form.tpl', 27, false),array('function', 'math', 'cache/themes/SuiteP/modules/Calls/SearchForm_popup_query_form.tpl', 28, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Calls/SearchForm_popup_query_form.tpl', 34, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Calls/SearchForm_popup_query_form.tpl', 97, false),array('function', 'sugar_getimage', 'cache/themes/SuiteP/modules/Calls/SearchForm_popup_query_form.tpl', 388, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Calls/SearchForm_popup_query_form.tpl', 469, false),array('modifier', 'default', 'cache/themes/SuiteP/modules/Calls/SearchForm_popup_query_form.tpl', 257, false),)), $this); ?>
 
 <script>
     <?php echo '
@@ -52,6 +52,37 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', '
     maxlength='50' 
     value='<?php echo $this->_tpl_vars['value']; ?>
 ' title=''      accesskey='9'  >
+                            </div>
+        </div>
+    </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
+        <div class="">
+            
+              
+
+            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
+
+            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
+
+
+            <div class="col-xs-12">
+                                <label for='parent_type_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_PARENT_TYPE','module' => 'Calls'), $this);?>
+</label>
+                            </div>
+            <div class="form-item">
+                                
+<?php if (strlen ( $this->_tpl_vars['fields']['parent_type_advanced']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['parent_type_advanced']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['parent_type_advanced']['value']); ?>
+<?php endif; ?>  
+<input type='text' name='<?php echo $this->_tpl_vars['fields']['parent_type_advanced']['name']; ?>
+' 
+    id='<?php echo $this->_tpl_vars['fields']['parent_type_advanced']['name']; ?>
+' size='30' 
+    maxlength='255' 
+    value='<?php echo $this->_tpl_vars['value']; ?>
+' title=''      >
                             </div>
         </div>
     </div>
@@ -169,6 +200,79 @@ YAHOO.util.Event.onContentReady(
 
 
             <div class="col-xs-12">
+                                <label for='type_of_interaction_c_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_TYPE_OF_INTERACTION','module' => 'Calls'), $this);?>
+</label>
+                            </div>
+            <div class="form-item">
+                                
+<?php echo smarty_function_html_options(array('id' => 'type_of_interaction_c_advanced','name' => 'type_of_interaction_c_advanced[]','options' => $this->_tpl_vars['fields']['type_of_interaction_c_advanced']['options'],'size' => '6','class' => 'templateGroupChooser','multiple' => '1','selected' => $this->_tpl_vars['fields']['type_of_interaction_c_advanced']['value']), $this);?>
+
+                            </div>
+        </div>
+    </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
+        <div class="">
+            
+              
+
+            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
+
+            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
+
+
+            <div class="col-xs-12">
+                                <label for='status_new_c_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_STATUS_NEW','module' => 'Calls'), $this);?>
+</label>
+                            </div>
+            <div class="form-item">
+                                
+<?php if (strlen ( $this->_tpl_vars['fields']['status_new_c_advanced']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['status_new_c_advanced']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['status_new_c_advanced']['value']); ?>
+<?php endif; ?>  
+<input type='text' name='<?php echo $this->_tpl_vars['fields']['status_new_c_advanced']['name']; ?>
+' 
+    id='<?php echo $this->_tpl_vars['fields']['status_new_c_advanced']['name']; ?>
+' size='30' 
+    maxlength='255' 
+    value='<?php echo $this->_tpl_vars['value']; ?>
+' title=''      >
+                            </div>
+        </div>
+    </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
+        <div class="">
+            
+              
+
+            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
+
+            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
+
+
+            <div class="col-xs-12">
+                                <label for='assigned_user_id_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_ASSIGNED_TO','module' => 'Calls'), $this);?>
+</label>
+                            </div>
+            <div class="form-item">
+                                
+<?php echo smarty_function_html_options(array('id' => 'assigned_user_id_advanced','name' => 'assigned_user_id_advanced[]','options' => $this->_tpl_vars['fields']['assigned_user_id_advanced']['options'],'size' => '6','class' => 'templateGroupChooser','multiple' => '1','selected' => $this->_tpl_vars['fields']['assigned_user_id_advanced']['value']), $this);?>
+
+                            </div>
+        </div>
+    </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
+        <div class="">
+            
+              
+
+            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
+
+            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
+
+
+            <div class="col-xs-12">
                                 <label for='activity_date_c_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_ACTIVITY_DATE','module' => 'Calls'), $this);?>
 </label>
                             </div>
@@ -194,6 +298,57 @@ ifFormat : "<?php echo $this->_tpl_vars['CALENDAR_FORMAT']; ?>
 daFormat : "<?php echo $this->_tpl_vars['CALENDAR_FORMAT']; ?>
 ",
 button : "<?php echo $this->_tpl_vars['fields']['activity_date_c_advanced']['name']; ?>
+_trigger",
+singleClick : true,
+dateStr : "<?php echo $this->_tpl_vars['date_value']; ?>
+",
+startWeekday: <?php echo ((is_array($_tmp=@$this->_tpl_vars['CALENDAR_FDOW'])) ? $this->_run_mod_handler('default', true, $_tmp, '0') : smarty_modifier_default($_tmp, '0')); ?>
+,
+step : 1,
+weekNumbers:false
+}
+);
+</script>
+
+                            </div>
+        </div>
+    </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
+        <div class="">
+            
+              
+
+            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
+
+            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
+
+
+            <div class="col-xs-12">
+                                <label for='date_entered_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_DATE_ENTERED','module' => 'Calls'), $this);?>
+</label>
+                            </div>
+            <div class="form-item">
+                                
+<span class="dateTime">
+<?php $this->assign('date_value', $this->_tpl_vars['fields']['date_entered_advanced']['value']); ?>
+<input class="date_input" autocomplete="off" type="text" name="<?php echo $this->_tpl_vars['fields']['date_entered_advanced']['name']; ?>
+" id="<?php echo $this->_tpl_vars['fields']['date_entered_advanced']['name']; ?>
+" value="<?php echo $this->_tpl_vars['date_value']; ?>
+" title=''  tabindex='0'    size="11" maxlength="10" >
+    <button type="button" id="<?php echo $this->_tpl_vars['fields']['date_entered_advanced']['name']; ?>
+_trigger" class="btn btn-danger" onclick="return false;"><span class="suitepicon suitepicon-module-calendar" alt="<?php echo $this->_tpl_vars['APP']['LBL_ENTER_DATE']; ?>
+"></span></button>
+</span>
+<script type="text/javascript">
+Calendar.setup ({
+inputField : "<?php echo $this->_tpl_vars['fields']['date_entered_advanced']['name']; ?>
+",
+form : "popup_query_form",
+ifFormat : "<?php echo $this->_tpl_vars['CALENDAR_FORMAT']; ?>
+",
+daFormat : "<?php echo $this->_tpl_vars['CALENDAR_FORMAT']; ?>
+",
+button : "<?php echo $this->_tpl_vars['fields']['date_entered_advanced']['name']; ?>
 _trigger",
 singleClick : true,
 dateStr : "<?php echo $this->_tpl_vars['date_value']; ?>
@@ -271,34 +426,23 @@ weekNumbers:false
 
 
             <div class="col-xs-12">
-                                <label for='status_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_STATUS','module' => 'Calls'), $this);?>
+                                <label for='name_of_person_c_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_NAME_OF_PERSON','module' => 'Calls'), $this);?>
 </label>
                             </div>
             <div class="form-item">
                                 
-<?php echo smarty_function_html_options(array('id' => 'status_advanced','name' => 'status_advanced[]','options' => $this->_tpl_vars['fields']['status_advanced']['options'],'size' => '6','class' => 'templateGroupChooser','multiple' => '1','selected' => $this->_tpl_vars['fields']['status_advanced']['value']), $this);?>
-
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
-
-            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
-
-
-            <div class="col-xs-12">
-                                <label for='assigned_user_id_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_ASSIGNED_TO','module' => 'Calls'), $this);?>
-</label>
-                            </div>
-            <div class="form-item">
-                                
-<?php echo smarty_function_html_options(array('id' => 'assigned_user_id_advanced','name' => 'assigned_user_id_advanced[]','options' => $this->_tpl_vars['fields']['assigned_user_id_advanced']['options'],'size' => '6','class' => 'templateGroupChooser','multiple' => '1','selected' => $this->_tpl_vars['fields']['assigned_user_id_advanced']['value']), $this);?>
-
+<?php if (strlen ( $this->_tpl_vars['fields']['name_of_person_c_advanced']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['name_of_person_c_advanced']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['name_of_person_c_advanced']['value']); ?>
+<?php endif; ?>  
+<input type='text' name='<?php echo $this->_tpl_vars['fields']['name_of_person_c_advanced']['name']; ?>
+' 
+    id='<?php echo $this->_tpl_vars['fields']['name_of_person_c_advanced']['name']; ?>
+' size='30' 
+    maxlength='255' 
+    value='<?php echo $this->_tpl_vars['value']; ?>
+' title=''      >
                             </div>
         </div>
     </div>

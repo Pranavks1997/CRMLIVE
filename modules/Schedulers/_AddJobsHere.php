@@ -542,8 +542,15 @@ function activityDate(){
     		if($result->num_rows>0){
 				while($rows = $GLOBALS['db']->fetchByAssoc($result) )
 				{
+				    $acc_id=$rows['acc_id'];
 					$update_calls_query="UPDATE calls_cstm SET status_new_c ='Overdue' WHERE id_c='".$rows['acc_id']."'";
 					$res_update = $db->query($update_calls_query);
+					require_once 'data/BeanFactory.php';
+                    require_once 'include/utils.php';
+                    $id = create_guid();
+                    $created_date= date("Y-m-d H:i:s", time());
+            		$sql_insert_audit = 'INSERT INTO `calls_audit`(`id`, `parent_id`, `date_created`, `created_by`, `field_name`, `data_type`, `before_value_string`, `after_value_string`, `before_value_text`, `after_value_text`) VALUES ("'.$id.'","'.$acc_id.'","'.$created_date.'","Schedular","status_new_c","varchar","Apply For Completed","Overdue"," "," ")';
+            		$result_audit = $GLOBALS['db']->query($sql_insert_audit);
 					$update_activity_query="UPDATE activity_approval_table SET approval_status ='3' WHERE acc_id='".$rows['acc_id']."'";
 					$res_calls_update = $db->query($update_activity_query);
 				}
@@ -553,8 +560,15 @@ function activityDate(){
     		if($result1->num_rows>0){
 				while($rows = $GLOBALS['db']->fetchByAssoc($result1) )
 				{
+				    $acc_id=$rows['acc_id'];
 				    $update_calls_query1="UPDATE calls_cstm SET status_new_c ='Overdue' WHERE id_c='".$rows['acc_id']."'";
 					$res_update1 = $db->query($update_calls_query1);
+					require_once 'data/BeanFactory.php';
+                    require_once 'include/utils.php';
+                    $id = create_guid();
+                    $created_date= date("Y-m-d H:i:s", time());
+            		$sql_insert_audit = 'INSERT INTO `calls_audit`(`id`, `parent_id`, `date_created`, `created_by`, `field_name`, `data_type`, `before_value_string`, `after_value_string`, `before_value_text`, `after_value_text`) VALUES ("'.$id.'","'.$acc_id.'","'.$created_date.'","Schedular","status_new_c","varchar","Apply For Completed","Overdue"," "," ")';
+            		$result_audit = $GLOBALS['db']->query($sql_insert_audit);
 				
 				}
     		}
@@ -564,8 +578,15 @@ function activityDate(){
     		if($result2->num_rows>0){
 				while($rows = $GLOBALS['db']->fetchByAssoc($result2) )
 				{
+				    $acc_id=$rows['id_c'];
 				    $update_calls_query2="UPDATE calls_cstm SET status_new_c ='Overdue' WHERE id_c='".$rows['id_c']."'";
 					$res_update2 = $db->query($update_calls_query2);
+					require_once 'data/BeanFactory.php';
+                    require_once 'include/utils.php';
+                    $id = create_guid();
+                    $created_date= date("Y-m-d H:i:s", time());
+            		$sql_insert_audit = 'INSERT INTO `calls_audit`(`id`, `parent_id`, `date_created`, `created_by`, `field_name`, `data_type`, `before_value_string`, `after_value_string`, `before_value_text`, `after_value_text`) VALUES ("'.$id.'","'.$acc_id.'","'.$created_date.'","Schedular","status_new_c","varchar","Upcoming","Overdue"," "," ")';
+            		$result_audit = $GLOBALS['db']->query($sql_insert_audit);
 				
 				}
     		}

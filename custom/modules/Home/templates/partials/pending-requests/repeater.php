@@ -37,7 +37,10 @@
                 $delegated_u_id         = $row['delegate_id'];
         ?>
         <tr>
-            <td class="table-data"><?php echo $name; ?>
+            <td class="table-data">
+                <a href="index.php?action=DetailView&module=Opportunities&record=<?php echo $row['id']?>">
+                    <?php echo $name; ?>
+                </a>
                 <?php if (strpos($delegated_u_id, $log_in_user_id) !== false): ?>
                     <img src="modules/Home/assets/Delegate-icon.svg" style="width: 25px; color:green" />
                 <?php endif; ?>

@@ -4,7 +4,7 @@ $( document ).ready(function() {
       $('#check_activity a').hide();
       //console.log('sad');
  }, 10);
-    
+     $('.pagination').hide();
     $('#duplicate_button').hide();
     
     //---------------hiding in detail_view----------------------

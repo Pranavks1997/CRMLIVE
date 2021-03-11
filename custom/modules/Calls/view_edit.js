@@ -19,7 +19,7 @@ $( document ).ready(function() {
          $('#assigned_to_c').attr("disabled",true);
     }
     
-    
+       $('#audit_trail_c').attr('readonly',true);
     $("#status_new_c").attr("readonly",true);
     
     if( $("#status_new_c").val()=="Completed"){
@@ -1033,6 +1033,7 @@ $.ajax({
         var type=$('#parent_type').val();
         var p_id=$('#parent_id').val();
          var name=$('#parent_name').val();
+         
         if(type=='Calls'){
             
              $.ajax({
@@ -1052,6 +1053,13 @@ $.ajax({
                                 $('#parent_id').val('');
                             }
                             
+                             if(data.status==false){
+                                
+                                alert("Permission denied to create Follow UP Activity for  '"+name+"'");
+                                $('#parent_name').val('');
+                                $('#parent_id').val('');
+                            }
+                            
                             
                             
                             
@@ -1064,6 +1072,36 @@ $.ajax({
             
             
         }
+        
+          if(type=='Opportunities'){
+          
+             $.ajax({
+                        url : 'index.php?module=Calls&action=follow_up_opp_check',
+                        type : 'POST',
+                        dataType: "json",
+                         data :
+                            {
+                                p_id
+                            },
+                        success : function(data){
+                            
+                            if(data.status==true){
+                                
+                                alert("Permission denied to create Activity for opportunity '"+name+"'");
+                                $('#parent_name').val('');
+                                $('#parent_id').val('');
+                                 $('#audit_trail_c').val('');
+                            }
+                            
+                         
+                            
+                        }
+             });
+            
+            
+            
+        }
+        
     })
     
     
@@ -1080,7 +1118,6 @@ $.ajax({
            let m= new Date();
            let date  = m.getUTCFullYear() +"/"+ (m.getUTCMonth()+1) +"/"+ m.getUTCDate() + " " + m.getUTCHours() + ":" + m.getUTCMinutes() + ":" + m.getUTCSeconds();
            let approver = $('#user_id_c').val();
-            $("#status_new_c").val("Apply for Completed");
           
            $.ajax({
                 url : 'index.php?module=Calls&action=send_approval',
@@ -1097,6 +1134,7 @@ $.ajax({
                  },
                 success : function(data){
                 if(data.button == 'hide'){
+                    $("#status_new_c").val("Apply for Completed");
                     $("#apply_for_complete").hide();
                    $("#SAVE_HEADER").trigger("click");
                 }

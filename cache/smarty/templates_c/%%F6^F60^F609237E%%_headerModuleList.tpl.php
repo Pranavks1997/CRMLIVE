@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-03-09 15:28:47
+<?php /* Smarty version 2.6.31, created on 2021-03-11 19:24:31
          compiled from themes/SuiteP/tpls/_headerModuleList.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_link', 'themes/SuiteP/tpls/_headerModuleList.tpl', 59, false),array('function', 'sugar_translate', 'themes/SuiteP/tpls/_headerModuleList.tpl', 115, false),array('function', 'suite_check_access', 'themes/SuiteP/tpls/_headerModuleList.tpl', 121, false),array('function', 'counter', 'themes/SuiteP/tpls/_headerModuleList.tpl', 214, false),array('function', 'search_controller', 'themes/SuiteP/tpls/_headerModuleList.tpl', 553, false),array('modifier', 'lower', 'themes/SuiteP/tpls/_headerModuleList.tpl', 118, false),array('modifier', 'replace', 'themes/SuiteP/tpls/_headerModuleList.tpl', 118, false),array('modifier', 'default', 'themes/SuiteP/tpls/_headerModuleList.tpl', 783, false),)), $this); ?>
@@ -420,15 +420,15 @@ if ($this->_foreach['groupList']['total'] > 0):
                         <li class="topnav <?php if (($this->_foreach['groupList']['iteration'] == $this->_foreach['groupList']['total'])): ?>all<?php endif; ?>">
                             <span class="notCurrentTabLeft">&nbsp;</span><span id="check_activity" class="notCurrentTab">
                             <a href="#" id="grouptab_<?php echo ($this->_foreach['groupList']['iteration']-1); ?>
-" class="dropdown-toggle grouptab opp_hide">Activity</a>
+" class="dropdown-toggle grouptab opp_hide">Activities</a>
                             <span class="notCurrentTabRight">&nbsp;</span>
                             <ul class="dropdown-menu" role="menu"  <?php if (($this->_foreach['groupList']['iteration'] == $this->_foreach['groupList']['total'])): ?> class="All"<?php endif; ?>>
                           
                                     <li>
-                                       <a href="index.php?module=Calls&action=index">View Activity</a>
+                                       <a href="index.php?module=Calls&action=index">View Activities</a>
                                     </li>
                                     <li>
-                                       <a  href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DCalls%26action%3DEditView%26return_module%3DCalls%26return_action%3DDetailView">Create Activity</a>
+                                       <a  href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DCalls%26action%3DEditView%26return_module%3DCalls%26return_action%3DDetailView">Create Activities</a>
                                     </li>
                               
                                 <?php $_from = $this->_tpl_vars['modules']['extra']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }if (count($_from)):

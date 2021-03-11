@@ -3390,9 +3390,11 @@ public function is_reassignment_applicable($opportunity_id) {
      $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
     $log_in_user_id = $current_user->id;
+    
     $sql ='SELECT * FROM `approval_table` WHERE `opp_id`="'.$opportunity_id.'" AND `pending`="1"';
     $result = $GLOBALS['db']->query($sql);
     $pending_count=$result->num_rows;
+    
     $sql_lineage ='SELECT opportunities.assigned_user_id,users_cstm.user_lineage FROM opportunities LEFT JOIN users_cstm ON users_cstm.id_c=opportunities.assigned_user_id WHERE opportunities.id="'.$opportunity_id.'"';
     $result_lineage = $GLOBALS['db']->query($sql_lineage);
      while($row = $GLOBALS['db']->fetchByAssoc($result_lineage)) 
@@ -3416,7 +3418,15 @@ public function is_reassignment_applicable($opportunity_id) {
      return (($pending_count <= 0));
     } 
     else{
-         return (($pending_count <= 0) && ($reporting_count > 0) && ($reporting_count1 > 0));
+        
+        if(in_array($log_in_user_id,$lineage_arry)){
+            return (($pending_count <= 0));
+        }
+        elseif($log_in_user_id==$assigned_id && $reports_count > 0){
+            return (($pending_count <= 0));
+        }
+        
+        //  return (($pending_count <= 0) && ($reporting_count > 0) && ($reporting_count1 > 0) );
     }
 }
 
@@ -5319,6 +5329,12 @@ public function is_activity_reassignment_applicable($activity_id) {
                 if($ApprovalStatus == 1){
                     $updateOpportunity = "UPDATE calls_cstm SET status_new_c = 'Completed' WHERE id_c = '$id'";
                     $db->query($updateOpportunity);
+                    require_once 'data/BeanFactory.php';
+                    require_once 'include/utils.php';
+                    $u_id = create_guid();
+                    $created_date= date("Y-m-d H:i:s", time());
+            		$sql_insert_audit = 'INSERT INTO `calls_audit`(`id`, `parent_id`, `date_created`, `created_by`, `field_name`, `data_type`, `before_value_string`, `after_value_string`, `before_value_text`, `after_value_text`) VALUES ("'.$u_id.'","'.$id.'","'.$created_date.'","'.$log_in_user_id.'","status_new_c","varchar","Apply for Completed","Completed"," "," ")';
+            		$result_audit = $GLOBALS['db']->query($sql_insert_audit);
                 }
                 echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "query" => $updateQuery, "update_opportunity"=>$updateOpportunity));
             }else{

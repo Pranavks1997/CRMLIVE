@@ -8,7 +8,4 @@ $( document ).ready(function() {
   $('.list-view-rounded-corners').attr('style','overflow-x:auto;');
   $('.suitepicon-action-info').hide();
   $('.columnsFilterLink').hide();
-  
-  
-  
  });

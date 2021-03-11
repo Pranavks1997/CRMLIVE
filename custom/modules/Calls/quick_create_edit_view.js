@@ -2,7 +2,7 @@ $( document ).ready(function() {
    
     $("#status_new_c").prop('readonly',true);
      $('#parent_name').prop('disabled', true);
-     
+        $('#audit_trail_c').attr('readonly',true);
   
      
      //-------------------------hiding_fields onload -------------------------------------------------------
@@ -571,7 +571,7 @@ $.ajax({
            
           if (data.status = true){
                 
-
+                     alert("hi");
 
                   
                     $('#audit_trail_c').val(x.join('\r\n'))

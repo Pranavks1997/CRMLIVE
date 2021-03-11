@@ -644,19 +644,59 @@ public function action_follow_up_activity_check()
             global $current_user;
           	$log_in_user_id = $current_user->id;
           	
-          $sql='SELECT * FROM `calls` WHERE `parent_id`="'.$p_id.'"';
+          $sql11='SELECT * FROM `calls` WHERE `parent_id`="'.$p_id.'"';
           
-           $result = $GLOBALS['db']->query($sql);
+           $result11 = $GLOBALS['db']->query($sql11);
            
-           if($result->num_rows>0){
-                while ($row= mysqli_fetch_assoc($result)){
+           if($result11->num_rows>0){
+                while ($row11= mysqli_fetch_assoc($result11)){
             
-             $f_name=$row['name'];
+             $f_name=$row11['name'];
             
              
         }
               echo json_encode(array("status"=>true, "f_name"=>$f_name));
            }
+           
+             $sql ="SELECT assigned_user_id FROM calls where id ='".$p_id."' "; 
+            $result = $GLOBALS['db']->query($sql);
+            $row = $result->fetch_assoc();
+            $user_id = $row['assigned_user_id'];
+            
+            //  $sql_status ="SELECT * FROM calls_cstm where id_c='$p_id' "; 
+            // $result_status = $GLOBALS['db']->query($sql_status);
+            // $row_status = $result_status->fetch_assoc();
+            // $status= $row_status['status_new_c'];
+
+            $sql1 = "SELECT user_lineage from users_cstm where id_c = '".$user_id."' ";
+            $result1 = $GLOBALS['db']->query($sql1);
+             while($row1 = $GLOBALS['db']->fetchByAssoc($result1)) 
+            {
+              $lineage=$row1['user_lineage'];
+
+            }
+             $lineage_array=explode(',',$lineage);
+            
+            $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+            $result3 = $GLOBALS['db']->query($sql3);
+            while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
+            {
+                $check_sales = $row3['teamfunction_c'];
+                $check_mc = $row3['mc_c'];
+                $check_team_lead = $row3['teamheirarchy_c'];
+
+            }
+          
+            if($check_mc=='yes'){}
+     else if(in_array($log_in_user_id,$lineage_array)){}
+     else if($log_in_user_id==$user_id){}
+     else{
+         
+         if($p_id!=''){
+          echo json_encode(array("status"=>false));
+         }
+     }
+           
            
           
         
@@ -667,6 +707,65 @@ public function action_follow_up_activity_check()
     }
     
 //-----------------------------------follow up activity check-------END-----------------------------------
+
+
+//--------------------------------Opportunity Check--------------------------------------------------------
+//--------------------------------follow up activity check-------------------------------------------------
+
+public function action_follow_up_opp_check()
+    {
+       $p_id=$_POST['p_id'];
+       
+      
+      try{  
+          
+          
+          
+            global $current_user;
+          	$log_in_user_id = $current_user->id;
+          	
+        
+    $sql_lineage ='SELECT opportunities.assigned_user_id,users_cstm.user_lineage, tagged_user.user_id FROM opportunities LEFT JOIN users_cstm ON users_cstm.id_c=opportunities.assigned_user_id LEFT JOIN tagged_user ON tagged_user.opp_id=opportunities.id WHERE opportunities.id="'.$p_id.'"';
+    $result_lineage = $GLOBALS['db']->query($sql_lineage);
+     while($row = $GLOBALS['db']->fetchByAssoc($result_lineage)) 
+    {
+           $lineage=$row['user_lineage']; 
+           $assigned_id=$row['assigned_user_id'];
+           $tagged=$row['user_id'];
+    }
+    $lineage_array= explode(",", $lineage);
+    $tagged_array= explode(",", $tagged);
+    
+    $sql1 ='SELECT users.reports_to_id, users_cstm.mc_c FROM users INNER JOIN users_cstm ON users_cstm.id_c= "'.$log_in_user_id.'" WHERE reports_to_id = "'.$log_in_user_id.'"';
+    $result1 = $GLOBALS['db']->query($sql1);
+    $reporting_count=$result1->num_rows;
+     while($row = $GLOBALS['db']->fetchByAssoc($result1)) {
+        $mc_check=$row['mc_c'];
+     }
+     
+     if($mc_check=='yes'){}
+     else if(in_array($log_in_user_id,$lineage_array)||in_array($log_in_user_id,$tagged_array)){}
+     else if($log_in_user_id==$assigned_id){}
+     else{
+           if($p_id!=''){
+          echo json_encode(array("status"=>true));
+         }
+     }
+    
+           
+          
+        
+      } catch(Exception $e) {
+          echo json_encode(array("status"=>false, "message"=>"some error occured"));
+      }
+      die();
+    }
+    
+//-----------------------------------follow up activity check-------END-----------------------------------
+
+
+
+//---------------------------------Opportunity Check End---------------------------------------------------
 
 //-------------------------------- activity status Change-------------------------------------------------
 
@@ -912,12 +1011,11 @@ public function action_send_approval(){
                 // $GLOBALS['db']->query($sql_insert_activity);
                   if($GLOBALS['db']->query($sql_insert_activity)==TRUE){
                        
-                      $update_calls_cstm = "UPDATE `calls_cstm` SET `status_new_c`='".$status."' WHERE `id_c`='".$acc_id."'";
-                      
-                    
-                    if($GLOBALS['db']->query($update_calls_cstm)==TRUE){
-                         echo json_encode(array("button"=>"hide"));
-                    }
+                    //   $update_calls_cstm = "UPDATE `calls_cstm` SET `status_new_c`='".$status."' WHERE `id_c`='".$acc_id."'";
+                    // if($GLOBALS['db']->query($update_calls_cstm)==TRUE){
+                        
+                    // }
+                     echo json_encode(array("button"=>"hide"));
                     
                     
                   }
@@ -1147,6 +1245,23 @@ public function action_reject(){
     	}
 		die();
 }
+
+
+
+   function action_insert(){
+        try{
+            require_once 'data/BeanFactory.php';
+            require_once 'include/utils.php';
+            $id = create_guid();
+            $created_date= date("Y-m-d H:i:s", time());
+            $db = \DBManagerFactory::getInstance();
+        	$GLOBALS['db'];
+    		$sql = 'INSERT INTO `calls_audit`(`id`, `parent_id`, `date_created`, `created_by`, `field_name`, `data_type`, `before_value_string`, `after_value_string`, `before_value_text`, `after_value_text`) VALUES ("'.$id.'","'.$activity_id.'","'.$created_date.'","'.$log_in_user_id.'","status_new_c","varchar"," "," "," "," ")';
+    		$result = $GLOBALS['db']->query($sql);
+    	}catch(Exception $e){
+    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    	}
+    }
 
 //--------------------------------------Completed-------END-------------------------------------------
 
