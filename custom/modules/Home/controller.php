@@ -3393,20 +3393,33 @@ public function is_reassignment_applicable($opportunity_id) {
     $sql ='SELECT * FROM `approval_table` WHERE `opp_id`="'.$opportunity_id.'" AND `pending`="1"';
     $result = $GLOBALS['db']->query($sql);
     $pending_count=$result->num_rows;
-    $sql1 ='SELECT users.reports_to_id, users_cstm.mc_c FROM users INNER JOIN users_cstm ON users_cstm.id_c= "'.$log_in_user_id.'" WHERE reports_to_id = "'.$log_in_user_id.'"';
-    $result1 = $GLOBALS['db']->query($sql1);
-    $reporting_count=$result1->num_rows;
-     while($row = $GLOBALS['db']->fetchByAssoc($result1)) {
-        $mc_check=$row['mc_c'];
-     }
+    $sql_lineage ='SELECT opportunities.assigned_user_id,users_cstm.user_lineage FROM opportunities LEFT JOIN users_cstm ON users_cstm.id_c=opportunities.assigned_user_id WHERE opportunities.id="'.$opportunity_id.'"';
+    $result_lineage = $GLOBALS['db']->query($sql_lineage);
+     while($row = $GLOBALS['db']->fetchByAssoc($result_lineage)) 
+    {
+           $lineage=$row['user_lineage'];  
+    }
     
-    $sql2 ='SELECT t1.id ,t1.assigned_user_id,t2.multiple_approver_c FROM opportunities as t1 LEFT JOIN opportunities_cstm as t2 ON t2.id_c = t1.id WHERE t1.id= "'.$opportunity_id.'" AND (t1.assigned_user_id="'.$log_in_user_id.'" OR t2.multiple_approver_c LIKE "%'.$log_in_user_id.'%")';
-    $result2 = $GLOBALS['db']->query($sql2);
-    $reporting_count1=$result2->num_rows;
-     \LoggerManager::getLogger()->debug($reporting_count);
-    // $GLOBALS['log']->debug('Debug level message'); 
-    // return true;
-    // print($reporting_count);
+    
+    
+    
+    
+    
+    
+    // $sql1 ='SELECT users.reports_to_id, users_cstm.mc_c FROM users INNER JOIN users_cstm ON users_cstm.id_c= "'.$log_in_user_id.'" WHERE reports_to_id = "'.$log_in_user_id.'"';
+    // $result1 = $GLOBALS['db']->query($sql1);
+    // $reporting_count=$result1->num_rows;
+    //  while($row = $GLOBALS['db']->fetchByAssoc($result1)) {
+    //     $mc_check=$row['mc_c'];
+    //  }
+    
+    // $sql2 ='SELECT t1.id ,t1.assigned_user_id,t2.multiple_approver_c FROM opportunities as t1 LEFT JOIN opportunities_cstm as t2 ON t2.id_c = t1.id WHERE t1.id= "'.$opportunity_id.'" AND (t1.assigned_user_id="'.$log_in_user_id.'" OR t2.multiple_approver_c LIKE "%'.$log_in_user_id.'%")';
+    // $result2 = $GLOBALS['db']->query($sql2);
+    // $reporting_count1=$result2->num_rows;
+    //  \LoggerManager::getLogger()->debug($reporting_count);
+    // // $GLOBALS['log']->debug('Debug level message'); 
+    // // return true;
+    // // print($reporting_count);
     if(!empty($mc_check)  && $mc_check=="yes"){
      return (($pending_count <= 0));
     } 

@@ -80,7 +80,11 @@ body {
     text-decoration: none;
     background-color: #3f3e3a;
 }
-
+.search-icon {
+    font-size: 1.8rem;
+    text-decoration: none;
+    color: black;
+}
 input[type="search"] {
     -webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
@@ -817,14 +821,14 @@ tr:hover {
 span {
     font-family: Arial;
 }
-#deselectBtn, #reassignmentBtn {
+#deselectBtn, #reassignmentBtn, .deselectBtn {
     border: none !important;
     margin: 0;
 }
-.non-global-opportunities #deselectBtn #search-icon {
+.non-global-opportunities #deselectBtn #search-icon, .non-global-opportunities .deselectBtn #search-icon {
     color: green !important;
 }
-.global-opportunities #deselectBtn #search-icon{
+.global-opportunities #deselectBtn #search-icon, .global-opportunities .deselectBtn #search-icon{
     color: red !important;
 }
 

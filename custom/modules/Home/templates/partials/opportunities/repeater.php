@@ -89,13 +89,13 @@
                         <i id="search-icon" class="fa fa-eye" aria-hidden="true"> </i>
                     </a>
                     <?php if (($this->is_critical_applicable($log_in_user_id, $row['id'], 'no')) && ($check_mc=='yes')): ?>    
-                        <button class="tag1" id="criticalBtn<?php echo $row['id'];?>" style="margin-right: 1px;width: 15px;" onclick="criticalStatus('<?php echo $row['id']; ?>')">
-                            <i id=<?php echo $row['id'];?> class="fa fa-exclamation-triangle" aria-hidden="true"> </i>
+                        <button class="tag1 deselectBtn" id="criticalBtn<?php echo $row['id'];?>" style="margin-right: 1px;width: 15px;" onclick="criticalStatus('<?php echo $row['id']; ?>')">
+                            <i id="<?php echo $row['id'];?>" class="fa fa-exclamation-triangle search-icon" aria-hidden="true"> </i>
                         </button>
                     <?php endif ?>
                     <?php if (($this->is_critical_applicable($log_in_user_id, $row['id'], 'yes'))&& ($check_mc=='yes')) : ?>
-                        <button class="tag1" id="criticalBtn<?php echo $row['id'];?>"  style="margin-right: 1px;width: 15px;" onclick="criticalStatusChanged('<?php echo $row['id']; ?>')">
-                            <i id="<?php echo $row['id'];?>" style="color: red; cursor: pointer; margin-left: -11px;" class="fa fa-exclamation-triangle" aria-hidden="true"> </i>
+                        <button class="tag1 deselectBtn" id="criticalBtn<?php echo $row['id'];?>"  style="margin-right: 1px;width: 15px;" onclick="criticalStatusChanged('<?php echo $row['id']; ?>')">
+                            <i id="<?php echo $row['id'];?>" style="color: red; cursor: pointer; margin-left: -11px;" class="fa fa-exclamation-triangle search-icon" aria-hidden="true"> </i>
                         </button>
                     <?php endif ?>
                 </div>

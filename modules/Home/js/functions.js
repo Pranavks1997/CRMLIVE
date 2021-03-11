@@ -1136,7 +1136,8 @@ function criticalStatusChanged(id, noRefresh = null) {
 
     $(document).ready(function () {
         document.getElementById('deselect_members').style.display = "none";
-        var addOpportunity = document.getElementById('add_opportunity');
+        // var addOpportunity = document.getElementById('add_opportunity');
+        getUserDetails();
     });
 
 })(jQuery);
