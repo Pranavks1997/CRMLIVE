@@ -1080,7 +1080,7 @@ $.ajax({
            let m= new Date();
            let date  = m.getUTCFullYear() +"/"+ (m.getUTCMonth()+1) +"/"+ m.getUTCDate() + " " + m.getUTCHours() + ":" + m.getUTCMinutes() + ":" + m.getUTCSeconds();
            let approver = $('#user_id_c').val();
-           
+            $("#status_new_c").val("Apply for Completed");
           
            $.ajax({
                 url : 'index.php?module=Calls&action=send_approval',
@@ -1096,7 +1096,6 @@ $.ajax({
                  
                  },
                 success : function(data){
-                
                 if(data.button == 'hide'){
                     $("#apply_for_complete").hide();
                    $("#SAVE_HEADER").trigger("click");

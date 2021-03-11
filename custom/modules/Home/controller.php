@@ -4281,7 +4281,7 @@ public function action_assigned_history(){
     */
     
     
-    //-----------------------------------------------Activity Reassignment----------------------------------------
+  //-----------------------------------------------Activity Reassignment----------------------------------------
             
 public function is_activity_reassignment_applicable($activity_id) {
    
@@ -4364,6 +4364,7 @@ public function is_activity_reassignment_applicable($activity_id) {
 
     
     //-------------------------------------------------------------------------------------------------------------
+     
     public function action_getActivity(){
         try
         {
