@@ -32,7 +32,7 @@
 </head>
 
 <body>
-    <!--<div class="spinner"><div class="loader"></div></div>-->
+    <!-- <div class="spinner"><div class="loader"></div></div> -->
     <!-- Navbar start -->
 
     <!-- Navbar end -->
@@ -49,9 +49,9 @@
 
         <!-- last 30's day tab -->
         <div class="tab_30_days">
-            <button class="btn-30-days btn-days-filter" data-day="30" style="color: rgb(0,0,0)">Last 30 days </button>
-            <button class="btn-30-days btn-days-filter" data-day="60">/ Last 60 days </button>
-            <button class="btn-30-days btn-days-filter" data-day="1200">/ All </button>
+            <button class="btn-30-days btn-days-filter" id="button-30days" data-day="30">Last 30 days </button>
+            <button class="btn-30-days btn-days-filter" id="button-60days" data-day="60">/ Last 60 days </button>
+            <button class="btn-30-days btn-days-filter" id="button-90days" data-day="1200">/ All </button>
         </div>
 
         <div class="main-content"></div>
@@ -604,9 +604,9 @@
             <span class="filterclose" onclick="openActivityFilterDialog('close')" style="cursor:pointer;font-size:18px;float: right;">&times;</span>
             <form class="activity-filter">
 
-                <input type="hidden" class="filter-type" name="type" value="" />
-                <input type="hidden" class="filter-value" name="value" value="" />
-                <input type="hidden" class="filter-status" name="status" value="" />
+                <input type="hidden" class="filter-type" name="filter-type" value="" />
+                <input type="hidden" class="filter-value" name="filter-value" value="" />
+                <input type="hidden" class="filter-status" name="filter-status" value="" />
 
                 <h2 class="filterheading">Filter</h2>
                 <p class="filtersubhead">Fill out the following details</p>

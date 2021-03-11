@@ -97,9 +97,11 @@
                 LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c
                 WHERE deleted != 1 ";
 
+        $acc_id_show = private_activities();
         if($type){
-            $fetch_query .= " AND opportunity_type = '$type'";
+            $fetch_query .= " AND activity_type = '$type' ";
         }
+        $fetch_query .= " AND (calls.id IN ('".implode("','",$acc_id_show)."')) ";
 
         if($searchTerm) /* Check if SearchTerm is there or not */
             $fetch_query .= " AND calls.name LIKE '%$searchTerm%' ";

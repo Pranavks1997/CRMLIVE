@@ -11,9 +11,6 @@ class updateHistory
         global $current_user;
     	$log_in_user_id = $current_user->id;
     	
-    	print_r('lohith');
-    	die();
-    	
     $id= $bean->id;
     $assigned_by=$current_user->id;
     $assigned_to=$bean->assigned_user_id;

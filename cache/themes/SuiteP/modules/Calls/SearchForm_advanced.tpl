@@ -61,6 +61,35 @@
             }
 
             <div class="col-xs-12">
+                                <label for='parent_type_advanced'>{sugar_translate label='LBL_PARENT_TYPE' module='Calls'}</label>
+                            </div>
+            <div class="form-item">
+                                
+{if strlen($fields.parent_type_advanced.value) <= 0}
+{assign var="value" value=$fields.parent_type_advanced.default_value }
+{else}
+{assign var="value" value=$fields.parent_type_advanced.value }
+{/if}  
+<input type='text' name='{$fields.parent_type_advanced.name}' 
+    id='{$fields.parent_type_advanced.name}' size='30' 
+    maxlength='255' 
+    value='{$value}' title=''      >
+                            </div>
+        </div>
+    </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
+        <div class="">
+            
+              
+
+            {counter assign=index}
+            {math equation="left % right"
+            left=$index
+            right=$templateMeta.maxColumns
+            assign=modVal
+            }
+
+            <div class="col-xs-12">
                                 <label for='parent_name_advanced'>{sugar_translate label='LBL_LIST_RELATED_TO' module='Calls'}</label>
                             </div>
             <div class="form-item">
@@ -143,6 +172,77 @@ YAHOO.util.Event.onContentReady(
             }
 
             <div class="col-xs-12">
+                                <label for='type_of_interaction_c_advanced'>{sugar_translate label='LBL_TYPE_OF_INTERACTION' module='Calls'}</label>
+                            </div>
+            <div class="form-item">
+                                
+{html_options id='type_of_interaction_c_advanced' name='type_of_interaction_c_advanced[]' options=$fields.type_of_interaction_c_advanced.options size="6" class="templateGroupChooser" multiple="1" selected=$fields.type_of_interaction_c_advanced.value}
+                            </div>
+        </div>
+    </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
+        <div class="">
+            
+              
+
+            {counter assign=index}
+            {math equation="left % right"
+            left=$index
+            right=$templateMeta.maxColumns
+            assign=modVal
+            }
+
+            <div class="col-xs-12">
+                                <label for='status_new_c_advanced'>{sugar_translate label='LBL_STATUS_NEW' module='Calls'}</label>
+                            </div>
+            <div class="form-item">
+                                
+{if strlen($fields.status_new_c_advanced.value) <= 0}
+{assign var="value" value=$fields.status_new_c_advanced.default_value }
+{else}
+{assign var="value" value=$fields.status_new_c_advanced.value }
+{/if}  
+<input type='text' name='{$fields.status_new_c_advanced.name}' 
+    id='{$fields.status_new_c_advanced.name}' size='30' 
+    maxlength='255' 
+    value='{$value}' title=''      >
+                            </div>
+        </div>
+    </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
+        <div class="">
+            
+              
+
+            {counter assign=index}
+            {math equation="left % right"
+            left=$index
+            right=$templateMeta.maxColumns
+            assign=modVal
+            }
+
+            <div class="col-xs-12">
+                                <label for='assigned_user_id_advanced'>{sugar_translate label='LBL_ASSIGNED_TO' module='Calls'}</label>
+                            </div>
+            <div class="form-item">
+                                
+{html_options id='assigned_user_id_advanced' name='assigned_user_id_advanced[]' options=$fields.assigned_user_id_advanced.options size="6" class="templateGroupChooser" multiple="1" selected=$fields.assigned_user_id_advanced.value}
+                            </div>
+        </div>
+    </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
+        <div class="">
+            
+              
+
+            {counter assign=index}
+            {math equation="left % right"
+            left=$index
+            right=$templateMeta.maxColumns
+            assign=modVal
+            }
+
+            <div class="col-xs-12">
                                 <label for='activity_date_c_advanced'>{sugar_translate label='LBL_ACTIVITY_DATE' module='Calls'}</label>
                             </div>
             <div class="form-item">
@@ -168,6 +268,181 @@ weekNumbers:false
 );
 </script>
 
+                            </div>
+        </div>
+    </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
+        <div class="">
+            
+              
+
+            {counter assign=index}
+            {math equation="left % right"
+            left=$index
+            right=$templateMeta.maxColumns
+            assign=modVal
+            }
+
+            <div class="col-xs-12">
+                                <label for='date_entered_advanced'>{sugar_translate label='LBL_DATE_ENTERED' module='Calls'}</label>
+                            </div>
+            <div class="form-item">
+                                
+{assign var="id" value=$fields.date_entered_advanced.name }
+
+{if isset($smarty.request.date_entered_advanced_range_choice)}
+{assign var="starting_choice" value=$smarty.request.date_entered_advanced_range_choice}
+{else}
+{assign var="starting_choice" value="="}
+{/if}
+
+<div class="clear hidden dateTimeRangeChoiceClear"></div>
+<div class="dateTimeRangeChoice" style="white-space:nowrap !important;">
+<select id="{$id}_range_choice" name="{$id}_range_choice" onchange="{$id}_range_change(this.value);">
+{html_options options=$fields.date_entered_advanced.options selected=$starting_choice}
+</select>
+</div>
+
+<div id="{$id}_range_div" style="{if preg_match('/^\[/', $smarty.request.range_date_entered_advanced)  || $starting_choice == 'between'}display:none{else}display:''{/if};">
+<input autocomplete="off" type="text" name="range_{$id}" id="range_{$id}" value='{if empty($smarty.request.range_date_entered_advanced) && !empty($smarty.request.date_entered_advanced)}{$smarty.request.date_entered_advanced}{else}{$smarty.request.range_date_entered_advanced}{/if}' title=''   size="11" class="dateRangeInput">
+    <button id="{$id}_trigger" type="button" onclick="return false;" class="btn btn-danger"><span class="suitepicon suitepicon-module-calendar"  alt="{$APP.LBL_ENTER_DATE}"></span></button>
+<script type="text/javascript">
+Calendar.setup ({ldelim}
+inputField : "range_{$id}",
+daFormat : "{$CALENDAR_FORMAT}",
+button : "{$id}_trigger",
+singleClick : true,
+dateStr : "{$date_value}",
+startWeekday: {$CALENDAR_FDOW|default:'0'},
+step : 1,
+weekNumbers:false
+{rdelim}
+);
+</script>
+    
+</div>
+
+<div id="{$id}_between_range_div" style="{if $starting_choice=='between'}display:'';{else}display:none;{/if}">
+{assign var=date_value value=$fields.date_entered_advanced.value }
+<input autocomplete="off" type="text" name="start_range_{$id}" id="start_range_{$id}" value='{$smarty.request.start_range_date_entered_advanced }' title=''  tabindex='' size="11" class="dateRangeInput">
+    <button id="start_range_{$id}_trigger" type="button" onclick="return false" class="btn btn-danger"><span class="suitepicon suitepicon-module-calendar" alt="{$APP.LBL_ENTER_DATE}"></span></button>
+<script type="text/javascript">
+Calendar.setup ({ldelim}
+inputField : "start_range_{$id}",
+daFormat : "{$CALENDAR_FORMAT}",
+button : "start_range_{$id}_trigger",
+singleClick : true,
+dateStr : "{$date_value}",
+step : 1,
+weekNumbers:false
+{rdelim}
+);
+</script>
+ 
+{$APP.LBL_AND}
+{assign var=date_value value=$fields.date_entered_advanced.value }
+<input autocomplete="off" type="text" name="end_range_{$id}" id="end_range_{$id}" value='{$smarty.request.end_range_date_entered_advanced }' title=''  tabindex='' size="11" class="dateRangeInput" maxlength="10">
+    <button id="end_range_{$id}_trigger" type="button" onclick="return false" class="btn btn-danger">
+        <span class="suitepicon suitepicon-module-calendar" alt="{$APP.LBL_ENTER_DATE}"></span>
+    </button>
+<script type="text/javascript">
+Calendar.setup ({ldelim}
+inputField : "end_range_{$id}",
+daFormat : "{$CALENDAR_FORMAT}",
+button : "end_range_{$id}_trigger",
+singleClick : true,
+dateStr : "{$date_value}",
+step : 1,
+weekNumbers:false
+{rdelim}
+);
+</script>
+ 
+</div>
+
+
+<script type='text/javascript'>
+
+function {$id}_range_change(val) 
+{ldelim}
+  if(val == 'between') {ldelim}
+     document.getElementById("range_{$id}").value = '';  
+     document.getElementById("{$id}_range_div").style.display = 'none';
+     document.getElementById("{$id}_between_range_div").style.display = ''; 
+  {rdelim} else if (val == '=' || val == 'not_equal' || val == 'greater_than' || val == 'less_than') {ldelim}
+     if((/^\[.*\]$/).test(document.getElementById("range_{$id}").value))
+     {ldelim}
+     	document.getElementById("range_{$id}").value = '';
+     {rdelim}
+     document.getElementById("start_range_{$id}").value = '';
+     document.getElementById("end_range_{$id}").value = '';
+     document.getElementById("{$id}_range_div").style.display = '';
+     document.getElementById("{$id}_between_range_div").style.display = 'none';
+  {rdelim} else {ldelim}
+     document.getElementById("range_{$id}").value = '[' + val + ']';    
+     document.getElementById("start_range_{$id}").value = '';
+     document.getElementById("end_range_{$id}").value = ''; 
+     document.getElementById("{$id}_range_div").style.display = 'none';
+     document.getElementById("{$id}_between_range_div").style.display = 'none';         
+  {rdelim}
+{rdelim}
+
+var {$id}_range_reset = function()
+{ldelim}
+{$id}_range_change('=');
+{rdelim}
+
+YAHOO.util.Event.onDOMReady(function() {ldelim}
+if(document.getElementById('search_form_clear'))
+{ldelim}
+YAHOO.util.Event.addListener('search_form_clear', 'click', {$id}_range_reset);
+{rdelim}
+
+{rdelim});
+
+YAHOO.util.Event.onDOMReady(function() {ldelim}
+ 	if(document.getElementById('search_form_clear_advanced'))
+ 	 {ldelim}
+ 	     YAHOO.util.Event.addListener('search_form_clear_advanced', 'click', {$id}_range_reset);
+ 	 {rdelim}
+
+{rdelim});
+
+YAHOO.util.Event.onDOMReady(function() {ldelim}
+    //register on basic search form button if it exists
+    if(document.getElementById('search_form_submit'))
+     {ldelim}
+         YAHOO.util.Event.addListener('search_form_submit', 'click',{$id}_range_validate);
+     {rdelim}
+    //register on advanced search submit button if it exists
+   if(document.getElementById('search_form_submit_advanced'))
+    {ldelim}
+        YAHOO.util.Event.addListener('search_form_submit_advanced', 'click',{$id}_range_validate);
+    {rdelim}
+
+{rdelim});
+
+// this function is specific to range date searches and will check that both start and end date ranges have been
+// filled prior to submitting search form.  It is called from the listener added above.
+function {$id}_range_validate(e){ldelim}
+    if (
+            (document.getElementById("start_range_{$id}").value.length >0 && document.getElementById("end_range_{$id}").value.length == 0)
+          ||(document.getElementById("end_range_{$id}").value.length >0 && document.getElementById("start_range_{$id}").value.length == 0)
+       )
+    {ldelim}
+        e.preventDefault();
+        alert('{$APP.LBL_CHOOSE_START_AND_END_DATES}');
+        if (document.getElementById("start_range_{$id}").value.length == 0) {ldelim}
+            document.getElementById("start_range_{$id}").focus();
+        {rdelim}
+        else {ldelim}
+            document.getElementById("end_range_{$id}").focus();
+        {rdelim}
+    {rdelim}
+
+{rdelim}
+
+</script>
                             </div>
         </div>
     </div>
@@ -225,32 +500,19 @@ weekNumbers:false
             }
 
             <div class="col-xs-12">
-                                <label for='status_advanced'>{sugar_translate label='LBL_STATUS' module='Calls'}</label>
+                                <label for='name_of_person_c_advanced'>{sugar_translate label='LBL_NAME_OF_PERSON' module='Calls'}</label>
                             </div>
             <div class="form-item">
                                 
-{html_options id='status_advanced' name='status_advanced[]' options=$fields.status_advanced.options size="6" class="templateGroupChooser" multiple="1" selected=$fields.status_advanced.value}
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            {counter assign=index}
-            {math equation="left % right"
-            left=$index
-            right=$templateMeta.maxColumns
-            assign=modVal
-            }
-
-            <div class="col-xs-12">
-                                <label for='assigned_user_id_advanced'>{sugar_translate label='LBL_ASSIGNED_TO' module='Calls'}</label>
-                            </div>
-            <div class="form-item">
-                                
-{html_options id='assigned_user_id_advanced' name='assigned_user_id_advanced[]' options=$fields.assigned_user_id_advanced.options size="6" class="templateGroupChooser" multiple="1" selected=$fields.assigned_user_id_advanced.value}
+{if strlen($fields.name_of_person_c_advanced.value) <= 0}
+{assign var="value" value=$fields.name_of_person_c_advanced.default_value }
+{else}
+{assign var="value" value=$fields.name_of_person_c_advanced.value }
+{/if}  
+<input type='text' name='{$fields.name_of_person_c_advanced.name}' 
+    id='{$fields.name_of_person_c_advanced.name}' size='30' 
+    maxlength='255' 
+    value='{$value}' title=''      >
                             </div>
         </div>
     </div>

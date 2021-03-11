@@ -79,53 +79,33 @@ function dateBetween(dateBetween, searchTerm = null, page = null, filter = 0, st
             $('.opportunity-filter .filter-status').val(status);
             $('.opportunity-filter .filter-type').val(type);
 
-            if (dateBetween === '30') {
-                $('#tableContent').html(data.data);
-                $('#orgCount').html(data.total);
-                $('#myTeamCount').html(data.team_count);
-                $('#selfCount').html(data.self_count);
-                $('#criticalStatusCount').html(data.critical_status_count);
-                if (data.delegateDetails)
-                    $('#delegateCount').html(data.delegateDetails);
+            $('#tableContent').html(data.data);
+            $('#orgCount').html(data.total);
+            $('#myTeamCount').html(data.team_count);
+            $('#selfCount').html(data.self_count);
+            $('#delegateName').html(data.delegate_name);
+            $('#criticalStatusCount').html(data.critical_status_count);
+            if (data.delegateDetails)
+                $('#delegateCount').html(data.delegateDetails);
 
-                $('#fetchedByStatus').html(data.fetched_by_status);
-                tabContent.style.display = 'block';
-            } else if (dateBetween === '60') {
-                $('#tableContent').html(data.data);
-                $('#orgCount').html(data.total);
-                $('#selfCount').html(data.self_count);
-                $('#myTeamCount').html(data.team_count);
-                $('#delegateName').html(data.delegate_name);
-                $('#criticalStatusCount').html(data.critical_status_count);
-                if (data.delegate_name != '') {
-                    $('#delegateCount').html(data.delegated_count);
-                }
-                $('#fetchedByStatus').html(data.fetched_by_status)
-                tabContent.style.display = 'block';
-
-                document.getElementsByClassName('btn-30-days').style.color = "#c2c2c2";
+            $('#fetchedByStatus').html(data.fetched_by_status);
+            // tabContent.style.display = 'block';
+            document.getElementById('button-30days').style.color = "#c2c2c2";
+            document.getElementById('button-60days').style.color = "#c2c2c2";
+            document.getElementById('button-90days').style.color = "#c2c2c2";
+            if (dateBetween == '30') {
+                document.getElementById('button-30days').style.color = "black";
+            } else if (dateBetween == '60') {
+                document.getElementById('button-60days').style.color = "black";
             } else {
-                $('#tableContent').html(data.data);
-                $('#orgCount').html(data.total);
-                $('#selfCount').html(data.self_count);
-                $('#myTeamCount').html(data.team_count);
-                $('#delegateName').html(data.delegate_name);
-                $('#criticalStatusCount').html(data.critical_status_count);
-                if (data.delegate_name != '') {
-                    $('#delegateCount').html(data.delegated_count);
-                }
-                $('#fetchedByStatus').html(data.fetched_by_status)
-                tabContent.style.display = 'block';
-
-                document.getElementsByClassName('btn-30-days').style.color = "#c2c2c2";
-
+                document.getElementById('button-90days').style.color = "black";
             }
             document.getElementById('search-icon').style.color = "green";
         },
-    //     complete: function(){
-    // 	$('.spinner').fadeOut();
-    //         console.log('Data Loaded');
-    //     }
+        complete: function(){
+    	    $('.spinner').fadeOut();
+            console.log('Data Loaded');
+        }
     });
     var i, tabcontent, tablinks;
 
@@ -1023,16 +1003,22 @@ function criticalStatusChanged(id, noRefresh = null) {
 /* jQuery Functions */
 (function ($) {
     $(window).on('load', function () {
+        loadOpportunities()
+    });
+    $(document).on('click', '#one-tab', function () {
+        loadOpportunities();
+    });
+
+    function loadOpportunities(){
+        var day = Cookies.get('day');
+        $('.spinner').fadeIn();
         fetchByStatus('qualifylead');
-        dateBetween('30');
+        dateBetween(day);
         getPendingRequestCount();
-        getGraph('30');
-        getDelegateMembers();
-        getUserDetails();
         getTagList();
         initializeReportTable();
         teamFilterForReport();
-    });
+    }
 
     $('.btn-days-filter').on('click', function () {
         var day = $(this).data('day');

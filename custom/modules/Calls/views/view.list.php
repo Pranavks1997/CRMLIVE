@@ -47,6 +47,8 @@ class CallsViewList extends ViewList
 {
     public function listViewProcess()
     {
+        $this->lv->quickViewLinks = false;
+        $this->lv->multiSelect = false;
         echo '<script type="text/javascript" src="custom/modules/Calls/view_list.js"></script>';
         
         
@@ -156,7 +158,9 @@ class CallsViewList extends ViewList
             $filterFields = array('recurring_source' => 1);
             $this->lv->setup($this->seed, 'include/ListView/ListViewGeneric.tpl', $this->where, $this->params, 0, -1, $filterFields);
             $savedSearchName = empty($_REQUEST['saved_search_select_name']) ? '' : (' - ' . $_REQUEST['saved_search_select_name']);
+             
             echo $this->lv->display();
+            
         }
         
         

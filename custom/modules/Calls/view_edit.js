@@ -1002,6 +1002,11 @@ $.ajax({
     
     custom_check_form = function(view){
         var validate = true;
+        if($('#type_of_interaction_c').val()=='select'){
+             alert('Please Select Type of Interaction');
+              $("#type_of_interaction_c").css("background-color", "Red");
+               validate = false;
+        }
         if($('#type_of_interaction_c').val() != 'Preparation' ) {
            if($('#name_of_person_c').val() == ''){
             alert('Please fill Name of Person Contacted');
@@ -1250,6 +1255,19 @@ $('#approve_activity').on('click',function validation(view){
        }
       
   });
+
+
+
+
+$("#type_of_interaction_c").on("click", function () {
+  //console.log("if in");
+
+  if ($("#type_of_interaction_c").css("background-color", "Red")) {
+    // console.log("check in");
+
+    $("#type_of_interaction_c").css("background-color", "#d8f5ee");
+  }
+});
 
 
 //------------------------------------Write code above this line---------------------------------------------------------------------
