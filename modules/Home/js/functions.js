@@ -44,7 +44,6 @@ function dateBetween(dateBetween, searchTerm = null, page = null, filter = 0, st
         //     $('.spinner').fadeIn();
         // },
         success: function (check) {
-            debugger;
             if (dateBetween == '1200') {
                 $('#daysFilterAllLabel').html('All Opportunities');
                 $('#daysFilterOpp').html('');
@@ -1013,7 +1012,7 @@ function criticalStatusChanged(id, noRefresh = null) {
         var day = Cookies.get('day');
         $('.spinner').fadeIn();
         fetchByStatus('qualifylead');
-        dateBetween(day);
+        dateBetween('30');
         getPendingRequestCount();
         getTagList();
         initializeReportTable();

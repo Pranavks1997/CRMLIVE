@@ -138,6 +138,7 @@ function activitypaginate(page, method, day, searchTerm = null, filter = 0) {
 }
 
 function getActivityGraph(dateBetween) {
+    debugger
     $.ajax({
         url: 'index.php?module=Home&action=get_activity_graph&dateBetween=' + dateBetween,
         type: 'GET',
@@ -145,6 +146,7 @@ function getActivityGraph(dateBetween) {
             dateBetween: '30'
         },
         success: function (data) {
+            debugger
             data = JSON.parse(data)
             console.log(data)
             $('#activitygraph').html(data.data);
@@ -537,6 +539,7 @@ function updateActivityStatus() {
         data: $('.activity-approval-form').serialize(),
         success: function (data) {
             data = JSON.parse(data);
+            debugger;
             if (data.status) {
                 fetchActivityByStatus();
                 getPendingActivityRequestCount();
@@ -655,27 +658,9 @@ function activityhandleReassignmentDialog(event) {
                         });
 
                         dialog.style.display = "none";
-                        
-    
-    
-                    // $.ajax({
-                    //     url: 'index.php?module=Home&action=getActivity',
-                    //     type: 'GET',
-                    //     data: {
-                           
-                    //     },
-                    //     success: function (data) {
-                    //         alert(total);
-                    //         $('.table-header-row').html(data.result);
-                           
-                    //     }
-                    // });
-    
-   
 
-                    
                       
-                    //  $('#two-tab').trigger('click');
+                     $('#two-tab').trigger('click');
                       
                     //  location.reload();
                        

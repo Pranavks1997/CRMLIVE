@@ -4292,7 +4292,7 @@ public function is_activity_reassignment_applicable($activity_id) {
 
             $team_func_array = $team_func_array1 = $others_id_array = array();
 
-            $sql ="SELECT assigned_user_id FROM calls where id ='$activity_id' "; 
+            $sql ="SELECT assigned_user_id FROM calls where id ='".$activity_id."' "; 
             $result = $GLOBALS['db']->query($sql);
             $row = $result->fetch_assoc();
             $user_id = $row['assigned_user_id'];
@@ -4302,12 +4302,15 @@ public function is_activity_reassignment_applicable($activity_id) {
             $row_status = $result_status->fetch_assoc();
             $status= $row_status['status_new_c'];
 
-            $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
+            $sql1 = "SELECT user_lineage from users_cstm where id_c = '".$user_id."' ";
             $result1 = $GLOBALS['db']->query($sql1);
-            $row1 = $result1->fetch_assoc();
-            if (strpos($row1['user_lineage'], ',') !== false) {
-                $team_func_array = explode(',',  $row1['user_lineage']);
+             while($row1 = $GLOBALS['db']->fetchByAssoc($result1)) 
+            {
+              $lineage=$row1['user_lineage'];
+
             }
+             $team_func_array=explode(',',$lineage);
+            
             $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
             $result3 = $GLOBALS['db']->query($sql3);
             while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
@@ -4990,7 +4993,7 @@ public function is_activity_reassignment_applicable($activity_id) {
                 $data .= '<td class="table-data">';
                 $data .= '<a href="index.php?module=Calls&action=DetailView&record='.$row['id'].'">';
                 $data .= '<h2 class="activity-title">'. $row['name'] .'</h2></a>';
-                $data .= '<span class="activity-type d-block">'. $row['type_of_interaction_c'] .'</span></td>';
+                $data .= '<span class="activity-type d-block">'. beautify_label($row['type_of_interaction_c']) .'</span></td>';
                 break; 
             case 'related_to':
                 $parent_type = '';
@@ -5226,7 +5229,7 @@ public function is_activity_reassignment_applicable($activity_id) {
 
                         $data .='
                             <tr>
-                                <td class="approvaltable-data-popup">'.$row['name'].'<br><span class="activity-type d-block">'. $row['type_of_interaction_c'] .'</span></td>
+                                <td class="approvaltable-data-popup">'.$row['name'].'<br><span class="activity-type d-block">'. beautify_label($row['type_of_interaction_c']) .'</span></td>
                                 <td class="approvaltable-data-popup">'.getActivityRelatedTo($row['parent_type'], $row['parent_id']).'<br><span class="activity-related-type">'. $row['parent_type'] .'</span></td>
                                 <td class="approvaltable-data-boolean-popup">'.$row['status_new_c'].'</td>
                                 <td class="approvaltable-data-popup">'.date( 'd/m/Y', strtotime($row['activity_date_c']) ).'</td>
@@ -5288,29 +5291,36 @@ public function is_activity_reassignment_applicable($activity_id) {
             $approver = $data['approver'];
             $delegateID = $data['delegate_id'];
             
-            $insertQuery = "INSERT INTO activity_approval_table (";
-            $insertFields = " acc_id, acc_type, status, sender, sent_time, approval_status, approver, delegate_id, ";
-            if($this->isActivityDelegate($log_in_user_id, $id))
-                $insertFields .= " delegate_comment, delegate_approve_reject_date )";
-            else
-                $insertFields .= " approver_comment, approve_reject_date )";
+            // $insertQuery = "INSERT INTO activity_approval_table (";
+            // $insertFields = " acc_id, acc_type, status, sender, sent_time, approval_status, approver, delegate_id, ";
+            // if($this->isActivityDelegate($log_in_user_id, $id))
+            //     $insertFields .= " delegate_comment, delegate_approve_reject_date )";
+            // else
+            //     $insertFields .= " approver_comment, approve_reject_date )";
             
-            $insertValues = " VALUES ( '$acc_id', '$acc_type', '$status', '$sender', '$sent_time', '$ApprovalStatus', '$approver', '$delegateID', '$comment', '$date' ) ";
+            // $insertValues = " VALUES ( '$acc_id', '$acc_type', '$status', '$sender', '$sent_time', '$ApprovalStatus', '$approver', '$delegateID', '$comment', '$date' ) ";
 
-            $finalQuery = $insertQuery . $insertFields . $insertValues ;
+            // $finalQuery = $insertQuery . $insertFields . $insertValues ;
 
-            if($db->query($finalQuery)==TRUE){
+            $updateQuery = "UPDATE activity_approval_table SET approval_status = '$ApprovalStatus' ";
+            if($this->isActivityDelegate($log_in_user_id, $id))
+                $updateQuery .= ", delegate_comment = '$comment' , delegate_approve_reject_date = '$date' ";
+            else
+                $updateQuery .= " , approver_comment = '$comment' , approve_reject_date= '$date' ";
+            $updateQuery .= " WHERE acc_id = '$id' ";
+
+            if($db->query($updateQuery)==TRUE){
                 if($ApprovalStatus == 1){
-                    $updateOpportunity = "UPDATE calls_cstm SET status_new_c = 'Completed' WHERE id_c = '$acc_id'";
+                    $updateOpportunity = "UPDATE calls_cstm SET status_new_c = 'Completed' WHERE id_c = '$id'";
                     $db->query($updateOpportunity);
                 }
-                echo json_encode(array("status"=>true,  "message" => "Status changed successfully."));
+                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "query" => $updateQuery, "update_opportunity"=>$updateOpportunity));
             }else{
                 echo json_encode(array("status"=>false, "message" => "Some error occured"));
             }
             
         }catch(Exception $e){
-            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+            echo json_encode(array("status"=>false, "message" => "Some error occured", "query" => $updateQuery));
         }
         die();
     }
@@ -6114,7 +6124,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 JOIN
                     users u ON u.id = ra.assigned_to_id
                 WHERE 
-                    ra.acc_id ='$accID'
+                    ra.acc_id ='$accID' and (NOT (assigned_to_id ='$created_by' and assigned_by ='$created_by'))
                 ORDER BY ra.date_time ASC
             ";
             $result = $GLOBALS['db']->query($assignFlowQuery);
