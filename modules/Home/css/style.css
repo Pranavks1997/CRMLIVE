@@ -2144,6 +2144,7 @@ padding: 15px 5px;
 }
 .collapsibleIndicator {
     text-align: center !important;
+    left: 222px !important;
 }
 .collapsibleIndicator::before {
     content: 'Show Detailed View';

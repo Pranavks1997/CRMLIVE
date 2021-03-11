@@ -16,7 +16,7 @@
         </button>
         <button style="background-color: #fff;color: black;margin: 0 5px;width: 40px;border-radius: 5px;border: none;display: flex;align-items: center;flex-direction: column;cursor: pointer;">
             <span style="font-size: 18px; font-weight: 600px; text-align: center" id="selfCount"></span>
-            <span style="color: black; font-size: 10px;">Self</span>
+            <span style="color: grey; font-size: 10px;">Self</span>
         </button>
     </div>
 </div>
