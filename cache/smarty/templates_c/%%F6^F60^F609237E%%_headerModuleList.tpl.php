@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-03-05 13:50:44
+<?php /* Smarty version 2.6.31, created on 2021-03-12 18:25:56
          compiled from themes/SuiteP/tpls/_headerModuleList.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_link', 'themes/SuiteP/tpls/_headerModuleList.tpl', 59, false),array('function', 'sugar_translate', 'themes/SuiteP/tpls/_headerModuleList.tpl', 115, false),array('function', 'suite_check_access', 'themes/SuiteP/tpls/_headerModuleList.tpl', 121, false),array('function', 'counter', 'themes/SuiteP/tpls/_headerModuleList.tpl', 214, false),array('function', 'search_controller', 'themes/SuiteP/tpls/_headerModuleList.tpl', 541, false),array('modifier', 'lower', 'themes/SuiteP/tpls/_headerModuleList.tpl', 118, false),array('modifier', 'replace', 'themes/SuiteP/tpls/_headerModuleList.tpl', 118, false),array('modifier', 'strstr', 'themes/SuiteP/tpls/_headerModuleList.tpl', 306, false),array('modifier', 'default', 'themes/SuiteP/tpls/_headerModuleList.tpl', 771, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_link', 'themes/SuiteP/tpls/_headerModuleList.tpl', 59, false),array('function', 'sugar_translate', 'themes/SuiteP/tpls/_headerModuleList.tpl', 115, false),array('function', 'suite_check_access', 'themes/SuiteP/tpls/_headerModuleList.tpl', 121, false),array('function', 'counter', 'themes/SuiteP/tpls/_headerModuleList.tpl', 214, false),array('function', 'search_controller', 'themes/SuiteP/tpls/_headerModuleList.tpl', 553, false),array('modifier', 'lower', 'themes/SuiteP/tpls/_headerModuleList.tpl', 118, false),array('modifier', 'replace', 'themes/SuiteP/tpls/_headerModuleList.tpl', 118, false),array('modifier', 'default', 'themes/SuiteP/tpls/_headerModuleList.tpl', 783, false),)), $this); ?>
 
 <!--Start Responsive Top Navigation Menu -->
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -361,18 +361,7 @@ if ($this->_foreach['groupList']['total'] > 0):
                                        <a href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3Dindex%26return_module%3DOpportunities%26return_action%3DDetailView">View Opportunities</a>
                                     </li>
                                     <li>
-                                         <?php 
-                                        global $current_user;
-                                           $this->_tpl_vars['current_user_function'] = $current_user->teamfunction_c;
-                                           $this->_tpl_vars['current_user_admin'] = $current_user->is_admin;
-                                           $this->_tpl_vars['current_user_mc'] = $current_user->mc_c;
-                                            ?>
-                                           <?php if ($this->_tpl_vars['current_user_admin'] != 1): ?>
-                                           <?php if (((is_array($_tmp=$this->_tpl_vars['current_user_function'])) ? $this->_run_mod_handler('strstr', true, $_tmp, '^sales^') : strstr($_tmp, '^sales^')) || $this->_tpl_vars['current_user_mc'] == 'yes'): ?>
-                                       <a id="opp_hide" class="dashboard_opp_hide" href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3DEditView%26return_module%3DOpportunities%26return_action%3DDetailView">Create Opportunities</a>
-                                       <?php endif; ?>
-                                       <?php endif; ?>
-                                    
+                                       <a id="opp_hide" class="dashboard_opp_hide" href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3DEditView%26return_module%3DOpportunities%26return_action%3DDetailView">Create Opportunity</a>
                                     </li>
                               
                                 <?php $_from = $this->_tpl_vars['modules']['extra']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }if (count($_from)):
@@ -396,7 +385,7 @@ if ($this->_foreach['groupList']['total'] > 0):
                         <?php ob_start(); ?>parentTab=<?php echo $this->_tpl_vars['group']; ?>
 <?php $this->_smarty_vars['capture']['extraparams'] = ob_get_contents();  $this->assign('extraparams', ob_get_contents());ob_end_clean(); ?>
                         <li class="topnav <?php if (($this->_foreach['groupList']['iteration'] == $this->_foreach['groupList']['total'])): ?>all<?php endif; ?>">
-                            <span class="notCurrentTabLeft">&nbsp;</span><span  class="notCurrentTab">
+                            <span class="notCurrentTabLeft">&nbsp;</span><span id="check_dept" class="notCurrentTab">
                             <a href="#" id="grouptab_<?php echo ($this->_foreach['groupList']['iteration']-1); ?>
 " class="dropdown-toggle grouptab opp_hide">Departments</a>
                             <span class="notCurrentTabRight">&nbsp;</span>
@@ -407,6 +396,39 @@ if ($this->_foreach['groupList']['total'] > 0):
                                     </li>
                                     <li>
                                        <a  href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DAccounts%26action%3DEditView%26return_module%3DAccounts%26return_action%3Dindex">Create Departments</a>
+                                    </li>
+                              
+                                <?php $_from = $this->_tpl_vars['modules']['extra']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }if (count($_from)):
+    foreach ($_from as $this->_tpl_vars['submodule'] => $this->_tpl_vars['submodulename']):
+?>
+                                    <li>
+                                        <a href="<?php echo smarty_function_sugar_link(array('module' => $this->_tpl_vars['submodule'],'link_only' => 1,'extraparams' => $this->_tpl_vars['extraparams']), $this);?>
+"><?php echo $this->_tpl_vars['submodulename']; ?>
+</a>
+                                    </li>
+                                <?php endforeach; endif; unset($_from); ?>
+                            </ul>
+                        </li>
+                    <?php endforeach; endif; unset($_from); ?>
+                    <?php $_from = $this->_tpl_vars['groupTabs']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }$this->_foreach['groupList'] = array('total' => count($_from), 'iteration' => 0);
+if ($this->_foreach['groupList']['total'] > 0):
+    foreach ($_from as $this->_tpl_vars['group'] => $this->_tpl_vars['modules']):
+        $this->_foreach['groupList']['iteration']++;
+?>
+                        <?php ob_start(); ?>parentTab=<?php echo $this->_tpl_vars['group']; ?>
+<?php $this->_smarty_vars['capture']['extraparams'] = ob_get_contents();  $this->assign('extraparams', ob_get_contents());ob_end_clean(); ?>
+                        <li class="topnav <?php if (($this->_foreach['groupList']['iteration'] == $this->_foreach['groupList']['total'])): ?>all<?php endif; ?>">
+                            <span class="notCurrentTabLeft">&nbsp;</span><span id="check_activity" class="notCurrentTab">
+                            <a href="#" id="grouptab_<?php echo ($this->_foreach['groupList']['iteration']-1); ?>
+" class="dropdown-toggle grouptab opp_hide">Activities</a>
+                            <span class="notCurrentTabRight">&nbsp;</span>
+                            <ul class="dropdown-menu" role="menu"  <?php if (($this->_foreach['groupList']['iteration'] == $this->_foreach['groupList']['total'])): ?> class="All"<?php endif; ?>>
+                          
+                                    <li>
+                                       <a href="index.php?module=Calls&action=index">View Activities</a>
+                                    </li>
+                                    <li>
+                                       <a  href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DCalls%26action%3DEditView%26return_module%3DCalls%26return_action%3DDetailView">Create Activities</a>
                                     </li>
                               
                                 <?php $_from = $this->_tpl_vars['modules']['extra']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }if (count($_from)):

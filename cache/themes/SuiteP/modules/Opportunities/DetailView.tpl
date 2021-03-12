@@ -231,34 +231,6 @@
 
 
 <div class="col-xs-12 col-sm-6 detail-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label col-2-label">
-
-
-{capture name="label" assign="label"}{sugar_translate label='LBL_CRITICAL' module='Opportunities'}{/capture}
-{$label|strip_semicolon}:
-</div>
-
-
-<div class="col-xs-12 col-sm-8 detail-view-field" type="enum" field="critical_c" >
-
-{if !$fields.critical_c.hidden}
-{counter name="panelFieldCount" print=false}
-
-
-{if is_string($fields.critical_c.options)}
-<input type="hidden" class="sugar_field" id="{$fields.critical_c.name}" value="{ $fields.critical_c.options }">
-{ $fields.critical_c.options }
-{else}
-<input type="hidden" class="sugar_field" id="{$fields.critical_c.name}" value="{ $fields.critical_c.value }">
-{ $fields.critical_c.options[$fields.critical_c.value]}
-{/if}
-{/if}
-
-</div>
-
-
 </div>
 
 </div>

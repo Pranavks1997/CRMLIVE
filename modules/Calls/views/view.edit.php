@@ -68,6 +68,8 @@ class CallsViewEdit extends ViewEdit
      */
     public function display()
     {
+         echo file_get_contents("custom/modules/Calls/other_multi_select_user/m-select.html");
+        echo '<link rel="stylesheet" type="text/css" href="custom/modules/Calls/editview.css">';
         global $json;
         $json = getJSONobj();
         $json_config = new json_config();

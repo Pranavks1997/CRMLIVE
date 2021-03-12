@@ -6,1432 +6,184 @@ use Robo\Task\File\Concat;
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 require_once('include/MVC/Controller/SugarController.php');
-require_once('include/UploadStream.php');
+require_once('includes/functions.php');
+require_once('includes/helpers.php');
 
-class HomeController extends SugarController
-{
-    public function action_pending_records(){
-        $db = \DBManagerFactory::getInstance();
-        $GLOBALS['db'];
-
-        $fetch_pending_records = "SELECT opp_id  FROM approval_table WHERE pending = 1";
-        $fetch_total_pending_record_result = $GLOBALS['db']->query($fetch_pending_records);
-        $data = '<table class="pending-request-table" style="font-family: Lato, Lato, Arial, sans-serif !important;
-            height: 400px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            display: -webkit-box;
-            width: 100%;
-            flex-direction: column;"
-            >
-            <tbody style="display: table; width: 100%;">
-            <ul class="table-ul" style="display: flex;
-            align-items: center;height: 50px;justify-content: space-between;">
-            
-            <div class="option_tabs_container">
-            <li class="tableHeader-Content option_tab_header_btn" id="option_one-tab" for="option_one">
-            <div class="prt-top-headings">Qualify Lead (25) </div>
-            </li>
-            
-            
-            <li class="option_tab_header_btn" id="option_two-tab" for="option_two">
-            <div class="prt-top-headings" >Qualify Opportunity (23) </div>
-            </li>
-            <li class="tableHeader-Content option_tab_header_btn" id="option_three-tab" for="option_three">
-            <div class="prt-top-headings">Qualify DPR (20) </div>
-            </li>
-            
-            
-            <li class="tableHeader-Content option_tab_header_btn" id="option_four-tab" for="option_four">
-            <div class="prt-top-headings" >Qualify Bid (16) </div>
-            </li>
-            <li class="tableHeader-Content option_tab_header_btn" id="option_five-tab" for="option_five">
-            <div class="prt-top-headings">Close (12) </div>
-            </li>
-            
-            
-            <li class="tableHeader-Content option_tab_header_btn" id="option_six-tab" for="option_six">
-            <div class="prt-top-headings" >Drop (2) </div>
-            </li>
-            </div>
-            
-            <div>
-            <li class="search-box-block">
-            <div class="search-box">
-            <div style="display: flex;">
-            <div style="display: flex; margin-left: auto;">
-            <button class="filter" id="filter_myBtn" onclick="openFilterDialog()" style="padding:10; border: none !important;">
-            <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
-            </button>
-            
-            <button class="cog" id="setting_myBtn" onclick="openSettingDialog()" style="padding:10; border: none !important;">
-            <i id="setting_myBtn" class="fa fa-list" aria-hidden="true"> </i>
-            </button>
-            </div>
-            </div>
-            </div>
-            
-            </li>
-            </div>
-            
-            </ul>
-            <tr class="table-header-row">
-            <th class="table-header">Name</th>
-            <th class="table-header">Primary Responsibility</th>
-            <th class="table-header">Amount ( in Cr/Mn )</th>
-            <th class="table-header">RFP/EOI Published</th>
-            <th class="table-header">Modified Date</th>
-            <th class="table-header">Status</th>
-            <th class="table-header">Created Date</th>
-            <th class="table-header">Action</th>
-            </tr>
-        ';
-            while($pending_data_row = $GLOBALS['db']->fetchByAssoc($fetch_total_pending_record_result))
-            {
-                $opportunity_id = $pending_data_row["opp_id"];
-                $pending_opportunitiy_data = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE id = '$opportunity_id'  ORDER BY `opportunities`.`date_modified` DESC";
-                $fetch_result_pending_opportunity = $GLOBALS['db']->query($pending_opportunitiy_data);
-
-                while($pending_data_opportunity_row =  $GLOBALS['db']->fetchByAssoc($fetch_result_pending_opportunity))
-                {
-                    $created_by_id = $pending_data_opportunity_row['assigned_user_id'];
-                    $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
-                    $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
-                    $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
-                    $user_name = $user_name_fetch_row['user_name'];
-                    $first_name = $user_name_fetch_row['first_name'];
-                    $last_name = $user_name_fetch_row['last_name'];
-                    $full_name = $first_name .' '. $last_name;
-                    $data .= ' <tr class="tabvalue">
-                            <td>'.$pending_data_opportunity_row['name'].'</td>
-                            <td>'.$full_name.'</td>
-                            <td>'.$pending_data_opportunity_row['amount'].'</td>
-                            <td>'.$pending_data_opportunity_row['rfporeoipublished_c'].'</td>
-                            <td>'.$pending_data_opportunity_row['date_modified'].'</td>
-                            <td>'.$pending_data_opportunity_row['status_c'].'</td>
-                            <td>'.$pending_data_opportunity_row['date_entered'].'</td>
-                            <td>
-                            <div style="font-size: 20px;">
-                            <i class="fa fa-check-circle"></i>
-                            <i class="fa fa-times-circle"></i>
-                            <i class="fa fa-info-circle"></i>
-                            </div>
-                            </td>
-                            </tr>';
-                }
-            }
-    }
-
-    public function action_filter_opportunities_by_status(){
-        try
-        {
-            global $current_user;
-            $searchTerm = @$_GET['searchTerm'];
-            $status_c = $_GET['status_c'];
-            $day = $_GET['day'];
-            $dropped = $_GET['dropped'];
-            $fetch_by_status = "";
-            $todayDate = date("Y/m/d");
-            $intervalDate = date('y-m-d', strtotime( -$day." ".'days'));
-            $db = \DBManagerFactory::getInstance();
-            $GLOBALS['db'];
-            $log_in_user_id = $current_user->id;
-            $organiztion_global_count = "SELECT count(*) as org_global_count FROM opportunities WHERE opportunity_type = 'global' AND deleted != 1 AND date_entered >= now() - interval '$day' day";
-            $organiztion_count_result = $GLOBALS['db']->query($organiztion_global_count);
-            $fetch_organization_count = $GLOBALS['db']->fetchByAssoc($organiztion_count_result);
-            $global_organization_count = $fetch_organization_count['org_global_count'];
-
-            $columnFilter = @$_GET;
-            //$columnAmount = @$columnFilter['Amount'];
-            $columnDepartment = @$columnFilter['new_department_c'];
-            $columnREPEOI = @$columnFilter['REP-EOI-Published'];
-            $columnClosedDate = @$columnFilter['Closed-Date'];
-            $columnClosedBy = @$columnFilter['Closed-by'];
-            $columnDateCreated = @$columnFilter['Date-Created'];
-            $columnDateClosed = @$columnFilter['Date-Closed'];
-
-            $columnTaggedMembers = @$columnFilter['Tagged-Members'];
-            $columnViewedBy = @$columnFilter['Viewed-by'];
-            $columnPreviousResponsibility = @$columnFilter['Previous-Responsbility'];
-            $columnAttachment = @$columnFilter['Attachment'];
-
-
-            $non_global_organization_count = $this->get_non_global_op_count($day);
-            $data = '<table class="bottomtable" style="font-family: Lato, Lato, Arial, sans-serif !important;
-            height: 400px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            display: -webkit-box;
-            width: 100%;
-            flex-direction: column;">
-            <tbody style="display: table; width: 100%;">
-            <ul class="table-ul" style="display: flex;
-            align-items: center;height: 50px">
-
-                <li class="tableHeader-Content">
-                    <div id="global-opportunities" class="global-opportunities" onclick="filter_by_type(\'global\','.$day.')">Global Opportunities ('.$global_organization_count.') </div>
-                </li>
-
-
-                <li class="tableHeader-Content">
-                    <div id="non-global-opportunities" class="non-global-opportunities" onclick="filter_by_type(\'non_global\','.$day.')">Non-Global Opportunities ('.$non_global_organization_count.') </div>
-                </li>
-
-
-                <li class="search-box-block">
-                    <div class="search-box">
-                        <!-- ----------- -->
-                        <div style="display: flex;">
-                            <div style="display: flex; justify-content: center; align-items: center;">
-                                <input type="search" placeholder="Search by name" class="opportunity-search" id="opportunity-search" data-type="filter_opportunities_by_status" data-value="'.$status_c.'" value="'.$searchTerm.'" name="search" />
-                                <button class="searchhh opportunity-search-btn" id="search-btn">
-                                    <i id="search-icon" class="fa fa-search" aria-hidden="true"> </i>
-                                </button>
-                            </div>
-                            <div style="display: flex; margin-left: auto;">
-                                <button class="filter" id="filter_myBtn" onclick="openFilterDialog()" style="padding:10; border: none !important;">
-                                    <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
-                                </button>
-                               
-                                <button class="cog" id="setting_myBtn" onclick=openSettingDialog("opportunities","action_filter_opportunities_by_status","'.$status_c.'") style="padding:10; border: none !important;">
-                                    <i id="setting_myBtn" class="fa fa-list" aria-hidden="true"> </i>
-                                </button>';
-            if ($log_in_user_id == '1') {
-                $data .='<button class="cog download" id="download_btn" class="download-btn" data-type="opportunity" data-action="status" data-value="'.$status_c.'" data-dropped="'.$dropped.'" style="padding:10; border: none !important;">
-                            <i class="fa fa-download" aria-hidden="true"> </i>
-                        </button>';
-            }
-            
-            $data .= '</div>
-                    </div>
-                </div>
-
-                </li>
-
-            </ul>
-            <tr class="table-header-row">
-            <th class="table-header">Name</th>
-            <th class="table-header">Primary Responsibility</th>';
-
-            if(!@$_GET['customColumns']):
-            /*if($columnAmount){
-                $data .= '<th class="table-header">Amount ( in Cr )</th>';
-            }*/
-            if($columnDepartment){
-                $data .= '<th class="table-header">Department</th>';
-            }
-            if($columnREPEOI){
-                $data .= '<th class="table-header">RFP/EOI Published</th>';
-            }
-            if($columnClosedDate){
-                $data .= '<th class="table-header">Modified Date</th>';
-            }
-            if($columnClosedBy){
-                $data .= '<th class="table-header">Modified By</th>';
-            }
-            if($columnDateCreated){
-                $data .= '<th class="table-header">Created Date</th>';
-            }
-            if($columnDateClosed){
-                $data .= '<th class="table-header">Closed Date</th>';
-            }
-            if($columnTaggedMembers){
-                $data .= '<th class="table-header">Tagged Members</th>';
-            }
-            if($columnViewedBy){
-                $data .= '<th class="table-header">Viewed By</th>';
-            }
-            if($columnPreviousResponsibility){
-                $data .= '<th class="table-header">Previous Responsibility</th>';
-            }
-            if($columnAttachment){
-                $data .= '<th class="table-header">Attachment</th>';
-            }
-            endif;
-
-            $data .= $this->getColumnFiltersHeader($columnFilter);
-            
-            $data .= '<th class="table-header">Action</th></tr>';
-           //$fetch_by_status = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE status_c='$status_c' AND  date_entered BETWEEN '".$intervalDate."' AND '".$todayDate."'  AND deleted != 1";
-            $fetch_by_status = "SELECT opportunities.*, opportunities_cstm.*, 
-            CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities 
-            LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
-            LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
-            WHERE opportunities_cstm.status_c='$status_c' AND opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day ";
-            
-            if($searchTerm) {
-                $fetch_by_status .= " AND opportunities.name LIKE '%$searchTerm%' ";
-            }
-            $opp_id_show = $this->private_opps();
-            $fetch_by_status .= " AND (opportunities.opportunity_type = 'global' OR opportunities.id  IN ('".implode("','",$opp_id_show)."'))";
-
-            if($status_c == 'Closed'){
-                $fetch_by_status .= ' AND opportunities_cstm.closure_status_c = "won" ';
-            }else if($status_c == 'Dropped' ){
-                $fetch_by_status = "SELECT opportunities.*, opportunities_cstm.*, 
-                CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value
-                FROM opportunities 
-                LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
-                LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
-                WHERE opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day ";
-                if($searchTerm) {
-                    $fetch_by_status .= " AND opportunities.name LIKE '%$searchTerm%' ";
-                }
-                $opp_id_show = $this->private_opps();
-                $fetch_by_status .= " AND (opportunities.opportunity_type = 'global' OR opportunities.id  IN ('".implode("','",$opp_id_show)."'))";
-                if ($dropped) {
-                    if ($dropped == 'Dropped') {
-                        $fetch_by_status .= "AND status_c='Dropped'";
-                    } else {
-                        $fetch_by_status .= "AND (status_c='Closed' AND opportunities_cstm.closure_status_c = 'lost')";
-                    }
-                } else {
-                    $fetch_by_status .= "AND (status_c='Dropped')";
-                }
-            }
-
-            if($_GET['filter'])
-                $fetch_by_status .= $this->getFilterQuery();
-            
-            //echo $fetch_by_status; die;
-
-            /*if($_GET['filter'] && @$_GET['filter-responsibility']){
-                $responsibility = $_GET['filter-responsibility'];
-                $fetch_by_status .= " AND opportunities.created_by = '$responsibility' ";
-            }
-            if($_GET['filter'] && @$_GET['filter-rfp-eoi-status']){
-                $rpfEOIStatus = $_GET['filter-rfp-eoi-status'];
-                $fetch_by_status .= " AND opportunities_cstm.rfporeoipublished_c = '$rpfEOIStatus' ";
-            }
-            if($_GET['filter'] && @$_GET['filter-min-price'] && @$_GET['filter-max-price']){
-                $minPrice = $_GET['filter-min-price'];
-                $maxPrice = $_GET['filter-max-price'];
-                $fetch_by_status .= " AND opportunities_cstm.budget_allocated_oppertunity_c BETWEEN '$minPrice' AND '$maxPrice' ";
-            }
-            if($_GET['filter'] && @$_GET['filter-closed-date-from'] && @$_GET['filter-closed-date-to']){
-                $closedDateFrom = $_GET['filter-closed-date-from'];
-                $closedDateTo = $_GET['filter-closed-date-to'];
-                $fetch_by_status .= " AND DATE_FORMAT(opportunities.date_modified, '%d/%m/%Y') BETWEEN '$closedDateFrom' AND '$closedDateTo' ";
-            }
-            if($_GET['filter'] && @$_GET['filter-created-date-from'] && @$_GET['filter-created-date-to']){
-                $createdDateFrom = $_GET['filter-created-date-from'];
-                $createdDateTo = $_GET['filter-created-date-to'];
-                $fetch_by_status .= " AND DATE_FORMAT(opportunities.date_entered,'%d/%m/%Y') BETWEEN '$createdDateFrom' AND '$createdDateTo' ";
-            }*/
-
-            $fetch_by_status .= "  ORDER BY `opportunities`.`date_modified` DESC";
-
-            // echo $fetch_by_status; die;
-
-           //Pagination Count
-           $limit = 5;
-           $paginationQuery = $GLOBALS['db']->query($fetch_by_status);
-           $totalCount = mysqli_num_rows($paginationQuery);
-           $numberOfPages = ceil( $totalCount / $limit );
-           
-           $offset = @$_GET['page'] ? ($_GET['page'] - 1)  * $limit : 0;
-
-           $fetch_by_status .= " LIMIT $offset, $limit";
-           
-            $fetch_by_status_result = $GLOBALS['db']->query($fetch_by_status);
-            while($row = $GLOBALS['db']->fetchByAssoc($fetch_by_status_result))
-            {
-                $created_by_id = $row['assigned_user_id'];
-                $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
-                $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
-                $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
-                $user_name = $user_name_fetch_row['user_name'];
-                $first_name = $user_name_fetch_row['first_name'];
-                $last_name = $user_name_fetch_row['last_name'];
-                if ($user_name_fetch_row['reports_to_id']) {
-                    $reports_to = $this->get_user_details_by_id($user_name_fetch_row['reports_to_id']);
-                    $reports_to_full_name = ' <i class="fa fa-arrow-right"></i> ' . $reports_to['first_name'] .' '. $reports_to['last_name'];
-                } else {
-                    $reports_to_full_name = "";
-                }
-                $full_name = "$first_name  $last_name $reports_to_full_name";
-                $closed_by = '';
-                if (!empty($row['date_modified'])) {
-                    $modified_user_id = $row['modified_user_id'];
-                    $modified_user_query = "SELECT * FROM users WHERE id='$modified_user_id'";
-                    $modified_user_query_fetch = $GLOBALS['db']->query($modified_user_query);
-                    $modified_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($modified_user_query_fetch);
-                    $closed_by_first_name = $modified_user_query_fetch_row['first_name'];
-                    $closed_by_last_name = $modified_user_query_fetch_row['last_name'];
-                    $closed_by = "$closed_by_first_name $closed_by_last_name";
-                    // To Do: Find actual closed by
-                }
-                $oppID = $row['id'];
-                $data .='<tr>
-                            <td class="table-data"><a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'">';
-                $tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
-                $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
-                $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
-                if($tagged_user_query_fetch_row)
-                    $tagged_users = $tagged_user_query_fetch_row['user_id'];
-                else
-                    $tagged_users = '';
-
-                if ((strpos($tagged_users, $log_in_user_id) !== false)) {
-                    $data .= $row['name']. ' <i class="fa fa-tag" style="font-size: 12px; color:green"></i>';
-                } else {
-                    $data .= $row['name'];
-                }
-                $data .='</a></td><td class="table-data">'.$full_name.'</td>';
-
-                if(!@$_GET['customColumns']):
-                /*if($columnAmount){
-                $data .= '<th class="table-header">Amount ( in Cr )</th>';
-            }*/
-            if($columnDepartment){
-                $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label($row['new_department_c'])))).'</td>';
-            }
-                if($columnREPEOI){
-                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label($row['rfporeoipublished_c'])))).'</td>';
-                }
-                if($columnClosedDate){
-                    $data .= '<td class="table-data">'.date_format(date_create($row['date_modified']),'d/m/Y').'</td>'; 
-                }
-                if($columnClosedBy){
-                    $data .= '<td class="table-data" >'.$closed_by.'</td>';
-                }
-                if($columnDateCreated){
-                    $data .= '<td class="table-data">'.date_format(date_create($row['date_entered']),'d/m/Y').'</td>';
-                }
-                if($columnDateClosed){
-                    if($row['date_closed']){
-                        $closedDate = date_format(date_create($row['date_closed']),'d/m/Y');
-                    }else{
-                        $closedDate = '';
-                    }
-                    $data .= '<td class="table-data">'.$closedDate.'</td>';
-                }
-                
-                if($columnTaggedMembers){
-                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getTaggedMembers($row['id']) )))).'</td>';
-                }
-                if($columnViewedBy){
-                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['modified_user_id']) )))).'</td>';
-                }
-                if($columnPreviousResponsibility){
-                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['assigned_user_id']) )))).'</td>';
-                }
-                if($columnAttachment){
-                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $row['file_url'] ? $row['file_url'] : '' )))).'</td>';
-                }
-                endif;
-
-                $data .= $this->getColumnFiltersBody($columnFilter, $row);
-                        
-                        
-                        /*<td class="table-data">'.($this->beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>
-                                        <td class="table-data">'.($this->beautify_label($row['rfporeoipublished_c'])).'</td>
-                                        <td class="table-data">'.date_format(date_create($row['date_closed']),'d/m/Y').'</td>
-                                        <td class="table-data"  style="color: blue">'.$closed_by.'</td>
-                                        <td class="table-data">'.date_format(date_create($row['date_entered']),'d/m/Y').'</td>*/;
-                $data .= '
-                    <td class="table-data">
-                    <div style="display: flex; width: 150px; align-items: center; padding: 10px; justify-content: space-between; margin:0;">';
-                
-                $data .= '<button class="tag1" id="reassignmentBtn" style="margin-right: 0px;width: 18px;" onclick="fetchReassignmentDialog(\''.$row['id'].'\')">';
-                if ($this->is_reassignment_applicable($row['id'])):
-                    $data .= '<i id="reassignment-icon" title="Re-assign User" class="fa fa-user" aria-hidden="true" style="color:black; font-size: 1.8rem;"> </i>';
-                endif;
-                $data .= '</button>';
-                
-                $data .= '<button class="tag1" id="deselectBtn" style="margin-right: 0px; width: 18px;" onClick=getSequenceFlow("'.$row['id'].'")>';
-                if($this->checkRecentActivity($row['id'])):
-                    $data .= '<img id="search-icon" title="Audit Trail" src="modules/Home/assets/Frame-12.svg" alt="svg" style="color: #333333;"/>';   
-                endif;
-                $data .= '</button>';
-
-                // if ($this->is_tagging_applicable($row['id'])) {
-                //     $data .='<button class="tag" id="deselectBtn" onclick="fetchDeselectDialog(\''.$row['id'].'\')">                                            <i id="search-icon" class="fa fa-tag" aria-hidden="true"> </i>
-                //             </button>';
-                // }
-                $data .= '<button class="tag1 action-item-space" id="deselectBtn" onclick="fetchDeselectDialog(\''.$row['id'].'\')">';
-                    if ($this->is_tagging_applicable($row['id'])) {
-                        $data .='<i id="search-icon" title="Tag/Untag Users" class="fa fa-tag" aria-hidden="true"> </i>';
-                    }
-                    $data .= '</button>';
-                $data .='<a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'" class="eye" id="search-btn">
-                        <i id="search-icon" title="View" class="fa fa-eye" aria-hidden="true"> </i>
-                        </a>
-                    </div>
-                    </td>
-                </tr>';
-                /*$data .='
-                     <tr>
-                        <td class="table-data">'.$row['name'].'</td>
-                        <td class="table-data" style="color: blue">'.$full_name.'</td>
-                                        <td class="table-data">'.($this->beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>
-                                        <td class="table-data">'.($this->beautify_label($row['rfporeoipublished_c'])).'</td>
-                                        <td class="table-data" >'.date_format(date_create($row['date_closed']),'d/m/Y').'</td>
-                                        <td class="table-data"  style="color: blue">'.$closed_by.'</td>
-                                        <td class="table-data">'.date_format(date_create($row['date_entered']),'d/m/Y').'</td>
-                                        <td class="table-data">
-                                        <div style="display: flex; width: 100%; align-items: center; padding: 10px; justify-content: flex-start;">
-                                          <button class="tag" id="deselectBtn" onclick="fetchDeselectDialog(\''.$row['id'].'\')">
-                                            <i id="search-icon" class="fa fa-tag" aria-hidden="true"> </i>
-                                          </button>
-                                          <a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'" class="eye" id="search-btn">
-                                            <i id="search-icon" class="fa fa-eye" aria-hidden="true"> </i>
-                                          </a>
-                                        </div>
-                                      </td>
-                                    </tr>';*/
-            }
-            $data.='</tbody></table>';
-
-            //Pagination 
-            $page = @$_GET['page'] ? $_GET['page'] : 1;
-            if ($totalCount > ( $page * $limit)){
-                $currentPost = ($page * $limit);
-            } else {
-                $currentPost = $totalCount;
-            }
-            
-            $data .= '<div class="pagination text-right">';
-            $data .= '<p class="d-inline-block">Showing '.$currentPost.' of '.$totalCount.'</p>';
-            $data .= $this->pagination($page, $numberOfPages, 'filter_opportunities_by_status', $status_c, $searchTerm, $_GET['filter']);
-            $data .= '</div>';
-
-            $columnFilterHtml = $this->getColumnFilters($status_c);
-            $filters            = $this->getFilterHtml('opportunity', $columnFilter);
-
-            echo json_encode(array(
-                'data'          => $data,
-                'columnFilter'  => $columnFilterHtml,
-                'filters'       => $filters
-            ));
-
-            //echo $data;
-        }catch(Exception $e){
-            echo json_encode(array("status"=>false, "message" => "Some error occured"));
-        }
-        die();
-    }
-
-    public function action_filter_by_opportunity_type(){
-        try
-        {
-            global $current_user;
-            // print_r($current_user);
-            // die();
-            $log_in_user_id = $current_user->id;
-            // 	if($current_user->is_admin !=1){
-            // 	    echo 'not admin';
-            // 	}else{
-            // 	     echo 'admin';
-            // 	}
-            // 	die();
-            $db = \DBManagerFactory::getInstance();
-
-            $searchTerm = @$_GET['searchTerm'];
-            $type = $_GET['type'];
-            $day = $_GET['day'];
-            $todayDate = date("Y/m/d");
-            $intervalDate = date('y-m-d', strtotime( -$day." ".'days'));
-            $db = \DBManagerFactory::getInstance();
-            $GLOBALS['db'];
-
-            $columnFilter = @$_GET;
-            //$columnAmount = @$columnFilter['Amount'];
-            $columnDepartment = @$columnFilter['new_department_c'];
-            $columnREPEOI = @$columnFilter['REP-EOI-Published'];
-            $columnClosedDate = @$columnFilter['Closed-Date'];
-            $columnClosedBy = @$columnFilter['Closed-by'];
-            $columnDateCreated = @$columnFilter['Date-Created'];
-            $columnDateClosed = @$columnFilter['Date-Closed'];
-
-            $columnTaggedMembers = @$columnFilter['Tagged-Members'];
-            $columnViewedBy = @$columnFilter['Viewed-by'];
-            $columnPreviousResponsibility = @$columnFilter['Previous-Responsbility'];
-            $columnAttachment = @$columnFilter['Attachment'];
-
-
-            $organiztion_global_count = "SELECT count(*) as org_global_count FROM opportunities WHERE opportunity_type = 'global' AND deleted != 1 AND date_entered >= now() - interval '$day' day";
-            $organiztion_count_result = $GLOBALS['db']->query($organiztion_global_count);
-            $fetch_organization_count = $GLOBALS['db']->fetchByAssoc($organiztion_count_result);
-            $global_organization_count = $fetch_organization_count['org_global_count'];
-
-            $non_global_organization_count = $this->get_non_global_op_count($day);
-
-            $data = '<table class="bottomtable" style="font-family: Lato, Lato, Arial, sans-serif !important;
-            height: 400px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            display: -webkit-box;
-            width: 100%;
-            flex-direction: column;">
-            <tbody style="display: table; width: 100%;">
-            <ul class="table-ul" style="display: flex;
-            align-items: center;height: 50px">
-
-                <li class="tableHeader-Content">
-                    <div id="global-opportunities" class="global-opportunities" onclick="filter_by_type(\'global\','.$day.')">Global Opportunities ('.$global_organization_count.') </div>
-                </li>
-
-
-                <li class="tableHeader-Content">
-                    <div id="non-global-opportunities" class="non-global-opportunities" onclick="filter_by_type(\'non_global\','.$day.')">Non-Global Opportunities ('.$non_global_organization_count.') </div>
-                </li>
-
-
-                <li class="search-box-block">
-                    <div class="search-box">
-                        <!-- ----------- -->
-                        <div style="display: flex;">
-                            <div style="display: flex; justify-content: center; align-items: center;">
-                                <input type="search" placeholder="Search by name" class="opportunity-search" id="opportunity-search" data-type="filter_by_opportunity_type" data-value="'.$type.'" value="'.$searchTerm.'" name="search" />
-                                <button class="searchhh opportunity-search-btn" id="search-btn">
-                                    <i id="search-icon" class="fa fa-search" aria-hidden="true"> </i>
-                                </button>
-                            </div>
-                            <div style="display: flex; margin-left: auto;">
-                                <button class="filter" id="filter_myBtn" onclick="openFilterDialog()" style="padding:10; border: none !important;">
-                                    <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
-                                </button>
-                               
-                                <button class="cog" id="setting_myBtn" onclick=openSettingDialog("opportunities","action_filter_by_opportunity_type","'.$type.'") style="padding:10; border: none !important;">
-                                    <i id="setting_myBtn" class="fa fa-list" aria-hidden="true"> </i>
-                                </button>';
-                                if ($log_in_user_id == '1') {
-                                    $data .='<button class="cog download" id="download_btn" class="download-btn" data-type="opportunity" data-action="type" data-value="'.$type.'" style="padding:10; border: none !important;">
-                                                <i class="fa fa-download" aria-hidden="true"> </i>
-                                            </button>';
-                                }
-                                
-                                $data .= '</div>
-                        </div>
-                    </div>
-
-                </li>
-
-            </ul>
-            <tr class="table-header-row">
-            <th class="table-header">Name</th>
-            <th class="table-header">Primary Responsibility</th>';
-
-            if(!@$_GET['customColumns']):
-            /*if($columnAmount){
-                $data .= '<th class="table-header">Amount ( in Cr )</th>';
-            }*/
-            if($columnDepartment){
-                $data .= '<th class="table-header">Department</th>';
-            }
-            if($columnREPEOI){
-                $data .= '<th class="table-header">RFP/EOI Published</th>';
-            }
-            if($columnClosedDate){
-                $data .= '<th class="table-header">Modified Date</th>';
-            }
-            if($columnClosedBy){
-                $data .= '<th class="table-header">Modified By</th>';
-            }
-            if($columnDateCreated){
-                $data .= '<th class="table-header">Created Date</th>';
-            }
-            if($columnDateClosed){
-                $data .= '<th class="table-header">Closed Date</th>';
-            }
-            if($columnTaggedMembers){
-                $data .= '<th class="table-header">Tagged Members</th>';
-            }
-            if($columnViewedBy){
-                $data .= '<th class="table-header">Viewed By</th>';
-            }
-            if($columnPreviousResponsibility){
-                $data .= '<th class="table-header">Previous Responsibility</th>';
-            }
-            if($columnAttachment){
-                $data .= '<th class="table-header">Attachment</th>';
-            }
-            endif;
-
-            $data .= $this->getColumnFiltersHeader($columnFilter);
-
-            $data .= '<th class="table-header">Action</th>
-        </tr>';
-            $type = $_GET['type'];
-            
-            $fetch_query = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE opportunity_type='$type' AND deleted != 1 AND date_entered >= now() - interval '$day' day";
-            if($type == 'non_global'){
-                $opp_id_show = $this->private_opps();
-                $fetch_query .= " AND opportunities.id  IN ('".implode("','",$opp_id_show)."')";
-            }
-            if($searchTerm){
-                $fetch_query .= " AND name LIKE '%$searchTerm%'";
-            }
-            
-            if($_GET['filter'])
-                $fetch_query .= $this->getFilterQuery();
-
-            //echo $fetch_query; die;
-
-            $fetch_query .= " ORDER BY `opportunities`.`date_modified` DESC";
-
-            //Pagination Count
-            $limit = 5;
-            $paginationQuery = $GLOBALS['db']->query($fetch_query);
-            $totalCount = mysqli_num_rows($paginationQuery);
-            $numberOfPages = ceil( $totalCount / $limit );
-            
-            $offset = @$_GET['page'] ? ($_GET['page'] - 1)  * $limit : 0;
-
-            $fetch_query .= " LIMIT $offset, $limit";
-
-            $result = $GLOBALS['db']->query($fetch_query);
-            while($row = $GLOBALS['db']->fetchByAssoc($result))
-            {
-                $created_by_id = $row['assigned_user_id'];
-                $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
-                $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
-                $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
-                $user_name = $user_name_fetch_row['user_name'];
-                $first_name = $user_name_fetch_row['first_name'];
-                $last_name = $user_name_fetch_row['last_name'];
-                if ($user_name_fetch_row['reports_to_id']) {
-                    $reports_to = $this->get_user_details_by_id($user_name_fetch_row['reports_to_id']);
-                    $reports_to_full_name = ' <i class="fa fa-arrow-right"></i> ' . $reports_to['first_name'] .' '. $reports_to['last_name'];
-                } else {
-                    $reports_to_full_name = "";
-                }
-                $full_name = "$first_name  $last_name $reports_to_full_name";
-                $closed_by = '';
-                if (!empty($row['date_modified'])) {
-                    $modified_user_id = $row['modified_user_id'];
-                    $modified_user_query = "SELECT * FROM users WHERE id='$modified_user_id'";
-                    $modified_user_query_fetch = $GLOBALS['db']->query($modified_user_query);
-                    $modified_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($modified_user_query_fetch);
-                    $closed_by_first_name = $modified_user_query_fetch_row['first_name'];
-                    $closed_by_last_name = $modified_user_query_fetch_row['last_name'];
-                    $closed_by = "$closed_by_first_name $closed_by_last_name";
-                    // To Do: Find actual closed by
-                }
-                $oppID = $row['id'];
-                $data .='<tr>
-                            <td class="table-data"><a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'">';
-                $tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
-                $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
-                $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
-                $tagged_users = $tagged_user_query_fetch_row['user_id'];
-                if ((strpos($tagged_users, $log_in_user_id) !== false)) {
-                    $data .= $row['name']. ' <i class="fa fa-tag" style="font-size: 12px; color:green"></i>';
-                } else {
-                    $data .= $row['name'];
-                }
-                $data .='</a></td><td class="table-data">'.$full_name.'</td>';
-
-                if(!@$_GET['customColumns']):
-                /*if($columnAmount){
-                $data .= '<th class="table-header">Amount ( in Cr )</th>';
-            }*/
-            if($columnDepartment){
-                $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label($row['new_department_c'])))).'</td>';
-            }
-                if($columnREPEOI){
-                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label($row['rfporeoipublished_c'])))).'</td>';
-                }
-                if($columnClosedDate){
-                    $data .= '<td class="table-data">'.date_format(date_create($row['date_modified']),'d/m/Y').'</td>'; 
-                }
-                if($columnClosedBy){
-                    $data .= '<td class="table-data" >'.$closed_by.'</td>';
-                }
-                if($columnDateCreated){
-                    $data .= '<td class="table-data">'.date_format(date_create($row['date_entered']),'d/m/Y').'</td>';
-                }
-                if($columnDateClosed){
-                    if($row['date_closed']){
-                        $closedDate = date_format(date_create($row['date_closed']),'d/m/Y');
-                    }else{
-                        $closedDate = '';
-                    }
-                    $data .= '<td class="table-data">'.$closedDate.'</td>';
-                }
-                
-                if($columnTaggedMembers){
-                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getTaggedMembers($row['id']) )))).'</td>';
-                }
-                if($columnViewedBy){
-                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['modified_user_id']) )))).'</td>';
-                }
-                if($columnPreviousResponsibility){
-                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['assigned_user_id']) )))).'</td>';
-                }
-                if($columnAttachment){
-                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $row['file_url'] ? $row['file_url'] : '' )))).'</td>';
-                }
-                endif;
-
-                $data .= $this->getColumnFiltersBody($columnFilter, $row);
-                        
-                        
-                /*<td class="table-data">'.($this->beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>
-                    <td class="table-data">'.($this->beautify_label($row['rfporeoipublished_c'])).'</td>
-                    <td class="table-data">'.date_format(date_create($row['date_closed']),'d/m/Y').'</td>
-                    <td class="table-data"  style="color: blue">'.$closed_by.'</td>
-                    <td class="table-data">'.date_format(date_create($row['date_entered']),'d/m/Y').'</td>*/;
-
-                $data .= '
-                    <td class="table-data">
-                    <div style="display: flex; width: 150px; align-items: center; padding: 10px; justify-content: space-between; margin: 0;">';
-
-                $data .= '<button class="tag1" id="reassignmentBtn" style="margin-right: 0px;width: 18px;" onclick="fetchReassignmentDialog(\''.$row['id'].'\')">';
-                if ($this->is_reassignment_applicable($row['id'])):
-                    $data .= '<i id="reassignment-icon" title="Re-assign User" class="fa fa-user" aria-hidden="true" style="color:black; font-size: 1.8rem;"> </i>';
-                endif;
-                $data .= '</button>';
-
-                $data .= '<button class="tag1" id="deselectBtn" style="margin-right: 0px;width: 18px;" onClick=getSequenceFlow("'.$row['id'].'")>';
-                if($this->checkRecentActivity($row['id'])):
-                    $data .= '<img id="search-icon" title="Audit Trail" src="modules/Home/assets/Frame-12.svg" alt="svg" style="color: #333333;"/>';   
-                endif;
-                $data .= '</button>';
-
-                // if ($this->is_tagging_applicable($row['id'])) {
-                //     $data .='<button class="tag" id="deselectBtn" onclick="fetchDeselectDialog(\''.$row['id'].'\')">                                            <i id="search-icon" class="fa fa-tag" aria-hidden="true"> </i>
-                //             </button>';
-                // }
-                $data .= '<button class="tag1 action-item-space" id="deselectBtn" onclick="fetchDeselectDialog(\''.$row['id'].'\')">';
-                if ($this->is_tagging_applicable($row['id'])) {
-                    $data .='<i id="search-icon" title="Tag/Untag Users" class="fa fa-tag" aria-hidden="true"> </i>';
-                }
-                $data .= '</button>';
-                $data .='
-                        <a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'" class="eye" id="search-btn">
-                        <i id="search-icon" title="View" class="fa fa-eye" aria-hidden="true"> </i>
-                        </a>
-                    </div>
-                    </td>
-                </tr>';
-            }
-            $data.='</tbody></table>';
-
-            //Pagination 
-            $page = @$_GET['page'] ? $_GET['page'] : 1;
-            if ($totalCount > ( $page * $limit)){
-                $currentPost = ($page * $limit);
-            } else {
-                $currentPost = $totalCount;
-            }
-            $data .= '<div class="pagination text-right">';
-            $data .= '<p class="d-inline-block">Showing '.$currentPost.' of '.$totalCount.'</p>';
-            $data .= $this->pagination($page, $numberOfPages, 'filter_by_opportunity_type', $type, $searchTerm, $_GET['filter']);
-            $data .= '</div>';
-
-            $columnFilterHtml = $this->getColumnFilters();
-            $filters            = $this->getFilterHtml('opportunity', $columnFilter);
-            echo json_encode(array(
-                'data'          => $data,
-                'columnFilter'  => $columnFilterHtml,
-                'filters'       => $filters
-            ));
-
-            //echo $data;
-        }catch(Exception $e){
-            echo json_encode(array("status"=>false, "message" => "Some error occured"));
-        }
-        die();
-    }
-
-    public function private_opps() {
-        global $current_user;
-        
-        $login_user_id=$current_user->id;
-            
-        $opp_id=array();
-        $assigned_user_id = array();
-        $multiple_approver_id = array();
-        $lineage = array();
-        $tagged_users=array();
-        $opp_type= array();
-        $opp_id_show=array();
-        $bid_commercial_id=array();
-        $mc_id=array();
-
-
-
-        $sql_opp="SELECT opportunities.id,opportunities.assigned_user_id,opportunities.opportunity_type,opportunities_cstm.multiple_approver_c AS approvers,tagged_user.user_id AS tagged_users_id, users_cstm.user_lineage as lineage 
-        FROM opportunities INNER JOIN opportunities_cstm ON opportunities_cstm.id_c=opportunities.id LEFT JOIN tagged_user ON tagged_user.opp_id = opportunities.id LEFT JOIN users_cstm ON users_cstm.id_c = opportunities.assigned_user_id 
-        WHERE opportunities.deleted=0";
-        $result_opp = $GLOBALS['db']->query($sql_opp);
-        
-        while($row_opp = $GLOBALS['db']->fetchByAssoc($result_opp) )
-        {
-            $opp_id[]=$row_opp['id'];
-            $assigned_user_id[]=$row_opp['assigned_user_id'];
-            $multiple_approver_id[]=$row_opp['approvers'];
-            $lineage[]=$row_opp['lineage'];
-            $tagged_users[]=$row_opp['tagged_users_id'];
-            $opp_type[]=$row_opp['opportunity_type'];
-        }
-        $sql_bid="SELECT id_c FROM `users_cstm` LEFT JOIN users ON users_cstm.id_c=users.id WHERE `bid_commercial_head_c`='commercial_team_head' OR `bid_commercial_head_c`='bid_team_head' AND users.deleted=0";
-        $result_bid = $GLOBALS['db']->query($sql_bid);
+class HomeController extends SugarController{
     
-        while($row_bid = $GLOBALS['db']->fetchByAssoc($result_bid) )
-        {
-            $bid_commercial_id[]=$row_bid['id_c'];
-            
-        }
-        $sql_mc="SELECT id_c FROM `users_cstm` LEFT JOIN users ON users_cstm.id_c=users.id WHERE `mc_c`='yes' AND users.deleted=0";
-        $result_mc = $GLOBALS['db']->query($sql_mc);
-        
-        while($row_mc = $GLOBALS['db']->fetchByAssoc($result_mc) )
-        {
-            $mc_id[]=$row_mc['id_c'];
-            
-        }
-        if(in_array($login_user_id,$mc_id) || $current_user->is_admin==1){ 
-            $opp_id_show=$opp_id;
-        }
-        else{
-                    
-            for($i=0;$i<count($opp_id);$i++){
-                
-                if($opp_type[$i]=='non_global'){
-
-                    if( in_array($login_user_id,explode(',',$tagged_users[$i])) || in_array($login_user_id,explode(',',$lineage[$i])) || in_array($login_user_id,explode(',',$multiple_approver_id[$i])) || in_array($login_user_id,explode(',',$assigned_user_id[$i]))  ) {
-                    
-                    
-                            array_push($opp_id_show,$opp_id[$i]);
-                            
-                    }
-                    
-                    
-                }
-            }
-            
-        }
-        return $opp_id_show;
+    public function action_getHtml(){
+        ob_start();
+        include_once 'templates/main.php';
+        $contents = ob_get_contents();
+        ob_end_clean();
+        echo json_encode(array('data' => $contents)); die;
     }
 
-    public function action_delegate_members(){
+    /* opportunities table */
+    public function action_getOpportunities(){
         try
         {
-            global $current_user;
-            // print_r($current_user);
-            // die();
-            $log_in_user_id = $current_user->id;
-            // 	if($current_user->is_admin !=1){
-            // 	    echo 'not admin';
-            // 	}else{
-            // 	     echo 'admin';
-            // 	}
-            // 	die();
-
-            $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
-            $check_user_team = "SELECT teamfunction_c from users LEFT JOIN users_cstm ON users.id = users_cstm.id_c WHERE id = '$log_in_user_id'";
-            $check_user_team_result = $GLOBALS['db']->query($check_user_team);
-            $user_team_row = $GLOBALS['db']->fetchByAssoc($check_user_team_result);
-            $user_team = $user_team_row['teamfunction_c'];
-            
-
-            // $fetch_query = "SELECT  u.* from users u JOIN users_cstm u2 ON u2.id_c = u.id WHERE u2.teamheirarchy_c = 'team_lead' ";
-            $fetch_query = "SELECT * FROM users WHERE `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC";
-            $result = $GLOBALS['db']->query($fetch_query);
-            $data = '<option value="" disabled selected>Select Option</option>';
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
-                    $full_name = $row['first_name'] . ' ' . $row['last_name'];
-                    $data .= '<option value="'.$row['id'].'" selected="">'.$full_name.'</option>';
-                }
-            } else {
-                echo "0 results";
-            }
-            echo json_encode(array('members'=>$data, 'logged_in_user_team'=>$user_team, 'logged_in_id' => $log_in_user_id));
-
-        }catch(Exception $e){
-            echo json_encode(array("status"=>false, "message" => "Some error occured"));
-        }
-        die();
-    }
-
-    public function action_show_data_between_date(){
-        try
-        {
             global $current_user;
-
-            $searchTerm = @$_GET['searchTerm'];
-
-            $columnFilter = @$_GET;
-            //$columnAmount = @$columnFilter['Amount'];
-            $columnDepartment = @$columnFilter['new_department_c'];
-            $columnREPEOI = @$columnFilter['REP-EOI-Published'];
-            $columnClosedDate = @$columnFilter['Closed-Date'];
-            $columnClosedBy = @$columnFilter['Closed-by'];
-            $columnDateCreated = @$columnFilter['Date-Created'];
-            $columnDateClosed = @$columnFilter['Date-Closed'];
-
-            $columnTaggedMembers = @$columnFilter['Tagged-Members'];
-            $columnViewedBy = @$columnFilter['Viewed-by'];
-            $columnPreviousResponsibility = @$columnFilter['Previous-Responsbility'];
-            $columnAttachment = @$columnFilter['Attachment'];
-
-            $user_for_delegates = '';
-            $self_count = 0;
-            $team_count = 0;
-            $lead_data = "";
+            $db      = \DBManagerFactory::getInstance();
+            
+            $content = '';
             $log_in_user_id = $current_user->id;
-            $global_organization_count = 0;
-            $non_global_organization_count = 0;
-            $fetch_by_status_c = '';
-
-
-            $db = \DBManagerFactory::getInstance();
-            $day = $_GET['days'];
-
-            setcookie('day', $day, time() + (86400 * 30), '/');
-
-            $GLOBALS['db'];
             
-            // print_r($_GET['filter']); die;
+            $day        = $_GET['days'];
+            $searchTerm = isset($_GET['searchTerm']) ? $_GET['searchTerm'] : '';
+            $type       = isset($_GET['type']) ? $_GET['type'] : '';
+            $status     = isset($_GET['status']) ? $_GET['status'] : '';
+            $dropped    = isset($_GET['dropped']) ? $_GET['dropped'] : '';
+            $isCritical = isset($_GET['isCritical']) ? $_GET['isCritical'] : false;
 
-            $check_user_team = "SELECT teamfunction_c from users LEFT JOIN users_cstm ON users.id = users_cstm.id_c WHERE id = '$log_in_user_id'";
-            $check_user_team_result = $GLOBALS['db']->query($check_user_team);
-            $user_team_row = $GLOBALS['db']->fetchByAssoc($check_user_team_result);
-            $user_team = $user_team_row['teamfunction_c'];
+            /* getting column filters to variables */
+            $columnAmount                   = isset( $_GET['Amount'] ) ? $_GET['Amount'] : '';
+            $columnREPEOI                   = isset( $_GET['REP-EOI-Published'] ) ? $_GET['REP-EOI-Published'] : '';
+            $columnClosedDate               = isset( $_GET['Closed-Date'] ) ? $_GET['Closed-Date'] : '';
+            $columnClosedBy                 = isset( $_GET['Closed-by'] ) ? $_GET['Closed-by'] : '';
+            $columnDateCreated              = isset( $_GET['Date-Created'] ) ? $_GET['Date-Created'] : '';
+            $columnDateClosed               = isset( $_GET['Date-Closed'] ) ? $_GET['Date-Closed'] : '';
 
-            $todayDate = date("Y/m/d");
-            $intervalDate = date('y-m-d', strtotime( -$day." ".'days'));
+            $columnTaggedMembers            = isset( $_GET['Tagged-Members'] ) ? $_GET['Tagged-Members'] : '';
+            $columnViewedBy                 = isset( $_GET['Viewed-by'] ) ? $_GET['Viewed-by'] : '';
+            $columnPreviousResponsibility   = isset( $_GET['Previous-Responsbility'] ) ? $_GET['Previous-Responsbility'] : '';
+            $columnAttachment               = isset( $_GET['Attachment'] ) ? $_GET['Attachment'] : '';
+            /* end column filters */
 
-
-            $fetch_total_opportunity = "SELECT count(*) as total from opportunities WHERE deleted != 1 AND date_entered >= now() - interval '$day' day";
-            $fetch_total_result = $GLOBALS['db']->query($fetch_total_opportunity);
-            $fetch_total = $GLOBALS['db']->fetchByAssoc($fetch_total_result);
-            $total = $fetch_total['total'];
-
-
-            $organiztion_global_count = "SELECT count(*) as org_global_count FROM opportunities WHERE opportunity_type = 'global' AND deleted != 1 AND date_entered >= now() - interval '$day' day";
-            $organiztion_count_result = $GLOBALS['db']->query($organiztion_global_count);
-            $fetch_organization_count = $GLOBALS['db']->fetchByAssoc($organiztion_count_result);
-            $global_organization_count = $fetch_organization_count['org_global_count'];
-
-            $non_global_organization_count = $this->get_non_global_op_count($day);
-
-           $fetch_self_count = "SELECT count(*) as self_count FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE  assigned_user_id='$log_in_user_id' AND deleted != 1 AND date_entered >= now() - interval '$day' day";
-           $fetch_self_result = $GLOBALS['db']->query($fetch_self_count);
-           $fetch_self = $GLOBALS['db']->fetchByAssoc($fetch_self_result);
-           $self_count = $fetch_self['self_count'];
-           
-
-           $fetch_team_count = "SELECT count(*) as team_count from opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE  deleted != 1 AND date_entered >= now() - interval '$day' day AND assigned_user_id IN (SELECT id_c FROM users_cstm WHERE teamfunction_c = (SELECT teamfunction_c FROM users_cstm WHERE id_c = '$log_in_user_id'))";
-            $fetch_team_result = $GLOBALS['db']->query($fetch_team_count);
-            $fetch_team = $GLOBALS['db']->fetchByAssoc($fetch_team_result);
-            $team_count = $log_in_user_id == '1' ? 0 : $fetch_team['team_count'];
-
-           $fetch_by_status = "";
-           $result = array();
+            $user_for_delegates             = '';
+            $self_count                     = 0;
+            $team_count                     = 0;
+            $lead_data                      = "";
+            $global_organization_count      = 0;
+            $non_global_organization_count  = 0;
+            $fetch_by_status_c              = '';
+            $critical_status_count          = 0;
 
 
-            //$fetch_status_leads = "SELECT count(oc.id_c) as mainCount, oc.status_c FROM opportunities o LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c WHERE o.date_entered BETWEEN '".$intervalDate."' AND '".$todayDate."'  AND o.deleted != 1 GROUP BY oc.status_c";
-            $fetch_status_leads = "SELECT count(oc.id_c) as mainCount, oc.status_c FROM opportunities o LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c WHERE o.deleted != 1 AND o.date_entered >= now() - interval '$day' day GROUP BY oc.status_c";
-            $fetch_status_leads_result = $GLOBALS['db']->query($fetch_status_leads);
+            $user_team                      = userTeam($log_in_user_id);
+            $total                          = getCount('opportunities', " date_entered >= now() - interval '".$day."' day ");
+            $global_organization_count      = getCount('opportunities', " opportunity_type = 'global' AND date_entered >= now() - interval '".$day."' day");
+            $non_global_organization_count  = $this->get_non_global_op_count($day);
 
-            $Lead_chunk = $this->get_default_chunk('Lead');
-            $QualifiedLead_chunk = $this->get_default_chunk('QualifiedLead'); $QualifiedOpportunity_chunk = $this->get_default_chunk('Qualified');
-            $QualifiedDpr_chunk = $this->get_default_chunk('QualifiedDpr');
-            $QualifiedBid_chunk = $this->get_default_chunk('QualifiedBid'); $Close_chunk = $this->get_default_chunk('Closed');
-            $Qualified_chunk = ''; $Dropped_chunk = $this->get_default_chunk('Dropped'); $Drop_chunk = '';
-            $Closed_Lost_chunk = $this->get_default_chunk('ClosedLost');
+            $isCritical_query = "SELECT id_c FROM opportunities_cstm WHERE critical_c LIKE '%$log_in_user_id%' AND critical_c LIKE '%yes%'";
+            $result_testing = $GLOBALS['db']->query($isCritical_query);
+            $idData = array();
+            while($row = $GLOBALS['db']->fetchByAssoc($result_testing)){
+                $dData = $row['id_c'];
+                array_push($idData, $dData);
+            }
+
+            $critical_status_count_query = "SELECT count(*) as totalCount FROM opportunities_cstm WHERE critical_c LIKE '%$log_in_user_id%' AND critical_c LIKE '%yes%'";
+            $critical_status_count = executeCountQuery($critical_status_count_query);
+
+            $selfCountQuery = "SELECT count(*) as totalCount FROM opportunities 
+                LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
+                WHERE assigned_user_id = '$log_in_user_id' AND deleted != 1 AND date_entered >= now() - interval '".$day."' day";
+            $self_count = executeCountQuery($selfCountQuery);
+
+            $user_manager = get_user_manager();
+            $teamCountQuery = "SELECT count(*) as totalCount from opportunities 
+                WHERE  deleted != 1 AND date_entered >= now() - interval '".$day."' day AND 
+                assigned_user_id IN (
+                    SELECT id_c FROM users_cstm WHERE user_lineage LIKE '%$user_manager%' OR id_c ='$user_manager' 
+                )";
             
-            while($row = $GLOBALS['db']->fetchByAssoc($fetch_status_leads_result))
-            {   
-                $main_count = $row['mainCount'];
-                $Status = $row['status_c'];
-                if ($Status == 'Qualified') {
-                    $Status = 'QualifiedOpportunity';
-                }
-                
-                $fetch_team_count_by_status = "SELECT count(*) as team_count_by_status from opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE  deleted != 1 AND date_entered >= now() - interval '$day' day AND status_c= '".$row['status_c']."' AND assigned_user_id IN (SELECT id_c FROM users_cstm WHERE teamfunction_c = (SELECT teamfunction_c FROM users_cstm WHERE id_c = '$log_in_user_id')) ";
-                $fetch_team_count_by_status_result = $GLOBALS['db']->query($fetch_team_count_by_status);
-                $fetch_team_result_by_status = $GLOBALS['db']->fetchByAssoc($fetch_team_count_by_status_result);
-                $team_count_by_status = ($log_in_user_id == '1') ? 0 : $fetch_team_result_by_status['team_count_by_status'];
+            $team_count = executeCountQuery($teamCountQuery);
 
-                $fetch_self_count_by_status = "SELECT count(*) as self_count_by_status FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE status_c= '".$row['status_c']."' AND assigned_user_id='$log_in_user_id' AND deleted != 1 AND date_entered >= now() - interval '$day' day";
-                $fetch_self_count_by_status_result = $GLOBALS['db']->query($fetch_self_count_by_status);
-                $fetch_self_result_by_status = $GLOBALS['db']->fetchByAssoc($fetch_self_count_by_status_result);
-                $self_count_by_status = $fetch_self_result_by_status['self_count_by_status'];
-                
-                if ($Status == 'Closed' || $Status == 'Dropped') {
-                    $closed_lost_count_org_query = "SELECT count(*) as lost_count FROM opportunities o LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c WHERE o.deleted != 1 AND o.date_entered >= now() - interval '$day' day AND oc.status_c='Closed' AND oc.closure_status_c ='lost' ";
-                    $closed_lost_count_org_result = $GLOBALS['db']->query($closed_lost_count_org_query);
-                    $closed_lost_count_org_res = $GLOBALS['db']->fetchByAssoc($closed_lost_count_org_result);
-                    $closed_lost_count_org = $closed_lost_count_org_res['lost_count'];
-                    $closed_lost_count_team_query = "SELECT count(*) as lost_count FROM opportunities o LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c WHERE o.deleted != 1 AND o.date_entered >= now() - interval '$day' day AND oc.status_c='Closed' AND oc.closure_status_c ='lost' AND assigned_user_id IN (SELECT id_c FROM users_cstm WHERE teamfunction_c = (SELECT teamfunction_c FROM users_cstm WHERE id_c = '$log_in_user_id'))";
-                    $closed_lost_count_team_result = $GLOBALS['db']->query($closed_lost_count_team_query);
-                    $closed_lost_count_team_res = $GLOBALS['db']->fetchByAssoc($closed_lost_count_team_result);
-                    $closed_lost_count_team = $closed_lost_count_team_res['lost_count'];
-                    $closed_lost_count_self_query = "SELECT count(*) as lost_count FROM opportunities o LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c WHERE o.deleted != 1 AND o.date_entered >= now() - interval '$day' day AND oc.status_c='Closed' AND oc.closure_status_c ='lost' AND assigned_user_id='$log_in_user_id'";
-                    $closed_lost_count_self_result = $GLOBALS['db']->query($closed_lost_count_self_query);
-                    $closed_lost_count_self_res = $GLOBALS['db']->fetchByAssoc($closed_lost_count_self_result);
-                    $closed_lost_count_self = $closed_lost_count_self_res['lost_count'];
-                    if ($Status == 'Closed') {
-                        $Status = 'Closed Won';
-                        $main_count = $main_count - $closed_lost_count_org;
-                        if ($team_count_by_status > $closed_lost_count_team) {
-                            $team_count_by_status = $team_count_by_status - $closed_lost_count_team;
-                        }
-                        if ($self_count_by_status > $closed_lost_count_self) {
-                            $self_count_by_status = $self_count_by_status - $closed_lost_count_self;
-                        }
-                    }else if ($Status == 'Dropped') {
-                    }
-                }
-                $temp = '<div id=\''.$row["status_c"].'\' class="card-status" onclick="fetchRecordByStatus_C(\''.$row['status_c'].'\',\''.$day.'\')">
-                <p class="card-status-head">'.$this->split_camel_case($Status).'</p>
-                <p class="card-status-top"><span class="card-status-number">'.$main_count.'</span> <br> <span class="card-status-subtitle">Org </span> </p>
-                <p class="card-status-top"><span class="card-status-number-two"> '.$team_count_by_status.' </span> <br> <span class="card-status-subtitle-two">Team </span> </p>
-                <p class="card-status-top"><span class="card-status-number-three"> '.$self_count_by_status.' </span> <br> <span class="card-status-subtitle-three">Self </span> </p>
-                                
-                </div>';
-                switch ($row['status_c']) {
-                    case 'Lead':
-                        $Lead_chunk = $temp;
-                        break;
-                    case 'QualifiedOpportunity':
-                        $Qualified_chunk = $temp;
-                        break;
-                    case 'QualifiedLead':
-                        $QualifiedLead_chunk = $temp;
-                        break;
-                    case 'Qualified':
-                        $QualifiedOpportunity_chunk = $temp;
-                        break;
-                    case 'QualifiedDpr':
-                        $QualifiedDpr_chunk = $temp;
-                        break;
-                    case 'QualifiedBid':
-                        $QualifiedBid_chunk = $temp;
-                        break;
-                    case 'Closed':
-                        $Close_chunk = $temp;
-                        break;
-                    case 'Drop':
-                        $Drop_chunk = $temp;
-                        break;
-                    case 'Dropped':
-                        $temp = '<div id=\''.$row["status_c"].'\' class="card-status" onclick="fetchRecordByStatus_C(\'Dropped\',\''.$day.'\',null, null, 0, \'Dropped\')">
-                                <p class="card-status-head">
-                                    Dropped
-                                </p>
-                                <p class="card-status-top"><span class="card-status-number">'.$main_count.'</span> <br> <span class="card-status-subtitle">Org </span> </p>
-                                <p class="card-status-top"><span class="card-status-number-two"> '.$team_count_by_status.' </span> <br> <span class="card-status-subtitle-two">Team </span> </p>
-                                <p class="card-status-top"><span class="card-status-number-three"> '.$self_count_by_status.' </span> <br> <span class="card-status-subtitle-three">Self </span> </p>
-                                                
-                                </div>';
-                        $temp1 = '<div id=\'ClosedLost\' class="card-status" onclick="fetchRecordByStatus_C(\'Dropped\',\''.$day.'\',null, null, 0, \'ClosedLost\')">
-                                <p class="card-status-head">
-                                    Closed Lost
-                                </p>
-                                <p class="card-status-top"><span class="card-status-number">'.$closed_lost_count_org.'</span> <br> <span class="card-status-subtitle">Org </span> </p>
-                                <p class="card-status-top"><span class="card-status-number-two"> '.$closed_lost_count_team.' </span> <br> <span class="card-status-subtitle-two">Team </span> </p>
-                                <p class="card-status-top"><span class="card-status-number-three"> '.$closed_lost_count_self.' </span> <br> <span class="card-status-subtitle-three">Self </span> </p>
-                                                
-                                </div>';
-                        $Dropped_chunk = $temp;
-                        $Closed_Lost_chunk = $temp1;
-                        break;
-                }
-                
-            }
-            $fetch_by_status .= $Lead_chunk .$QualifiedLead_chunk . $QualifiedOpportunity_chunk . $QualifiedDpr_chunk . $QualifiedBid_chunk . $Close_chunk .$Closed_Lost_chunk .$Dropped_chunk;
-            $data = '<table class="bottomtable" style="font-family: Lato, Lato, Arial, sans-serif !important;
-            height: 400px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            display: -webkit-box;
-            width: 100%;
-            flex-direction: column;">
-            <tbody style="display: table; width: 100%;">
-            <ul class="table-ul" style="display: flex;
-            align-items: center;height: 50px">
+            $fetch_by_status    = "";
+            $result             = array();
 
-                <li class="tableHeader-Content">
-                    <div id="global-opportunities" class="global-opportunities" onclick="filter_by_type(\'global\','.$day.')">Global Opportunities ('.$global_organization_count.') </div>
-                </li>
+            $fetch_status_leads         = "SELECT count(oc.id_c) as mainCount, oc.status_c FROM opportunities o LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c WHERE o.deleted != 1 AND o.date_entered >= now() - interval '".$day."' day GROUP BY oc.status_c";
+            $fetch_status_leads_result  = $GLOBALS['db']->query($fetch_status_leads);
 
-
-                <li class="tableHeader-Content">
-                    <div id="non-global-opportunities" class="non-global-opportunities" onclick="filter_by_type(\'non_global\','.$day.')">Non-Global Opportunities ('.$non_global_organization_count.') </div>
-                </li>
-
-
-                <li class="search-box-block">
-                    <div class="search-box">
-                        <!-- ----------- -->
-                        <div style="display: flex;">
-                            <div style="display: flex; justify-content: center; align-items: center;">
-                                <input type="search" placeholder="Search by name" class="opportunity-search" id="opportunity-search" data-type="show_data_between_date" data-value="'.$day.'" value="'.$searchTerm.'" name="search" />
-                                <button class="searchhh opportunity-search-btn" id="search-btn">
-                                    <i id="search-icon" class="fa fa-search" aria-hidden="true"> </i>
-                                </button>
-                            </div>
-                            <div style="display: flex; margin-left: auto;">
-
-                                <button class="filter" id="filter_myBtn" onclick="openFilterDialog()" style="padding:10; border: none !important;">
-                                    <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
-                                </button>
-                             
-
-                                <button class="cog" id="setting_myBtn" onclick=openSettingDialog("opportunities","action_show_data_between_date") style="padding:10; border: none !important;">
-                                    <i id="setting_myBtn" class="fa fa-list" aria-hidden="true"> </i>
-                                </button>';
-                                if ($log_in_user_id == '1') {
-                                    $data .='<button class="cog download" id="download_btn" class="download-btn" data-type="opportunity" data-action="dayFilter" data-value="'.$day.'" style="padding:10; border: none !important;">
-                                                <i class="fa fa-download" aria-hidden="true"> </i>
-                                            </button>';
-                                }
-                                
-                                $data .= '</div>
-                        </div>
-                    </div>
-
-                </li>
-
-            </ul>
-            <tr class="table-header-row">
-                <th class="table-header">Name</th>
-                <th class="table-header">Primary Responsibility</th>';
+            $Lead_chunk                 = $this->get_default_chunk('Lead');
+            $QualifiedLead_chunk        = $this->get_default_chunk('QualifiedLead'); 
+            $QualifiedOpportunity_chunk = $this->get_default_chunk('Qualified');
+            $QualifiedDpr_chunk         = $this->get_default_chunk('QualifiedDpr');
+            $QualifiedBid_chunk         = $this->get_default_chunk('QualifiedBid'); 
+            $CloseWin_chunk             = $this->get_default_chunk('ClosedWin');
+            $ClosedLost_chunk           = $this->get_default_chunk('ClosedLost');
+            $Dropped_chunk              = $this->get_default_chunk('Dropped');
             
-            if(!@$_GET['customColumns']):
+            $fetch_by_status .= $Lead_chunk .$QualifiedLead_chunk . $QualifiedOpportunity_chunk . $QualifiedDpr_chunk . $QualifiedBid_chunk . $CloseWin_chunk . $ClosedLost_chunk .$Dropped_chunk;
+            /* end generate cards */
+            $check_mc = $this->is_mc($log_in_user_id);
+            /* Opportunities main HTML */
+            ob_start();
+            include_once 'templates/partials/opportunities/main.php';
+            $content = ob_get_contents();
+            ob_end_clean();
 
-            /*if($columnAmount){
-                $data .= '<th class="table-header">Amount ( in Cr )</th>';
-            }*/
-            if($columnDepartment){
-                $data .= '<th class="table-header">Department</th>';
-            }
-            if($columnREPEOI){
-                $data .= '<th class="table-header">RFP/EOI Published</th>';
-            }
-            if($columnClosedDate){
-                $data .= '<th class="table-header">Modified Date</th>';
-            }
-            if($columnClosedBy){
-                $data .= '<th class="table-header">Modified By</th>';
-            }
-            if($columnDateCreated){
-                $data .= '<th class="table-header">Created Date</th>';
-            }
-            if($columnDateClosed){
-                $data .= '<th class="table-header">Closed Date</th>';
-            }
-            
-            if($columnTaggedMembers){
-                $data .= '<th class="table-header">Tagged Members</th>';
-            }
-            if($columnViewedBy){
-                $data .= '<th class="table-header">Viewed By</th>';
-            }
-            if($columnPreviousResponsibility){
-                $data .= '<th class="table-header">Previous Responsibility</th>';
-            }
-            if($columnAttachment){
-                $data .= '<th class="table-header">Attachment</th>';
-            }
+            $fetch_query = getOpportunitiesQuery(); // getOpportunities Query
 
-            endif; 
-
-            $data .= $this->getColumnFiltersHeader($columnFilter);
-
-
-            $data .= '<th class="table-header text-center">Action</th>
-            </tr>';
-
-            
-            $fetch_query = "SELECT opportunities.*, opportunities_cstm.*,
-                            CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities
-                            LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
-                            LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
-                            WHERE opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day ";
-            if($searchTerm){
-                $fetch_query .= " AND opportunities.name LIKE '%$searchTerm%' ";
-            }
-            
-            $opp_id_show = $this->private_opps();
-            $fetch_query .= " AND (opportunities.opportunity_type = 'global' OR opportunities.id  IN ('".implode("','",$opp_id_show)."'))";
-
-            if($_GET['filter'])
-                $fetch_query .= $this->getFilterQuery();
-
-            $fetch_query .= " ORDER BY `opportunities`.`date_modified` DESC";
-
-            // echo $fetch_query; die;
-
-            //Pagination Count
+            //Pagination Query
             $limit = 5;
             $paginationQuery = $GLOBALS['db']->query($fetch_query);
-            $totalCount = mysqli_num_rows($paginationQuery);
+            $totalCount = 0;
+            if($paginationQuery)
+                $totalCount = mysqli_num_rows($paginationQuery);
             $numberOfPages = ceil( $totalCount / $limit );
             
-            $offset = @$_GET['page'] ? ($_GET['page'] - 1)  * $limit : 0;
+            $offset = $_GET['page'] ? ($_GET['page'] - 1)  * $limit : 0;
 
             $fetch_query .= " LIMIT $offset, $limit";
 
             $result = $GLOBALS['db']->query($fetch_query);
-            while($row = $GLOBALS['db']->fetchByAssoc($result))
-            {
-                $created_by_id = $row['assigned_user_id'];
-                $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
-                $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
-                $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
-                $user_name = $user_name_fetch_row['user_name'];
-                $first_name = $user_name_fetch_row['first_name'];
-                $last_name = $user_name_fetch_row['last_name'];
-                if ($user_name_fetch_row['reports_to_id']) {
-                    $reports_to = $this->get_user_details_by_id($user_name_fetch_row['reports_to_id']);
-                    $reports_to_full_name = ' <i class="fa fa-arrow-right"></i> ' . $reports_to['first_name'] .' '. $reports_to['last_name'];
-                } else {
-                    $reports_to_full_name = "";
-                }
-                $full_name = "$first_name  $last_name $reports_to_full_name";
-                $closed_by = '';
-                if (!empty(date_format(date_create($row['date_modified']),'d/m/Y'))) {
-                    $modified_user_id = $row['modified_user_id'];
-                    $modified_user_query = "SELECT * FROM users WHERE id='$modified_user_id'";
-                    $modified_user_query_fetch = $GLOBALS['db']->query($modified_user_query);
-                    $modified_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($modified_user_query_fetch);
-                    $closed_by_first_name = $modified_user_query_fetch_row['first_name'];
-                    $closed_by_last_name = $modified_user_query_fetch_row['last_name'];
-                    $closed_by = "$closed_by_first_name $closed_by_last_name";
-                    // To Do: Find actual closed by
-                }
-                $oppID = $row['id'];
-                $data .='<tr>
-                            <td class="table-data"><a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'">';
-                $tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
-                $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
-                $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
-                $tagged_users = '';
-                if($tagged_user_query_fetch_row)
-                    $tagged_users = $tagged_user_query_fetch_row['user_id'];
+            $response = $this->mysql_fetch_assoc_all($result); //get all result in an array
 
-                if ((strpos($tagged_users, $log_in_user_id) !== false)) {
-                    $data .= $row['name']. ' <i class="fa fa-tag" style="font-size: 12px; color:green"></i>';
-                } else {
-                    $data .= $row['name'];
-                }
-                $data .='</a></td><td class="table-data">'.$full_name.'</td>';
+            /* Opportunities repeater HTML (Table ROW) */
+            ob_start();
+            include_once 'templates/partials/opportunities/repeater.php';
+            $content .= ob_get_contents();
+            ob_end_clean();
 
-                if(!@$_GET['customColumns']):
-
-                /*if($columnAmount){
-                $data .= '<th class="table-header">Amount ( in Cr )</th>';
-            }*/
-            if($columnDepartment){
-                $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label($row['new_department_c'])))).'</td>';
-            }
-                if($columnREPEOI){
-                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label($row['rfporeoipublished_c'])))).'</td>';
-                }
-                if($columnClosedDate){
-                    $data .= '<td class="table-data">'.date_format(date_create($row['date_modified']),'d/m/Y').'</td>'; 
-                }
-                if($columnClosedBy){
-                    $data .= '<td class="table-data" >'.$closed_by.'</td>';
-                }
-                if($columnDateCreated){
-                    $data .= '<td class="table-data">'.date_format(date_create($row['date_entered']),'d/m/Y').'</td>';
-                }
-                
-                if($columnDateClosed){
-                    if($row['date_closed']){
-                        $closedDate = date_format(date_create($row['date_closed']),'d/m/Y');
-                    }else{
-                        $closedDate = '';
-                    }
-                    $data .= '<td class="table-data">'.$closedDate.'</td>';
-                }
-                
-                if($columnTaggedMembers){
-                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getTaggedMembers($row['id']) )))).'</td>';
-                }
-                if($columnViewedBy){
-                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['modified_user_id']) )))).'</td>';
-                }
-                if($columnPreviousResponsibility){
-                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['assigned_user_id']) )))).'</td>';
-                }
-                if($columnAttachment){
-                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $row['file_url'] ? $row['file_url'] : '' )))).'</td>';
-                }
-
-                endif; 
-
-                $data .= $this->getColumnFiltersBody($columnFilter, $row);
-                
-                $data .= '<td class="table-data">
-                        <div style="display: flex; width: 150px; align-items: center; padding: 10px; justify-content: space-between; margin: 0;">';
-                
-                $data .= '<button class="tag1" id="reassignmentBtn" style="margin-right: 0px;width: 18px;" onclick="fetchReassignmentDialog(\''.$row['id'].'\')">';
-                if ($this->is_reassignment_applicable($row['id'])):
-                    $data .= '<i id="reassignment-icon" title="Re-assign User" class="fa fa-user" aria-hidden="true" style="color:black; font-size: 1.8rem;"> </i>';
-                endif;
-                $data .= '</button>';
-
-                $data .= '<button class="tag1" id="deselectBtn" style="margin-right: 0px;width: 18px;" onClick=getSequenceFlow("'.$row['id'].'")>';
-                if($this->checkRecentActivity($row['id'])):
-                    $data .= '<img id="search-icon" title="Audit Trail" src="modules/Home/assets/Frame-12.svg" alt="svg" style="color: #333333;"/>';   
-                endif;
-                $data .= '</button>';
-
-                $data .= '<button class="tag1" id="deselectBtn" onclick="fetchDeselectDialog(\''.$row['id'].'\')" style="margin-right: 0px;width: 18px;">';
-                if ($this->is_tagging_applicable($row['id'])) {
-                    $data .='<i id="search-icon" title="Tag/Untag Users" class="fa fa-tag" aria-hidden="true"> </i>';
-                }
-                $data .= '</button>';
-                $data .='
-                      <a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'" class="eye" id="search-btn">
-                        <i id="search-icon" title="View" class="fa fa-eye" aria-hidden="true"> </i>
-                      </a>
-                    </div>
-                  </td>
-                </tr>';
-            }
             $delegated_user_name = '';
             $delegated_user_id = $this->get_delegated_user($log_in_user_id);
             if ($delegated_user_id != null) {
                 $delegated_user = $this->get_user_details_by_id($delegated_user_id);
                 $delegated_user_name = $delegated_user['first_name'] . $delegated_user['last_name'];
-            }            
+            }
 
-            $data .= '</tbody></table>';
-
-            //Pagination 
-            $page = @$_GET['page'] ? $_GET['page'] : 1;
+            /* Pagination HTML */
+            $page = $_GET['page'] ? $_GET['page'] : 1;
             if ($totalCount > ( $page * $limit)){
                 $currentPost = ($page * $limit);
             } else {
                 $currentPost = $totalCount;
             }
-            $data .= '<div class="pagination text-right">';
-            $data .= '<p class="d-inline-block">Showing '.$currentPost.' of '.$totalCount.'</p>';
+            $content .= '<div class="pagination text-right">';
+            $content .= '<p class="d-inline-block">Showing '.$currentPost.' of '.$totalCount.'</p>';
 
-            $data .= $this->pagination($page, $numberOfPages, 'show_data_between_date', $day, $searchTerm, $_GET['filter']);
-            $data .= '</div>';
+            $type = array(
+                'method' => 'opportunity',
+                'status' => $_GET['status'],
+                'type' => $_GET['type']
+            );
 
-
-            $columnFilterHtml   = $this->getColumnFilters();
-            $filters            = $this->getFilterHtml('opportunity', $columnFilter);
+            $content .= $this->pagination($page, $numberOfPages, $type, $day, $searchTerm, $_GET['filter']);
+            $content .= '</div>';
+            /* End Pagination HTML */
+            $columnFilterHtml   = $this->getColumnFilters($_GET['status'], $_GET['type']);
+            $filters            = $this->getFilterHtml('opportunity', $_GET);
 
             echo json_encode(array(
-                'data'          => $data,
-                'total'         => $total,
-                'self_count'    => $self_count,
-                'team_count'    => $team_count,
-                'delegate'          => $this->checkDelegate(),
-                'delegateDetails'   => $this->getDelegateDetails(),
-                //'delegate_count' => $this->getDelegateCount(),
+                'data'                      => $content,
+                'total'                     => $total,
+                'self_count'                => $self_count,
+                'team_count'                => $team_count,
+                'delegate'                  => $this->checkDelegate(),
+                'delegateDetails'           => $this->getDelegateDetails(),
                 'global_organization_count' => $global_organization_count,
                 'non_global_organization'   =>  $non_global_organization_count,
+                'critical_status_count'     => $critical_status_count,
                 'fetched_by_status'         =>  $fetch_by_status,
                 'columnFilter'              => $columnFilterHtml,
                 'filters'                   => $filters,
-                'loggedin_user'             => $log_in_user_id,
-                'fetch_query'               => $fetch_query
+                'isCriticalIds'             => $idData,
+                'check_mc'                  =>$check_mc,
+                'query_test'                 =>$fetch_query ,
+                'user_id'                   =>$log_in_user_id,
             ));
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
@@ -1439,9 +191,145 @@ class HomeController extends SugarController
         die();
     }
 
+    function get_default_chunk($status) {
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+        
+        $day                  = $_GET['days'];
+        $statusVal            = $status;
+        $id_val               = $status;
+        $default_count        = 0;
+        $team_count_by_status = 0;
+        $self_count_by_status = 0;
+        $closure              = null;
+
+        if ($status == 'ClosedWin' || $status == 'ClosedLost') {
+            $statusVal = 'Closed';
+            if ($status == 'ClosedWin') {
+                $closure = 'won';
+                $statusVal = 'ClosedWon';
+            } else if ($status == 'ClosedLost') {
+                $closure = 'lost';
+                $statusVal = 'ClosedLost';
+            }
+            $default_count = getClosedCounts('org', $day, $log_in_user_id, $closure);
+            $team_count_by_status = getClosedCounts('team', $day, $log_in_user_id, $closure);
+            $self_count_by_status = getClosedCounts('self', $day, $log_in_user_id, $closure);
+        }else{
+            $query = "SELECT count(oc.id_c) as totalCount FROM opportunities o LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c WHERE o.deleted != 1 AND o.date_entered >= now() - interval '".$day."' day AND oc.status_c = '$status' GROUP BY oc.status_c";
+            $default_count  = executeCountQuery($query);
+            $user_manager = get_user_manager();
+            $teamCountQuery = "SELECT count(*) as totalCount from opportunities 
+                LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
+                WHERE  deleted != 1 AND date_entered >= now() - interval '".$day."' day AND status_c= '".$status."' AND 
+                assigned_user_id IN (
+                    SELECT id_c FROM users_cstm WHERE user_lineage LIKE '%$user_manager%' OR id_c ='$user_manager' 
+                )";
+            $selfCountQuery = "SELECT count(*) as totalCount FROM opportunities 
+                LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
+                WHERE status_c= '".$status."' AND assigned_user_id='$log_in_user_id' AND deleted != 1 AND date_entered >= now() - interval '".$day."' day";
+
+            $team_count_by_status = executeCountQuery($teamCountQuery);
+            $self_count_by_status = executeCountQuery($selfCountQuery);
+        }
+
+        if ($status == 'Qualified') {
+            $statusVal = 'QualifiedOpportunity';
+        }
+        
+        if($_GET['status'] == $id_val)
+            $active = 'active';
+        else
+            $active = '';
+
+        return '<div id=\''.$id_val.'\' class="card-status '.$active.'" onclick="dateBetween(\''.$day.'\',\'\',\'\',\'\',\''.$id_val.'\',null,\''.$closure.'\', 1)">
+        <p class="card-status-head">'.split_camel_case($statusVal).'</p>
+        <p class="card-status-top"><span class="card-status-number">'. $default_count. '</span> <br> <span class="card-status-subtitle">Org </span> </p>
+        <p class="card-status-top"><span class="card-status-number-two">'. $team_count_by_status .'</span> <br> <span class="card-status-subtitle-two">Team </span> </p>
+        <p class="card-status-top"><span class="card-status-number-three">'. $self_count_by_status .' </span> <br> <span class="card-status-subtitle-three">Self </span> </p>
+                
+        </div>';
+    }
+
+    function checkDelegate(){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        // $query = "SELECT count(*) as delegate FROM users WHERE id = '$log_in_user_id' AND reports_to_id != '' ";
+        $is_reporting_manager_query = "SELECT count(*) as reporting_manager FROM users WHERE reports_to_id = '$log_in_user_id' ";
+        $result1 = $GLOBALS['db']->query($is_reporting_manager_query);
+        $result1 = $GLOBALS['db']->fetchByAssoc($result1);
+        $query = "SELECT count(*) as delegate FROM users_cstm WHERE id_c = '$log_in_user_id' AND (teamheirarchy_c = 'team_lead' OR mc_c = 'yes')";
+        $result = $GLOBALS['db']->query($query);
+        $result = $GLOBALS['db']->fetchByAssoc($result);
+        return (($result['delegate'] > 0) || ($result1['reporting_manager'] > 0)) ? true : false;
+
+    }
+
+    function getDelegateDetails(){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        $query = "SELECT u.first_name, u.last_name, oc.user_id2_c FROM opportunities o JOIN opportunities_cstm oc ON oc.id_c = o.id JOIN users u ON u.id = oc.user_id2_c WHERE o.deleted != 1 AND o.date_entered >= now() - interval '1200' day AND oc.delegate = '$log_in_user_id' GROUP BY oc.user_id2_c ";
+        $result = $GLOBALS['db']->query($query);
+        $delegateData = array();
+        while($row = $GLOBALS['db']->fetchByAssoc($result)){
+            $dData = array(
+                'name' => $row['first_name'].' '.$row['last_name'],
+                'count' => $this->getDelegateCount($row['user_id2_c'])
+            );
+            array_push($delegateData, $dData);
+        }
+        $output = '';
+        foreach($delegateData as $d){
+            $output .= $d['name'].' - '.$d['count'].'<br>';
+        }
+        return $output;
+    }
+    public function getDelegateCount($userID) {
+        $qlLeadCount = $this->delegateCountWithStatus('qualifylead', $userID);
+        $qlOppCount = $this->delegateCountWithStatus('qualifyOpportunity', $userID);
+        $qlDPRCount = $this->delegateCountWithStatus('qualifyDpr', $userID);
+        $qlBidCount = $this->delegateCountWithStatus('qualifyBid', $userID);
+        $qlClosedCount = $this->delegateCountWithStatus('closure', $userID);
+        $qlDroppedCount = $this->delegateCountWithStatus('Dropping', $userID);
+        return ($qlLeadCount + $qlOppCount + $qlDPRCount + $qlBidCount + $qlClosedCount + $qlDroppedCount);
+    }
+
+    function delegateCountWithStatus($status, $userID){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        $query = "SELECT count(*) as count FROM approval_table ap";
+        $query .= " JOIN opportunities o ON o.id = ap.opp_id";
+        $query .= " WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND o.deleted != 1 AND o.date_entered >= now() - interval '1200' day AND ap.approver_rejector = '$userID' AND ap.delegate_id = '$log_in_user_id' ";
+        if($status)
+            $query .= " AND apply_for = '$status'";
+        $result = $GLOBALS['db']->query($query);
+        $count = $GLOBALS['db']->fetchByAssoc($result);
+        return $count['count'];
+    }
+
+    function get_non_global_op_count($day) {
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+        $organiztion_non_global_count = "SELECT count(*) as org_non_global_count FROM opportunities WHERE opportunity_type = 'non_global' AND deleted != 1 AND date_entered >= now() - interval '".$day."' day";
+        $opp_id_show = private_opps();
+        $organiztion_non_global_count .= " AND opportunities.id IN ('".implode("','",$opp_id_show)."')";
+        $organiztion_count_result = $GLOBALS['db']->query($organiztion_non_global_count);
+        $fetch_organization_count = $GLOBALS['db']->fetchByAssoc($organiztion_count_result);
+        $non_global_organization_count = $fetch_organization_count['org_non_global_count'];
+        return $non_global_organization_count;
+    }
+
     public function get_delegated_user($log_in_user_id) {
-        $fetch_query = "SELECT Count(*)as count, opportunities_cstm.delegate as delegate FROM opportunities
-        LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE deleted != 1 AND opportunities_cstm.user_id2_c = '$log_in_user_id' GROUP BY opportunities_cstm.delegate ORDER BY count DESC";
+        $fetch_query = "SELECT Count(*) as count,opportunities.assigned_user_id, opportunities_cstm.delegate as delegate FROM opportunities
+        LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE deleted != 1 AND date_entered >= now() - interval '1200' day AND opportunities_cstm.user_id2_c = '$log_in_user_id' GROUP BY opportunities_cstm.delegate ORDER BY count DESC";
         $fetch_delegated_user = $GLOBALS['db']->query($fetch_query);
         $fetch_delegated_user_result = $GLOBALS['db']->fetchByAssoc($fetch_delegated_user);
         
@@ -1459,917 +347,120 @@ class HomeController extends SugarController
         $user = $fetch_user_result;
         return $user;
     }
-
-    public function get_default_chunk($status) {
+    function checkRecentActivity($oppID){
+        $query = "SELECT u.first_name, u.last_name, ap.date_time, ap.apply_for, ap.Approved, ap.Rejected, ap.pending FROM approval_table ap JOIN users u ON u.id = ap.approver_rejector WHERE ap.opp_id = '$oppID' AND ap.pending = 0 ORDER BY ap.id DESC, ap.Rejected ASC LIMIT 1";
+        $recentActivity = $GLOBALS['db']->query($query);
+        $count = mysqli_num_rows($recentActivity);
+        return $count;
+    }
+    public function is_tagging_applicable($opportunity_id) {
         global $current_user;
-        $log_in_user_id = $current_user->id;
-        $day = $_GET['days'];
-        $statusVal = $status;
-        $default_count = 0;
-        $team_count_by_status = 0;
-        $self_count_by_status = 0;
-        if ($status == 'Qualified') {
-            $status = 'QualifiedOpportunity';
-        }
-        if ($status == 'Closed' || $status == 'Dropped' || $status == 'ClosedLost') {
-            $closed_lost_count_org_query = "SELECT count(*) as lost_count FROM opportunities o LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c WHERE o.deleted != 1 AND o.date_entered >= now() - interval '$day' day AND oc.status_c='Closed' AND oc.closure_status_c ='lost' ";
-            $closed_lost_count_org_result = $GLOBALS['db']->query($closed_lost_count_org_query);
-            $closed_lost_count_org_res = $GLOBALS['db']->fetchByAssoc($closed_lost_count_org_result);
-            $closed_lost_count_org = $closed_lost_count_org_res['lost_count'];
-            $closed_lost_count_team_query = "SELECT count(*) as lost_count FROM opportunities o LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c WHERE o.deleted != 1 AND o.date_entered >= now() - interval '$day' day AND oc.status_c='Closed' AND oc.closure_status_c ='lost' AND assigned_user_id IN (SELECT id_c FROM users_cstm WHERE teamfunction_c = (SELECT teamfunction_c FROM users_cstm WHERE id_c = '$log_in_user_id'))";
-            $closed_lost_count_team_result = $GLOBALS['db']->query($closed_lost_count_team_query);
-            $closed_lost_count_team_res = $GLOBALS['db']->fetchByAssoc($closed_lost_count_team_result);
-            $closed_lost_count_team = $closed_lost_count_team_res['lost_count'];
-            $closed_lost_count_self_query = "SELECT count(*) as lost_count FROM opportunities o LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c WHERE o.deleted != 1 AND o.date_entered >= now() - interval '$day' day AND oc.status_c='Closed' AND oc.closure_status_c ='lost' AND assigned_user_id='$log_in_user_id'";
-            $closed_lost_count_self_result = $GLOBALS['db']->query($closed_lost_count_self_query);
-            $closed_lost_count_self_res = $GLOBALS['db']->fetchByAssoc($closed_lost_count_self_result);
-            $closed_lost_count_self = $closed_lost_count_self_res['lost_count'];
-            if ($status == 'Closed') {
-                $status = 'Closed Won';
-            }else if ($status == 'Dropped' || $status == 'ClosedLost') {
-                if ($status == 'ClosedLost') {
-                    $default_count = $closed_lost_count_org;
-                    $team_count_by_status = $closed_lost_count_team;
-                    $self_count_by_status = $closed_lost_count_self;
-                }
-                $statusVal = ($status == 'Dropped') ? 'Dropped' : 'ClosedLost';
-                $droppedData = '<div id=\''.$statusVal.'\' class="card-status" onclick="fetchRecordByStatus_C(\'Dropped\',\''.$day.'\',null, null, 0,\''.$statusVal.'\')">
-                <p class="card-status-head">
-                    '.$this->split_camel_case($status).'
-                </p>
-                <p class="card-status-top"><span class="card-status-number">'. $default_count. '</span> <br> <span class="card-status-subtitle">Org </span> </p>
-                <p class="card-status-top"><span class="card-status-number-two">'. $team_count_by_status .'</span> <br> <span class="card-status-subtitle-two">Team </span> </p>
-                <p class="card-status-top"><span class="card-status-number-three">'. $self_count_by_status .' </span> <br> <span class="card-status-subtitle-three">Self </span> </p>
-                        
-                </div>';
-                return $droppedData;
-            }
-        }
-        $data = '<div id=\''.$statusVal.'\' class="card-status" onclick="fetchRecordByStatus_C(\''.$statusVal.'\',\''.$day.'\')">
-        <p class="card-status-head">'.$this->split_camel_case($status).'</p>
-        <p class="card-status-top"><span class="card-status-number">'. $default_count. '</span> <br> <span class="card-status-subtitle">Org </span> </p>
-        <p class="card-status-top"><span class="card-status-number-two">'. $team_count_by_status .'</span> <br> <span class="card-status-subtitle-two">Team </span> </p>
-        <p class="card-status-top"><span class="card-status-number-three">'. $self_count_by_status .' </span> <br> <span class="card-status-subtitle-three">Self </span> </p>
-                
-        </div>';
-        return $data;
-    }
-
-    public function action_deselect_members_from_global_opportunity(){
-            try {
-                $db = \DBManagerFactory::getInstance();
-                $GLOBALS['db'];
-                $opportunity_id = $_POST['opportunityId'];
-                $user_id_list = '';
-                if ($_POST['userIdList']) {
-                    $user_id_list = $_POST['userIdList'];
-                }
-                $count_query = "SELECT * FROM tagged_user WHERE opp_id='$opportunity_id'";
-                $result = $GLOBALS['db']->query($count_query);
-                if ($result->num_rows > 0) {
-                    $query = "UPDATE tagged_user SET user_id = '$user_id_list' WHERE opp_id='$opportunity_id'";
-                } else {
-                    $query = "INSERT into tagged_user(opp_id,user_id) VALUES('$opportunity_id','$user_id_list')";
-                }
-                $sub_query = "UPDATE opportunities_cstm SET tagged_hiden_c = '$user_id_list' WHERE id_c='$opportunity_id'";
-                $GLOBALS['db']->query($sub_query);
-                if($db->query($query)==TRUE){
-                    echo $query;
-                }else{
-                    echo "Refresh and add Segment again";
-                }
-            } catch (Exception $e) {
-                echo json_encode(array("status" => false, "message" => "Some error occured"));
-            }
-        die();
-    }
-
-    public function is_global($op_id) {
-        $query = "SELECT count(opportunity_type) as cnt from opportunities where id = '$op_id' AND opportunity_type='global' AND deleted != 1";
-        $fetch_query = $GLOBALS['db']->query($query);
-        $result = $GLOBALS['db']->fetchByAssoc($fetch_query);
-        return $result['cnt'] == '1' ? true : false;
-    }
-
-    public function action_opportunity_dialog_info()
-    {
-        try {
-            $db = \DBManagerFactory::getInstance();
-            $GLOBALS['db'];
-            $opportunity_id = $_GET['id'];
-            $fetch_opportunity_info = "SELECT * FROM opportunities
-            LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE id = '$opportunity_id'";
-            $fetch_opportunity_info_result = $GLOBALS['db']->query($fetch_opportunity_info);
-            $row = $GLOBALS['db']->fetchByAssoc($fetch_opportunity_info_result);
-            $created_by_id = $row['assigned_user_id'];
-            $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
-            $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
-            $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
-            $user_name = $user_name_fetch_row['user_name'];
-            $first_name = $user_name_fetch_row['first_name'];
-            $last_name = $user_name_fetch_row['last_name'];
-            if ($user_name_fetch_row['reports_to_id']) {
-                    $reports_to = $this->get_user_details_by_id($user_name_fetch_row['reports_to_id']);
-                    $reports_to_full_name = ' <i class="fa fa-arrow-right"></i> ' . $reports_to['first_name'] .' '. $reports_to['last_name'];
-                } else {
-                    $reports_to_full_name = "";
-                }
-                $full_name = "$first_name  $last_name $reports_to_full_name";
-
-            if($row['opportunity_type'] == 'global'){
-                $sub_head = 'Selected members will be able to view details or take action';
-                $change_font = 'Select Members';
-            }
-
-            $data = '
-                <h2 class="deselectheading">' . $row['name'] . '</h2><br>
-                <p class="deselectsubhead">'.$sub_head.'</p>
-                <hr class="deselectsolid">
-                <section class="deselectsection">
-                <table align="centered" width="100%">
-                    <thead>
-                    <tr class="tabname">
-                        <th>Primary Responsibility</th>
-                        <th>Amount (in Cr/Mn)</th>
-                        <th>RFP/EOI Published</th>
-                        <th>Modified Date</th>
-                        <th>Modified By</th>
-                        <th>Date Created</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="tabvalue">
-                        <td>' . $full_name . '</td>
-                        <td>' . $this->append_currency($row['currency_c'], $this->beautify_amount($row["budget_allocated_oppertunity_c"])) . '</td>
-                        <td>' . $this->beautify_label($row["rfporeoipublished_c"]) . '</td>
-                        <td>' . date_format(date_create($row['date_modified']), 'd/m/Y') . '</td>
-                        <td>' . $this->get_closed_by($row) . '</td>
-                        <td>'  . date_format(date_create($row['date_entered']), 'd/m/Y') . '</td>
-                        </tr>';
-                    $data .= '</tbody></table>
-                    <hr class="deselectsolid">
-                            <label for="Deselect-Members">'.$change_font.'</label><br>';
-          $msuname = $this->get_initial_multi_selected_dropdown_value($opportunity_id, $this->is_global($opportunity_id), false);
-          $msuid = $this->get_initial_multi_selected_dropdown_value($opportunity_id, $this->is_global($opportunity_id), true);
-          echo json_encode(array('opportunity_info'=>$data,'msuname'=>$msuname,'msuid'=> $msuid, 'opportunity_id'=>$opportunity_id));
-        }catch(Exception $e){
-            echo json_encode(array("status"=>false, "message" => "Some error occured"));
-        }
-        die();
-    }
-
-    public function get_initial_multi_selected_dropdown_value($opportunity_id, $is_global, $useridreq) {
-        $db = \DBManagerFactory::getInstance();
+    	$log_in_user_id = $current_user->id;
+    	$db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
-        $query = "SELECT user_id FROM tagged_user WHERE opp_id = '$opportunity_id'";
-        $result = $GLOBALS['db']->query($query);
-        $result_row = $GLOBALS['db']->fetchByAssoc($result);
-        if ($useridreq) {
-            $str1 = $this->multi_id_select_name_map($result_row['user_id']);
-            $res = $result_row['user_id'];
-            return $str1;
-        } else {
-            $str1 = $this->multi_id_name_map($result_row['user_id']);
-            return $str1;
-        }
-    }
-    public function multi_id_select_name_map($ids) {
-        $arr = explode(',', $ids);
-        for ($x = 0; $x < count($arr); $x++) {
-            $temp = $this->multi_id_name_map_helper($arr[$x]);
-            $temp = trim($temp," ");
-            $arr[$x] = "$arr[$x]---$temp";
-        }
-        $str = join(',', $arr);
-        return $str;
-    }
 
-    public function multi_id_name_map($ids) {
-        $arr = explode(',', $ids);
-        for ($x = 0; $x < count($arr); $x++) {
-            $arr[$x] = $this-> multi_id_name_map_helper($arr[$x]);
-        }
-        $str = join(',', $arr);
-        return $str;
-    }
-    public function multi_id_name_map_helper($v) {
-        $full_name = '';
-        $query = "SELECT first_name,last_name FROM users WHERE id = '$v'";
-        $result = $GLOBALS['db']->query($query);
-        $result_row = $GLOBALS['db']->fetchByAssoc($result);
-        if($result_row){
-            $first_name = $result_row['first_name'];
-            $last_name = $result_row['last_name'];
-            $full_name = "$first_name $last_name";
-        }
-        return $full_name;
-    }
-    public function action_delegated_dialog_info()
-    {
-        try {
-            $db = \DBManagerFactory::getInstance();
-            global $current_user;
-            $log_in_user_id = $current_user->id;
-            $GLOBALS['db'];
+        $team_func_array = $team_func_array1 = $others_id_array = array();
 
-            $delegated_user_id = $this->get_delegated_user($log_in_user_id);
-            if ($delegated_user_id) {
-                $delegated_user = $this->get_user_details_by_id($delegated_user_id);
+        $sql ='SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE opportunities.id="'. $opportunity_id.'"';
+        $result = $GLOBALS['db']->query($sql);
+        while($row = $GLOBALS['db']->fetchByAssoc($result) )
+            {
+                $created_by=$row['assigned_user_id'];
+                $assigned=$row['assigned_user_id'];
+                $approver=$row['multiple_approver_c'];
+                $deligate = $row['delegate'];
+                $approver1=$row['user_id2_c'];
             }
+        $sql5 = "SELECT user_id FROM tagged_user WHERE opp_id='".$opportunity_id."'";
+        $result5 = $GLOBALS['db']->query($sql5);
+        while($row5 = $GLOBALS['db']->fetchByAssoc($result5))
+        {
+                $other1=$row5['user_id'];
+                $others_id_array = explode(',', $other1);
+        }
+        if (strpos($deligate, ',') !== false) {
+            $team_func_array = explode(',', $deligate);
+        }
+        if (strpos($approver, ',') !== false) {
+            $team_func_array1 = explode(',', $approver);
+        }
+        $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+        $result3 = $GLOBALS['db']->query($sql3);
+        while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
+        {
+            $check_sales = $row3['teamfunction_c'];
+            $check_mc = $row3['mc_c'];
+            $check_team_lead = $row3['teamheirarchy_c'];
             
-            if (!empty(@$delegated_user) && @$delegated_user['first_name'] || @$delegated_user['last_name']) {
-                $delegated_user_name = $delegated_user['first_name'] . $delegated_user['last_name'];
-            }
-            $data = $delegated_user_id;
-            if(@$delegated_user_name):
-            $data = ' <table class="delegatetable">
-                        <thead>
-                            <tr class="delegatetable-header-row-popup">
-                                <th class="delegatetable-header-popup">Current Delegate</th>
-                                <th class="delegatetable-header-popup">Action Completed</th>
-                                <th class="delegatetable-header-popup">Permissions</th>
-                                <th></th>
-                            </tr></thead>';
-            // $fetch_delegated_info = "SELECT * FROM opportunities
-            // LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE id = '$log_in_user_id'";
-            // $fetch_delegated_info_result = $GLOBALS['db']->query($fetch_delegated_info);
-            // $row = $GLOBALS['db']->fetchByAssoc($fetch_delegated_info_result);
-            // $created_by_id = $row['created_by'];
-            // $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
-            // $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
-            // $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
-            // $user_name = $user_name_fetch_row['user_name'];
-            $data .= '
-                <tbody>
-                <tr>
-                <td class="delegatetable-data-popup">'.$delegated_user_name.'</td>
-                <td class="delegatetable-data-popup" style="color: #00f;">'.$this->delegateActionCompleted($delegated_user_id).'</td>
-                <td class="delegatetable-data-popup">Edit</td>
-                <td>
-                    <button type="button" style="margin-left: 100px; margin-bottom: 10px; margin-top: 20px;" class="btn2 remove-delegate">Remove</button>
-                </td>
-            </tr>';
-            $data .= '</tbody></table>';
-            endif; 
-        
-        
-            echo json_encode(array('delegated_info' => $data, 'delegated_id' => $log_in_user_id));
-        } catch (Exception $e) {
-            echo json_encode(array("status" => false, "message" => "Some error occured"));
         }
-        die();
+        if($check_mc =="yes"|| $log_in_user_id == $created_by || $log_in_user_id == "1"
+        || in_array($log_in_user_id, $team_func_array1)||in_array($log_in_user_id, $others_id_array)  || in_array($log_in_user_id, $team_func_array) 
+        || $log_in_user_id == $approver1 || $log_in_user_id == $assigned)
+        {
+            return true;
+        } else{
+            return false;
+        }
     }
 
-    function delegateActionCompleted($userID){
-        global $current_user;
-        $log_in_user_id = $current_user->id;
-        $query = "SELECT count(*) as count FROM approval_table ap";
-        $query .= " JOIN opportunities o ON o.id = ap.opp_id";
-        $query .= " WHERE ap.pending = 0 AND o.deleted != 1 AND ap.approver_rejector = '$log_in_user_id' AND ap.delegate_id = '$userID' AND ( delegate_date_time != '' OR delegate_date_time <> NULL) ";
+    public function is_mc($user_id){
+        $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$user_id."' AND users.deleted = 0";
+        $result3 = $GLOBALS['db']->query($sql3);
+        while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
+        {
+            $check_sales = $row3['teamfunction_c'];
+            $check_mc = $row3['mc_c'];
+            $check_team_lead = $row3['teamheirarchy_c'];
+        }
+        return $check_mc;
 
-        // echo $query; die;
-
-        $result = $GLOBALS['db']->query($query);
-        $count = $GLOBALS['db']->fetchByAssoc($result);
-        return $count['count'];
     }
 
-    public function action_filter_for_opportunity_list(){
+    /* Pending Request */
+    function action_getPendingOpportunityList(){
         try
         {
-            global $current_user;
-            $log_in_user_id = $current_user->id;
+            $content = '';
             $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
 
-        }catch(Exception $e){
-            echo json_encode(array("status"=>false, "message" => "Some error occured"));
-        }
-        die();
-    }
-
-    public function action_store_delegate_result(){
-        try{
-            $db = \DBManagerFactory::getInstance();
-            global $current_user;
-            $log_in_user_id = $current_user->id;
-            $GLOBALS['db'];
-            $proxy = $_POST['Select_Proxy'];
-            // $permission_to_edit = $_POST['delegate_Edit'];
-            $save_delegate_query = "UPDATE opportunities_cstm as o2 
-                LEFT JOIN opportunities ON opportunities.id = o2.id_c
-                SET o2.delegate = '$proxy'
-                WHERE opportunities.deleted != 1 AND o2.user_id2_c = '$log_in_user_id'";
-            
-            $save_delegate_query_result = $GLOBALS['db']->query($save_delegate_query);
-
-            $approvalDelegateUpdate = "UPDATE approval_table SET delegate_id = '$proxy' WHERE approver_rejector = '$log_in_user_id' AND Approved = 0 AND Rejected = 0 AND pending = 1";
-            $approvalDelegateUpdateQuery = $GLOBALS['db']->query($approvalDelegateUpdate);
-
-            //$fetch_organization_count = $GLOBALS['db']->fetchByAssoc($save_delegate_query_result);
-        }catch(Exception $e){
-            echo json_encode(array("status"=>false, "message" => "Some error occured"));
-        }
-
-    }
-
-    public function action_remove_delegate_user(){
-        try{
-            $db = \DBManagerFactory::getInstance();
-            global $current_user;
-            $log_in_user_id = $current_user->id;
-            $GLOBALS['db'];
-            $save_delegate_query = "UPDATE opportunities_cstm as o2 
-                LEFT JOIN opportunities ON opportunities.id = o2.id_c
-                SET o2.delegate = ''
-                WHERE opportunities.deleted != 1 AND o2.user_id2_c = '$log_in_user_id'";
-            
-            $save_delegate_query_result = $GLOBALS['db']->query($save_delegate_query);
-
-            $save_delegate_query = "UPDATE approval_table  
-                SET delegate_id = ''
-                WHERE approver_rejector = '$log_in_user_id'";
-            
-            $save_delegate_query_result = $GLOBALS['db']->query($save_delegate_query);
-
-        }catch(Exception $e){
-            echo json_encode(array("status"=>false, "message" => "Some error occured"));
-        }
-    }
-
-    public function beautify_label($string) {
-        $string = str_replace('_', ' ', $string);
-        $string = str_replace('^', '', $string);
-        $string = str_replace(',', ', ', $string);
-        $string = preg_replace('/(?<!\ )[A-Z]/', ' $0', $string);
-        return ucwords($string);
-    }
-    public function beautify_label_n_f($string) {
-        $string = str_replace('_', '', $string);
-        if (strpos($string, '^PilotforFutureOpportunity^') !== false) {
-            $string = str_replace('^PilotforFutureOpportunity^', '^PilotForFutureOpportunity^', $string);
-        }
-        if (strpos($string, '^StrategicAlignmentforFutureOpportunity^') !== false) {
-            $string = str_replace('^StrategicAlignmentforFutureOpportunity^', '^StrategicAlignmentForFutureOpportunity^', $string);
-        }
-        return $this->beautify_label($string);
-    }
-
-    public function beautify_amount($amount) {
-        return preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amount);
-    }
-
-    public function append_currency($oppCurrency, $amount) {
-        if ($amount != '') {
-            $symbol = ($oppCurrency == 'USD') ? '$' : '₹';
-            $unit = ($oppCurrency == 'USD') ? ' Mn' : ' Cr';
-            $amount = $symbol . $amount . $unit;
-        }
-        return $amount;
-    }
-
-    public function split_camel_case($label) {
-        if($label == 'QualifiedDpr') {
-            return 'Qualified DPR';
-        }
-        $array = preg_split('/(?=[A-Z])/',$label);
-        return implode(' ', $array);
-    }
-
-    public function action_custom_filters(){
-        try{
-            $db = \DBManagerFactory::getInstance();
-            $GLOBALS['db'];
-            global $current_user;
-            $log_in_user_id = $current_user->id;
-
-            if($_POST['required_field'] == 'yes'){
-               $required_field = 'yes'; 
-            }else if($_POST['required_field'] == 'No'){
-                $required_field = 'no';
-            }else{
-                $required_field = null;
-            }
-            $lowerVal = $_POST['lowerVal'];
-            $upperVal = $_POST['upperVal'];
-            $date_from = $_POST['date_from'];
-            $date_to = $_POST['date_to'];
-            $closed_date_from = $_POST['closed_date_from'];
-            $closed_date_to = $_POST['closed_date_to'];
-             
-            $responsibility = $_POST['responsibility'];
-
-            $day = $_POST['day'];
-
-            $todayDate = date("Y/m/d");
-            $intervalDate = date('y-m-d', strtotime( $day." ".'days'));
-
-            
-            $organiztion_global_count = "SELECT count(*) as org_global_count FROM opportunities WHERE opportunity_type = 'global' AND deleted != 1 AND date_entered >= now() - interval '$day' day";
-            $organiztion_count_result = $GLOBALS['db']->query($organiztion_global_count);
-            $fetch_organization_count = $GLOBALS['db']->fetchByAssoc($organiztion_count_result);
-            $global_organization_count = $fetch_organization_count['org_global_count'];
-
-            $non_global_organization_count = $this->get_non_global_op_count($day);
-            $data = '<table class="bottomtable" style="font-family: Lato, Lato, Arial, sans-serif !important;
-            height: 400px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            display: -webkit-box;
-            width: 100%;
-            flex-direction: column;">
-            <tbody style="display: table; width: 100%;">
-            <ul class="table-ul" style="display: flex;
-            align-items: center;height: 50px">
-
-                <li class="tableHeader-Content">
-                    <div id="global-opportunities" class="global-opportunities" onclick="filter_by_type(\'global\','.$day.')">Global Opportunities ('.$global_organization_count.') </div>
-                </li>
-
-
-                <li class="tableHeader-Content">
-                    <div id="non-global-opportunities" class="non-global-opportunities" onclick="filter_by_type(\'non_global\','.$day.')">Non-Global Opportunities ('.$non_global_organization_count.') </div>
-                </li>
-
-
-                <li class="search-box-block">
-                    <div class="search-box">
-                        <!-- ----------- -->
-                        <div style="display: flex;">
-                            <div style="display: flex; justify-content: center; align-items: center;">
-                                <input type="search" placeholder="Search by name" class="opportunity-search" name="search" />
-                                <button class="searchhh" id="search-btn">
-                                    <i id="search-icon" class="fa fa-search" aria-hidden="true"> </i>
-                                </button>
-                            </div>
-                            <div style="display: flex; margin-left: auto;">
-                                <button class="filter" id="filter_myBtn" onclick="openFilterDialog()" style="padding:10; border: none !important;">
-                                    <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
-                                </button>
-                               
-                                <button class="cog" id="setting_myBtn" onclick="openSettingDialog(\'opportunities\')" style="padding:10; border: none !important;">
-                                    <i id="setting_myBtn" class="fa fa-list" aria-hidden="true"> </i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                </li>
-
-            </ul>
-            <tr class="table-header-row">
-            <th class="table-header">Name</th>
-            <th class="table-header">Primary Responsibility</th>
-            <th class="table-header">Amount ( in Cr/Mn )</th>
-            <th class="table-header">RFP/EOI Published</th>
-            <th class="table-header">Modified Date</th>
-            <th class="table-header">Modified By</th>
-            <th class="table-header">Created Date</th>
-            <th class="table-header">Action</th>
-        </tr>';
-
-
-            if(!empty($required_field) || !empty($lowerVal) || !empty($upperVal) || !empty($responsibility) || !empty($today) || !empty($closed_date_from) || !empty($closed_date_to)){
-                $custom_filter_query = "SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE deleted != 1 AND date_entered >= now() - interval '$day' day";
-                $opp_id_show = $this->private_opps();
-                $custom_filter_query .= " AND (opportunity_type = 'global' OR opportunities.id IN ('".implode("','",$opp_id_show)."'))";
-                if (!empty($required_field)) {
-                    $custom_filter_query .= "rfporeoipublished_c = '$required_field'";
-                }
-                if (!empty($responsibility)) {
-                    $custom_filter_query .= " AND assigned_user_id = '$responsibility'";
-                }
-                if (!(($lowerVal == 0) && ($upperVal == 0))) {
-                    $custom_filter_query .= "AND amount BETWEEN '$upperVal' AND '$lowerVal'";
-                }
-                if (!empty($closed_date_from) && !empty($closed_date_to)) {
-                    $custom_filter_query .= " AND date_closed BETWEEN '$closed_date_from' AND '$closed_date_to'";
-                }
-                if (!empty($date_from) && !empty($date_to)) {
-                    $custom_filter_query .= " AND date_entered BETWEEN '$date_from' AND '$date_to'";
-                }
-                $custom_filter_query .= " ORDER BY `opportunities`.`date_modified` DESC";
-                // echo $custom_filter_query;
-                $custom_filter_query_result = $GLOBALS['db']->query($custom_filter_query);
-                while($row = $GLOBALS['db']->fetchByAssoc($custom_filter_query_result))
-                {
-                    $created_by_id = $row['assigned_user_id'];
-                    $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
-                    $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
-                    $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
-                    $user_name = $user_name_fetch_row['user_name'];
-                    $first_name = $user_name_fetch_row['first_name'];
-                    $last_name = $user_name_fetch_row['last_name'];
-                    if ($user_name_fetch_row['reports_to_id']) {
-                    $reports_to = $this->get_user_details_by_id($user_name_fetch_row['reports_to_id']);
-                    $reports_to_full_name = ' <i class="fa fa-arrow-right"></i> ' . $reports_to['first_name'] .' '. $reports_to['last_name'];
-                } else {
-                    $reports_to_full_name = "";
-                }
-                $full_name = "$first_name  $last_name $reports_to_full_name";
-                    $closed_by = '';
-                    if (!empty($row['date_modified'])) {
-                        $modified_user_id = $row['modified_user_id'];
-                        $modified_user_query = "SELECT * FROM users WHERE id='$modified_user_id'";
-                        $modified_user_query_fetch = $GLOBALS['db']->query($modified_user_query);
-                        $modified_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($modified_user_query_fetch);
-                        $closed_by_first_name = $modified_user_query_fetch_row['first_name'];
-                        $closed_by_last_name = $modified_user_query_fetch_row['last_name'];
-                        $closed_by = "$closed_by_first_name $closed_by_last_name";
-                    }
-                    $oppID = $row['id'];
-                    $data .='<tr>
-                                <td class="table-data"><a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'">';
-                    $tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
-                    $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
-                    $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
-                    $tagged_users = $tagged_user_query_fetch_row['user_id'];
-                    if ((strpos($tagged_users, $log_in_user_id) !== false)) {
-                        $data .= $row['name']. ' <i class="fa fa-tag" style="font-size: 12px; color:green"></i>';
-                    } else {
-                        $data .= $row['name'];
-                    }
-                    $data .='
-                    </a></td><td class="table-data">'.$full_name.'</td>
-                    <td class="table-data">'.($this->append_currency( $row['currency_c'], $this->beautify_amount($row['budget_allocated_oppertunity_c']))).'</td>
-                    <td class="table-data">'.($this->beautify_label($row['rfporeoipublished_c'])).'</td>
-                    <td class="table-data">'.date_format(date_create($row['date_modified']),'d/m/Y').'</td>
-                    <td class="table-data">'.$closed_by.'</td>
-                    <td class="table-data">'.date_format(date_create($row['date_entered']),'d/m/Y').'</td>
-                    <td class="table-data">
-                    <div style="display: flex; width: 150px; align-items: center; padding: 10px; justify-content: space-between; margin:0;">';
-                    
-                    $data .= '<button class="tag1" id="reassignmentBtn" style="margin-right: 0px;width: 18px;" onclick="fetchReassignmentDialog(\''.$row['id'].'\')">';
-                    if ($this->is_reassignment_applicable($row['id'])):
-                        $data .= '<i id="reassignment-icon" title="Re-assign User" class="fa fa-user" aria-hidden="true" style="color:black; font-size: 1.8rem;"> </i>';
-                    endif;
-                    $data .= '</button>';
-
-                    $data .= '<button class="tag1 action-item-space" id="deselectBtn" onclick="fetchDeselectDialog(\''.$row['id'].'\')">';
-                    if ($this->is_tagging_applicable($row['id'])) {
-                        $data .='<i id="search-icon" title="Tag/Untag Users" class="fa fa-tag" aria-hidden="true"> </i>';
-                    }
-                    $data .= '</button>';
-                    $data .='
-                      <a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'" class="eye" id="search-btn">
-                        <i id="search-icon" title="View" class="fa fa-eye" aria-hidden="true"> </i>
-                      </a>
-                    </div>
-                  </td>
-                </tr>';
-                }
-    
-                $data .= '</tbody></table>';
-                echo $data;
-            }
-           
-
-
-
-        }catch(Exception $e){
-            echo json_encode(array("status"=>false, "message" => "Some error occured"));
-        }
-    }
-
-    public function action_filter_by_column(){
-        try
-        {
-            global $current_user;
-            $todayDate = date("Y/m/d");
-            $intervalDate = date('y-m-d', strtotime( -$todayDate." ".'days'));
-            $db = \DBManagerFactory::getInstance();
-            $GLOBALS['db'];
-
-
-            $name = $_POST['name'];
-            $primary_responsbility_select = $_POST['primary_responsbility_select'];
-            $ammount_select = $_POST['ammount_select'];
-            $REP_EOI_Published_select = $_POST['REP_EOI_Published_select'];
-            $closed_date_select = $_POST['closed_date_select'];
-            $closed_by_select = $_POST['closed_by_select'];
-            $date_created_select = $_POST['date_created_select'];
-            $tagged_members_select = $_POST['tagged_members_select'];
-            $team_members_select = $_POST['team_members_select'];
-            $viewed_by_select = $_POST['viewed_by_select'];
-            $previous_responsbility_select = $_POST['previous_responsbility_select'];
-            $members_select = $_POST['members_select'];
-            $date_of_creation_select = $_POST['date_of_creation_select'];
-            $activities_select = $_POST['activities_select'];
-            $attachment_select = $_POST['attachment_select'];
-
-
-            if(!empty($name)){
-                $custom_column = array_push($custom_column,$name);
-            }
-            if(!empty($primary_responsbility_select)){
-                $custom_column = array_push($custom_column,$primary_responsbility_select);
-            }
-            if(!empty($ammount_select)){
-                $custom_column = array_push($custom_column,$ammount_select);
-            }
-            if(!empty($REP_EOI_Published_select)){
-                $custom_column = array_push($custom_column,$REP_EOI_Published_select);
-            }
-            if(!empty($closed_date_select)){
-                $custom_column = array_push($custom_column,$closed_date_select);
-            }
-            if(!empty($closed_by_select)){
-                $custom_column = array_push($custom_column,$closed_by_select);
-            }
-            if(!empty($date_created_select)){
-                $custom_column = array_push($custom_column,$date_created_select);
-            }
-            if(!empty($tagged_members_select)){
-                $custom_column = array_push($custom_column,$tagged_members_select);
-            }
-            if(!empty($team_members_select)){
-                $custom_column = array_push($custom_column,$team_members_select);
-            }
-            if(!empty($viewed_by_select)){
-                $custom_column = array_push($custom_column,$viewed_by_select);
-            }
-            if(!empty($previous_responsbility_select)){
-                $custom_column = array_push($custom_column,$previous_responsbility_select);
-            }
-            if(!empty($members_select)){
-                $custom_column = array_push($custom_column,$members_select);
-            }
-            if(!empty($date_of_creation_select)){
-                $custom_column = array_push($custom_column,$date_of_creation_select);
-            }
-            if(!empty($activities_select)){
-                $custom_column = array_push($custom_column,$activities_select);
-            }
-            if(!empty($attachment_select)){
-                $custom_column = array_push($custom_column,$attachment_select);
-            }
-
-
-
-            $organiztion_global_count = "SELECT count(*) as org_global_count FROM opportunities WHERE opportunity_type = 'global' AND deleted != 1 AND date_entered >= now() - interval '1200' day";
-            $organiztion_count_result = $GLOBALS['db']->query($organiztion_global_count);
-            $fetch_organization_count = $GLOBALS['db']->fetchByAssoc($organiztion_count_result);
-            $global_organization_count = $fetch_organization_count['org_global_count'];
-
-            $non_global_organization_count = $this->get_non_global_op_count('1200');
-            $data = '<table class="bottomtable" style="font-family: Lato, Lato, Arial, sans-serif !important;
-            height: 400px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            display: -webkit-box;
-            width: 100%;
-            flex-direction: column;">
-            <tbody style="display: table; width: 100%;">
-            <ul class="table-ul" style="display: flex;
-            align-items: center;height: 50px">
-
-                <li class="tableHeader-Content">
-                    <div id="global-opportunities" class="global-opportunities" onclick="filter_by_type(\'global\','.$todayDate.')">Global Opportunities ('.$global_organization_count.') </div>
-                </li>
-
-
-                <li class="tableHeader-Content">
-                    <div id="non-global-opportunities" class="non-global-opportunities" onclick="filter_by_type(\'non_global\','.$todayDate.')">Non-Global Opportunities ('.$non_global_organization_count.') </div>
-                </li>
-
-
-                <li class="search-box-block">
-                    <div class="search-box">
-                        <!-- ----------- -->
-                        <div style="display: flex;">
-                            <div style="display: flex; justify-content: center; align-items: center;">
-                                <input type="search" placeholder="Search by name" class="opportunity-search" name="search" />
-                                <button class="searchhh" id="search-btn">
-                                    <i id="search-icon" class="fa fa-search" aria-hidden="true"> </i>
-                                </button>
-                            </div>
-                            <div style="display: flex; margin-left: auto;">
-                                <button class="filter" id="filter_myBtn" onclick="openFilterDialog()" style="padding:10; border: none !important;">
-                                    <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
-                                </button>
-                               
-                                <button class="cog" id="setting_myBtn" onclick="openSettingDialog(\'opportunities\')" style="padding:10; border: none !important;">
-                                    <i id="setting_myBtn" class="fa fa-list" aria-hidden="true"> </i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                </li>
-
-            </ul>
-            <tr class="table-header-row">
-        </tr>';
-            $column_name = join(', ', $custom_column);
-            $fetch_query = "SELECT '.$column_name.' from opportunities";
-            $result = $GLOBALS['db']->query($fetch_query);
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
-
-                }
-            } else {
-                echo "0 results";
-            }
-
-        }catch(Exception $e){
-            echo json_encode(array("status"=>false, "message" => "Some error occured"));
-        }
-        die();
-    }
-    
-    public function action_filter_by_opportunity_status(){
-        try
-        {
-            
             global $current_user;
             $log_in_user_id = $current_user->id;
             
-            $status = $_GET['status'];
-
-            $db = \DBManagerFactory::getInstance();
-            $GLOBALS['db'];
-
-            $qlLeadCount = $this->getOpportunityStatusCount('qualifylead');
-            $qlOppCount = $this->getOpportunityStatusCount('qualifyOpportunity');
-            $qlDPRCount = $this->getOpportunityStatusCount('qualifyDpr');
-            $qlBidCount = $this->getOpportunityStatusCount('qualifyBid');
-            $qlClosedCount = $this->getOpportunityStatusCount('closure');
+            $status         = $_GET['status'];
+            $qlLeadCount    = $this->getOpportunityStatusCount('qualifylead');
+            $qlOppCount     = $this->getOpportunityStatusCount('qualifyOpportunity');
+            $qlDPRCount     = $this->getOpportunityStatusCount('qualifyDpr');
+            $qlBidCount     = $this->getOpportunityStatusCount('qualifyBid');
+            $qlClosedCount  = $this->getOpportunityStatusCount('closure');
             $qlDroppedCount = $this->getOpportunityStatusCount('Dropping');
 
-            $columnFilter = @$_GET;
-            //$columnAmount = @$columnFilter['Amount'];
-            $columnDepartment = @$columnFilter['new_department_c'];
-            $columnREPEOI = @$columnFilter['REP-EOI-Published'];
-            //$columnStatus = @$columnFilter['status'];
-            $columnClosedDate = @$columnFilter['Closed-Date'];
-            $columnClosedBy = @$columnFilter['Closed-by'];
-            $columnDateCreated = @$columnFilter['Date-Created'];
-            $columnDateClosed = @$columnFilter['Date-Closed'];
-
-            $columnTaggedMembers = @$columnFilter['Tagged-Members'];
-            $columnViewedBy = @$columnFilter['Viewed-by'];
-            $columnPreviousResponsibility = @$columnFilter['Previous-Responsbility'];
-            $columnAttachment = @$columnFilter['Attachment'];
-
-
-            $data = '<table class="pending-request-table" style="font-family: Lato, Lato, Arial, sans-serif !important;
-                    max-height: 275px;
-                    overflow-y: auto;
-                    overflow-x: hidden;
-                    display: -webkit-box;
-                    width: 100%;
-                    flex-direction: column;"
-                > 
-                <tbody style="display: table; width: 100%;">
-                    <ul class="table-ul" style="display: flex; align-items: center;height: 50px;justify-content: space-between;">
-
-                        <div class="option_tabs_container">
-                            <li class="tableHeader-Content option_tab_header_btn" id="qualifylead" for="option_one">
-                                <div class="prt-top-headings" onClick="fetchByStatus(\'qualifylead\')">Qualify Lead ('.$qlLeadCount.') </div>
-                            </li>
-
-
-                            <li class="option_tab_header_btn" id="qualifyOpportunity" for="option_two">
-                                <div class="prt-top-headings" onClick="fetchByStatus(\'qualifyOpportunity\')">Qualify Opportunity ('.$qlOppCount.') </div>
-                            </li>
-                            <li class="tableHeader-Content option_tab_header_btn" id="qualifyDpr" for="option_three">
-                                <div class="prt-top-headings" onClick="fetchByStatus(\'qualifyDpr\')">Qualify DPR ('.$qlDPRCount.') </div>
-                            </li>
-
-
-                            <li class="tableHeader-Content option_tab_header_btn" id="qualifyBid" for="option_four">
-                                <div class="prt-top-headings" onClick="fetchByStatus(\'qualifyBid\')">Qualify Bid ('.$qlBidCount.') </div>
-                            </li>
-                            <li class="tableHeader-Content option_tab_header_btn" id="closure" for="option_five">
-                                <div class="prt-top-headings" onClick="fetchByStatus(\'closure\')">Close ('.$qlClosedCount.') </div>
-                            </li>
-
-
-                            <li class="tableHeader-Content option_tab_header_btn" id="Dropping" for="option_six">
-                                <div class="prt-top-headings" onClick="fetchByStatus(\'Dropping\')">Drop ('.$qlDroppedCount.') </div>
-                            </li>
-                        </div>
-
-                        <div>
-                            <li class="search-box-block">
-                                <div class="search-box">
-                                    <div style="display: flex;">
-                                        <div style="display: flex; margin-left: auto;">
-                                            <button class="filter" id="filter_myBtn" onclick="openPendingFilterDialog()" style="padding:10; border: none !important;">
-                                                <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
-                                            </button>
-
-                                            <button class="cog" id="setting_myBtn" onclick=openPendingSettingsDialog("pendings","action_filter_by_opportunity_status","'.$status.'") style="padding:10; border: none !important;">
-                                                <i id="setting_myBtn" class="fa fa-list" aria-hidden="true"> </i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </li>
-                        </div>
-
-                    </ul>
-                    <tr class="table-header-row">
-                        <th class="table-header">Name</th>
-                        <th class="table-header">Primary Responsibility</th>';
-                        $data .= '<th class="table-header" style="text-align: center">Status</th>';
-
-                        if(!@$_GET['customColumns']):
-
-                        /*if($columnAmount){
-                $data .= '<th class="table-header">Amount ( in Cr )</th>';
-            }*/
-            if($columnDepartment){
-                $data .= '<th class="table-header">Department</th>';
-            }
-                        if($columnREPEOI){
-                            $data .= '<th class="table-header">RFP/EOI Published</th>';
-                        }
-                        
-                        if($columnClosedDate){
-                            $data .= '<th class="table-header">Modified Date</th>';
-                        }
-                        if($columnClosedBy){
-                            $data .= '<th class="table-header">Modified By</th>';
-                        }
-                        if($columnDateCreated){
-                            $data .= '<th class="table-header">Created Date</th>';
-                        }
-                        if($columnDateClosed){
-                            $data .= '<th class="table-header">Closed Date</th>';
-                        }
-                        if($columnTaggedMembers){
-                            $data .= '<th class="table-header">Tagged Members</th>';
-                        }
-                        if($columnViewedBy){
-                            $data .= '<th class="table-header">Viewed By</th>';
-                        }
-                        if($columnPreviousResponsibility){
-                            $data .= '<th class="table-header">Previous Responsibility</th>';
-                        }
-                        if($columnAttachment){
-                            $data .= '<th class="table-header">Attachment</th>';
-                        }
-                        endif;
-
-                        $data .= $this->getColumnFiltersHeader($columnFilter);
-                        
-                    $data .= '<th class="table-header">Action</th></tr>';
-                
-            /* $fetch_query = "SELECT o.*, oc.* FROM opportunities AS o LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c JOIN (
-                    SELECT *, count(opp_id) as opp_count  FROM approval_table GROUP BY opp_id ORDER BY id DESC
-                ) AS ap ON o.id = ap.opp_id AND ap.opp_count = 1
-                WHERE oc.user_id2_c = '$log_in_user_id' AND ap.apply_for = '".$status."' AND ap.Approved = 0 AND ap.pending = 1 AND o.deleted != 1 AND date_entered >= now() - interval '$day' day";*/
             
-            /*$fetch_query = " SELECT o.*, oc.* FROM opportunities AS o JOIN opportunities_cstm oc ON o.id = oc.id_c
-                WHERE ( oc.user_id2_c = '$log_in_user_id' OR oc.delegate = '$log_in_user_id' ) AND o.deleted != 1 AND date_entered >= now() - interval '$day' day ";*/
+            $columnAmount                   = isset( $_GET['Amount'] ) ? $_GET['Amount'] : '';
+            $columnREPEOI                   = isset( $_GET['REP-EOI-Published'] ) ? $_GET['REP-EOI-Published'] : '';
+            $columnClosedDate               = isset( $_GET['Closed-Date'] ) ? $_GET['Closed-Date'] : '';
+            $columnClosedBy                 = isset( $_GET['Closed-by'] ) ? $_GET['Closed-by'] : '';
+            $columnDateCreated              = isset( $_GET['Date-Created'] ) ? $_GET['Date-Created'] : '';
+            $columnDateClosed               = isset( $_GET['Date-Closed'] ) ? $_GET['Date-Closed'] : '';
+
+            $columnTaggedMembers            = isset( $_GET['Tagged-Members'] ) ? $_GET['Tagged-Members'] : '';
+            $columnViewedBy                 = isset( $_GET['Viewed-by'] ) ? $_GET['Viewed-by'] : '';
+            $columnPreviousResponsibility   = isset( $_GET['Previous-Responsbility'] ) ? $_GET['Previous-Responsbility'] : '';
+            $columnAttachment               = isset( $_GET['Attachment'] ) ? $_GET['Attachment'] : '';
             
-            $maxQuery = "SELECT row_count FROM approval_table ap WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '$log_in_user_id' OR ap.delegate_id = '$log_in_user_id' ) AND ap.apply_for = '$status' ORDER BY row_count DESC LIMIT 1";
-            $result = $GLOBALS['db']->query($maxQuery);
-            $rowCount = $GLOBALS['db']->fetchByAssoc($result);
+            $maxQuery   = "SELECT row_count FROM approval_table 
+                    WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 
+                    AND ( ap.approver_rejector = '$log_in_user_id' OR ap.delegate_id = '$log_in_user_id' ) 
+                    AND ap.apply_for = '$status' 
+                    ORDER BY row_count 
+                    DESC LIMIT 1";
+            $result     = $GLOBALS['db']->query($maxQuery);
+            $rowCount   = $GLOBALS['db']->fetchByAssoc($result);
+
             if($rowCount)
                 $rowCount = $rowCount['row_count'];
 
-            $fetch_query = "SELECT ap.id as approval_id, ap.delegate_id as delegate_id, opportunities.*, opportunities_cstm.*, 
-            CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM approval_table ap";
-            $fetch_query .= " JOIN opportunities ON opportunities.id = ap.opp_id";
-            $fetch_query .= " JOIN opportunities_cstm ON opportunities_cstm.id_c = ap.opp_id";
-            $fetch_query .= " LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id";
-            $fetch_query .= " WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '1200' day AND ( ap.approver_rejector = '$log_in_user_id' OR ap.delegate_id = '$log_in_user_id' ) AND ap.apply_for = '$status'";
-            $fetch_query .= " GROUP BY ap.opp_id";
-            /*if($rowCount)
-                $fetch_query .= " AND ap.row_count = '$rowCount'";*/
-            
-            /*if($_GET['filter'] && @$_GET['filter-responsibility']){
-                $responsibility = $_GET['filter-responsibility'];
-                $fetch_query .= " AND o.created_by = '$responsibility' ";
-            }
-            if($_GET['filter'] && @$_GET['filter-rfp-eoi-status']){
-                $rpfEOIStatus = $_GET['filter-rfp-eoi-status'];
-                $fetch_query .= " AND oc.rfporeoipublished_c = '$rpfEOIStatus' ";
-            }
-            if($_GET['filter'] && @$_GET['filter-min-price'] && @$_GET['filter-max-price']){
-                $minPrice = $_GET['filter-min-price'];
-                $maxPrice = $_GET['filter-max-price'];
-                $fetch_query .= " AND oc.budget_allocated_oppertunity_c BETWEEN '$minPrice' AND '$maxPrice' ";
-            }
-            if($_GET['filter'] && @$_GET['filter-closed-date-from'] && @$_GET['filter-closed-date-to']){
-                $closedDateFrom = $_GET['filter-closed-date-from'];
-                $closedDateTo = $_GET['filter-closed-date-to'];
-                $fetch_query .= " AND DATE_FORMAT(o.date_modified, '%d/%m/%Y') BETWEEN '$closedDateFrom' AND '$closedDateTo' ";
-            }
-            if($_GET['filter'] && @$_GET['filter-created-date-from'] && @$_GET['filter-created-date-to']){
-                $createdDateFrom = $_GET['filter-created-date-from'];
-                $createdDateTo = $_GET['filter-created-date-to'];
-                $fetch_query .= " AND DATE_FORMAT(o.date_entered, '%d/%m/%Y') BETWEEN '$createdDateFrom' AND '$createdDateTo' ";
-            }*/
-            if($_GET['filter'])
-                $fetch_query .= $this->getFilterQuery();
-
-            $fetch_query .= "  ORDER BY `opportunities`.`date_modified` DESC";
-
-            // echo $fetch_query; die;
+            $fetch_query = getPendingOpportunitiesQuery($rowCount);
 
             //Pagination Count
             $limit = 5;
@@ -2377,207 +468,93 @@ class HomeController extends SugarController
             $totalCount = mysqli_num_rows($paginationQuery);
             $numberOfPages = ceil( $totalCount / $limit );
             
-            $offset = @$_GET['page'] ? ($_GET['page'] - 1)  * $limit : 0;
+            $offset = $_GET['page'] ? ($_GET['page'] - 1) * $limit : 0;
 
             $fetch_query .= " LIMIT $offset, $limit";
 
+            ob_start();
+            include_once 'templates/partials/pending-requests/main.php';
+            $content = ob_get_contents();
+            ob_end_clean();
 
             $result = $GLOBALS['db']->query($fetch_query);
-            while($row = $GLOBALS['db']->fetchByAssoc($result))
-            {
-                $created_by_id = $row['assigned_user_id'];
-                $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
-                $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
-                $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
 
-                $user_name = $user_name_fetch_row['user_name'];
-                $first_name = $user_name_fetch_row['first_name'];
-                $last_name = $user_name_fetch_row['last_name'];
-                if ($user_name_fetch_row['reports_to_id']) {
-                    $reports_to = $this->get_user_details_by_id($user_name_fetch_row['reports_to_id']);
-                    $reports_to_full_name = ' <i class="fa fa-arrow-right"></i> ' . $reports_to['first_name'] .' '. $reports_to['last_name'];
-                } else {
-                    $reports_to_full_name = "";
-                }
-                $full_name = "$first_name  $last_name $reports_to_full_name";
+            $response = $this->mysql_fetch_assoc_all($result); //get all result in an array
 
-                $id = $row['id'];
-                $closed_by = '';
-                if (!empty($row['date_modified'])) {
-                    $modified_user_id = $row['modified_user_id'];
-                    $modified_user_query = "SELECT * FROM users WHERE id='$modified_user_id'";
-                    $modified_user_query_fetch = $GLOBALS['db']->query($modified_user_query);
-                    $modified_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($modified_user_query_fetch);
-                    $closed_by_first_name = $modified_user_query_fetch_row['first_name'];
-                    $closed_by_last_name = $modified_user_query_fetch_row['last_name'];
-                    $closed_by = "$closed_by_first_name $closed_by_last_name";
-                    // To Do: Find actual closed by
-                }
+            /* Pending Opportunities repeater HTML (Table ROW) */
+            ob_start();
+            include_once 'templates/partials/pending-requests/repeater.php';
+            $content .= ob_get_contents();
+            ob_end_clean();
 
-                /*$oppID = $row['id'];
-                $query2 = "SELECT id, Approved, pending FROM approval_table WHERE opp_id = '$oppID' AND apply_for = '$status' ORDER BY id DESC LIMIT 1";
-                $result2 = $GLOBALS['db']->query($query2);
-                while($row2 = $GLOBALS['db']->fetchByAssoc($result2)){
-                    if($row2['Approved'] == 0 && $row2['pending'] == 1){*/
-                        $oppID = $row['id'];
-                        $data .='<tr>
-                                    <td class="table-data"><a href="index.php?action=DetailView&module=Opportunities&record='.$row['id'].'">';
-                        $tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
-                        $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
-                        $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
-                        $tagged_users = '';
-                        if($tagged_user_query_fetch_row){
-                            $tagged_users = $tagged_user_query_fetch_row['user_id'];
-                        }
-                        $delegated_u_id = $row['delegate_id'];
-                        if ((strpos($tagged_users, $log_in_user_id) !== false)) {
-                            $data .= $row['name']. ' <i class="fa fa-tag" style="font-size: 12px; color:green"></i>';
-                        } else if (strpos($delegated_u_id, $log_in_user_id) !== false) {
-                            $data .= $row['name']. ' <img src="modules/Home/assets/Delegate-icon.svg" style="width: 25px; color:green" />';
-                        } else {
-                            $data .= $row['name'];
-                        }
-                        $data .='
-                                </a></td><td class="table-data">'.$full_name.'</td>
-                                
-                                <td class="table-data" style="text-align: center">'.$this->pendingApprovalStatus($row['id'], $status).'</td>';
-
-                                if(!@$_GET['customColumns']):
-                                /*if($columnAmount){
-                $data .= '<th class="table-header">Amount ( in Cr )</th>';
-            }*/
-                                if($columnDepartment){
-                                    $data .= '<th class="table-header">'.($this->beautify_label(($this->beautify_label($row['new_department_c'])))).'</th>';
-                                }
-                                if($columnREPEOI){
-                                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label($row['rfporeoipublished_c'])))).'</td>';
-                                }
-                                if($columnClosedDate){
-                                    $data .= '<td class="table-data">'.date_format(date_create($row['date_modified']),'d/m/Y').'</td>'; 
-                                }
-                                if($columnClosedBy){
-                                    $data .= '<td class="table-data" >'.$closed_by.'</td>';
-                                }
-                                if($columnDateCreated){
-                                    $data .= '<td class="table-data">'.date_format(date_create($row['date_entered']),'d/m/Y').'</td>';
-                                }
-                                
-                                if($columnDateClosed){
-                                    if($row['date_closed']){
-                                        $closedDate = date_format(date_create($row['date_closed']),'d/m/Y');
-                                    }else{
-                                        $closedDate = '';
-                                    }
-                                    $data .= '<td class="table-data">'.$closedDate.'</td>';
-                                }
-
-                                if($columnTaggedMembers){
-                                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getTaggedMembers($row['id']) )))).'</td>';
-                                }
-                                if($columnViewedBy){
-                                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['modified_user_id']) )))).'</td>';
-                                }
-                                if($columnPreviousResponsibility){
-                                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $this->getModifiedUser($row['assigned_user_id']) )))).'</td>';
-                                }
-                                if($columnAttachment){
-                                    $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label( $row['file_url'] ? $row['file_url'] : '' )))).'</td>';
-                                }
-                                endif;
-
-                                $data .= $this->getColumnFiltersBody($columnFilter, $row);
-                            
-                        $data .= '<td class="table-data">
-                            <div style="font-size: 20px;">
-                                <i class="fa fa-check-circle" onClick=openApprovalDialog("Approve","'.$row['status_c'].'","'.addslashes($row['approval_id']).'");></i>
-                                <i class="fa fa-times-circle" onClick=openApprovalDialog("Reject","'.$row['status_c'].'","'.addslashes($row['approval_id']).'");></i>
-                                <i class="fa fa-info-circle" onClick="location.href=\'index.php?action=DetailView&module=Opportunities&record='.$row['id'].'\'"></i>
-                            </div>
-                            </td>
-                        </tr>';
-                    /*}
-                }*/    
-            }
-            $data .= '
-                </tbody>
-            </table>';
 
             //Pagination 
-            $page = @$_GET['page'] ? $_GET['page'] : 1;
+            $page = $_GET['page'] ? $_GET['page'] : 1;
             if ($totalCount > ( $page * $limit)){
                 $currentPost = ($page * $limit);
             } else {
                 $currentPost = $totalCount;
             }
-            $data .= '<div class="pagination text-right">';
-            $data .= '<p class="d-inline-block">Showing '.$currentPost.' of '.$totalCount.'</p>';
+            $content .= '<div class="pagination text-right">';
+            $content .= '<p class="d-inline-block">Showing '.$currentPost.' of '.$totalCount.'</p>';
 
-            $data .= $this->pagination($page, $numberOfPages, 'filter_by_opportunity_status', $status, '', $_GET['filter']);
-            $data .= '</div>';
+            $type = array(
+                'method' => 'pending',
+                'status' => $status,
+                'type'   => ''
+            );
+            $content .= $this->pagination($page, $numberOfPages, $type, '30', '', $_GET['filter']);
+            $content .= '</div>';
 
-            $columnFilterHtml = $this->getColumnFilters($status, 'pending');
-            $filters          = $this->getFilterHtml('opportunity', $columnFilter);
+            // echo $content;
+            $columnFilterHtml   = $this->getColumnFilters($_GET['status'], 'pending');
+            $filters            = $this->getFilterHtml('opportunity', $_GET);
 
             echo json_encode(array(
-                'data'          => $data,
-                'columnFilter'  => $columnFilterHtml,
-                'filters'       => $filters,
-                'fetch_query'   => $fetch_query
-            ));
+                'data'                      => $content,
+                'columnFilter'              => $columnFilterHtml,
+                'filters'                   => $filters
+            )); die;
 
-            //echo $data;
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
         die();
     }
 
-    function pagination($page, $numberOfPages, $type, $status, $searchTerm, $filter){
+    /* Get Opportuinity Status Count */
+    function getOpportunityStatusCount($status = null){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
 
-        $ends_count = 1;  //how many items at the ends (before and after [...])
-        $middle_count = 2;  //how many items before and after current page
-        $dots = false;
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
 
-        $data = '<ul class="d-inline-block">';
+        $maxQuery = "SELECT row_count FROM approval_table WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '$log_in_user_id' OR ap.delegate_id = '$log_in_user_id' )";
+        if($status)
+            $maxQuery .= " AND ap.apply_for = '$status'";
+
+        $maxQuery .= " ORDER BY row_count DESC LIMIT 1";
         
-        if($page > 1)
-            $data .= '<li class="" onClick=paginate("'.($page - 1).'","'.$type.'","'.$status.'","'.$searchTerm.'","'.@$filter.'")><strong>&laquo;</strong> Prev</li>';
+        $result = $GLOBALS['db']->query($maxQuery);
+        $rowCount = $GLOBALS['db']->fetchByAssoc($result);
+        if($rowCount)
+            $rowCount = $rowCount['row_count'];
 
-        /*$show = 0;
-        for($i = 1; $i <= $numberOfPages; $i++ ){
-            $currentPage = @$page ? $page : 1;
-            $class = $currentPage == $i ? 'active paginate-class' : 'paginate-class';
-            $show++;
-            if (($show < 5) || ($numberOfPages == $i))
-                $data .= '<li class="'.$class.'" onClick=paginate("'.$i.'","'.$type.'","'.$status.'","'.$searchTerm.'","'.@$filter.'")>'.$i.'</li>';
-            else
-                $data .= '<li class="dot">.</li>';
-        }*/
+        $query = "SELECT count(*) as count FROM approval_table ap";
+        $query .= " JOIN opportunities o ON o.id = ap.opp_id";
+        $query .= " WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND o.deleted != 1 AND o.date_entered >= now() - interval '1200' day AND ( ap.approver_rejector = '$log_in_user_id' OR ap.delegate_id = '$log_in_user_id' )";
 
-        for ($i = 1; $i <= $numberOfPages; $i++) {
-            $currentPage = @$page ? $page : 1;
-            $class = $currentPage == $i ? 'active paginate-class' : 'paginate-class';
-            if ($i == $page) {
-                $data .= '<li class="'.$class.'" onClick=paginate("'.$i.'","'.$type.'","'.$status.'","'.$searchTerm.'","'.@$filter.'")>'.$i.'</li>';
-                $dots = true;
-            } else {
-                if ($i <= $ends_count || ($page && $i >= $page - $middle_count && $i <= $page + $middle_count) || $i > $numberOfPages - $ends_count) { 
-                    $data .= '<li class="'.$class.'" onClick=paginate("'.$i.'","'.$type.'","'.$status.'","'.$searchTerm.'","'.@$filter.'")>'.$i.'</li>';
-                    $dots = true;
-                } elseif ($dots){
-                    $data .= '<li class="paginate-class">&hellip;</li>';
-                    $dots = false;
-                }
-            }
-        }
-        if ($page < $numberOfPages || -1 == $numberOfPages) { 
-           $data .= '<li class="" onClick=paginate("'.($page + 1).'","'.$type.'","'.$status.'","'.$searchTerm.'","'.@$filter.'")>Next <strong>&raquo;</strong></li>';
-        }
-            
-        $data .= '</ul>';
-        return $data;
+        if($status)
+            $query .= " AND ap.apply_for = '$status'";
+        if($rowCount)
+            $query .= " AND ap.row_count = '$rowCount'";
+
+        $result = $GLOBALS['db']->query($query);
+        $count = $GLOBALS['db']->fetchByAssoc($result);
+        return $count['count'];
     }
-
+    /* Get Pending Approval Status */
     function pendingApprovalStatus($oppID, $status){
         $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
@@ -2612,171 +589,38 @@ class HomeController extends SugarController
         }
         return $data;
     }
-
-    function getOpportunityStatusCount($status = null){
-
-        global $current_user;
-        $log_in_user_id = $current_user->id;
-
+    /* get tagged members */
+    function getTaggedMembers($id){
         $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
-        /*if($status){
-            /*$query = "SELECT count(*) as count FROM opportunities AS o JOIN opportunities_cstm oc ON o.id = oc.id_c JOIN (
-                SELECT *, count(opp_id) as opp_count  FROM approval_table GROUP BY opp_id ORDER BY id DESC
-            ) AS ap ON o.id = ap.opp_id AND ap.opp_count = 1
-            WHERE oc.user_id2_c = '$log_in_user_id' AND ap.apply_for = '".$status."' AND ap.Approved = 0 AND ap.pending = 1 AND o.deleted != 1";*/
-            /*$query = "SELECT count(*) as count FROM opportunities AS o JOIN opportunities_cstm oc ON oc.id_c = o.id JOIN (
-                SELECT *, MAX(id) as id_count, count(opp_id) as opp_count  FROM approval_table GROUP BY opp_id ORDER BY id DESC
-            ) AS ap ON o.id = ap.opp_id
-            WHERE oc.user_id2_c = '$log_in_user_id' AND ap.apply_for = '".$status."' AND ap.Approved = 0 AND ap.pending = 1 AND o.deleted != 1";
-            $query = "SELECT o.id FROM opportunities o JOIN opportunities_cstm oc ON oc.id_c = o.id WHERE o.deleted != 1 AND ( oc.user_id2_c = '$log_in_user_id' OR oc.delegate = '$log_in_user_id' )";
-            $result = $GLOBALS['db']->query($query);
-            $count = 0;
-            while($row = $GLOBALS['db']->fetchByAssoc($result)){
-                $oppID = $row['id'];
-                $query2 = "SELECT id, Approved, pending FROM approval_table WHERE opp_id = '$oppID' AND apply_for = '$status' ORDER BY id DESC LIMIT 1";
-                $result2 = $GLOBALS['db']->query($query2);
-                while($row2 = $GLOBALS['db']->fetchByAssoc($result2)){
-                    // echo $row2['id'].'<br>';
-                    if($row2['Approved'] == 0 && $row2['pending'] == 1)
-                        $count++;
-                }
-            }
-            return $count;
+        $query = "SELECT opportunities_users_2users_idb FROM opportunities_users_2_c WHERE opportunities_users_2opportunities_ida = '$id'";
+        $data = $GLOBALS['db']->query($query);
+        $usersArray = array();
+        while($d = $GLOBALS['db']->fetchByAssoc($data)){
+            array_push($usersArray, $d['opportunities_users_2users_idb']);
         }
-        else{
-            $query = "SELECT count(*) as count FROM opportunities_cstm oc LEFT JOIN opportunities o ON o.id = oc.id_c WHERE o.deleted != 1";
-
-            $count = $GLOBALS['db']->query($query);
-            $count = $GLOBALS['db']->fetchByAssoc($count);
-            return $count['count'];
-        }*/
-
-        $maxQuery = "SELECT row_count FROM approval_table ap WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND ( ap.approver_rejector = '$log_in_user_id' OR ap.delegate_id = '$log_in_user_id' )";
-        if($status)
-            $maxQuery .= " AND ap.apply_for = '$status'";
-
-        $maxQuery .= " GROUP BY ap.opp_id ORDER BY row_count DESC";
-        
-        $result = $GLOBALS['db']->query($maxQuery);
-        $rowCount = $GLOBALS['db']->fetchByAssoc($result);
-        if($rowCount)
-            $rowCount = $rowCount['row_count'];
-
-        $query = "SELECT count(*) as count FROM approval_table ap";
-        $query .= " JOIN opportunities o ON o.id = ap.opp_id";
-        $query .= " WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND o.deleted != 1 AND o.date_entered >= now() - interval '1200' day AND ( ap.approver_rejector = '$log_in_user_id' OR ap.delegate_id = '$log_in_user_id' )";
-
-        if($status)
-            $query .= " AND ap.apply_for = '$status'";
-        /*if($rowCount)
-            $query .= " AND ap.row_count = '$rowCount'";*/
-
-        //echo $query; die;
-
-        $result = $GLOBALS['db']->query($query);
-        $count = $GLOBALS['db']->fetchByAssoc($result);
-        return $count['count'];
-    }
-
-    function delegateCountWithStatus($status, $userID){
-        global $current_user;
-        $log_in_user_id = $current_user->id;
-
-        $db = \DBManagerFactory::getInstance();
-        $GLOBALS['db'];
-        /*$query = "SELECT o.id FROM opportunities o JOIN opportunities_cstm oc ON oc.id_c = o.id WHERE o.deleted != 1 AND oc.delegate = '$log_in_user_id' AND oc.user_id2_c = '$userID' ";
-        $result = $GLOBALS['db']->query($query);
-        $dCount = 0;
-        while($row = $GLOBALS['db']->fetchByAssoc($result)){
-            $oppID = $row['id'];
-            $query2 = "SELECT id, Approved, pending FROM approval_table WHERE opp_id = '$oppID' AND apply_for = '$status' ORDER BY id DESC LIMIT 1";
-            $result2 = $GLOBALS['db']->query($query2);
-            while($row2 = $GLOBALS['db']->fetchByAssoc($result2)){
-                // echo $row2['id'].'<br>';
-                if($row2['Approved'] == 0 && $row2['pending'] == 1)
-                    $dCount++;
-            }
-        }*/
-        $query = "SELECT count(*) as count FROM approval_table ap";
-        $query .= " JOIN opportunities o ON o.id = ap.opp_id";
-        $query .= " WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 AND o.deleted != 1 AND o.date_entered >= now() - interval '1200' day AND ap.approver_rejector = '$userID' AND ap.delegate_id = '$log_in_user_id' ";
-
-        if($status)
-            $query .= " AND apply_for = '$status'";
-
-        // echo $query; die;
-
-        $result = $GLOBALS['db']->query($query);
-        $count = $GLOBALS['db']->fetchByAssoc($result);
-        return $count['count'];
-        //return $dCount;
-    }
-
-    public function getDelegateCount($userID) {
-        $qlLeadCount = $this->delegateCountWithStatus('qualifylead', $userID);
-        $qlOppCount = $this->delegateCountWithStatus('qualifyOpportunity', $userID);
-        $qlDPRCount = $this->delegateCountWithStatus('qualifyDpr', $userID);
-        $qlBidCount = $this->delegateCountWithStatus('qualifyBid', $userID);
-        $qlClosedCount = $this->delegateCountWithStatus('closure', $userID);
-        $qlDroppedCount = $this->delegateCountWithStatus('Dropping', $userID);
-        return ($qlLeadCount + $qlOppCount + $qlDPRCount + $qlBidCount + $qlClosedCount + $qlDroppedCount);
-    }
-
-    function checkDelegate(){
-        global $current_user;
-        $log_in_user_id = $current_user->id;
-
-        $db = \DBManagerFactory::getInstance();
-        $GLOBALS['db'];
-        // $query = "SELECT count(*) as delegate FROM users WHERE id = '$log_in_user_id' AND reports_to_id != '' ";
-        $query = "SELECT count(*) as delegate FROM users_cstm WHERE id_c = '$log_in_user_id' AND (teamheirarchy_c = 'team_lead' OR mc_c = 'yes')";
-        $result = $GLOBALS['db']->query($query);
-        $result = $GLOBALS['db']->fetchByAssoc($result);
-        return $result['delegate'] ? true : false;
-
-    }
-
-    function getDelegateDetails(){
-        global $current_user;
-        $log_in_user_id = $current_user->id;
-
-        $db = \DBManagerFactory::getInstance();
-        $GLOBALS['db'];
-        $query = "SELECT u.first_name, u.last_name, oc.user_id2_c FROM opportunities o JOIN opportunities_cstm oc ON oc.id_c = o.id JOIN users u ON u.id = oc.user_id2_c WHERE o.deleted != 1 AND date_entered >= now() - interval '1200' day AND oc.delegate = '$log_in_user_id' GROUP BY oc.user_id2_c ";
-        $result = $GLOBALS['db']->query($query);
-        $delegateData = array();
-        while($row = $GLOBALS['db']->fetchByAssoc($result)){
-            $dData = array(
-                'name' => $row['first_name'].' '.$row['last_name'],
-                'count' => $this->getDelegateCount($row['user_id2_c'])
-            );
-            array_push($delegateData, $dData);
+        $query = "SELECT first_name, last_name FROM users WHERE id IN ('" . implode(',', $usersArray) . "')";
+        $data = $GLOBALS['db']->query($query);
+        $members = '';
+        while($row = $GLOBALS['db']->fetchByAssoc($data)){
+            $members .= $row['first_name'].' '.$row['last_name'].', ';
         }
-        $output = '';
-        foreach($delegateData as $d){
-            $output .= $d['name'].' - '.$d['count'].'<br>';
-        }
-        return $output;
+        return $members;
     }
-
-    function getOpportunityStatusCountGraph($status = null, $day, $closure_status = false){
+    /* get modified user */
+    function getModifiedUser($id){
         $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
-        if($status)
-            $query = "SELECT count(*) as count FROM opportunities_cstm oc LEFT JOIN opportunities o ON o.id = oc.id_c WHERE oc.status_c = '".$status."' AND o.deleted != 1 AND o.date_entered >= now() - interval '".$day."' day";
-        else
-            $query = "SELECT count(*) as count FROM opportunities_cstm oc LEFT JOIN opportunities o ON o.id = oc.id_c WHERE o.deleted != 1 AND o.date_entered >= now() - interval '".$day."' day";
-
-        if ($status == 'Closed' && $closure_status)
-            $query = "SELECT count(*) as count FROM opportunities_cstm oc LEFT JOIN opportunities o ON o.id = oc.id_c WHERE oc.status_c = '".$status."' AND o.deleted != 1 AND o.date_entered >= now() - interval '".$day."' day AND oc.closure_status_c = 'won'"; 
-        
-        $count = $GLOBALS['db']->query($query);
-        $count = $GLOBALS['db']->fetchByAssoc($count);
-        
-        return $count['count'];
+        $query = "SELECT first_name, last_name FROM users WHERE id = '$id'";
+        $data = $GLOBALS['db']->query($query);
+        $user = '';
+        while($row = $GLOBALS['db']->fetchByAssoc($data)){
+            $user .= $row['first_name'].' '.$row['last_name'];
+        }
+        return $user;
     }
 
+    /* get opportunity details for approval */
     function action_get_approval_item(){
         try
         {
@@ -2789,36 +633,10 @@ class HomeController extends SugarController
             $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
 
-            //$fetch_query = "SELECT * FROM opportunities o WHERE o.id = '$id' AND o.deleted != 1";
             $fetch_query = "SELECT o.*, oc.* FROM opportunities o JOIN approval_table ap ON ap.opp_id = o.id LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c WHERE o.deleted != 1 AND o.date_entered >= now() - interval '1200' day AND ap.id = '$id'";
             $result = $GLOBALS['db']->query($fetch_query);
             while($row = $GLOBALS['db']->fetchByAssoc($result))
             {
-
-                /*switch ($row['status_c']){
-                    case 'Lead':
-                        $ChangedStatus = 'qualifylead';
-                        break;
-                    case 'QualifiedLead':
-                        $ChangedStatus = 'qualifyOpportunity'; 
-                        break;
-                    case 'Qualified':
-                        $ChangedStatus = 'qualifyDpr';
-                        break;
-                    case 'QualifiedDpr':
-                        $ChangedStatus = 'qualifyBid';
-                        break;
-                    case 'QualifiedBid':
-                        $ChangedStatus = 'closure';
-                        break;
-                    case 'Drop':
-                        $ChangedStatus = 'Dropping';
-                        break;
-                    default:
-                        $ChangedStatus = '';
-                        $AppliedStatus = '';
-                        break;
-                }*/
 
                 $ChangedStatus = $this->getChangeStatus($row['status_c'], $row['rfporeoipublished_c']);
 
@@ -2830,13 +648,7 @@ class HomeController extends SugarController
                 $user_name = $user_name_fetch_row['user_name'];
                 $first_name = $user_name_fetch_row['first_name'];
                 $last_name = $user_name_fetch_row['last_name'];
-                if ($user_name_fetch_row['reports_to_id']) {
-                    $reports_to = $this->get_user_details_by_id($user_name_fetch_row['reports_to_id']);
-                    $reports_to_full_name = ' <i class="fa fa-arrow-right"></i> ' . $reports_to['first_name'] .' '. $reports_to['last_name'];
-                } else {
-                    $reports_to_full_name = "";
-                }
-                $full_name = "$first_name  $last_name $reports_to_full_name";
+                $full_name = "$first_name  $last_name";
                 $approver_first_name = $this->get_user_details_by_id($log_in_user_id)['first_name'];
                 $approver_last_name = $this->get_user_details_by_id($log_in_user_id)['last_name'];
                 $approver_full_name = "$approver_first_name $approver_last_name";
@@ -2847,7 +659,7 @@ class HomeController extends SugarController
                 <input type="hidden" name="opp_id" value="'.$row['id'].'" />
                 <input type="hidden" name="event" value="'.$event.'" />
                 <input type="hidden" name="approval_id" value="'.$id.'" />
-                <input type="hidden" name="rfp_eoi" value="'.($this->beautify_label($row['rfporeoipublished_c'])).'" />
+                <input type="hidden" name="rfp_eoi" value="'.(beautify_label($row['rfporeoipublished_c'])).'" />
                 <h2 class="approvalheading">'.$row['name'].'</h2><br>
                 <p class="approvalsubhead">'. $temp .' of Opportunity
                 </p>
@@ -2866,8 +678,8 @@ class HomeController extends SugarController
                 $data .='
                                 <tr>
                                     <td class="approvaltable-data-popup">'.$full_name.'</td>
-                                    <td class="approvaltable-data-popup">'.$this->append_currency($row['currency_c'], $this->beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>
-                                    <td class="approvaltable-data-boolean-popup">'.($this->beautify_label($row['rfporeoipublished_c'])).'</td>
+                                    <td class="approvaltable-data-popup">'.(beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>
+                                    <td class="approvaltable-data-boolean-popup">'.(beautify_label($row['rfporeoipublished_c'])).'</td>
                                     <td class="approvaltable-data-popup">'.date_format(date_create($row['date_modified']),'d/m/Y').'</td>
                                     <td class="approvaltable-data-popup">
                                         <span style="color:orange;">'.$approver_full_name.'</span>
@@ -2895,144 +707,78 @@ class HomeController extends SugarController
         }
         die();
     }
-
-    function get_multiple_approvers($op_id) {
-        $query = "SELECT DISTINCT approver_rejector,Approved,Rejected,date_time,pending FROM approval_table WHERE opp_id = '$op_id'";
-    }
-
-    public function action_tag_list() {
-        try{
-            global $current_user;
-            $log_in_user_id = $current_user->id;            
-            $db = \DBManagerFactory::getInstance();
-            $GLOBALS['db'];
-            $fetch_query = "SELECT * FROM `users` WHERE `id` != '$log_in_user_id' AND id != '1' AND
-             id NOT IN (SELECT reports_to_id FROM users WHERE id = '$log_in_user_id' OR id = '1') ORDER BY `users`.`first_name` ASC";
-            $result = $GLOBALS['db']->query($fetch_query);
-            $data = "";
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
-                    $full_name = $row['first_name'] . ' ' . $row['last_name'];
-                    $full_name = trim($full_name," ");
-                    $data .= '<option value="'.$row["id"].'---'.$full_name.'">'.$full_name.'</option>';
-                }
-            } else {
-                echo "0 results";
+    function getChangeStatus($status, $rfp_eoi_status){
+        $ChangedStatus = '';
+        if($rfp_eoi_status == 'no'){
+            switch ($status){
+                case 'Lead':
+                    $ChangedStatus = 'qualifylead';
+                    break;
+                case 'QualifiedLead':
+                    $ChangedStatus = 'qualifyOpportunity'; 
+                    break;
+                case 'Qualified':
+                    $ChangedStatus = 'qualifyDpr';
+                    break;
+                case 'QualifiedDpr':
+                    $ChangedStatus = 'qualifyBid';
+                    break;
+                case 'QualifiedBid':
+                    $ChangedStatus = 'closure';
+                    break;
+                case 'Drop':
+                    $ChangedStatus = 'Dropping';
+                    break;
+                default:
+                    $ChangedStatus = '';
+                    $AppliedStatus = '';
+                    break;
             }
-            echo json_encode(array('members'=>$data, 'logged_in_id' => $log_in_user_id));
-        }
-        catch(Exception $e){
-            echo json_encode(array("message" => "Some error occured"));
-        }
-        die();
-    }
-
-    public function is_tagging_applicable($opportunity_id) {
-        global $current_user;
-    	$log_in_user_id = $current_user->id;
-    	$db = \DBManagerFactory::getInstance();
-        $GLOBALS['db'];
-
-        $sql = "SELECT * FROM tagged_user WHERE tagged_user.opp_id='$opportunity_id' AND tagged_user.users_id='$log_in_user_id'";
-        $tagged_result = $GLOBALS['db']->query($sql);
-        
-        $sql1 = "SELECT users_cstm.user_lineage FROM users_cstm 
-        JOIN opportunities ON opportunities.assigned_user_id = users_cstm.id_c 
-        WHERE opportunities.id = '$opportunity_id' ";
-        $result1 = $GLOBALS['db']->query($sql1);
-        while($row1 = $GLOBALS['db']->fetchByAssoc($result1)) {
-            $user_lineage = $row1['user_lineage'];
-        }
-        $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c 
-        FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
-        $result3 = $GLOBALS['db']->query($sql3);
-        while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
-        {
-            $check_mc = $row3['mc_c'];
-            $check_team_lead = $row3['teamheirarchy_c'];
-        }
-
-        if($check_mc =="yes" || ($check_team_lead == 'team_lead')) 
-        {
-            if(
-                (strpos($user_lineage, $log_in_user_id) !== false) 
-                    || ($tagged_result->num_rows > 0)) {
-                    return true;
-                }
-
-        } else{
-            return false;
-        }
-    }
-
-    public function action_get_user_details() {
-        try{
-            global $current_user;
-            $log_in_user_id = $current_user->id;
-            $check_user_team = "SELECT teamfunction_c, mc_c from users LEFT JOIN users_cstm ON users.id = users_cstm.id_c WHERE id = '$log_in_user_id'";
-            $check_user_team_result = $GLOBALS['db']->query($check_user_team);
-            $user_team_row = $GLOBALS['db']->fetchByAssoc($check_user_team_result);
-            $user_team = $user_team_row['teamfunction_c'];
-            $mc_c = $user_team_row['mc_c'];
-            echo json_encode(array('user_team'=>$user_team, 'mc_c' =>$mc_c , 'user_id'=> $log_in_user_id));
-        }catch(Exception $e){
-            echo json_encode(array("message" => "Some error occured"));
-        }
-        die();
-    }
-
-    public function action_load_multi_select() {
-        try{
-            global $current_user;
-    	    $log_in_user_id = $current_user->id;
-            $db = \DBManagerFactory::getInstance();
-            $GLOBALS['db'];
-            if($_POST["query"] != '')
-            {
-                $search_array = explode(",", $_POST["query"]);
-                $search_text = "'" . implode("','", $search_array) . "'";
-                $query = "
-                SELECT * FROM users,users_cstm 
-                WHERE id IN (".$search_text.") 
-                ";
+        }else if($rfp_eoi_status == 'yes'){
+            switch ($status){
+                case 'Lead':
+                    $ChangedStatus = 'qualifylead';
+                    break;
+                case 'QualifiedLead':
+                    $ChangedStatus = 'qualifyBid'; 
+                    break;
+                case 'QualifiedBid':
+                    $ChangedStatus = 'closure';
+                    break;
+                case 'Drop':
+                    $ChangedStatus = 'Dropping';
+                    break;
+                default:
+                    $ChangedStatus = '';
+                    $AppliedStatus = '';
+                    break;
             }
-            else
-            {
-                $query = "SELECT * FROM `users` WHERE `id` != '$log_in_user_id' AND id != '1'
-                AND id NOT IN (SELECT reports_to_id FROM users WHERE id = '$log_in_user_id') ORDER BY `users`.`first_name` ASC ";
+        }else{
+            switch ($status){
+                case 'Lead':
+                    $ChangedStatus = 'qualifylead';
+                    break;
+                case 'QualifiedLead':
+                    $ChangedStatus = 'qualifyOpportunity'; 
+                    break;
+                case 'Qualified':
+                    $ChangedStatus = 'qualifyDpr';
+                    break;
+                case 'QualifiedDpr':
+                    $ChangedStatus = 'closure';
+                    break;
+                case 'Drop':
+                    $ChangedStatus = 'Dropping';
+                    break;
+                default:
+                    $ChangedStatus = '';
+                    $AppliedStatus = '';
+                    break;
             }
-            $statement = $GLOBALS['db']->query($query);
-            $total_row = $statement->num_rows;
-            $output = '';
-
-            if($total_row > 0)
-            {
-                while($row = $statement->fetch_assoc())
-                {   
-                    $full_name = $row['first_name'] . ' ' . $row['last_name'];
-                    $output .= '
-                    <tr>
-                        <td>'.$full_name.'</td>
-                    </tr>
-                    ';
-                }
-            }
-            else
-            {
-                $output .= '
-                <tr>
-                    <td colspan="5" align="center">No Data Found</td>
-                </tr>
-                ';
-            }
-
-            echo $output;
-        }catch(Exception $e){
-            echo json_encode(array("message" => "Some error occured"));
         }
-        die();
+        return $ChangedStatus;
     }
-    
+    /* approve / reject pending opportunities */
     function action_opportunity_status_update(){
         try
         {
@@ -3116,30 +862,6 @@ class HomeController extends SugarController
         }
         die();
     }
-
-    function action_update_multiple_approver(){
-        try{
-            $db = \DBManagerFactory::getInstance();
-                $GLOBALS['db'];
-                
-                global $current_user; 
-                    $log_in_user_id = $current_user->id;
-                    $approvers_id=$_POST['multiple_approvers_id'];
-                    $opps_id=$_POST['opps_id'];
-                    
-                    $id_array=implode(',',$approvers_id);
-                    
-                    $update_multiple_approver_id='UPDATE opportunities_cstm SET multiple_approver_c="'.$id_array.'" WHERE id_c="'.$opps_id.'"';
-                    
-                    $GLOBALS['db']->query($update_multiple_approver_id);
-                    
-                
-        }catch(Exception $e){
-                echo json_encode(array("status"=>false, "message" => "Some error occured"));
-            }
-            die();
-    }
-
     function getApprovalStatus($status, $rfp_eoi_status){
         $ChangedStatus = '';
         if($rfp_eoi_status == 'no'){
@@ -3220,79 +942,6 @@ class HomeController extends SugarController
         }
         return $ChangedStatus;
     }
-
-    function getChangeStatus($status, $rfp_eoi_status){
-        $ChangedStatus = '';
-        if($rfp_eoi_status == 'no'){
-            switch ($status){
-                case 'Lead':
-                    $ChangedStatus = 'qualifylead';
-                    break;
-                case 'QualifiedLead':
-                    $ChangedStatus = 'qualifyOpportunity'; 
-                    break;
-                case 'Qualified':
-                    $ChangedStatus = 'qualifyDpr';
-                    break;
-                case 'QualifiedDpr':
-                    $ChangedStatus = 'qualifyBid';
-                    break;
-                case 'QualifiedBid':
-                    $ChangedStatus = 'closure';
-                    break;
-                case 'Drop':
-                    $ChangedStatus = 'Dropping';
-                    break;
-                default:
-                    $ChangedStatus = '';
-                    $AppliedStatus = '';
-                    break;
-            }
-        }else if($rfp_eoi_status == 'yes'){
-            switch ($status){
-                case 'Lead':
-                    $ChangedStatus = 'qualifylead';
-                    break;
-                case 'QualifiedLead':
-                    $ChangedStatus = 'qualifyBid'; 
-                    break;
-                case 'QualifiedBid':
-                    $ChangedStatus = 'closure';
-                    break;
-                case 'Drop':
-                    $ChangedStatus = 'Dropping';
-                    break;
-                default:
-                    $ChangedStatus = '';
-                    $AppliedStatus = '';
-                    break;
-            }
-        }else{
-            switch ($status){
-                case 'Lead':
-                    $ChangedStatus = 'qualifylead';
-                    break;
-                case 'QualifiedLead':
-                    $ChangedStatus = 'qualifyOpportunity'; 
-                    break;
-                case 'Qualified':
-                    $ChangedStatus = 'qualifyDpr';
-                    break;
-                case 'QualifiedDpr':
-                    $ChangedStatus = 'closure';
-                    break;
-                case 'Drop':
-                    $ChangedStatus = 'Dropping';
-                    break;
-                default:
-                    $ChangedStatus = '';
-                    $AppliedStatus = '';
-                    break;
-            }
-        }
-        return $ChangedStatus;
-    }
-
     function isDelegate($userID, $oppID){
         $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
@@ -3321,6 +970,7 @@ class HomeController extends SugarController
         return $count['count'];
     }
 
+    /* get pending opp count */
     public function action_opportunity_pending_count(){
         try {
             global $current_user;
@@ -3330,42 +980,18 @@ class HomeController extends SugarController
             $GLOBALS['db'];
             
             $PRC = $this->get_pending_request_count();
-                /*$query = "SELECT count(*) as count FROM opportunities AS o JOIN opportunities_cstm oc ON oc.id_c = o.id JOIN (
-                        SELECT *, count(opp_id) as opp_count  FROM approval_table GROUP BY opp_id ORDER BY id DESC
-                    ) AS ap ON o.id = ap.opp_id AND ap.opp_count = 1
-                    WHERE oc.user_id2_c = '$log_in_user_id' AND ap.Approved = 0 AND ap.pending = 1 AND o.deleted != 1";*/
-                /*$query = "SELECT count(*) as count FROM opportunities AS o JOIN opportunities_cstm oc ON oc.id_c = o.id JOIN (
-                    SELECT *, MAX(id) as id_count, count(opp_id) as opp_count  FROM approval_table GROUP BY opp_id ORDER BY id DESC
-                ) AS ap ON o.id = ap.opp_id
-                WHERE oc.user_id2_c = '$log_in_user_id' AND ap.Approved = 0 AND ap.pending = 1 AND o.deleted != 1";
-                $count = $GLOBALS['db']->query($query);
-                $count = $GLOBALS['db']->fetchByAssoc($count);*/
-                
-                /*$query = "SELECT o.id FROM opportunities o JOIN opportunities_cstm oc ON oc.id_c = o.id WHERE o.deleted != 1 AND (oc.user_id2_c = '$log_in_user_id' OR oc.delegate = '$log_in_user_id' )";
-                $result = $GLOBALS['db']->query($query);
-                $count = 0;
-                while($row = $GLOBALS['db']->fetchByAssoc($result)){
-                    $oppID = $row['id'];
-                    $query2 = "SELECT id, Approved, pending FROM approval_table WHERE opp_id = '$oppID' ORDER BY id DESC LIMIT 1";
-                    $result2 = $GLOBALS['db']->query($query2);
-                    while($row2 = $GLOBALS['db']->fetchByAssoc($result2)){
-                        // echo $row2['id'].'<br>';
-                        if($row2['Approved'] == 0 && $row2['pending'] == 1)
-                            $count++;
-                    }
-                }*/
             echo json_encode(
                 array(
-                      'data' => $PRC . '<i class="fa fa-angle-double-down" aria-hidden="true"></i>',
+                      'data' => "$PRC <i class=\"fa fa-angle-double-down\" aria-hidden=\"true\"></i>",
                       'count' => $PRC
-                    ));
+                    )
+            );
         }
         catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
         die();
     }
-
     public function get_pending_request_count() {
         $qlLeadCount = $this->getOpportunityStatusCount('qualifylead');
         $qlOppCount = $this->getOpportunityStatusCount('qualifyOpportunity');
@@ -3376,161 +1002,84 @@ class HomeController extends SugarController
         return ($qlLeadCount + $qlOppCount + $qlDPRCount + $qlBidCount + $qlClosedCount + $qlDroppedCount);
     }
 
-    public function get_closed_by($row) {
-        if (!empty($row['date_modified'])) {
-            $modified_user_id = $row['modified_user_id'];
-            $modified_user_query = "SELECT * FROM users WHERE id='$modified_user_id'";
-            $modified_user_query_fetch = $GLOBALS['db']->query($modified_user_query);
-            $modified_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($modified_user_query_fetch);
-            $closed_by_first_name = $modified_user_query_fetch_row['first_name'];
-            $closed_by_last_name = $modified_user_query_fetch_row['last_name'];
-            $closed_by = "$closed_by_first_name $closed_by_last_name";
-            return $closed_by;
-        }
+    /**
+     * After Qualified opportunity approver flow changes
+     */
+    function action_update_multiple_approver(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+               $GLOBALS['db'];
+                 
+                  global $current_user; 
+                   $log_in_user_id = $current_user->id;
+                   $approvers_id=$_POST['multiple_approvers_id'];
+                   $opps_id=$_POST['opps_id'];
+                   
+                   $id_array=implode(',',$approvers_id);
+                   
+                   $update_multiple_approver_id='UPDATE opportunities_cstm SET multiple_approver_c="'.$id_array.'" WHERE id_c="'.$opps_id.'"';
+                   
+                   $GLOBALS['db']->query($update_multiple_approver_id);
+                   
+                 
+        }catch(Exception $e){
+               echo json_encode(array("status"=>false, "message" => "Some error occured"));
+           }
+           die();
     }
 
-    public function action_get_graph(){
-        $day = $_GET['dateBetween'];
-        $totalCount = 0;
-        $totalCount = $this->getOpportunityStatusCountGraph(null, $day);
-        // $leadCount = round($this->getOpportunityStatusCountGraph('Lead') / $totalCount * 100, 0);
-        if ($totalCount > 0) {
-            $LeadCount = round($this->getOpportunityStatusCountGraph('Lead', $day) / $totalCount * 100, 0);
-            $QualifiedLeadCount = round($this->getOpportunityStatusCountGraph('QualifiedLead', $day) / $totalCount * 100, 0);
-            $QualifiedOpporunityCount = round($this->getOpportunityStatusCountGraph('Qualified', $day) / $totalCount * 100, 0);
-            $QualifiedDPR = round($this->getOpportunityStatusCountGraph('QualifiedDpr', $day) / $totalCount * 100, 0);
-            $QualifiedBid = round($this->getOpportunityStatusCountGraph('QualifiedBid', $day) / $totalCount * 100, 0);
-            $Close = round($this->getOpportunityStatusCountGraph('Closed', $day, false) / $totalCount * 100, 0);
-            $CloseWon = round($this->getOpportunityStatusCountGraph('Closed', $day, true) / $totalCount * 100, 0);
-            if ($Close) {
-                $CloseLost = $Close - $CloseWon;
+    /* generate pagination */
+    function pagination($page, $numberOfPages, $type, $day, $searchTerm, $filter){
+
+        $ends_count = 1;  //how many items at the ends (before and after [...])
+        $middle_count = 2;  //how many items before and after current page
+        $dots = false;
+
+        $data = '<ul class="d-inline-block">';
+        
+        if($page > 1)
+            $data .= '<li class="" onClick=paginate("'.($page - 1).'","'.$type['method'].'","'.$day.'","'.$searchTerm.'","'.$filter.'","'.$type['status'].'","'.$type['type'].'")><strong>&laquo;</strong> Prev</li>';
+
+        for ($i = 1; $i <= $numberOfPages; $i++) {
+            $currentPage = $page ? $page : 1;
+            $class = $currentPage == $i ? 'active paginate-class' : 'paginate-class';
+
+            
+            $onClick = 'onClick=paginate("'.$i.'","'.$type['method'].'","'.$day.'","'.$searchTerm.'","'.$filter.'","'.$type['status'].'","'.$type['type'].'")';
+
+            if ($i == $page) {
+                $data .= '<li class="'.$class.'" '.$onClick.'>'.$i.'</li>';
+                $dots = true;
+            } else {
+                if ($i <= $ends_count || ($page && $i >= $page - $middle_count && $i <= $page + $middle_count) || $i > $numberOfPages - $ends_count) { 
+                    $data .= '<li class="'.$class.'" '.$onClick.'>'.$i.'</li>';
+                    $dots = true;
+                } elseif ($dots){
+                    $data .= '<li class="paginate-class">&hellip;</li>';
+                    $dots = false;
+                }
             }
-            $Drop = round($this->getOpportunityStatusCountGraph('Dropped', $day) / $totalCount * 100, 0);
         }
-
-        $LeadCount = $LeadCount ? $LeadCount : 0;
-        $QualifiedLeadCount = $QualifiedLeadCount ? $QualifiedLeadCount : 0;
-        $QualifiedOpporunityCount = $QualifiedOpporunityCount ? $QualifiedOpporunityCount : 0;
-        $QualifiedDPR = $QualifiedDPR ? $QualifiedDPR : 0;
-        $QualifiedBid = $QualifiedBid ? $QualifiedBid : 0;
-        $Close = $Close ? $Close : 0;
-        $CloseWon = $CloseWon ? $CloseWon : 0;
-        $CloseLost = $CloseLost ? $CloseLost : 0;
-        $Drop = $Drop ? $Drop : 0;
-        
-        $data = '';
-
-        if($LeadCount):
-            $data .= '<div style="width: '.$LeadCount.'%" class="graph-bar-each">
-                    <div style="width: 100%;height: 70px;background-color: #DDA0DD;"></div>
-                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$LeadCount.'%</p>
-                </div>';
-        endif;
-
-        if($QualifiedLeadCount):
-            $data .= '<div style="width: '.$QualifiedLeadCount.'%" class="graph-bar-each">
-                    <div style="width: 100%;height: 70px;background-color: #4B0082;"></div>
-                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedLeadCount.'%</p>
-                </div>';
-        endif;
-        
-        if($QualifiedOpporunityCount):
-            $data .= '<div style="width: '.$QualifiedOpporunityCount.'%" class="graph-bar-each">
-                    <div style="width: 100%; height: 70px; background-color: #0000FF;"></div>
-                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedOpporunityCount.'%</p>
-                </div>';
-        endif;
-
-        if($QualifiedDPR):
-            $data .= '<div style="width: '.$QualifiedDPR.'%" class="graph-bar-each">
-                    <div style="width: 100%; height: 70px; background-color: #FFFF00;"></div>
-                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedDPR.'%</p>
-                </div>';
-        endif; 
-
-        if($QualifiedBid):
-            $data .= '<div style="width: '.$QualifiedBid.'%" class="graph-bar-each">
-                    <div style="width: 100%; height: 70px; background-color: #00FF00;"></div>
-                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedBid.'%</p>
-                </div>';
-        endif;
-        
-        if($Close):
-            if($CloseWon):
-                $data .= '<div style="width: '.$CloseWon.'%" class="graph-bar-each">
-                        <div style="width: 100%; height: 70px; background-color: #006400;"></div>
-                        <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$CloseWon.'%</p>
-                    </div>';
-            endif;
-            if($CloseLost):
-                $data .= '<div style="width: '.$CloseLost.'%" class="graph-bar-each">
-                        <div style="width: 100%; height: 70px; background-color: #FF7F00;"></div>
-                        <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$CloseLost.'%</p>
-                    </div>';
-            endif;
-        endif; 
-
-        if($Drop):
-            $data .= '<div style="width: '.$Drop.'%" class="graph-bar-each">
-                    <div style="width: 100%; height: 70px; background-color: #FF0000;"></div>
-                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$Drop.'%</p>
-                </div>';
-        endif; 
-
-        echo $data;
+        if ($page < $numberOfPages || -1 == $numberOfPages) { 
+           $data .= '<li class="" onClick=paginate("'.($page + 1).'","'.$type['method'].'","'.$day.'","'.$searchTerm.'","'.$filter.'","'.$type['status'].'","'.$type['type'].'")>Next <strong>&raquo;</strong></li>';
+        }
+            
+        $data .= '</ul>';
+        return $data;
     }
 
-    function getTaggedMembers($id){
-        $db = \DBManagerFactory::getInstance();
-        $GLOBALS['db'];
-        $query = "SELECT opportunities_users_2users_idb FROM opportunities_users_2_c WHERE opportunities_users_2opportunities_ida = '$id'";
-        $data = $GLOBALS['db']->query($query);
-        $usersArray = array();
-        while($d = $GLOBALS['db']->fetchByAssoc($data)){
-            array_push($usersArray, $d['opportunities_users_2users_idb']);
-        }
-        $query = "SELECT first_name, last_name FROM users WHERE id IN ('" . implode(',', $usersArray) . "')";
-        $data = $GLOBALS['db']->query($query);
-        $members = '';
-        while($row = $GLOBALS['db']->fetchByAssoc($data)){
-            $members .= $row['first_name'].' '.$row['last_name'].', ';
-        }
-        return $members;
-    }
-
-    function getModifiedUser($id){
-        $db = \DBManagerFactory::getInstance();
-        $GLOBALS['db'];
-        $query = "SELECT first_name, last_name FROM users WHERE id = '$id'";
-        $data = $GLOBALS['db']->query($query);
-        $user = '';
-        while($row = $GLOBALS['db']->fetchByAssoc($data)){
-            $user .= $row['first_name'].' '.$row['last_name'];
-        }
-        return $user;
-    }
-
-    public function get_non_global_op_count($day) {
-        global $current_user;
-        $log_in_user_id = $current_user->id;
-        $organiztion_non_global_count = "SELECT count(*) as org_non_global_count FROM opportunities WHERE opportunity_type = 'non_global' AND deleted != 1 AND date_entered >= now() - interval '$day' day";
-        $opp_id_show = $this->private_opps();
-        $organiztion_non_global_count .= " AND opportunities.id IN ('".implode("','",$opp_id_show)."')";
-        $organiztion_count_result = $GLOBALS['db']->query($organiztion_non_global_count);
-        $fetch_organization_count = $GLOBALS['db']->fetchByAssoc($organiztion_count_result);
-        $non_global_organization_count = $fetch_organization_count['org_non_global_count'];
-        return $non_global_organization_count;
-    }
-
+    /* Get Seqeunce Flow */
     public function action_getOpportunityStatusTimeline(){
         try{
             $oppID = $_POST['oppID']; 
-            $data = '<span class="close-sequence-flow" onclick="closeSequenceFlow()">×</span><div class="wrap padding-tb black-color">';
+            $data = '<span class="close-sequence-flow">×</span><div class="wrap padding-tb black-color">';
 
-            $query = "SELECT name,created_by,assigned_user_id FROM opportunities WHERE id = '$oppID'";
+            $query = "SELECT name,created_by,assigned_user_id,date_entered FROM opportunities WHERE id = '$oppID'";
             $result = $GLOBALS['db']->query($query);
             $result = $GLOBALS['db']->fetchByAssoc($result);
             $created_by = $result['created_by'];
+            $created_date = substr($result['date_entered'],0,10);
+            $created_date = date('d/m/Y', strtotime($created_date));
             $data .= '<div class="d-block padding">
                     <h2 class="">'.$result['name'].'</h2>
                     <h3 class="gray-color">Approval/Rejection Audit Trail</h3>
@@ -3593,7 +1142,7 @@ class HomeController extends SugarController
                             <span style="font-size: 12px;margin:0">'.$full_name.'</span></h5> 
                         </div>
                         <div class="d-inline-block w-50 align-self-end text-right">
-                            <h5 class="gray-color">'.$updateDate.'</h5>
+                            <h5 class="gray-color">'.$created_date.'</h5>
                         </div>
                     </div>';
             $query = "select u.first_name, u.last_name, ap.opp_id, ap.date_time, ap.apply_for,ap.assigned_by, ap.Approved, ap.Rejected, ap.pending, ap.assign from 
@@ -3648,14 +1197,7 @@ class HomeController extends SugarController
         }
         die();
     }
-
-    function checkRecentActivity($oppID){
-        $query = "SELECT u.first_name, u.last_name, ap.date_time, ap.apply_for, ap.Approved, ap.Rejected, ap.pending FROM approval_table ap JOIN users u ON u.id = ap.approver_rejector WHERE ap.opp_id = '$oppID' AND ap.pending = 0 ORDER BY ap.id DESC, ap.Rejected ASC LIMIT 1";
-        $recentActivity = $GLOBALS['db']->query($query);
-        $count = mysqli_num_rows($recentActivity);
-        return $count;
-    }
-
+    
     function getApproverNames($oppID, $status, $rejected){
         $query = "SELECT u.first_name, u.last_name, ap.date_time, ap.apply_for, ap.Approved, ap.Rejected, ap.pending FROM approval_table ap JOIN users u ON u.id = ap.approver_rejector WHERE ap.opp_id = '$oppID' AND ap.pending = 0 AND ap.Rejected = '$rejected' AND ap.apply_for = '$status'";
         $result = $GLOBALS['db']->query($query);
@@ -3675,7 +1217,6 @@ class HomeController extends SugarController
         }
         return $data;
     }
-
     function getStatusChar($status, $oppID = null){
         switch ($status){
             case 'qualifylead':
@@ -3715,10 +1256,354 @@ class HomeController extends SugarController
         }
         return $statusChar;
     }
+    /* End Sequence Flow */
+
+    /* Get Graph */
+    public function action_get_graph(){
+        $day = $_GET['dateBetween'];
+        $totalCount = 0;
+        $totalCount = $this->getOpportunityStatusCountGraph(null , $day);
+        // $leadCount = round($this->getOpportunityStatusCountGraph('Lead') / $totalCount * 100, 0);
+        if ($totalCount > 0) {
+            $LeadCount = round($this->getOpportunityStatusCountGraph('Lead', $day) / $totalCount * 100, 0);
+            $QualifiedLeadCount = round($this->getOpportunityStatusCountGraph('QualifiedLead', $day) / $totalCount * 100, 0);
+            $QualifiedOpporunityCount = round($this->getOpportunityStatusCountGraph('Qualified', $day) / $totalCount * 100, 0);
+            $QualifiedDPR = round($this->getOpportunityStatusCountGraph('QualifiedDpr', $day) / $totalCount * 100, 0);
+            $QualifiedBid = round($this->getOpportunityStatusCountGraph('QualifiedBid', $day) / $totalCount * 100, 0);
+            $Drop = round($this->getOpportunityStatusCountGraph('Dropped', $day) / $totalCount * 100, 0);
+            $CloseWon = round($this->getOpportunityStatusCountGraph('Closed', $day, 'won') / $totalCount * 100, 0);
+            $CloseLost = round($this->getOpportunityStatusCountGraph('Closed', $day, 'lost') / $totalCount * 100, 0);
+        }
+        $LeadCount = isset($LeadCount) ? $LeadCount : 0;
+        $QualifiedLeadCount = isset($QualifiedLeadCount) ? $QualifiedLeadCount : 0;
+        $QualifiedOpporunityCount = isset($QualifiedOpporunityCount) ? $QualifiedOpporunityCount : 0;
+        $QualifiedDPR = isset($QualifiedDPR) ? $QualifiedDPR : 0;
+        $QualifiedBid = isset($QualifiedBid) ? $QualifiedBid : 0;
+        $CloseWon = isset($CloseWon) ? $CloseWon : 0;
+        $CloseLost = isset($CloseLost) ? $CloseLost : 0;
+        $Drop = isset($Drop) ? $Drop : 0;
+        
+        $data = '';
+
+        if($LeadCount):
+            $data .= '<div style="width: '.$LeadCount.'%" class="graph-bar-each">
+                    <div style="width: 100%;height: 70px;background-color: #DDA0DD;"></div>
+                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$LeadCount.'%</p>
+                </div>';
+        endif;
+
+        if($QualifiedLeadCount):
+            $data .= '<div style="width: '.$QualifiedLeadCount.'%" class="graph-bar-each">
+                    <div style="width: 100%;height: 70px;background-color: #4B0082;"></div>
+                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedLeadCount.'%</p>
+                </div>';
+        endif;
+        
+        if($QualifiedOpporunityCount):
+            $data .= '<div style="width: '.$QualifiedOpporunityCount.'%" class="graph-bar-each">
+                    <div style="width: 100%; height: 70px; background-color: #0000FF;"></div>
+                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedOpporunityCount.'%</p>
+                </div>';
+        endif;
+
+        if($QualifiedDPR):
+            $data .= '<div style="width: '.$QualifiedDPR.'%" class="graph-bar-each">
+                    <div style="width: 100%; height: 70px; background-color: #FFFF00;"></div>
+                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedDPR.'%</p>
+                </div>';
+        endif; 
+
+        if($QualifiedBid):
+            $data .= '<div style="width: '.$QualifiedBid.'%" class="graph-bar-each">
+                    <div style="width: 100%; height: 70px; background-color: #00FF00;"></div>
+                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedBid.'%</p>
+                </div>';
+        endif;
+        
+        if($CloseWon):
+            $data .= '<div style="width: '.$CloseWon.'%" class="graph-bar-each">
+                    <div style="width: 100%; height: 70px; background-color: #006400;"></div>
+                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$CloseWon.'%</p>
+                </div>';
+        endif;
+        if($CloseLost):
+            $data .= '<div style="width: '.$CloseLost.'%" class="graph-bar-each">
+                    <div style="width: 100%; height: 70px; background-color: #FF7F00;"></div>
+                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$CloseLost.'%</p>
+                </div>';
+        endif;
+
+        if($Drop):
+            $data .= '<div style="width: '.$Drop.'%" class="graph-bar-each">
+                    <div style="width: 100%; height: 70px; background-color: #FF0000;"></div>
+                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$Drop.'%</p>
+                </div>';
+        endif; 
+
+        echo $data;
+        die();
+    }
+    function getOpportunityStatusCountGraph($status = null, $day, $closure_status = null){
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        if($status)
+            $query = "SELECT count(*) as count FROM opportunities_cstm oc LEFT JOIN opportunities o ON o.id = oc.id_c WHERE oc.status_c = '".$status."' AND o.deleted != 1 AND o.date_entered >= now() - interval '".$day."' day";
+        else
+            $query = "SELECT count(*) as count FROM opportunities_cstm oc LEFT JOIN opportunities o ON o.id = oc.id_c WHERE o.deleted != 1 AND date_entered >= now() - interval '".$day."' day";
+        
+        if ($status == 'Closed' && $closure_status)
+            $query .= " AND oc.closure_status_c = '$closure_status'"; 
+        $count = $GLOBALS['db']->query($query);
+        $count = $GLOBALS['db']->fetchByAssoc($count);
+        return $count['count'];
+    }
+
+    function mysql_fetch_assoc_all($result){
+        $data = array();
+        while  ($row = $GLOBALS['db']->fetchByAssoc($result)){
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+    /* Misc loading */
+    public function action_get_user_details() {
+        try{
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $check_user_team = "SELECT teamfunction_c, mc_c from users LEFT JOIN users_cstm ON users.id = users_cstm.id_c WHERE id = '$log_in_user_id'";
+            $check_user_team_result = $GLOBALS['db']->query($check_user_team);
+            $user_team_row = $GLOBALS['db']->fetchByAssoc($check_user_team_result);
+            $user_team = $user_team_row['teamfunction_c'];
+            $mc_c = $user_team_row['mc_c'];
+            echo json_encode(array('user_team'=>$user_team, 'mc_c' =>$mc_c , 'user_id'=> $log_in_user_id));
+        }catch(Exception $e){
+            echo json_encode(array("message" => "Some error occured"));
+        }
+        die();
+    }
+    public function action_delegate_members(){
+        try
+        {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            
+
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $check_user_team = "SELECT teamfunction_c from users LEFT JOIN users_cstm ON users.id = users_cstm.id_c WHERE id = '$log_in_user_id'";
+            $check_user_team_result = $GLOBALS['db']->query($check_user_team);
+            $user_team_row = $GLOBALS['db']->fetchByAssoc($check_user_team_result);
+            $user_team = $user_team_row['teamfunction_c'];
+            
+            $fetch_query = "SELECT * FROM users WHERE `id` != '$log_in_user_id' AND `id` != '1' AND deleted !=1 ORDER BY `users`.`first_name` ASC";
+            $result = $GLOBALS['db']->query($fetch_query);
+            $data = '<option value="" disabled selected>Select Option</option>';
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    $full_name = $row['first_name'] . ' ' . $row['last_name'];
+                    $data .= '<option value="'.$row['id'].'" selected="">'.$full_name.'</option>';
+                }
+            } else {
+                echo "0 results";
+            }
+            echo json_encode(array('members'=>$data, 'logged_in_user_team'=>$user_team, 'logged_in_id' => $log_in_user_id));
+
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+    public function action_tag_list() {
+        try{
+            global $current_user;
+            $log_in_user_id = $current_user->id;            
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $fetch_query = "SELECT * FROM `users` WHERE `id` != '$log_in_user_id' AND id != '1' AND
+             id NOT IN (SELECT reports_to_id FROM users WHERE id = '$log_in_user_id' OR id = '1') ORDER BY `users`.`first_name` ASC";
+            $result = $GLOBALS['db']->query($fetch_query);
+            $data = "";
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    $full_name = $row['first_name'] . ' ' . $row['last_name'];
+                    $full_name = trim($full_name," ");
+                    $data .= '<option value="'.$row["id"].'---'.$full_name.'">'.$full_name.'</option>';
+                }
+            } else {
+                echo "0 results";
+            }
+            echo json_encode(array('members'=>$data, 'logged_in_id' => $log_in_user_id));
+        }
+        catch(Exception $e){
+            echo json_encode(array("message" => "Some error occured"));
+        }
+        die();
+    }
+    public function action_opportunity_dialog_info()
+    {
+        try {
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $opportunity_id = $_GET['id'];
+            $fetch_opportunity_info = "SELECT * FROM opportunities
+            LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE id = '$opportunity_id'";
+            $fetch_opportunity_info_result = $GLOBALS['db']->query($fetch_opportunity_info);
+            $row = $GLOBALS['db']->fetchByAssoc($fetch_opportunity_info_result);
+            $created_by_id = $row['assigned_user_id'];
+            $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
+            $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
+            $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
+            $user_name = $user_name_fetch_row['user_name'];
+            $first_name = $user_name_fetch_row['first_name'];
+            $last_name = $user_name_fetch_row['last_name'];
+            $full_name = "$first_name  $last_name";
+
+            $sub_head = 'Selected members will be able to view details or take action';
+            $change_font = 'Tag Members';
+
+            $data = '
+                <h2 class="deselectheading">' . $row['name'] . '</h2><br>
+                <p class="deselectsubhead">'.$sub_head.'</p>
+                <hr class="deselectsolid">
+                <section class="deselectsection">
+                <table align="centered" width="100%">
+                    <thead>
+                    <tr class="tabname">
+                        <th>Primary Responsbility</th>
+                        <th>Amount (in Cr)</th>
+                        <th>RFP/EOI Published</th>
+                        <th>Modified Date</th>
+                        <th>Modified By</th>
+                        <th>Date Created</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="tabvalue">
+                        <td>' . $full_name . '</td>
+                        <td>' . beautify_amount($row["budget_allocated_oppertunity_c"]) . '</td>
+                        <td>' . beautify_label($row["rfporeoipublished_c"]) . '</td>
+                        <td>' . date_format(date_create($row['date_modified']), 'd/m/Y') . '</td>
+                        <td>' . $this->get_closed_by($row) . '</td>
+                        <td>'  . date_format(date_create($row['date_entered']), 'd/m/Y') . '</td>
+                        </tr>';
+                    $data .= '</tbody></table>
+                    <hr class="deselectsolid">
+                            <label for="Deselect-Members">'.$change_font.'</label><br>';
+          $tag_html = $this->getTagUserHtml();
+          $msuname = $this->get_initial_multi_selected_dropdown_value($opportunity_id, $this->is_global($opportunity_id), false);
+          $msuid = $this->get_initial_multi_selected_dropdown_value($opportunity_id, $this->is_global($opportunity_id), true);
+          echo json_encode(array('opportunity_info'=>$data,'msuname'=>$msuname,'msuid'=> $msuid, 'opportunity_id'=>$opportunity_id,"opporunity_tag"=>$tag_html));
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+    public function get_closed_by($row) {
+        if (!empty($row['date_modified'])) {
+            $modified_user_id = $row['modified_user_id'];
+            $modified_user_query = "SELECT * FROM users WHERE id='$modified_user_id'";
+            $modified_user_query_fetch = $GLOBALS['db']->query($modified_user_query);
+            $modified_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($modified_user_query_fetch);
+            $closed_by_first_name = $modified_user_query_fetch_row['first_name'];
+            $closed_by_last_name = $modified_user_query_fetch_row['last_name'];
+            $closed_by = "$closed_by_first_name $closed_by_last_name";
+            return $closed_by;
+        }
+    }
+    public function get_initial_multi_selected_dropdown_value($opportunity_id, $is_global, $useridreq) {
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        if ($is_global == true) {
+            $query = "SELECT user_id FROM tagged_user WHERE opp_id = '$opportunity_id'";
+        } else {
+            $query = "SELECT user_id FROM untagged_user WHERE opp_id = '$opportunity_id'";
+        }
+        $result = $GLOBALS['db']->query($query);
+        $result_row = $GLOBALS['db']->fetchByAssoc($result);
+        if ($useridreq) {
+            $str1 = $this->multi_id_select_name_map($result_row['user_id']);
+            $res = $result_row['user_id'];
+            return $str1;
+        } else {
+            $str1 = $this->multi_id_name_map($result_row['user_id']);
+            return $str1;
+        }
+    }
+
+    function get_users_with_opporuntity_tag_options($opportunity_id) {
+
+        try {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $fetch_query = "SELECT * FROM users WHERE deleted = 0 AND `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC";
+            $result = $GLOBALS['db']->query($fetch_query);
+            $data = '';
+            $tagged_user_query = "SELECT * from tagged_user where opp_id = '$opportunity_id'";
+            $result1 = $GLOBALS['db']->query($tagged_user_query);
+            $tagged_user_row = $result1->fetch_assoc();
+            $tagged_user_array = explode(',', $tagged_user_row['user_id']);
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    $full_name = $row['first_name'] . ' ' . $row['last_name'];
+                    if (in_array($row['id'],$tagged_user_array)){
+                        $data .= '<option value="'.$row['id'].'" selected>'.$full_name.'</option>';
+                    }
+                    else{
+                        $data .= '<option value="'.$row['id'].'" >'.$full_name.'</option>';
+                    }
+                }
+            }
+            else{
+                $data .= "<option> No value </option>";
+            }
+            return $data;
+        }catch(Exception $e){
+            // return False;
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+    function getTagUserHtml(){
+        $opportunity_id = $_GET['id'];
+        $users = $this->get_users_with_opporuntity_tag_options($opportunity_id);
+
+        $html = '
+            <select class="select2" name="tag_opporunity[]" id="" multiple>
+                '.$users.'
+            </select>
+            '; 
+        return $html;
+    }
+    public function is_global($op_id) {
+        $response = getCount('opportunities', " id = '$op_id' AND opportunity_type = 'global' ");
+        return $response ? true : false;
+    }
+    public function multi_id_select_name_map($ids) {
+        $arr = explode(',', $ids);
+        for ($x = 0; $x < count($arr); $x++) {
+            $temp = getUsername($arr[$x]);
+            $temp = trim($temp," ");
+            $arr[$x] = "$arr[$x]---$temp";
+        }
+        $str = join(',', $arr);
+        return $str;
+    }
+    public function multi_id_name_map($ids) {
+        $arr = explode(',', $ids);
+        for ($x = 0; $x < count($arr); $x++) {
+            $arr[$x] = getUsername($arr[$x]);
+        }
+        $str = join(',', $arr);
+        return $str;
+    }
+
 
     function getColumnFilters($status = null, $type = null){
         /* Default Columns */
-        if($type){
+        if($type == 'pending'){
             $columnFilterHtml = '<form class="pending-settings-form sort-column">';
             $columnFilterHtml .= '<input type="hidden" name="settings-section" class="pending-settings-section" value="" />
             <input type="hidden" name="settings-type" class="pending-settings-type" value="" />
@@ -3735,7 +1620,7 @@ class HomeController extends SugarController
             $style = '';
             if($i <= 1)
                 $style = 'class="nondrag" style="pointer-events:none; background: #eeeeef;"';
-            
+
             if($i == 2){
                 $columnFilterHtml .= '<ul id="sortable1" class="sortable1 connectedSortable">';
             }
@@ -3767,7 +1652,7 @@ class HomeController extends SugarController
 
     function opportunityColumns($status = null){
         $fields = array();
-        
+
         $default = array(
             'name'                  => 'Opportunity Name',
             'Primary-Responsbility' => 'Primary Responsibility',
@@ -3778,11 +1663,11 @@ class HomeController extends SugarController
             'Closed-by'             => 'Modified By',
             'Date-Created'          => 'Created Date',
         );
-        
+
         $default2 = array(
             'multiple_approver_c'           => 'Approver',
             'state_c'                       => 'State',
-            
+
             'source_c'                      => 'Source',
             'non_financial_consideration_c' => 'Non Financial Consideration',
             'segment_c'                     => 'Segment',
@@ -3822,7 +1707,7 @@ class HomeController extends SugarController
             'closure_status_c'  => 'Closure Status'
         );
         $QualifiedBid = array_merge($QualifiedDPR, $QualifiedBid);
-        
+
         $fields['default'] = $default;
         switch($status){
             case 'Lead':
@@ -3834,7 +1719,7 @@ class HomeController extends SugarController
             case 'qualifylead':
                 $fields['addons'] = $QualifiedLead;
                 break;
-            
+
             case 'Qualified':
                 $fields['addons'] = $QualifiedOpportunity;
                 break;
@@ -3862,7 +1747,12 @@ class HomeController extends SugarController
             case 'closure':
                 $fields['addons'] = $QualifiedBid;
                 break;
-
+            case 'ClosedWin':
+                $fields['addons'] = $QualifiedBid;
+                break;
+            case 'ClosedLost':
+                $fields['addons'] = $QualifiedBid;
+                break;
             case 'Dropped':
                 $fields['addons'] = $QualifiedBid;
                 break;
@@ -3874,7 +1764,7 @@ class HomeController extends SugarController
                 $fields['addons'] = $default2;
                 break;
         }
-        
+
         return $fields;
     }
 
@@ -3882,7 +1772,7 @@ class HomeController extends SugarController
 
         $data = '';
         $customColumns = @$_GET['customColumns'];
-        
+
         if($customColumns):
         foreach($customColumns as $column){
             $data .= $this->getColumnHtml($column);
@@ -3898,7 +1788,7 @@ class HomeController extends SugarController
             case 'Amount':
                 $data .= '<th class="table-header">Amount ( in Cr/Mn )</th>';
                 break; 
-            
+
             case 'REP-EOI-Published':
                 $data .= '<th class="table-header">RFP/EOI Published</th>';
                 break;
@@ -3914,7 +1804,7 @@ class HomeController extends SugarController
             case 'Date-Created':
                 $data .= '<th class="table-header">Created Date</th>';
                 break;
-            
+
             case 'Date-Closed':
                 $data .= '<th class="table-header">Closed Date</th>';
                 break;
@@ -3922,11 +1812,11 @@ class HomeController extends SugarController
             case 'multiple_approver_c':
                 $data .= '<th class="table-header">Approver</th>';
                 break;
-            
+
             case 'state_c':
                 $data .= '<th class="table-header">State</th>';
                 break;
-            
+
             case 'new_department_c':
                 $data .= '<th class="table-header">Department</th>';
                 break;
@@ -3934,23 +1824,23 @@ class HomeController extends SugarController
             case 'source_c':
                 $data .= '<th class="table-header">Source</th>';
                 break;
-            
+
             case 'non_financial_consideration_c':
                 $data .= '<th class="table-header">Non Financial Consideration</th>';
                 break;
-            
+
             case 'segment_c':
                 $data .= '<th class="table-header">Segment</th>';
                 break;
-            
+
             case 'product_service_c':
                 $data .= '<th class="table-header">Product/Service</th>';
                 break;
-            
+
             case 'international_c':
                 $data .= '<th class="table-header">International Opportunity</th>';
                 break;
-    
+
             case 'total_input_value':
                 $data .= '<th class="table-header">Amount (Cr/Mn)</th>';
                 break;
@@ -3998,11 +1888,11 @@ class HomeController extends SugarController
             case 'selection_c':
                 $data .= '<th class="table-header">Selection/Funding/Timing</th>';
                 break;
-                
+
             case 'submissionstatus_c':
                 $data .= '<th class="table-header">Submission Status</th>';
                 break;
-    
+
             case 'closure_status_c':
                 $data .= '<th class="table-header">Closure Status</th>';
                 break;
@@ -4014,7 +1904,7 @@ class HomeController extends SugarController
 
         $data = '';
         $customColumns = @$_GET['customColumns'];
-        
+
         if($customColumns):
         foreach($customColumns as $column){
             $data .= $this->getColumnDataHtml($column, $row);
@@ -4027,7 +1917,7 @@ class HomeController extends SugarController
 
     function getColumnDataHtml($column, $row){
         $data = '';
-        
+
         if($row['date_closed']){
             $closedDate = date_format(date_create($row['date_closed']),'d/m/Y');
         }else{
@@ -4048,9 +1938,9 @@ class HomeController extends SugarController
             case 'Amount':
                 $data .= '<td class="table-data">'.$this->append_currency($row['currency_c'], $this->beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>';
                 break; 
-            
+
             case 'REP-EOI-Published':
-                $data .= '<td class="table-data">'.($this->beautify_label(($this->beautify_label($row['rfporeoipublished_c'])))).'</td>';
+                $data .= '<td class="table-data">'.(beautify_label((beautify_label($row['rfporeoipublished_c'])))).'</td>';
                 break;
 
             case 'Closed-Date':
@@ -4064,7 +1954,7 @@ class HomeController extends SugarController
             case 'Date-Created':
                 $data .= '<td class="table-data">'.date_format(date_create($row['date_entered']),'d/m/Y').'</td>';
                 break;
-            
+
             case 'Date-Closed':
                 $data .= '<td class="table-data">'.$closedDate.'</td>';
                 break;
@@ -4072,87 +1962,87 @@ class HomeController extends SugarController
             case 'multiple_approver_c':
                 $data .= '<td class="table-data" >'.$this->getMultipleApproverNames($row['multiple_approver_c']).'</td>';
                 break;
-            
+
             case 'state_c':
-                $data .= '<td class="table-data" >'.$this->beautify_label( $row['state_c'] ).'</td>';
+                $data .= '<td class="table-data" >'.beautify_label( $row['state_c'] ).'</td>';
                 break;
-            
+
             case 'new_department_c':
-                $data .= '<td class="table-data" >'.$this->beautify_label( $row['new_department_c'] ).'</td>';
+                $data .= '<td class="table-data" >'.beautify_label( $row['new_department_c'] ).'</td>';
                 break;
 
             case 'source_c':
-                $data .= '<td class="table-data" >'.$this->beautify_label( $row['source_c'] ).'</td>';
+                $data .= '<td class="table-data" >'.beautify_label( $row['source_c'] ).'</td>';
                 break;
-            
+
             case 'non_financial_consideration_c':
                 if ($row['non_financial_consideration_c'] == null || $row['non_financial_consideration_c'] == '') {
                     $row['non_financial_consideration_c'] = '^NA^';
                 }
-                $data .= '<td class="table-data" >'.$this->beautify_label_n_f( $row['non_financial_consideration_c'] ).'</td>';
+                $data .= '<td class="table-data" >'.beautify_test(beautify_label_n_f( $row['non_financial_consideration_c'] )).'</td>';
                 break;
-            
+
             case 'segment_c':
-                $data .= '<td class="table-data" >'.$this->beautify_label( $row['segment_c'] ).'</td>';
+                $data .= '<td class="table-data" >'.beautify_label( $row['segment_c'] ).'</td>';
                 break;
-            
+
             case 'product_service_c':
-                $data .= '<td class="table-data" >'.$this->beautify_label( $row['product_service_c'] ).'</td>';
+                $data .= '<td class="table-data" >'.beautify_label( $row['product_service_c'] ).'</td>';
                 break;
-            
+
             case 'international_c':
-                $data .= '<td class="table-data" >'.$this->beautify_label( $row['international_c'] ).'</td>';
+                $data .= '<td class="table-data" >'.beautify_label( $row['international_c'] ).'</td>';
                 break;
-    
+
             case 'total_input_value':
                 $data .= '<td class="table-data" >'.$this->append_currency($row['currency_c'], $this->beautify_amount($row['total_input_value'] )).'</td>';
                 break;
 
             case 'sector_c':
-                $data .= '<td class="table-data" >'.$this->beautify_label( $row['sector_c'] ).'</td>';
+                $data .= '<td class="table-data" >'.beautify_label( $row['sector_c'] ).'</td>';
                 break;
 
             case 'sub_sector_c':
-                $data .= '<td class="table-data" >'.$this->beautify_label( $row['sub_sector_c'] ).'</td>';
+                $data .= '<td class="table-data" >'.beautify_label( $row['sub_sector_c'] ).'</td>';
                 break;
 
             case 'scope_budget_projected_c':
-                $scope_budget_projected_c = $row['scope_budget_projected_c'] ? $this->beautify_label( date('d/m/Y', strtotime($row['scope_budget_projected_c'])) ) : '';
+                $scope_budget_projected_c = $row['scope_budget_projected_c'] ? beautify_label( date('d/m/Y', strtotime($row['scope_budget_projected_c'])) ) : '';
                 $data .= '<td class="table-data" >'.$scope_budget_projected_c.'</td>';
                 break;
 
             case 'rfp_eoi_projected_c':
-                $rfp_eoi_projected_c = $row['rfp_eoi_projected_c'] ? $this->beautify_label( date('d/m/Y', strtotime($row['rfp_eoi_projected_c'])) ) : '';
+                $rfp_eoi_projected_c = $row['rfp_eoi_projected_c'] ? beautify_label( date('d/m/Y', strtotime($row['rfp_eoi_projected_c'])) ) : '';
                 $data .= '<td class="table-data" >'.$rfp_eoi_projected_c.'</td>';
                 break;
 
             case 'rfp_eoi_published_projected_c':
-                $rfp_eoi_published_projected_c = $row['rfp_eoi_published_projected_c'] ? $this->beautify_label( date('d/m/Y', strtotime($row['rfp_eoi_published_projected_c'])) ) : '';
+                $rfp_eoi_published_projected_c = $row['rfp_eoi_published_projected_c'] ? beautify_label( date('d/m/Y', strtotime($row['rfp_eoi_published_projected_c'])) ) : '';
                 $data .= '<td class="table-data" >'.
                 $rfp_eoi_published_projected_c
                 .'</td>';
                 break;
 
             case 'work_order_projected_c':
-                $work_order_projected_c = $row['work_order_projected_c'] ? $this->beautify_label( date('d/m/Y', strtotime($row['work_order_projected_c'])) ) : '';
+                $work_order_projected_c = $row['work_order_projected_c'] ? beautify_label( date('d/m/Y', strtotime($row['work_order_projected_c'])) ) : '';
                 $data .= '<td class="table-data" >'.$work_order_projected_c.'</td>';
                 break;
 
             case 'budget_head_amount_c':
-                $data .= '<td class="table-data" >'.$this->beautify_amount( $row['budget_head_amount_c'] ).'</td>';
+                $data .= '<td class="table-data" >'.$this->append_currency($row['currency_c'], $this->beautify_amount(( $row['budget_head_amount_c'] ))).'</td>';
                 break;
 
             case 'budget_allocated_oppertunity_c':
-                $data .= '<td class="table-data" >'.$this->beautify_label( $row['budget_allocated_oppertunity_c'] ).'</td>';
+                $data .= '<td class="table-data" >'.beautify_label( $row['budget_allocated_oppertunity_c'] ).'</td>';
                 break;
 
             case 'project_implementation_start_c':
-                $project_implementation_start_c = $row['project_implementation_start_c'] ? $this->beautify_label( date('d/m/Y', strtotime($row['project_implementation_start_c'])) ) : '';
+                $project_implementation_start_c = $row['project_implementation_start_c'] ? beautify_label( date('d/m/Y', strtotime($row['project_implementation_start_c'])) ) : '';
                 $data .= '<td class="table-data" >'.$project_implementation_start_c.'</td>';
                 break;
 
             case 'project_implementation_end_c':
-                $project_implementation_end_c = $row['project_implementation_end_c'] ? $this->beautify_label( date('d/m/Y', strtotime($row['project_implementation_end_c'])) ) : '';
+                $project_implementation_end_c = $row['project_implementation_end_c'] ? beautify_label( date('d/m/Y', strtotime($row['project_implementation_end_c'])) ) : '';
                 $data .= '<td class="table-data" >'.$project_implementation_end_c.'</td>';
                 break;
 
@@ -4163,13 +2053,13 @@ class HomeController extends SugarController
                 $data .= $this->getColor( $row['timing_button_c'] );
                 $data .= '</td>';
                 break;
-                
+
             case 'submissionstatus_c':
-                $data .= '<td class="table-data" >'.$this->beautify_label( $row['submissionstatus_c'] ).'</td>';
+                $data .= '<td class="table-data" >'.beautify_label( $row['submissionstatus_c'] ).'</td>';
                 break;
-    
+
             case 'closure_status_c':
-                $data .= '<td class="table-data" >'.$this->beautify_label( $row['closure_status_c'] ).'</td>';
+                $data .= '<td class="table-data" >'.beautify_label( $row['closure_status_c'] ).'</td>';
                 break;
         }
         return $data;
@@ -4192,13 +2082,13 @@ class HomeController extends SugarController
                 </select>
                 
             </div>';
-        
+
         $html .= $this->filterFields($type, $columnFilter);
         return $html;
     }
 
     function filterFields($type, $columnFilter){
-        
+
         //$columnAmount = @$columnFilter['Amount'];
             $columnDepartment = @$columnFilter['new_department_c'];
         $columnREPEOI = @$columnFilter['REP-EOI-Published'];
@@ -4215,7 +2105,7 @@ class HomeController extends SugarController
         $segment_c                      = @$columnFilter['segment_c'];
         $product_service_c              = @$columnFilter['product_service_c'];
         $international_c                = @$columnFilter['international_c'];
-        
+
         $total_input_value              = @$columnFilter['total_input_value'];
         $sector_c                       = @$columnFilter['sector_c'];
         $product_service_c              = @$columnFilter['product_service_c'];
@@ -4224,8 +2114,8 @@ class HomeController extends SugarController
         $rfp_eoi_projected_c            = @$columnFilter['rfp_eoi_projected_c'];
         $rfp_eoi_published_projected_c  = @$columnFilter['rfp_eoi_published_projected_c'];
         $work_order_projected_c         = @$columnFilter['work_order_projected_c'];
-        
-        $budget_head_amount_c                  = @$columnFilter['budget_head_amount_c'];
+
+        $budget_head_c                  = @$columnFilter['budget_head_amount_c'];
         $budget_allocated_oppertunity_c = @$columnFilter['budget_allocated_oppertunity_c'];
         $project_implementation_start_c = @$columnFilter['project_implementation_start_c'];
         $project_implementation_end_c   = @$columnFilter['project_implementation_end_c'];
@@ -4278,14 +2168,12 @@ class HomeController extends SugarController
             $data .= '<div class="form-group">
                 <SPAN style="font-weight: bold;">RFP/EOI Published</SPAN>
                 <div class="filterchecklist">
-
                     <input type="checkbox" id="required_field" class="rfp-checkbox" name="filter-rfp-eoi-status[]" value="yes">
                     <label for="yes"> Yes</label>
                     <input type="checkbox" id="required_field" class="rfp-checkbox" name="filter-rfp-eoi-status[]" value="no">
                     <label for="No"> No</label>
                     <input type="checkbox" id="required_field" class="rfp-checkbox" name="filter-rfp-eoi-status[]" value="not_required">
                     <label for="Not-Required"> Not required</label><br>
-
                 </div>
             </div>';
         }
@@ -4342,7 +2230,7 @@ class HomeController extends SugarController
             $states = '';
             $stateArray = $this->getDbData('states', 'name', "country_id = '101' ");
             foreach($stateArray as $s){
-                $states .= '<option value="'.$s['name'].'">'.$this->beautify_label( $s['name'] ).'</option>';
+                $states .= '<option value="'.$s['name'].'">'.beautify_label( $s['name'] ).'</option>';
             }
             $data .= '<div class="form-group">
                 <span class="primary-responsibilty-filter-head">State</span>
@@ -4358,7 +2246,7 @@ class HomeController extends SugarController
             $departments = $this->getDbData('accounts', 'name', "name != '' ");
             $departmentList = '';
             foreach($departments as $d){
-                $departmentList .= '<option value="'.$d['name'].'">'.$this->beautify_label( $d['name'] ).'</option>';
+                $departmentList .= '<option value="'.$d['name'].'">'.beautify_label( $d['name'] ).'</option>';
             }
             $data .= '<div class="form-group">
                 <span class="primary-responsibilty-filter-head">Department</span>
@@ -4374,7 +2262,7 @@ class HomeController extends SugarController
             $sources = $this->getDbData('opportunities_cstm', 'DISTINCT source_c', " source_c != '' ");
             $sourceList = '';
             foreach($sources as $d){
-                $sourceList .= '<option value="'.$d['source_c'].'">'.$this->beautify_label( $d['source_c'] ).'</option>';
+                $sourceList .= '<option value="'.$d['source_c'].'">'.beautify_label( $d['source_c'] ).'</option>';
             }
             $data .= '<div class="form-group">
                 <span class="primary-responsibilty-filter-head">Source</span>
@@ -4392,7 +2280,7 @@ class HomeController extends SugarController
             '^PilotforFutureOpportunity^', '^Relationship^', '^StrategicAlignmentforFutureOpportunity^'];
             $dataList = '';
             foreach($dbData as $d){
-                $dataList .= '<option value="'.$d.'">'.$this->beautify_label_n_f( $d ).'</option>';
+                $dataList .= '<option value="'.$d.'">'.beautify_test(beautify_label( $d )).'</option>';
             }
             $data .= '<div class="form-group">
                 <span class="primary-responsibilty-filter-head">Non Financial Consideration</span>
@@ -4407,7 +2295,7 @@ class HomeController extends SugarController
             $dbData = $this->getDbData('segment', 'segment_name', " segment_name != '' ");
             $segmentList = '';
             foreach($dbData as $d){
-                $segmentList .= '<option value="'.$d['segment_name'].'">'.$this->beautify_label( $d['segment_name'] ).'</option>';
+                $segmentList .= '<option value="'.$d['segment_name'].'">'.beautify_label( $d['segment_name'] ).'</option>';
             }
             $data .= '<div class="form-group">
                 <span class="primary-responsibilty-filter-head">Segment</span>
@@ -4423,7 +2311,7 @@ class HomeController extends SugarController
             $dbData = $this->getDbData('service', 'DISTINCT service_name', " service_name != '' ");
             $dataList = '';
             foreach($dbData as $d){
-                $dataList .= '<option value="'.$d['service_name'].'">'.$this->beautify_label( $d['service_name'] ).'</option>';
+                $dataList .= '<option value="'.$d['service_name'].'">'.beautify_label( $d['service_name'] ).'</option>';
             }
             $data .= '<div class="form-group">
                 <span class="primary-responsibilty-filter-head">Product/Service</span>
@@ -4466,12 +2354,12 @@ class HomeController extends SugarController
                 </div>
             </div>';
         }*/
-        
+
         if($sector_c){
             $dbData = $this->getDbData('sector', 'name', " name != '' ");
             $dataList = '';
             foreach($dbData as $d){
-                $dataList .= '<option value="'.$d['name'].'">'.$this->beautify_label( $d['name'] ).'</option>';
+                $dataList .= '<option value="'.$d['name'].'">'.beautify_label( $d['name'] ).'</option>';
             }
             $data .= '<div class="form-group">
                 <span class="primary-responsibilty-filter-head">Sector</span>
@@ -4487,7 +2375,7 @@ class HomeController extends SugarController
             $dbData = $this->getDbData('sub_sector', 'name', " name != '' ");
             $dataList = '';
             foreach($dbData as $d){
-                $dataList .= '<option value="'.$d['name'].'">'.$this->beautify_label( $d['name'] ).'</option>';
+                $dataList .= '<option value="'.$d['name'].'">'.beautify_label( $d['name'] ).'</option>';
             }
             $data .= '<div class="form-group">
                 <span class="primary-responsibilty-filter-head">Sub Sector</span>
@@ -4498,7 +2386,7 @@ class HomeController extends SugarController
                 
             </div>';
         }
-        
+
         if($scope_budget_projected_c){
             $data .= '<div class="form-group">
                 <div class="date-filter">
@@ -4538,8 +2426,8 @@ class HomeController extends SugarController
                 </div>
             </div>';
         }
-        
-        if($budget_head_amount_c){
+
+        if($budget_head_c){
             $data .= '<div class="amount-range-container">
                 <div class="amount-range">
                     <span class="primary-responsibilty-filter-head">
@@ -4550,8 +2438,8 @@ class HomeController extends SugarController
                     </span>
                 </div>
                 <div class="rangeslider">
-                    <input class="min lowerVal" name="filter-budget_head_amount_c_min" id="lowerVal" type="range" min="0" max="200" value="0" step="10"/>
-                    <input class="max upperVal" name="filter-budget_head_amount_c_max" id="upperVal" type="range" min="0" max="200" value="200" step="10"/>
+                    <input class="min lowerVal" name="filter-budget_head_c_min" id="lowerVal" type="range" min="0" max="200" value="0" step="10"/>
+                    <input class="max upperVal" name="filter-budget_head_c_max" id="upperVal" type="range" min="0" max="200" value="200" step="10"/>
                     <span class="light left">0 Cr</span>
                     <span class="light right">200 Cr</span>
                 </div>
@@ -4596,7 +2484,7 @@ class HomeController extends SugarController
                 </div>
             </div>';
         }
-        
+
         if($selection_c){
             $data .= '<div class="form-group">
                 <span class="primary-responsibilty-filter-head">Selection</span>
@@ -4643,7 +2531,7 @@ class HomeController extends SugarController
             $dbData = $this->getDbData('opportunities_cstm', 'DISTINCT submissionstatus_c', " submissionstatus_c != '' ");
             $dataList = '';
             foreach($dbData as $d){
-                $dataList .= '<option value="'.$d['submissionstatus_c'].'">'.$this->beautify_label( $d['submissionstatus_c'] ).'</option>';
+                $dataList .= '<option value="'.$d['submissionstatus_c'].'">'.beautify_label( $d['submissionstatus_c'] ).'</option>';
             }
             $data .= '<div class="form-group">
                 <span class="primary-responsibilty-filter-head">Submission Status</span>
@@ -4672,7 +2560,7 @@ class HomeController extends SugarController
     function getFilterQuery(){
         global $current_user;
         $log_in_user_id = $current_user->id;
-        
+
         $multiple_approver_c            = @$_GET['filter-multiple_approver_c'];
         $state_c                        = @$_GET['filter-state_c'];
         $new_department_c               = @$_GET['filter-new_department_c'];
@@ -4681,36 +2569,36 @@ class HomeController extends SugarController
         $segment_c                      = @$_GET['filter-segment_c'];
         $product_service_c              = @$_GET['filter-product_service_c'];
         $international_c                = @$_GET['filter-international_c'];
-        
+
         $total_input_value_min          = @$_GET['filter-total_input_value_min'];
         $total_input_value_max          = @$_GET['filter-total_input_value_max'];
         $sector_c                       = @$_GET['filter-sector_c'];
         $product_service_c              = @$_GET['filter-product_service_c'];
         $sub_sector_c                   = @$_GET['filter-sub_sector_c'];
-        
-        $scope_budget_projected_c_from  = @$_GET['filter-scope_budget_projected_c_from'];
-        $scope_budget_projected_c_to    = @$_GET['filter-scope_budget_projected_c_to'];
-        
-        $rfp_eoi_projected_c_from       = @$_GET['filter-rfp_eoi_projected_c_from'];
-        $rfp_eoi_projected_c_to         = @$_GET['filter-rfp_eoi_projected_c_to'];
 
-        $rfp_eoi_published_projected_c_from = @$_GET['filter-rfp_eoi_published_projected_c_from'];
-        $rfp_eoi_published_projected_c_to   = @$_GET['filter-rfp_eoi_published_projected_c_to'];
+        $scope_budget_projected_c_from  = date_format_helper(@$_GET['filter-scope_budget_projected_c_from']);
+        $scope_budget_projected_c_to    = date_format_helper(@$_GET['filter-scope_budget_projected_c_to']);
 
-        $work_order_projected_c_from    = @$_GET['filter-work_order_projected_c_from'];
-        $work_order_projected_c_to      = @$_GET['filter-work_order_projected_c_to'];
-        
+        $rfp_eoi_projected_c_from       = date_format_helper(@$_GET['filter-rfp_eoi_projected_c_from']);
+        $rfp_eoi_projected_c_to         = date_format_helper(@$_GET['filter-rfp_eoi_projected_c_to']);
+
+        $rfp_eoi_published_projected_c_from = date_format_helper(@$_GET['filter-rfp_eoi_published_projected_c_from']);
+        $rfp_eoi_published_projected_c_to   = date_format_helper(@$_GET['filter-rfp_eoi_published_projected_c_to']);
+
+        $work_order_projected_c_from    = date_format_helper(@$_GET['filter-work_order_projected_c_from']);
+        $work_order_projected_c_to      = date_format_helper(@$_GET['filter-work_order_projected_c_to']);
+
         $budget_head_c_min              = @$_GET['filter-budget_head_c_min'];
         $budget_head_c_max              = @$_GET['filter-budget_head_c_max'];
 
         $budget_allocated_oppertunity_c_min = @$_GET['filter-budget_allocated_oppertunity_c_min'];
         $budget_allocated_oppertunity_c_max = @$_GET['filter-budget_allocated_oppertunity_c_max'];
 
-        $project_implementation_start_c_from = @$_GET['filter-project_implementation_start_c_from'];
-        $project_implementation_start_c_to   = @$_GET['filter-project_implementation_start_c_to'];
+        $project_implementation_start_c_from = date_format_helper(@$_GET['filter-project_implementation_start_c_from']);
+        $project_implementation_start_c_to   = date_format_helper(@$_GET['filter-project_implementation_start_c_to']);
 
-        $project_implementation_end_c_from  = @$_GET['filter-project_implementation_end_c_from'];
-        $project_implementation_end_c_to    = @$_GET['filter-project_implementation_end_c_to'];
+        $project_implementation_end_c_from  = date_format_helper(@$_GET['filter-project_implementation_end_c_from']);
+        $project_implementation_end_c_to    = date_format_helper(@$_GET['filter-project_implementation_end_c_to']);
 
         $selection_c                    = @$_GET['filter-selection_c'];
         $funding_c                      = @$_GET['filter-funding_c'];
@@ -4731,7 +2619,6 @@ class HomeController extends SugarController
             $responsibility = $_GET['filter-responsibility'];
             $fetch_query .= " AND (";
             foreach($responsibility as $key => $res){
-                
                 if($key)
                     $fetch_query .= " OR ";
                 if (strpos($res, 'andTeam') !== false) {
@@ -4742,8 +2629,8 @@ class HomeController extends SugarController
                 } else {
                     $fetch_query .= " opportunities.assigned_user_id = '$res' ";
                 }
-                    
-                
+
+
             }
             $fetch_query .= " )";
             //$fetch_query .= " AND opportunities.created_by = '$responsibility' ";
@@ -4803,29 +2690,15 @@ class HomeController extends SugarController
             }
             $fetch_query .= " AND ($inrquery $or $usdquery)";
         }
-        
+
         if(isset( $_GET['filter'] ) && @$_GET['filter-closed-date-from'] && @$_GET['filter-closed-date-to']){
-            $closedDateFrom = $_GET['filter-closed-date-from'];
-            $closedDateTo   = $_GET['filter-closed-date-to'];
-
-            $dateFrom = explode('/', $closedDateFrom);
-            $closedDateFrom = $dateFrom[2].'-'.$dateFrom[1].'-'.$dateFrom[0];
-
-            $dateTo = explode('/', $closedDateTo);
-            $closedDateTo = $dateTo[2].'-'.$dateTo[1].'-'.$dateTo[0];
-
+            $closedDateFrom = date_format_helper($_GET['filter-closed-date-from']);
+            $closedDateTo   = date_format_helper($_GET['filter-closed-date-to']);
             $fetch_query    .= " AND DATE(opportunities.date_modified) BETWEEN '$closedDateFrom' AND '$closedDateTo' ";
         }
         if(isset( $_GET['filter'] ) && @$_GET['filter-created-date-from'] && @$_GET['filter-created-date-to']){
-            $createdDateFrom    = $_GET['filter-created-date-from'];
-            $createdDateTo      = $_GET['filter-created-date-to'];
-
-            $dateFrom = explode('/', $createdDateFrom);
-            $createdDateFrom = $dateFrom[2].'-'.$dateFrom[1].'-'.$dateFrom[0];
-
-            $dateTo = explode('/', $createdDateTo);
-            $createdDateTo = $dateTo[2].'-'.$dateTo[1].'-'.$dateTo[0];
-
+            $createdDateFrom    = date_format_helper($_GET['filter-created-date-from']);
+            $createdDateTo      = date_format_helper($_GET['filter-created-date-to']);
             $fetch_query        .= " AND DATE(opportunities.date_entered) BETWEEN '$createdDateFrom' AND '$createdDateTo' ";
         }
 
@@ -4838,7 +2711,7 @@ class HomeController extends SugarController
                 $fetch_query .= " opportunities_cstm.multiple_approver_c LIKE '%$approver%' ";
             }
             $fetch_query .= " )";
-            
+
         }
         if($state_c){
             $fetch_query .= " AND opportunities_cstm.state_c = '$state_c' ";
@@ -4855,11 +2728,11 @@ class HomeController extends SugarController
                 if($key)
                     $fetch_query .= " OR ";
                 if($res== '^NA^') {
-                    $fetch_query .= " (`opportunities_cstm`.non_financial_consideration_c LIKE '%$res%' OR `opportunities_cstm`.non_financial_consideration_c = '' OR `opportunities_cstm`.non_financial_consideration_c IS NULL)";
+                    $fetch_query .= " `opportunities_cstm`.non_financial_consideration_c LIKE '%$res%' OR `opportunities_cstm`.non_financial_consideration_c IS NULL";
                 } else {
                     $fetch_query .= " opportunities_cstm.non_financial_consideration_c LIKE '%$res%' ";
                 }
-                
+
             }
             $fetch_query .= " )";
             //$fetch_query .= " AND opportunities_cstm.non_financial_consideration_c = '$non_financial_consideration_c' ";
@@ -4908,7 +2781,7 @@ class HomeController extends SugarController
         if( ($total_input_value_min || $total_input_value_max) || ( @$_GET['filter-total_input_value_min-usd'] || @$_GET['filter-total_input_value_min-usd'] ) ){
             /*$minPrice = $total_input_value_min;
             $maxPrice = $total_input_value_max;*/
-            
+
             $minPrice = 0;
             $maxPrice = 200;
             $minPriceUSD = 0;
@@ -4950,69 +2823,33 @@ class HomeController extends SugarController
         }
 
         if($scope_budget_projected_c_from && $scope_budget_projected_c_to){
-            $dateFrom = explode('/', $scope_budget_projected_c_from);
-            $scope_budget_projected_c_from = $dateFrom[2].'-'.$dateFrom[1].'-'.$dateFrom[0];
-
-            $dateTo = explode('/', $scope_budget_projected_c_to);
-            $scope_budget_projected_c_to = $dateTo[2].'-'.$dateTo[1].'-'.$dateTo[0];
-            
             $fetch_query .= " AND DATE(opportunities_cstm.scope_budget_projected_c) BETWEEN '$scope_budget_projected_c_from' AND '$scope_budget_projected_c_to' ";
         }
 
         if($rfp_eoi_projected_c_from && $rfp_eoi_projected_c_to){
-            $dateFrom = explode('/', $rfp_eoi_projected_c_from);
-            $rfp_eoi_projected_c_from = $dateFrom[2].'-'.$dateFrom[1].'-'.$dateFrom[0];
-
-            $dateTo = explode('/', $rfp_eoi_projected_c_to);
-            $rfp_eoi_projected_c_to = $dateTo[2].'-'.$dateTo[1].'-'.$dateTo[0];
-
             $fetch_query .= " AND DATE(opportunities_cstm.rfp_eoi_projected_c) BETWEEN '$rfp_eoi_projected_c_from' AND '$rfp_eoi_projected_c_to' ";
         }
         if($rfp_eoi_published_projected_c_from && $rfp_eoi_published_projected_c_to){
-            $dateFrom = explode('/', $rfp_eoi_published_projected_c_from);
-            $rfp_eoi_published_projected_c_from = $dateFrom[2].'-'.$dateFrom[1].'-'.$dateFrom[0];
-
-            $dateTo = explode('/', $rfp_eoi_published_projected_c_to);
-            $rfp_eoi_published_projected_c_to = $dateTo[2].'-'.$dateTo[1].'-'.$dateTo[0];
-
             $fetch_query .= " AND DATE(opportunities_cstm.rfp_eoi_published_projected_c) BETWEEN '$rfp_eoi_published_projected_c_from' AND '$rfp_eoi_published_projected_c_to' ";
         }
 
         if($work_order_projected_c_from && $work_order_projected_c_to){
-            $dateFrom = explode('/', $work_order_projected_c_from);
-            $work_order_projected_c_from = $dateFrom[2].'-'.$dateFrom[1].'-'.$dateFrom[0];
-
-            $dateTo = explode('/', $work_order_projected_c_to);
-            $work_order_projected_c_to = $dateTo[2].'-'.$dateTo[1].'-'.$dateTo[0];
-
             $fetch_query .= " AND DATE(opportunities_cstm.work_order_projected_c) BETWEEN '$work_order_projected_c_from' AND '$work_order_projected_c_to' ";
         }
 
         if($budget_head_c_min && $budget_head_c_max){
-            $fetch_query .= " AND opportunities_cstm.budget_head_c BETWEEN '$budget_head_c_min' AND '$budget_head_c_max' ";
+            $fetch_query .= " AND opportunities_cstm.budget_head_amount_c BETWEEN '$budget_head_c_min' AND '$budget_head_c_max' ";
         }
-        
+
         if($budget_allocated_oppertunity_c_min && $budget_allocated_oppertunity_c_max){
             $fetch_query .= " AND opportunities_cstm.budget_allocated_oppertunity_c BETWEEN '$budget_allocated_oppertunity_c_min' AND '$budget_allocated_oppertunity_c_max' ";
         }
-        
+
         if($project_implementation_start_c_from && $project_implementation_start_c_to){
-            $dateFrom = explode('/', $project_implementation_start_c_from);
-            $project_implementation_start_c_from = $dateFrom[2].'-'.$dateFrom[1].'-'.$dateFrom[0];
-
-            $dateTo = explode('/', $project_implementation_start_c_to);
-            $project_implementation_start_c_to = $dateTo[2].'-'.$dateTo[1].'-'.$dateTo[0];
-
             $fetch_query .= " AND DATE(opportunities_cstm.project_implementation_start_c) BETWEEN '$project_implementation_start_c_from' AND '$project_implementation_start_c_to' ";
         }
-        
+
         if($project_implementation_end_c_from && $project_implementation_end_c_to){
-            $dateFrom = explode('/', $project_implementation_end_c_from);
-            $project_implementation_end_c_from = $dateFrom[2].'-'.$dateFrom[1].'-'.$dateFrom[0];
-
-            $dateTo = explode('/', $project_implementation_end_c_to);
-            $project_implementation_end_c_to = $dateTo[2].'-'.$dateTo[1].'-'.$dateTo[0];
-
             $fetch_query .= " AND DATE(opportunities_cstm.project_implementation_end_c) BETWEEN '$project_implementation_end_c_from' AND '$project_implementation_end_c_to' ";
         }
 
@@ -5038,77 +2875,13 @@ class HomeController extends SugarController
         return $fetch_query;
     }
 
-    function delegate_members(){
-        try
-        {
-            global $current_user;
-            $log_in_user_id = $current_user->id;
-            $db = \DBManagerFactory::getInstance();
-            $GLOBALS['db'];
-            $check_user_team = "SELECT teamfunction_c from users LEFT JOIN users_cstm ON users.id = users_cstm.id_c WHERE id = '$log_in_user_id'";
-            $check_user_team_result = $GLOBALS['db']->query($check_user_team);
-            $user_team_row = $GLOBALS['db']->fetchByAssoc($check_user_team_result);
-            $user_team = $user_team_row['teamfunction_c'];
-            
-
-            // $fetch_query = "SELECT  u.* from users u JOIN users_cstm u2 ON u2.id_c = u.id WHERE u2.teamheirarchy_c = 'team_lead' ";
-            $fetch_query = "SELECT * FROM users WHERE `deleted` != '1' AND `id` != '1' ORDER BY `users`.`first_name` ASC";
-            $result = $GLOBALS['db']->query($fetch_query);
-            //$data = '<option value="" disabled selected>Select Option</option>';
-            $data = '';
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
-                    $full_name = $row['first_name'] . ' ' . $row['last_name'];
-                    $data .= '<option value="'.$row['id'].'">'.$full_name.'</option>';
-                }
-            } else {
-                return false;
-            }
-            return json_encode(array('members'=>$data, 'logged_in_user_team'=>$user_team, 'logged_in_id' => $log_in_user_id));
-
-        }catch(Exception $e){
-            return json_encode(array("status"=>false, "message" => "Some error occured"));
+    public function append_currency($oppCurrency, $amount) {
+        if ($amount != '') {
+            $symbol = ($oppCurrency == 'USD') ? '$' : '₹';
+            $unit = ($oppCurrency == 'USD') ? ' Mn' : ' Cr';
+            $amount = $symbol . $amount . $unit;
         }
-    }
-
-    function get_users_with_team_options() {
-        global $current_user;
-        $log_in_user_id = $current_user->id;
-        $fetch_query = "SELECT users.id, users.first_name, users.last_name, users_cstm.teamheirarchy_c
-        FROM users LEFT JOIN users_cstm ON users.id = users_cstm.id_c
-        WHERE users.`deleted` != '1' AND users.`id` != '1' ORDER BY users.`first_name` ASC";
-        $result = $GLOBALS['db']->query($fetch_query);
-        //$data = '<option value="" disabled selected>Select Option</option>';
-        $data = '';
-        if ($result->num_rows > 0) {
-            while($row = $result->fetch_assoc()) {
-                $full_name = $row['first_name'] . ' ' . $row['last_name'];
-                $data .= '<option value="'.$row['id'].'">'.$full_name.'</option>';
-                if ($row['teamheirarchy_c'] == 'team_lead') {
-                    $data .= '<option value="'.$row['id'].'andTeam">'.$full_name.' and Team</option>';
-                }
-            }
-        }
-        return $data;
-
-    }
-
-    function action_reassignment_dialog_dropdown_info() {
-        try
-        {
-            global $current_user;
-            $log_in_user_id = $current_user->id;
-            $fetch_query = "SELECT * FROM users WHERE `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC";
-            $result = $GLOBALS['db']->query($fetch_query);
-            $data = '';
-            while($row = $result->fetch_assoc()) {
-                $full_name = $row['first_name'] . ' ' . $row['last_name'];
-                $data .= '<option value="'.$row['id'].'">'.$full_name.'</option>';
-            }
-            return json_encode(array('user_info'=>$data, 'logged_in_id' => $log_in_user_id));
-        }catch(Exception $e){
-            return json_encode(array("status"=>false, "message" => "Some error occured"));
-        }
+        return $amount;
     }
 
     function getDbData($table, $fields, $condition = null){
@@ -5178,6 +2951,288 @@ class HomeController extends SugarController
         return $html;
     }
 
+    public function action_delegated_dialog_info(){
+        try {
+            $db = \DBManagerFactory::getInstance();
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $GLOBALS['db'];
+
+            $delegated_user_id = $this->get_delegated_user($log_in_user_id);
+            if ($delegated_user_id) {
+                $delegated_user = $this->get_user_details_by_id($delegated_user_id);
+            }
+            
+            if (!empty(@$delegated_user) && (@$delegated_user['first_name'] || @$delegated_user['last_name'])) {
+                $delegated_user_name = $delegated_user['first_name'] . $delegated_user['last_name'];
+            }
+            $data = $delegated_user_id;
+            if(@$delegated_user_name):
+                $data = ' <table class="delegatetable">
+                            <thead>
+                                <tr class="delegatetable-header-row-popup">
+                                    <th class="delegatetable-header-popup">Current Delegate</th>
+                                    <th class="delegatetable-header-popup">Action Completed</th>
+                                    <th class="delegatetable-header-popup">Permissions</th>
+                                    <th></th>
+                                </tr></thead>';
+                $data .= '
+                    <tbody>
+                    <tr>
+                    <td class="delegatetable-data-popup">'.$delegated_user_name.'</td>
+                    <td class="delegatetable-data-popup" style="color: #00f;">'.$this->delegateActionCompleted($delegated_user_id).'</td>
+                    <td class="delegatetable-data-popup">Edit</td>
+                    <td>
+                        <button type="button" style="margin-left: 100px; margin-bottom: 10px; margin-top: 20px;" class="btn2 remove-delegate">Remove</button>
+                    </td>
+                </tr>';
+                $data .= '</tbody></table>';
+            endif; 
+        
+        
+            echo json_encode(array('delegated_info' => $data, 'delegated_id' => $log_in_user_id));
+        } catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+    }
+    function delegateActionCompleted($userID){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+        $query = "SELECT count(*) as count FROM approval_table ap";
+        $query .= " JOIN opportunities o ON o.id = ap.opp_id";
+        $query .= " WHERE ap.pending = 0 AND o.deleted != 1 AND ap.approver_rejector = '$log_in_user_id' AND ap.delegate_id = '$userID' AND ( delegate_date_time != '' OR delegate_date_time <> NULL) ";
+
+        // echo $query; die;
+
+        $result = $GLOBALS['db']->query($query);
+        $count = $GLOBALS['db']->fetchByAssoc($result);
+        return $count['count'];
+    }
+
+    function delegate_members(){
+        try
+        {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $check_user_team = "SELECT teamfunction_c from users LEFT JOIN users_cstm ON users.id = users_cstm.id_c WHERE id = '$log_in_user_id'";
+            $check_user_team_result = $GLOBALS['db']->query($check_user_team);
+            $user_team_row = $GLOBALS['db']->fetchByAssoc($check_user_team_result);
+            $user_team = $user_team_row['teamfunction_c'];
+
+
+            // $fetch_query = "SELECT  u.* from users u JOIN users_cstm u2 ON u2.id_c = u.id WHERE u2.teamheirarchy_c = 'team_lead' ";
+            $fetch_query = "SELECT * FROM users WHERE `deleted` != '1' AND `id` != '1' ORDER BY `users`.`first_name` ASC";
+            $result = $GLOBALS['db']->query($fetch_query);
+            //$data = '<option value="" disabled selected>Select Option</option>';
+            $data = '';
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    $full_name = $row['first_name'] . ' ' . $row['last_name'];
+                    $data .= '<option value="'.$row['id'].'">'.$full_name.'</option>';
+                }
+            } else {
+                return false;
+            }
+            return json_encode(array('members'=>$data, 'logged_in_user_team'=>$user_team, 'logged_in_id' => $log_in_user_id));
+
+        }catch(Exception $e){
+            return json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+    }
+
+    public function action_store_delegate_result(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $GLOBALS['db'];
+            $proxy = $_POST['Select_Proxy'];
+            // $permission_to_edit = $_POST['delegate_Edit'];
+            $save_delegate_query = "UPDATE opportunities_cstm as o2 
+                LEFT JOIN opportunities ON opportunities.id = o2.id_c
+                SET o2.delegate = '$proxy'
+                WHERE opportunities.deleted != 1 AND o2.user_id2_c = '$log_in_user_id'";
+            
+            $save_delegate_query_result = $GLOBALS['db']->query($save_delegate_query);
+
+            $approvalDelegateUpdate = "UPDATE approval_table SET delegate_id = '$proxy' WHERE approver_rejector = '$log_in_user_id' AND Approved = 0 AND Rejected = 0 AND pending = 1";
+            $approvalDelegateUpdateQuery = $GLOBALS['db']->query($approvalDelegateUpdate);
+
+            //$fetch_organization_count = $GLOBALS['db']->fetchByAssoc($save_delegate_query_result);
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+
+    }
+    public function action_remove_delegate_user(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $GLOBALS['db'];
+            $save_delegate_query = "UPDATE opportunities_cstm as o2 
+                LEFT JOIN opportunities ON opportunities.id = o2.id_c
+                SET o2.delegate = ''
+                WHERE opportunities.deleted != 1 AND o2.user_id2_c = '$log_in_user_id'";
+            
+            $save_delegate_query_result = $GLOBALS['db']->query($save_delegate_query);
+
+            $save_delegate_query = "UPDATE approval_table  
+                SET delegate_id = ''
+                WHERE approver_rejector = '$log_in_user_id'";
+            
+            $save_delegate_query_result = $GLOBALS['db']->query($save_delegate_query);
+
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+    }
+
+    public function beautify_amount($amount) {
+        return preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amount);
+    }
+
+    function get_users_with_team_options() {
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+        $fetch_query = "SELECT users.id, users.first_name, users.last_name, users_cstm.teamheirarchy_c
+        FROM users LEFT JOIN users_cstm ON users.id = users_cstm.id_c
+        WHERE users.`deleted` != '1' AND users.`id` != '1' ORDER BY users.`first_name` ASC";
+        $result = $GLOBALS['db']->query($fetch_query);
+        //$data = '<option value="" disabled selected>Select Option</option>';
+        $data = '';
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                $full_name = $row['first_name'] . ' ' . $row['last_name'];
+                $data .= '<option value="'.$row['id'].'">'.$full_name.'</option>';
+                if ($row['teamheirarchy_c'] == 'team_lead') {
+                    $data .= '<option value="'.$row['id'].'andTeam">'.$full_name.' and Team</option>';
+                }
+            }
+        }
+        return $data;
+
+    }
+
+    //---------------------------------------- For Critical Status ---------------//
+
+    public function action_update_critical_status(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $id = $_GET['id'];
+            $GLOBALS['db'];
+
+            $get_data_query="SELECT critical_c FROM opportunities_cstm WHERE id_c = '$id'";
+            $result = $GLOBALS['db']->query($get_data_query);
+            $fetch = $GLOBALS['db']->fetchByAssoc($result);
+            $fetch['critical_c'] ='yes';
+
+
+            $array_log_in_user = array();
+            array_push($array_log_in_user,$fetch['critical_c'],$log_in_user_id);
+            $string_log_in_user = rtrim(implode(',', $array_log_in_user));
+
+            $update_query = "UPDATE opportunities_cstm SET critical_c = '$string_log_in_user' WHERE id_c = '$id'";
+            $GLOBALS['db']->query($update_query);
+
+            $color="red";
+
+            $critical_status_count_query = "SELECT count(*) as totalCount FROM opportunities_cstm WHERE critical_c LIKE '%$log_in_user_id%' AND critical_c LIKE '%yes%'";
+            $critical_status_count = executeCountQuery($critical_status_count_query);
+            // ob_start();
+            // include_once 'templates/partials/opportunities/repeater.php';
+            // $content .= ob_get_contents();
+            // ob_end_clean();
+
+
+            echo json_encode(array('status'=>true, 
+                                    'message' => 'Success',
+                                    'color'=>$color,
+                                    'critical_status_count'=>$critical_status_count,
+                                    'loged_in_user' => $string_log_in_user,
+
+                                ));
+
+            die;
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+            die;
+        }
+    }
+
+    public function action_update_critical_status_changed(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $id = $_GET['id'];
+            $GLOBALS['db'];
+            
+            $array_critical_data = array();
+            $get_data_query="SELECT critical_c FROM opportunities_cstm WHERE id_c = '$id'";
+            // $result = $GLOBALS['db']->query($get_data_query);
+            // $fetch = $GLOBALS['db']->fetchByAssoc($result);
+
+            // $array_critical_data = explode(',',trim($fetch['critical_c']));
+            // while($row = $GLOBALS['db']->fetchByAssoc($result)){
+            //     $critical_data_test = $row['critical'];
+            //     $array_critical_data = explode(',',trim($critical_data_test));
+
+            // }
+            $array_critical_data[0]= 'no';
+
+            $string_critical_data = implode(',',$array_critical_data);
+
+            
+            $update_query = "UPDATE opportunities_cstm SET critical_c = '$string_critical_data' WHERE id_c = '$id'";
+            $GLOBALS['db']->query($update_query);
+            
+            $critical_status_count_query = "SELECT count(*) as totalCount FROM opportunities_cstm WHERE critical_c LIKE '%$log_in_user_id%' AND critical_c LIKE '%yes%'";
+            $critical_status_count = executeCountQuery($critical_status_count_query);
+
+
+            // ob_start();
+            // include_once 'templates/partials/opportunities/repeater.php';
+            // $content .= ob_get_contents();
+            // ob_end_clean();
+
+
+            echo json_encode(array('status'=>true, 'message' => 'Success','data'=>$string_critical_data,'critical_status_count'=>$critical_status_count));
+
+            die;
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+            die;
+        }
+    }
+
+    function is_critical_applicable($log_in_user_id, $opp_id, $isCritical){
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        $is_mc = $this->is_mc($log_in_user_id);
+        $query = "SELECT critical_c FROM opportunities_cstm WHERE id_c = '$opp_id'";
+        $result = $GLOBALS['db']->query($query);
+        $fetch = $GLOBALS['db']->fetchByAssoc($result);
+
+        $array_critical_data = explode(',',trim($fetch['critical_c']));
+        if (strpos($fetch['critical_c'], $log_in_user_id) !== false) {
+            $array_critical_data[0] = 'yes';
+        } else {
+            $array_critical_data[0] = 'no';
+        }
+
+        return $is_mc && (($array_critical_data[0] == $isCritical));
+
+    }
+
+
+        //--------------------------------------for download----------------------//
+
     function action_export(){
 
         global $current_user;
@@ -5196,19 +3251,27 @@ class HomeController extends SugarController
             LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
             LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
             WHERE opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day ";
+
         if($status_c){
             $query .= " AND opportunities_cstm.status_c='$status_c'";
         }
 
         if($type){
-            $query .= " AND opportunities.opportunity_type='$type' AND opportunities.id";
+            $opp_id_show = private_opps();
+            if($type == 'non_global') {
+                $query .= " opportunities.id  IN ('".implode("','",$opp_id_show)."'))";
+            }
+            else {
+                $query .= " AND opportunities.opportunity_type='$type' ";
+            }
         }
+        
 
         if($status_c == 'Closed'){
             $query .= ' AND opportunities_cstm.closure_status_c = "won" ';
         }else if($status_c == 'Dropped' ){
             $query = "SELECT opportunities.*, opportunities_cstm.*,
-                CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities 
+        CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities 
                 LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
                 LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
                 WHERE opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day ";
@@ -5297,34 +3360,34 @@ class HomeController extends SugarController
                 $row['name'],
                 str_replace( '<i class="fa fa-arrow-right"></i>', '-', $full_name),
                 // $this->beautify_amount( $row['budget_allocated_oppertunity_c'] ),
-                $this->beautify_label( $row['new_department_c'] ),
-                $this->beautify_label( $this->beautify_label($row['rfporeoipublished_c']) ),
+                beautify_label( $row['new_department_c'] ),
+                beautify_label( beautify_label($row['rfporeoipublished_c']) ),
                 $row['date_modified'] ? date_format(date_create($row['date_modified']),'dS F Y') : '',
                 $closed_by,
                 $row['date_entered'] ? date_format(date_create($row['date_entered']), 'dS F Y') : '',
                 //$row['date_closed'] ? date_format(date_create($row['date_closed']),'d/m/Y') : '',
                 $this->getMultipleApproverNames( $row['multiple_approver_c'] ),
-                $this->beautify_label( $row['state_c'] ),
-                // $this->beautify_label( $row['new_department_c'] ),
-                $this->beautify_label( $row['source_c'] ),
-                $this->beautify_label( $row['non_financial_consideration_c'] ),
-                $this->beautify_label( $row['segment_c'] ),
-                $this->beautify_label( $row['product_service_c'] ),
-                $this->beautify_label( $row['international_c'] ),
-                $this->beautify_label( $row['total_input_value'] ),
-                $this->beautify_label( $row['sector_c'] ),
-                $this->beautify_label( $row['sub_sector_c'] ),
-                $row['scope_budget_projected_c'] ? $this->beautify_label( date( 'dS F Y', strtotime($row['scope_budget_projected_c']) ) ) : '',
-                $row['rfp_eoi_projected_c'] ? $this->beautify_label( date('dS F Y', strtotime($row['rfp_eoi_projected_c']) ) ) : '',
-                $row['rfp_eoi_published_projected_c'] ? $this->beautify_label( date('dS F Y', strtotime($row['rfp_eoi_published_projected_c']) ) ) : '',
-                $row['work_order_projected_c'] ? $this->beautify_label( date('dS F Y', strtotime($row['work_order_projected_c']) ) ) : '',
-                $this->beautify_amount( $row['budget_head_amount_c'] ),
-                $this->beautify_label( $row['budget_allocated_oppertunity_c'] ),
-                $row['project_implementation_start_c'] ? $this->beautify_label( date('dS F Y', strtotime($row['project_implementation_start_c']) ) ) : '',
-                $row['project_implementation_end_c'] ? $this->beautify_label( date('dS F Y', strtotime($row['project_implementation_end_c']) ) ) : '',
+                beautify_label( $row['state_c'] ),
+                // beautify_label( $row['new_department_c'] ),
+                beautify_label( $row['source_c'] ),
+                beautify_test(beautify_label( $row['non_financial_consideration_c'] )),
+                beautify_label( $row['segment_c'] ),
+                beautify_label( $row['product_service_c'] ),
+                beautify_label( $row['international_c'] ),
+                beautify_label( $row['total_input_value'] ),
+                beautify_label( $row['sector_c'] ),
+                beautify_label( $row['sub_sector_c'] ),
+                $row['scope_budget_projected_c'] ? beautify_label( date( 'dS F Y', strtotime($row['scope_budget_projected_c']) ) ) : '',
+                $row['rfp_eoi_projected_c'] ? beautify_label( date('dS F Y', strtotime($row['rfp_eoi_projected_c']) ) ) : '',
+                $row['rfp_eoi_published_projected_c'] ? beautify_label( date('dS F Y', strtotime($row['rfp_eoi_published_projected_c']) ) ) : '',
+                $row['work_order_projected_c'] ? beautify_label( date('dS F Y', strtotime($row['work_order_projected_c']) ) ) : '',
+                $this->append_currency($row['currency_c'], $this->beautify_amount( $row['budget_head_amount_c'] )),
+                beautify_label( $row['budget_allocated_oppertunity_c'] ),
+                $row['project_implementation_start_c'] ? beautify_label( date('dS F Y', strtotime($row['project_implementation_start_c']) ) ) : '',
+                $row['project_implementation_end_c'] ? beautify_label( date('dS F Y', strtotime($row['project_implementation_end_c']) ) ) : '',
                 $row['selection_c'].' '.$row['funding_c'].' '.$row['timing_button_c'],
-                $this->beautify_label( $row['submissionstatus_c'] ),
-                $this->beautify_label( $row['closure_status_c'] )
+                beautify_label( $row['submissionstatus_c'] ),
+                beautify_label( $row['closure_status_c'] )
             );
 
         }
@@ -5362,44 +3425,57 @@ class HomeController extends SugarController
             exit;
         }
     }
-    //--------------------------------------for re-assignment----------------------//
-    function is_reassignment_applicable($opportunity_id) {
-            global $current_user;
-            // fetch assigned id 
-            // send to user_cstm
-            // fetch user_lineage column
-            // string to array contains($log_in_user)
-            $db = \DBManagerFactory::getInstance();
-                $GLOBALS['db'];
-            $log_in_user_id = $current_user->id;
-            $sql ='SELECT * FROM `approval_table` WHERE `opp_id`="'.$opportunity_id.'" AND `pending`="1"';
-            $result = $GLOBALS['db']->query($sql);
-            $pending_count=$result->num_rows;
-            $sql1 ='SELECT users.reports_to_id, users_cstm.mc_c FROM users INNER JOIN users_cstm ON users_cstm.id_c= "'.$log_in_user_id.'" WHERE reports_to_id = "'.$log_in_user_id.'"';
-            $result1 = $GLOBALS['db']->query($sql1);
-            $reporting_count=$result1->num_rows;
-            while($row = $GLOBALS['db']->fetchByAssoc($result1)) {
-                $mc_check=$row['mc_c'];
-            }
-            
-            $sql2 ='SELECT t1.id ,t1.assigned_user_id,t2.multiple_approver_c FROM opportunities as t1 LEFT JOIN opportunities_cstm as t2 ON t2.id_c = t1.id WHERE t1.id= "'.$opportunity_id.'" AND (t1.assigned_user_id="'.$log_in_user_id.'" OR t2.multiple_approver_c LIKE "%'.$log_in_user_id.'%")';
-            $result2 = $GLOBALS['db']->query($sql2);
-            $reporting_count1=$result2->num_rows;
-            \LoggerManager::getLogger()->debug($reporting_count);
-            // $GLOBALS['log']->debug('Debug level message'); 
-            // return true;
-            // print($reporting_count);
-            if($mc_check=="yes"){
+    
+
+        //--------------------------------------for re-assignment----------------------//
+        
+public function is_reassignment_applicable($opportunity_id) {
+    global $current_user;
+     $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+    $log_in_user_id = $current_user->id;
+    
+    $sql ='SELECT * FROM `approval_table` WHERE `opp_id`="'.$opportunity_id.'" AND `pending`="1"';
+    $result = $GLOBALS['db']->query($sql);
+    $pending_count=$result->num_rows;
+    
+    $sql_lineage ='SELECT opportunities.assigned_user_id,users_cstm.user_lineage FROM opportunities LEFT JOIN users_cstm ON users_cstm.id_c=opportunities.assigned_user_id WHERE opportunities.id="'.$opportunity_id.'"';
+    $result_lineage = $GLOBALS['db']->query($sql_lineage);
+     while($row = $GLOBALS['db']->fetchByAssoc($result_lineage)) 
+    {
+           $lineage=$row['user_lineage']; 
+           $assigned_id=$row['assigned_user_id'];
+    }
+    $lineage_arry= explode(",", $lineage);
+    
+    $sql1 ='SELECT users.reports_to_id, users_cstm.mc_c FROM users INNER JOIN users_cstm ON users_cstm.id_c= "'.$log_in_user_id.'" WHERE reports_to_id = "'.$log_in_user_id.'"';
+    $result1 = $GLOBALS['db']->query($sql1);
+    $reporting_count=$result1->num_rows;
+     while($row = $GLOBALS['db']->fetchByAssoc($result1)) {
+        $mc_check=$row['mc_c'];
+     }
+     $sql_reports_id = "SELECT * FROM users WHERE reports_to_id='".$log_in_user_id."'";
+     $result_reports_id= $GLOBALS['db']->query($sql_reports_id);
+    $reports_count=$result_reports_id->num_rows;
+
+    if(!empty($mc_check)  && $mc_check=="yes"){
+     return (($pending_count <= 0));
+    } 
+    else{
+        
+        if(in_array($log_in_user_id,$lineage_arry)){
             return (($pending_count <= 0));
-            } 
-            else{
-                return (($pending_count <= 0) && ($reporting_count > 0) && ($reporting_count1 > 0));
-            }
+        }
+        elseif($log_in_user_id==$assigned_id && $reports_count > 0){
+            return (($pending_count <= 0));
         }
         
-        
-        
-        public function action_new_assigned_list(){
+        //  return (($pending_count <= 0) && ($reporting_count > 0) && ($reporting_count1 > 0) );
+    }
+}
+
+
+public function action_new_assigned_list(){
         try{
             $db = \DBManagerFactory::getInstance();
                 $GLOBALS['db'];
@@ -5795,284 +3871,284 @@ class HomeController extends SugarController
             die();
     }
 
-    public function action_update_home_assigned_id(){
-        try{
-            $db = \DBManagerFactory::getInstance();
-                $GLOBALS['db'];
-                
-                global $current_user; 
-                    $log_in_user_id = $current_user->id;
-                    $assigned_name=$_POST['assigned_name'];
-                    $opportunity_id=$_POST['opp_id'];
-                    
-                
-                    $sql="SELECT id,reports_to_id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
-                    
-                    $result = $GLOBALS['db']->query($sql);
-                    
-            while($row = $GLOBALS['db']->fetchByAssoc($result)) 
-            {
-                
-                
-            $assigned_id=$row['id'];
-            
-            $reports_to_id = $row['reports_to_id'];
-        
-                
-            }
-            
-                $sql_tl="SELECT case when teamheirarchy_c='team_member_l1' then 'l1' when teamheirarchy_c ='team_member_l2' then 'l2' when teamheirarchy_c ='team_member_l3' then 'l3' when teamheirarchy_c='team_lead' then 'tl' end AS 'heirarchy' FROM users_cstm WHERE id_c='".$assigned_id."'";
-            
-            $result_tl = $GLOBALS['db']->query($sql_tl);
-            
-        while ($row_tl = mysqli_fetch_assoc($result_tl)){
-                
-            $team_h=$row_tl['heirarchy'];
-            }
-        
-            if($team_h=="tl"){
-                
-                $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
-                $result_tlr = $GLOBALS['db']->query($sql_tlr);
-                while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
-                
-            $team_lead_name=$row_tlr['name'];
-            $team_lead_id=$row_tlr['id'];
-            }
-            
-            
-                
-            }
-        
-        else if($team_h=="l1"){
-                
-                $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
-                $result_tlr = $GLOBALS['db']->query($sql_tlr);
-                while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
-                
-            $team_lead_name=$row_tlr['name'];
-            $team_lead_id=$row_tlr['id'];
-            }
-                
-            }
-            else if($team_h=="l2"){
-                
-                $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'"))';
-                $result_tlr = $GLOBALS['db']->query($sql_tlr);
-                while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
-                
-            $team_lead_name=$row_tlr['name'];
-            $team_lead_id=$row_tlr['id'];
-            }
-                
-            }
-            else if($team_h=="l3"){
-                
-                $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")))';
-                $result_tlr = $GLOBALS['db']->query($sql_tlr);
-                while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
-                
-            $team_lead_name=$row_tlr['name'];
-            $team_lead_id=$row_tlr['id'];
-            }
-                
-                
-                
-            }
-            
-            if($assigned_id==''){
-                
-                echo json_encode(array("message"=>'false'));
-                
-            }
-            else{
-            
-            $sql1='SELECT * FROM opportunities_cstm WHERE id_c="'.$opportunity_id.'"';
-                
-                $result1 = $GLOBALS['db']->query($sql1);
-                
-                    if($result1->num_rows>0){
-                        
-                        while($row1= $GLOBALS['db']->fetchByAssoc($result1)) 
-            {
-                        $multiple=$row1['multiple_approver_c'];
-                        $status_new=$row1['status_c'];
-                        $rfp_new=$row1['rfporeoipublished_c'];
-            }
-                    $sql23='UPDATE `opportunities_cstm` SET `assigned_to_new_c`="'.$assigned_name.'" WHERE id_c="'.$opportunity_id.'"';
-                    
-                    $result23 = $GLOBALS['db']->query($sql23);
-                    
-                    $sql2='UPDATE `opportunities` SET `assigned_user_id`="'.$assigned_id.'" WHERE id="'.$opportunity_id.'"';
-                    
-                    $result2 = $GLOBALS['db']->query($sql2);
-                    
-                    if($rfp_new=='no'){
-                        if($status_new=='Qualified' || $status_new=='QualifiedDpr' || $status_new=='QualifiedBid' || $status_new=='Closed'){
-                            $reports_to_id=$team_lead_id;
-                            
-                        }
-                        
-                    }
-                    else if($rfp_new=='yes'){
-                        if($status_new=='QualifiedLead' || $status_new=='QualifiedBid' || $status_new=='Closed'){
-                            $reports_to_id=$team_lead_id;
-                        }
-                        
-                    }
-                    else if($rfp_new=='not_required'){
-                        
-                    
-                        if($status_new=='Qualified' || $status_new=='QualifiedDpr' || $status_new=='QualifiedBid' || $status_new=='Closed'){
-                            
-                            
-                            $reports_to_id=$team_lead_id;
-                            
-                            
-                        }
-                        
-                    }
-                
-                    
-                    if($db->query($sql2)==TRUE){
-                        
-                            $multiple_array=explode(',',$multiple);
-                            
-                            if(count($multiple_array)>1){
-                                
-                                $key=0;
-                                unset($multiple_array[$key]);
-                                array_unshift($multiple_array,$reports_to_id);
-                                
-                                $reports=implode(',',$multiple_array);
-                                
-                                $sql3='UPDATE `opportunities_cstm` SET `multiple_approver_c`="'.$reports.'" WHERE id_c="'.$opportunity_id.'"';
-                        $result3 = $GLOBALS['db']->query($sql3);
-                        
-                        $sql31='UPDATE `opportunities_cstm` SET `user_id2_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
-                        $result31 = $GLOBALS['db']->query($sql31);
-                        
-                        if($db->query($sql3)==TRUE){
-                            echo json_encode(array("status"=>true, "message" => "Success"));
-                            
-                        }
-                                
-                            }
-                            else{
-                                $sql31='UPDATE `opportunities_cstm` SET `user_id2_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
-                        $result31 = $GLOBALS['db']->query($sql31);
-                                $sql3='UPDATE `opportunities_cstm` SET `multiple_approver_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
-                        $result3 = $GLOBALS['db']->query($sql3);
-                        
-                        if($db->query($sql3)==TRUE){
-                            echo json_encode(array("status"=>true, "message" => "Success"));
-                        }
-                            }
-                    
-                        
-                    
-                
-                    
-            }
-                    }
-                    else{
-                        echo json_encode(array("status"=>true, "message" => "Failed"));
-                    }
-            }
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-        }catch(Exception $e){
-                echo json_encode(array("status"=>false, "message" => "Some error occured"));
-            }
-            die();
-    }
 
-    public function action_assigned_history(){
-        try{
-            $db = \DBManagerFactory::getInstance();
-                $GLOBALS['db'];
+public function action_update_home_assigned_id(){
+    try{
+        $db = \DBManagerFactory::getInstance();
+           $GLOBALS['db'];
+             
+              global $current_user; 
+               $log_in_user_id = $current_user->id;
+               $assigned_name=$_POST['assigned_name'];
+               $opportunity_id=$_POST['opp_id'];
+                $sql="SELECT id,reports_to_id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
+               
+                $result = $GLOBALS['db']->query($sql);
                 
-                global $current_user; 
-                    $log_in_user_id = $current_user->id;
-                    $assigned_name=$_POST['assigned_name'];
-                    $opportunity_id=$_POST['opp_id'];
-                    
+       while($row = $GLOBALS['db']->fetchByAssoc($result)) 
+       {
+           
+           
+         $assigned_id=$row['id'];
+          
+         $reports_to_id = $row['reports_to_id'];
+   
+           
+       }
+       
+           $sql_tl="SELECT case when teamheirarchy_c='team_member_l1' then 'l1' when teamheirarchy_c ='team_member_l2' then 'l2' when teamheirarchy_c ='team_member_l3' then 'l3' when teamheirarchy_c='team_lead' then 'tl' end AS 'heirarchy' FROM users_cstm WHERE id_c='".$assigned_id."'";
+       
+       $result_tl = $GLOBALS['db']->query($sql_tl);
+       
+    while ($row_tl = mysqli_fetch_assoc($result_tl)){
+           
+          $team_h=$row_tl['heirarchy'];
+       }
+      
+        if($team_h=="tl"){
+            
+           $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
+           $result_tlr = $GLOBALS['db']->query($sql_tlr);
+           while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+           
+          $team_lead_name=$row_tlr['name'];
+          $team_lead_id=$row_tlr['id'];
+       }
+       
+       
+           
+       }
+      
+      else if($team_h=="l1"){
+           
+           $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
+           $result_tlr = $GLOBALS['db']->query($sql_tlr);
+           while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+           
+          $team_lead_name=$row_tlr['name'];
+          $team_lead_id=$row_tlr['id'];
+       }
+           
+       }
+       else if($team_h=="l2"){
+           
+             $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'"))';
+           $result_tlr = $GLOBALS['db']->query($sql_tlr);
+           while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+           
+          $team_lead_name=$row_tlr['name'];
+          $team_lead_id=$row_tlr['id'];
+       }
+           
+       }
+       else if($team_h=="l3"){
+           
+            $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")))';
+           $result_tlr = $GLOBALS['db']->query($sql_tlr);
+           while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+           
+          $team_lead_name=$row_tlr['name'];
+          $team_lead_id=$row_tlr['id'];
+       }
+           
+           
+           
+       }
+       
+       if($assigned_id==''){
+           
+           echo json_encode(array("message"=>'false'));
+           
+       }
+       else{
+       
+       $sql1='SELECT * FROM opportunities_cstm WHERE id_c="'.$opportunity_id.'"';
+              
+              $result1 = $GLOBALS['db']->query($sql1);
+            
+               if($result1->num_rows>0){
+                   
+                   while($row1= $GLOBALS['db']->fetchByAssoc($result1)) 
+       {
+                     $multiple=$row1['multiple_approver_c'];
+                     $status_new=$row1['status_c'];
+                     $rfp_new=$row1['rfporeoipublished_c'];
+       }
+               $sql23='UPDATE `opportunities_cstm` SET `assigned_to_new_c`="'.$assigned_name.'" WHERE id_c="'.$opportunity_id.'"';
                 
-                    $sql="SELECT id,reports_to_id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
-                    
-                    $result = $GLOBALS['db']->query($sql);
-                    
-            while($row = $GLOBALS['db']->fetchByAssoc($result)) 
-            {
+                $result23 = $GLOBALS['db']->query($sql23);
+                  
+                $sql2='UPDATE `opportunities` SET `assigned_user_id`="'.$assigned_id.'" WHERE id="'.$opportunity_id.'"';
                 
+                $result2 = $GLOBALS['db']->query($sql2);
                 
-            $assigned_id=$row['id'];
-            
-            $reports_to_id = $row['reports_to_id'];
-        
-                
-            }
-            
-        
-            
-            
-            $assigned_to_new= $assigned_id;
-            $approvers_new = $reports_to_id;
-            
-            
-            $sql41='SELECT t1.id, t1.assigned_user_id,t2.multiple_approver_c,t2.status_c,t2.rfporeoipublished_c FROM opportunities as t1 LEFT JOIN opportunities_cstm as t2 ON t2.id_c = t1.id WHERE t1.id="'.$opportunity_id.'"';	    
-            $result41 = $GLOBALS['db']->query($sql41);
-            while($row41 = $GLOBALS['db']->fetchByAssoc($result41)) 
-            { 
-            $opp_id=$row41['id']; 
-            $assigned_to=$row41['assigned_user_id'];
-            $approvers=$row41['multiple_approver_c'];
-            $opp_status=$row41['status_c'];
-            $rfp=$row41['rfporeoipublished_c'];
-            }
-            
-        
-            $sql51 ='SELECT t.id, t.opp_id, t.assigned_by, t.assigned_to_id FROM assign_flow t WHERE t.opp_id="'.$opp_id.'" AND t.assigned_to_id="'.$assigned_to.'" AND t.id=(SELECT MAX(id) FROM assign_flow WHERE opp_id="'.$opp_id.'")';
-                $result51 = $GLOBALS['db']->query($sql51);
-                
-                $count=$result51->num_rows;
-                echo $count;
-                if($count>0){
+                if($rfp_new=='no'){
+                    if($status_new=='Qualified' || $status_new=='QualifiedDpr' || $status_new=='QualifiedBid' || $status_new=='Closed'){
+                       $reports_to_id=$team_lead_id;
+                        
+                    }
                     
                 }
-                else{ 
-                    
-                    $sql25='INSERT INTO `assign_flow`(`opp_id`, `assigned_by`, `assigned_to_id`, `approver_ids`,`status`,`rfp_eoi`) VALUES ("'.$opp_id.'","'.$log_in_user_id.'","'.$assigned_to_new.'","'.$approvers_new.'","'.$opp_status.'","'.$rfp.'")';
-                    //$result25 = $GLOBALS['db']->query($sql25);
-                    if($db->query($sql25)==TRUE){
-                        
-                                        echo json_encode(array("status"=>true, "message" => "Success"));
+               else if($rfp_new=='yes'){
+                   if($status_new=='QualifiedLead' || $status_new=='QualifiedBid' || $status_new=='Closed'){
+                        $reports_to_id=$team_lead_id;
                     }
+                    
                 }
+               else if($rfp_new=='not_required'){
+                    
+               
+                   if($status_new=='Qualified' || $status_new=='QualifiedDpr' || $status_new=='QualifiedBid' || $status_new=='Closed'){
+                       
+                       
+                         $reports_to_id=$team_lead_id;
+                         
+                         
+                    }
+                    
+                }
+              
+                
+                 if($db->query($sql2)==TRUE){
+                     
+                        $multiple_array=explode(',',$multiple);
                         
-            
-            
-            
-            
-            
-            
-            
-            
-        }catch(Exception $e){
-                echo json_encode(array("status"=>false, "message" => "Some error occured"));
-            }
-            die();
-    }
+                        if(count($multiple_array)>1){
+                            
+                            $key=0;
+                             unset($multiple_array[$key]);
+                             array_unshift($multiple_array,$reports_to_id);
+                             
+                             $reports=implode(',',$multiple_array);
+                             
+                              $sql3='UPDATE `opportunities_cstm` SET `multiple_approver_c`="'.$reports.'" WHERE id_c="'.$opportunity_id.'"';
+                      $result3 = $GLOBALS['db']->query($sql3);
+                      
+                     $sql31='UPDATE `opportunities_cstm` SET `user_id2_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
+                      $result31 = $GLOBALS['db']->query($sql31);
+                      
+                      if($db->query($sql3)==TRUE){
+                          echo json_encode(array("status"=>true, "message" => "Success"));
+                          
+                      }
+                             
+                        }
+                        else{
+                             $sql31='UPDATE `opportunities_cstm` SET `user_id2_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
+                      $result31 = $GLOBALS['db']->query($sql31);
+                             $sql3='UPDATE `opportunities_cstm` SET `multiple_approver_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
+                      $result3 = $GLOBALS['db']->query($sql3);
+                      
+                      if($db->query($sql3)==TRUE){
+                          echo json_encode(array("status"=>true, "message" => "Success"));
+                      }
+                        }
+                 
+                     
+                  
+             
+                
+         }
+               }
+               else{
+                   echo json_encode(array("status"=>true, "message" => "Failed"));
+               }
+       }
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+    }catch(Exception $e){
+           echo json_encode(array("status"=>false, "message" => "Some error occured"));
+       }
+       die();
+}
 
+public function action_assigned_history(){
+        try{
+        $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            
+            global $current_user; 
+                $log_in_user_id = $current_user->id;
+                $assigned_name=$_POST['assigned_name'];
+                $opportunity_id=$_POST['opp_id'];
+                
+            
+                $sql="SELECT id,reports_to_id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
+                
+                $result = $GLOBALS['db']->query($sql);
+                
+        while($row = $GLOBALS['db']->fetchByAssoc($result)) 
+        {
+            
+            
+        $assigned_id=$row['id'];
+        
+        $reports_to_id = $row['reports_to_id'];
+
+            
+        }
+        
+
+        
+        
+        $assigned_to_new= $assigned_id;
+        $approvers_new = $reports_to_id;
+        
+        
+        $sql41='SELECT t1.id, t1.assigned_user_id,t2.multiple_approver_c,t2.status_c,t2.rfporeoipublished_c FROM opportunities as t1 LEFT JOIN opportunities_cstm as t2 ON t2.id_c = t1.id WHERE t1.id="'.$opportunity_id.'"';	    
+        $result41 = $GLOBALS['db']->query($sql41);
+        while($row41 = $GLOBALS['db']->fetchByAssoc($result41)) 
+        { 
+        $opp_id=$row41['id']; 
+        $assigned_to=$row41['assigned_user_id'];
+        $approvers=$row41['multiple_approver_c'];
+        $opp_status=$row41['status_c'];
+        $rfp=$row41['rfporeoipublished_c'];
+        }
+        
+    
+        $sql51 ='SELECT t.id, t.opp_id, t.assigned_by, t.assigned_to_id FROM assign_flow t WHERE t.opp_id="'.$opp_id.'" AND t.assigned_to_id="'.$assigned_to.'" AND t.id=(SELECT MAX(id) FROM assign_flow WHERE opp_id="'.$opp_id.'")';
+            $result51 = $GLOBALS['db']->query($sql51);
+            
+            $count=$result51->num_rows;
+            echo $count;
+            if($count>0){
+                
+            }
+            else{ 
+                
+                $sql25='INSERT INTO `assign_flow`(`opp_id`, `assigned_by`, `assigned_to_id`, `approver_ids`,`status`,`rfp_eoi`) VALUES ("'.$opp_id.'","'.$log_in_user_id.'","'.$assigned_to_new.'","'.$approvers_new.'","'.$opp_status.'","'.$rfp.'")';
+                //$result25 = $GLOBALS['db']->query($sql25);
+                if($db->query($sql25)==TRUE){
+                    
+                                    echo json_encode(array("status"=>true, "message" => "Success"));
+                }
+            }
+                    
+        
+        
+        
+        
+        
+        
+        
+        
+    }catch(Exception $e){
+        echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    }
+    die();
+}
+
+//-----------------------Activity assigned history-----------------------------//
 
 
            //--------------------------------------for user-report-table----------------------//
@@ -6250,24 +4326,14 @@ class HomeController extends SugarController
             $approval_count = $result['approval_count'];
             
         // Modification Contribution (reassigned, tagged)
-        $modification_count_query = "CREATE VIEW Sample as 
-                                        (SELECT DISTINCT opportunities_audit.parent_id as modification_count FROM opportunities_audit 
-                                        JOIN opportunities ON opportunities.id = opportunities_audit.parent_id
-                                        WHERE (opportunities_audit.created_by = '$user_id'
-                                        AND opportunities.assigned_user_id != '$user_id'))
-                                        
-                                        UNION
-                                        
-                                        (SELECT DISTINCT l1_audit.opp_id as modification_count FROM l1_audit 
-                                        WHERE (l1_audit.created_by = '$user_id'))                                   
-                                        
-                                        UNION
-                                        
-                                        (SELECT DISTINCT l2_audit.opp_id as modification_count FROM l2_audit
-                                        WHERE (l2_audit.created_by = '$user_id'));
-                                        SELECT COUNT(*) as m_count FROM Sample;
-                                        DROP VIEW Sample;
-                                        ";
+        $modification_count_query = "SELECT count(DISTINCT opportunities.id) as modification_count FROM opportunities 
+                                    JOIN opportunities_audit ON opportunities.id = opportunities_audit.parent_id
+                                    JOIN l1_audit ON opportunities.id = l1_audit.opp_id
+                                    JOIN l2_audit ON opportunities.id = l2_audit.opp_id
+                                    WHERE (opportunities_audit.created_by = '$user_id'
+                                    AND opportunities.assigned_user_id != '$user_id')
+                                    OR (l1_audit.created_by = '$user_id')
+                                    OR (l2_audit.created_by = '$user_id')";
         $fetch_result = $GLOBALS['db']->query($modification_count_query);
         $result = $GLOBALS['db']->fetchByAssoc($fetch_result);
         if ($result && $result['modification_count'] > 0)
@@ -6314,7 +4380,7 @@ class HomeController extends SugarController
         $fetch_result = $GLOBALS['db']->query($query);
         $teamLeadList = '<option value="" selected disabled>Select</option>';
         while($row = $GLOBALS['db']->fetchByAssoc($fetch_result)){
-            $teamLeadList .= '<option value="'.$row['id'].'">'.$this->beautify_label( $row['first_name']. ' ' .$row['last_name'] ).'</option>';
+            $teamLeadList .= '<option value="'.$row['id'].'">'.beautify_label( $row['first_name']. ' ' .$row['last_name'] ).'</option>';
         }
         echo json_encode(
             array(
@@ -6324,6 +4390,2234 @@ class HomeController extends SugarController
         );
         die;
     }
+
+
+    /**
+     * Activity Functions////////////////////////////////////////////////////////////////////////////////
+     * 
+     * 
+     * 
+     * 
+     *-----------------------------------------------------------------------------------------------------------
+
+    */
+    
+    
+  //-----------------------------------------------Activity Reassignment----------------------------------------
+            
+public function is_activity_reassignment_applicable($activity_id) {
+   
+             global $current_user;
+            $log_in_user_id = $current_user->id;
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            $team_func_array = $team_func_array1 = $others_id_array = array();
+
+            $sql ="SELECT assigned_user_id FROM calls where id ='".$activity_id."' "; 
+            $result = $GLOBALS['db']->query($sql);
+            $row = $result->fetch_assoc();
+            $user_id = $row['assigned_user_id'];
+            
+             $sql_status ="SELECT * FROM calls_cstm where id_c='$activity_id' "; 
+            $result_status = $GLOBALS['db']->query($sql_status);
+            $row_status = $result_status->fetch_assoc();
+            $status= $row_status['status_new_c'];
+
+            $sql1 = "SELECT user_lineage from users_cstm where id_c = '".$user_id."' ";
+            $result1 = $GLOBALS['db']->query($sql1);
+             while($row1 = $GLOBALS['db']->fetchByAssoc($result1)) 
+            {
+              $lineage=$row1['user_lineage'];
+
+            }
+             $team_func_array=explode(',',$lineage);
+            
+            $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+            $result3 = $GLOBALS['db']->query($sql3);
+            while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
+            {
+                $check_sales = $row3['teamfunction_c'];
+                $check_mc = $row3['mc_c'];
+                $check_team_lead = $row3['teamheirarchy_c'];
+
+            }
+            
+              $sql_pending ='SELECT * FROM `activity_approval_table` WHERE `acc_id`="'.$activity_id.'" AND `approval_status`="0"';
+                 $result_pending = $GLOBALS['db']->query($sql_pending);
+                $pending_count=$result_pending->num_rows;
+            
+        if($pending_count<=0){
+            
+            if($status=="Upcoming"||$status=="Apply For Completed"){
+            
+            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) ){
+                return true;
+            }
+            else if($log_in_user_id==$user_id){
+                
+                $sql_reports_id = "SELECT * FROM users WHERE reports_to_id='".$log_in_user_id."'";
+                 $result_reports_id= $GLOBALS['db']->query($sql_reports_id);
+                $reports_count=$result_reports_id->num_rows;
+                
+                if($reports_count>0){
+                     return true;
+                }
+                else{
+                    return false;
+                }
+            
+            }
+            else {
+                return false;
+            }
+            
+            }
+            else{
+                return false;
+            }
+        }else{
+             return false;
+        }
+
+    
 }
 
+
+    
+    //-------------------------------------------------------------------------------------------------------------
+     
+    public function action_getActivity(){
+        try
+        {
+            $GLOBALS['db'];
+            global $current_user;
+            $db      = \DBManagerFactory::getInstance();
+            
+            $content = '';
+            $log_in_user_id = $current_user->id;
+            
+            $day        = $_GET['days'];
+            $searchTerm = isset($_GET['searchTerm']) ? $_GET['searchTerm'] : '';
+
+            $user_for_delegates             = '';
+            $self_count                     = 0;
+            $team_count                     = 0;
+            $lead_data                      = "";
+            $global_organization_count      = 0;
+            $non_global_organization_count  = 0;
+            $fetch_by_status_c              = '';
+
+            $user_team                      = userTeam($log_in_user_id);
+
+            $counts = $this->get_activity_history();
+            if( !empty($counts) ){
+                $self_count = $counts['self_count'];
+                $team_count = $counts['team'];
+                $total      = $counts['organisation'];
+            }
+
+            $fetch_by_status    = "";
+            $result             = array();
+
+            /* Activities main HTML */
+            ob_start();
+            include_once 'templates/partials/activities/main.php';
+            $content = ob_get_contents();
+            ob_end_clean();
+
+            $fetch_query = getActivityQuery(); // getActivity Query
+
+            //Pagination Query
+            $limit = 5;
+            $paginationQuery = $GLOBALS['db']->query($fetch_query);
+            $totalCount = mysqli_num_rows($paginationQuery);
+            $numberOfPages = ceil( $totalCount / $limit );
+            
+            $offset = $_GET['page'] ? ($_GET['page'] - 1)  * $limit : 0;
+
+            $fetch_query .= " LIMIT $offset, $limit";
+
+            $result = $GLOBALS['db']->query($fetch_query);
+            $response = $this->mysql_fetch_assoc_all($result); //get all result in an array
+
+            /* Activities repeater HTML (Table ROW) */
+            ob_start();
+            include_once 'templates/partials/activities/repeater.php';
+            $content .= ob_get_contents();
+            ob_end_clean();
+
+            $delegated_user_name = '';
+            $delegated_user_id = $this->get_delegated_user($log_in_user_id);
+            if ($delegated_user_id != null) {
+                $delegated_user = $this->get_user_details_by_id($delegated_user_id);
+                $delegated_user_name = $delegated_user['first_name'] . $delegated_user['last_name'];
+            }
+
+            /* Pagination HTML */
+            $page = $_GET['page'] ? $_GET['page'] : 1;
+            if ($totalCount > ( $page * $limit)){
+                $currentPost = ($page * $limit);
+            } else {
+                $currentPost = $totalCount;
+            }
+            $content .= '<div class="pagination text-right">';
+            $content .= '<p class="d-inline-block">Showing '.$currentPost.' of '.$totalCount.'</p>';
+
+            $type = array(
+                'method' => 'activity',
+                'status' => '',
+                'type' => ''
+            );
+
+            $content .= $this->activitypagination($page, $numberOfPages, $type, $day, $searchTerm, $_GET['filter']);
+            $content .= '</div>';
+            /* End Pagination HTML */
+            $columnFilterHtml   = $this->getActivityColumnFilters();
+            $filters            = $this->getActivityFilterHtml('activity', $_GET);
+
+            echo json_encode(array(
+                'data'                      => $content,
+                'total'                     => $total,
+                'self_count'                => $self_count,
+                'team_count'                => $team_count,
+                'delegate'                  => $this->checkDelegate(),
+                'delegateDetails'           => $this->getActivityDelegateDetails(),
+                'global_organization_count' => $global_organization_count,
+                'non_global_organization'   =>  $non_global_organization_count,
+                'fetched_by_status'         =>  $fetch_by_status,
+                'columnFilter'              => $columnFilterHtml,
+                'filters'                   => $filters,
+                'user_id'                   => $log_in_user_id,
+            
+            ));
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+    
+    function action_getPendingActivityList(){
+        try
+        {
+            $content = '';
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+
+            /*$columnAmount                   = isset( $_GET['Amount'] ) ? $_GET['Amount'] : '';
+            $columnREPEOI                   = isset( $_GET['REP-EOI-Published'] ) ? $_GET['REP-EOI-Published'] : '';
+            $columnClosedDate               = isset( $_GET['Closed-Date'] ) ? $_GET['Closed-Date'] : '';
+            $columnClosedBy                 = isset( $_GET['Closed-by'] ) ? $_GET['Closed-by'] : '';
+            $columnDateCreated              = isset( $_GET['Date-Created'] ) ? $_GET['Date-Created'] : '';
+            $columnDateClosed               = isset( $_GET['Date-Closed'] ) ? $_GET['Date-Closed'] : '';
+
+            $columnTaggedMembers            = isset( $_GET['Tagged-Members'] ) ? $_GET['Tagged-Members'] : '';
+            $columnViewedBy                 = isset( $_GET['Viewed-by'] ) ? $_GET['Viewed-by'] : '';
+            $columnPreviousResponsibility   = isset( $_GET['Previous-Responsbility'] ) ? $_GET['Previous-Responsbility'] : '';
+            $columnAttachment               = isset( $_GET['Attachment'] ) ? $_GET['Attachment'] : '';*/
+            
+            /*$maxQuery   = "SELECT row_count FROM approval_table 
+                    WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 
+                    AND ( ap.approver_rejector = '$log_in_user_id' OR ap.delegate_id = '$log_in_user_id' ) 
+                    AND ap.apply_for = '$status' 
+                    ORDER BY row_count 
+                    DESC LIMIT 1";
+            $result     = $GLOBALS['db']->query($maxQuery);
+            $rowCount   = $GLOBALS['db']->fetchByAssoc($result);
+
+            if($rowCount)
+                $rowCount = $rowCount['row_count'];*/
+
+            //Pagination Count
+            /*$limit = 5;
+            $paginationQuery = $GLOBALS['db']->query($fetch_query);
+            $totalCount = mysqli_num_rows($paginationQuery);
+            $numberOfPages = ceil( $totalCount / $limit );
+            
+            $offset = $_GET['page'] ? ($_GET['page'] - 1) * $limit : 0;
+
+            $fetch_query .= " LIMIT $offset, $limit";*/
+
+            ob_start();
+            include_once 'templates/partials/pending-activity-requests/main.php';
+            $content = ob_get_contents();
+            ob_end_clean();
+
+            $fetch_query    = getActivityQuery(); // getActivity Query
+            $result         = $GLOBALS['db']->query($fetch_query);
+            $response       = $this->mysql_fetch_assoc_all($result); //get all result in an array
+
+            /* Pending Activity repeater HTML (Table ROW) */
+            ob_start();
+            include_once 'templates/partials/pending-activity-requests/repeater.php';
+            $content .= ob_get_contents();
+            ob_end_clean();
+
+
+            //Pagination 
+            /*$page = $_GET['page'] ? $_GET['page'] : 1;
+            if ($totalCount > ( $page * $limit)){
+                $currentPost = ($page * $limit);
+            } else {
+                $currentPost = $totalCount;
+            }
+            $content .= '<div class="pagination text-right">';
+            $content .= '<p class="d-inline-block">Showing '.$currentPost.' of '.$totalCount.'</p>';
+
+            $type = array(
+                'method' => 'pending',
+                'status' => $status,
+                'type'   => '',
+            );
+            
+            $content .= $this->activitypagination($page, $numberOfPages, $type, '30', '', $_GET['filter']);
+            $content .= '</div>';*/
+
+            // echo $content;
+            $columnFilterHtml   = $this->getActivityColumnFilters('pendings');
+            $filters            = $this->getActivityFilterHtml('activity', $_GET);
+
+            echo json_encode(array(
+                'data'                      => $content,
+                'columnFilter'              => $columnFilterHtml,
+                'filters'                   => $filters
+            )); die;
+
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+    
+    public function action_get_activity_graph(){
+        $day = $_GET['dateBetween'];
+        $totalCount = 0;
+        $totalCount = $this->getActivityStatusCountGraph(null , $day);
+        // $leadCount = round($this->getActivityStatusCountGraph('Lead') / $totalCount * 100, 0);
+        if ($totalCount > 0) {
+            $UpcomingCount  = round($this->getActivityStatusCountGraph('Upcoming', $day) / $totalCount * 100, 0);
+            $DelayedCount   = round($this->getActivityStatusCountGraph('Overdue', $day) / $totalCount * 100, 0);
+            $CompletedCount = round($this->getActivityStatusCountGraph('Completed', $day) / $totalCount * 100, 0);
+        }
+        $UpcomingCount      = $UpcomingCount ?? 0;
+        $DelayedCount       = $DelayedCount ?? 0;
+        $CompletedCount     = $CompletedCount ?? 0;
+        
+        $data = '';
+    
+        if($UpcomingCount):
+            $data .= '<div style="width: '.$UpcomingCount.'%" class="graph-bar-each upcoming">
+                    <div style="width: 100%;height: 70px;background-color: #DDA0DD;"></div>
+                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$UpcomingCount.'%</p>
+                </div>';
+        endif;
+    
+        if($CompletedCount):
+            $data .= '<div style="width: '.$CompletedCount.'%" class="graph-bar-each completed">
+                    <div style="width: 100%;height: 70px;background-color: #4B0082;"></div>
+                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$CompletedCount.'%</p>
+                </div>';
+        endif;
+        
+        if($DelayedCount):
+            $data .= '<div style="width: '.$DelayedCount.'%" class="graph-bar-each delayed">
+                    <div style="width: 100%; height: 70px; background-color: #0000FF;"></div>
+                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$DelayedCount.'%</p>
+                </div>';
+        endif;
+
+        echo json_encode(array("data"=>$data, "message" => "Success"));
+        die;
+    }
+    
+    function getActivityStatusCountGraph($status = null, $day, $closure_status = null){
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+
+        $query = "SELECT count(*) as count FROM calls_cstm cc LEFT JOIN calls c ON c.id = cc.id_c WHERE c.deleted != 1 AND c.date_entered >= now() - interval '".$day."' day";
+        if($status)
+            $query .= " AND cc.status_new_c = '".$status."' ";
+
+        $count = $GLOBALS['db']->query($query);
+        $count = $GLOBALS['db']->fetchByAssoc($count);
+        return $count['count'];
+    }
+
+    public function action_activity_pending_count(){
+        try {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+    
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            $PRC = 0;
+
+            $query = "SELECT id FROM calls WHERE deleted != 1 AND date_entered >= now() - interval '1200' day";
+            $result = $GLOBALS['db']->query($query);
+            $response = $this->mysql_fetch_assoc_all($result); //get all result in an array
+            foreach($response as $r){
+                $id = $r['id'];
+                $query = "SELECT approval_status FROM activity_approval_table WHERE acc_id = '$id' AND ( approver = '$log_in_user_id' OR delegate_id = '$log_in_user_id' ) ORDER BY `id` DESC LIMIT 1";
+                $result = $GLOBALS['db']->query($query);
+                $count = $GLOBALS['db']->fetchByAssoc($result);
+                if($count && $count['approval_status'] == '0')
+                    $PRC += 1;
+            }
+
+            echo json_encode(
+                array(
+                    'data' => "$PRC <i class=\"fa fa-angle-double-down\" aria-hidden=\"true\"></i>",
+                    'count' => $PRC
+                )
+            );
+        }
+        catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+    
+    function activitypagination($page, $numberOfPages, $type, $day, $searchTerm, $filter){
+
+        $ends_count = 1;  //how many items at the ends (before and after [...])
+        $middle_count = 2;  //how many items before and after current page
+        $dots = false;
+
+        $data = '<ul class="d-inline-block">';
+        
+        if($page > 1)
+            $data .= '<li class="" onClick=activitypaginate("'.($page - 1).'","'.$type['method'].'","'.$day.'","'.$searchTerm.'","'.$filter.'","'.$type['status'].'","'.$type['type'].'")><strong>&laquo;</strong> Prev</li>';
+
+        for ($i = 1; $i <= $numberOfPages; $i++) {
+            $currentPage = $page ? $page : 1;
+            $class = $currentPage == $i ? 'active paginate-class' : 'paginate-class';
+
+            
+            $onClick = 'onClick=activitypaginate("'.$i.'","'.$type['method'].'","'.$day.'","'.$searchTerm.'","'.$filter.'","'.$type['status'].'","'.$type['type'].'")';
+
+            if ($i == $page) {
+                $data .= '<li class="'.$class.'" '.$onClick.'>'.$i.'</li>';
+                $dots = true;
+            } else {
+                if ($i <= $ends_count || ($page && $i >= $page - $middle_count && $i <= $page + $middle_count) || $i > $numberOfPages - $ends_count) { 
+                    $data .= '<li class="'.$class.'" '.$onClick.'>'.$i.'</li>';
+                    $dots = true;
+                } elseif ($dots){
+                    $data .= '<li class="paginate-class">&hellip;</li>';
+                    $dots = false;
+                }
+            }
+        }
+        if ($page < $numberOfPages || -1 == $numberOfPages) { 
+           $data .= '<li class="" onClick=activitypaginate("'.($page + 1).'","'.$type['method'].'","'.$day.'","'.$searchTerm.'","'.$filter.'","'.$type['status'].'","'.$type['type'].'")>Next <strong>&raquo;</strong></li>';
+        }
+            
+        $data .= '</ul>';
+        return $data;
+    }
+    
+    public function action_activity_reminder_dialog_info()
+    {
+        try {
+            $db = \DBManagerFactory::getInstance();
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $activity_id = $_GET['id'];
+            $fetch_activity_info = "SELECT * FROM calls
+            LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c WHERE id = '$activity_id'";
+            $fetch_activity_info_result = $GLOBALS['db']->query($fetch_activity_info);
+            $row = $GLOBALS['db']->fetchByAssoc($fetch_activity_info_result);
+            $assigned_user_id = $row['assigned_user_id'];
+            $user_full_name = getUsername($assigned_user_id);
+
+            $label_1 = "Frequency";
+            $label_2 = "Time";
+            
+            
+            $fetch_query = "SELECT frequency, time from activity_reminder where created_by = '$log_in_user_id' AND activity_id='$activity_id'";
+            $result = $GLOBALS['db']->query($fetch_query);
+            $data1 = $result->fetch_assoc();
+
+            $data = '
+                <h2 class="deselectheading">' . $row['name'] . '</h2><br>
+                <p class="deselectsubhead">Select a frequency and time for the reminder</p>
+                <hr class="deselectsolid">
+                <section class="deselectsection">
+                <table align="centered" width="100%">
+                    <thead>
+                    <tr class="tabname">
+                        <th>Last Update</th>
+                        <th>Activity Type</th>
+                        <th>Subject</th>
+                        <th>Assigned to</th>
+                        <th>End Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="tabvalue">
+                        <td>' . date_format(date_create($row['date_modified']), 'd/m/Y') . '</td>
+                        <td>' . ucfirst($row['type_of_interaction_c']) . '</td>
+                        <td>' . ucfirst($row['name']) . '</td>
+                        <td>' . ucwords($user_full_name). '</td>
+                        <td>'  . date_format(date_create($row['activity_date_c']), 'd/m/Y') . '</td>
+                        </tr>
+                        </tbody></table><br>';
+
+            if ($result){
+                if ($result->num_rows > 0 ){
+                $data .= '
+                    <label for="Deselect-Members">'.$label_1 .'</label><br>
+                    <select name="frequency" id="frequency" style="width:250px;
+                                                        padding: 0px;
+                                                        border-color: #dee0e3;
+                                                        background: white;
+                                                        position: absolute;
+                                                        height: 30px !important;
+                                                        ">
+                        <option value='.$data1['frequency'].' selected>'.$data1['frequency'].'</option>
+                        <option value="Daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="Monthly">Monthly</option>
+                    </select>
+                    <br>
+                    <div style="height: 20px;"></div>
+                    <label for="Deselect-Members">'.$label_2 .'</label><br>
+                    <input type= "time" name="time" id="time" style="width:250px;
+                                                        padding: 0px;
+                                                        border-color: #dee0e3;
+                                                        background: white;
+                                                        position: absolute;
+                                                        height: 30px !important;
+                                                        "
+                                                        value='.$data1['time'].'>
+                    </input>
+                ';
+            }
+            else{
+                    $data .= '
+                        <label for="Deselect-Members">'.$label_1 .'</label><br>
+                        <select name="frequency" id="frequency" style="width:250px;
+                                                            padding: 0px;
+                                                            border-color: #dee0e3;
+                                                            background: white;
+                                                            position: absolute;
+                                                            height: 30px !important;
+                                                            ">
+                        <option value="Daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="Monthly">Monthly</option>
+                        </select>
+                        <br>
+                        <div style="height: 20px;"></div>
+                        <label for="Deselect-Members">'.$label_2 .'</label><br>
+                        <input type= "time" name="time" id="time" style="width:250px;
+                                                            padding: 0px;
+                                                            border-color: #dee0e3;
+                                                            background: white;
+                                                            position: absolute;
+                                                            height: 30px !important;
+                                                            ">
+                        </input>
+                    ';
+                }
+
+            }
+
+
+
+          echo json_encode(array('activity_info'=>$data,'activity_id'=>$activity_id));
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+    public function action_deselect_members_from_global_opportunity(){
+        try {
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $opportunity_id = $_POST['tag_opporunity_id'];
+            $user_id_list = '';
+            if ($_POST['tag_opporunity']) {
+                $user_id_list = $_POST['tag_opporunity'];
+                $user_id_list = implode(',',$user_id_list);
+            }
+            $count_query = "SELECT * FROM tagged_user WHERE opp_id='$opportunity_id'";
+            $result = $GLOBALS['db']->query($count_query);
+            if ($result->num_rows > 0) {
+                $query = "UPDATE tagged_user SET user_id = '$user_id_list' WHERE opp_id='$opportunity_id'";
+                $result = $GLOBALS['db']->query($query);
+                echo json_encode(array("status" => true, "message" => "Tag Updated.", "Result"=>$result));
+            } else {
+                $query = "INSERT into tagged_user(opp_id,user_id) VALUES('$opportunity_id','$user_id_list')";
+                $result = $GLOBALS['db']->query($query);
+                echo json_encode(array("status" => true, "message" => "Tag UpdatInstereded.", "Result"=>$opportunity_id));
+            }
+            $sub_query = "UPDATE opportunities_cstm SET tagged_hiden_c = '$user_id_list' WHERE id_c='$opportunity_id'";
+            $GLOBALS['db']->query($sub_query);
+            echo json_encode(array("status" => true, "message" => "Tag Updated.", "Result"=>$result));
+        } catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+    /* Activity Filters & Columns */
+    function getActivityColumnFilters($type = null){
+        /* Default Columns */
+        if($type){
+            $columnFilterHtml = '<form class="activity-pending-settings-form sort-column">';
+            $columnFilterHtml .= '<input type="hidden" name="activity-settings-section" class="activity-pending-settings-section" value="" />
+            <input type="hidden" name="activity-settings-type" class="activity-pending-settings-type" value="" />
+            <input type="hidden" name="activity-settings-type-value" class="activity-pending-settings-type-value" value="" />';
+        }else{
+            $columnFilterHtml = '<form class="activity-settings-form sort-column">';
+            $columnFilterHtml .= '<input type="hidden" name="activity-settings-section" class="activity-settings-section" value="" />
+            <input type="hidden" name="activity-settings-type" class="activity-settings-type" value="" />
+            <input type="hidden" name="activity-settings-type-value" class="activity-settings-type-value" value="" />';
+        }
+        $columnFields = $this->ActivityColumns();
+        $i = 0;
+        foreach($columnFields['default'] as $key => $field){
+            $style = '';
+            if($i <= 1)
+                $style = 'class="nondrag" style="pointer-events:none; background: #eeeeef;"';
+
+            if($i == 2){
+                $columnFilterHtml .= '<ul id="sortable1" class="sortable1 connectedSortable">';
+            }
+
+            $columnFilterHtml .= 
+                '<li '.$style.'>
+                    <input class="settingInputs" type="checkbox" id="name-select" name="'.$key.'" value="'.$key.'" checked="True" style="display: none">
+                    <input class="settingInputs" type="checkbox" id="name-select" name="customActivityColumns[]" value="'.$key.'" checked="True" style="display: none">
+                    <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> '.$field.'</label>
+                </li>';
+            $i++;
+        }
+        $columnFilterHtml .= '</ul></form>';
+
+        /* Addon Columns */
+        $columnFilterHtml .= '<div class="divider"></div><ul id="sortable2" class="sortable2 sort-column connectedSortable" style="padding-right: 0; float: right;">';
+        foreach($columnFields['addons'] as $key => $field){
+            $columnFilterHtml .= 
+                '<li>
+                    <input class="settingInputs" type="checkbox" id="name-select" name="'.$key.'" value="'.$key.'" checked="True" style="display: none">
+                    <input class="settingInputs" type="checkbox" id="name-select" name="customActivityColumns[]" value="'.$key.'" checked="True" style="display: none">
+                    <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> '.$field.'</label>
+                </li>';
+        }
+        $columnFilterHtml .= '</ul>';
+
+        return $columnFilterHtml;
+    }
+
+    function ActivityColumns(){
+        $fields = array();
+
+        $default = array(
+            'name'                  => 'Activity Name',
+            'related_to'            => 'Related To',
+            'status'                => 'Status',
+            'activity_date_c'       => 'Activity Due Date',
+            'assigned_to_c'         => 'Assigned To',
+            'next_date_c'           => 'Next Follow-Up / Interaction Date',
+            'name_of_person_c'      => 'Name of Person Contacted'
+        );
+
+        $default2 = array(
+            'new_current_status_c'          => 'Comments',
+            // 'description'                   => 'Summary of Interaction',
+            // 'new_key_action_c'              => 'Key Actionable / Next Steps identified from the Interaction',
+            
+
+        );
+
+        $fields['default'] = $default;
+        $fields['addons'] = $default2;
+
+        return $fields;
+    }
+
+    function getActivityColumnFiltersHeader($columnFilter){
+
+        $data = '';
+        $customColumns = $_GET['customActivityColumns'];
+        if($customColumns):
+        foreach($customColumns as $key => $column){
+            $data .= $this->getActivityColumnHtml($column);
+        }
+        endif;
+
+        return $data;
+    }
+
+    function getActivityColumnHtml($column){
+        $data = '';
+        switch($column){
+            case 'name':
+                $data .= '<th class="table-header">Activity Name</th>';
+                break; 
+            case 'related_to':
+                $data .= '<th class="table-header">Related To</th>';
+                break;
+            case 'status':
+                $data .= '<th class="table-header">Status</th>';
+                break;
+            case 'activity_date_c':
+                $data .= '<th class="table-header">Activity Due Date</th>';
+                break;
+            // case 'date_modified':
+            //     $data .= '<th class="table-header">Last Modified</th>';
+            //     break;
+            case 'assigned_to_c':
+                $data .= '<th class="table-header">Assigned To</th>';
+                break;
+            case 'new_current_status_c':
+                $data .= '<th class="table-header">Comments</th>';
+                break;
+            case 'description':
+                $data .= '<th class="table-header">Summary of Interaction</th>';
+                break;
+            case 'new_key_action_c':
+                $data .= '<th class="table-header">Key Actionable / Next Steps identified from the Interaction</th>';
+                break;
+            case 'next_date_c':
+                $data .= '<th class="table-header">Next Follow-Up / Interaction Date</th>';
+                break;
+            case 'name_of_person_c':
+                $data .= '<th class="table-header">Name of Person Contacted</th>';
+                break;
+        }
+        return $data;
+    }
+
+    function getActivityColumnFiltersBody($columnFilter, $row){
+
+        $data = '';
+        $customColumns = @$_GET['customActivityColumns'];
+
+        if($customColumns):
+        foreach($customColumns as $column){
+            $data .= $this->getActivityColumnDataHtml($column, $row);
+        }
+        endif;
+
+        return $data;
+
+    }
+
+    function getActivityColumnDataHtml($column, $row){
+        $data = '';
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+
+        switch($column){
+            case 'name':
+                $data .= '<td class="table-data">';
+                    $data .= '<a href="index.php?module=Calls&action=DetailView&record='.$row['id'].'">';
+
+                    $tag_icon_query = 'SELECT * FROM calls_cstm where id_c = "' .$row['id'].'"';
+                    $result = $GLOBALS['db']->query($tag_icon_query);
+                    $tagged_user = $result->fetch_assoc();
+                    $tagged_user_array = explode(',',$tagged_user['tag_hidden_c']); 
+
+                    $data .= '<h2 class="activity-title">'. $row['name'];
+                    if (in_array($log_in_user_id,$tagged_user_array)){
+                        $data .= '   <i class="fa fa-tag" style="font-size: 12px; color:green"></i></h2></a>';
+                    }
+                    else {
+                        $data .= '</h2></a>';
+                    }
+                    $data .= '<span class="activity-type d-block">'. beautify_label($row['type_of_interaction_c']) .'</span></td>';
+
+                    break; 
+            case 'related_to':
+                $parent_type = '';
+                $data .= '<td class="table-data">';
+                $data .= '<h2 class="activity-related-name">'. getActivityRelatedTo($row['parent_type'], $row['parent_id']) .'</h2>';
+                if( strtolower($row['parent_type']) == 'calls'){
+                    $parent_type = 'Activity';
+                }
+                elseif( strtolower($row['parent_type']) == 'accounts'){
+                    $parent_type = 'Department';
+                }
+                else{
+                    $parent_type = $row['parent_type'];
+                }
+                $data .= '<span class="activity-related-type">'. $parent_type .'</span></td>';
+                break;
+            case 'status':
+                $data .= '<td class="table-data">'. $row['status_new_c'] .'</td>';
+                break;
+            case 'activity_date_c':
+                $data .= '<td class="table-data">'. date( 'd/m/Y', strtotime($row['activity_date_c']) ) .'</td>';
+                break;
+            // case 'date_modified':
+            //     $data .= '<td class="table-data">'. date( 'd/m/Y', strtotime($row['date_modified']) ) .'</td>';
+            //     break;
+            case 'assigned_to_c':
+                $data .= '<td class="table-data">'. $row['assigned_to_c'] .'</td>';
+                break;
+            case 'new_current_status_c':
+                $data .= '<td class="table-data">'. $row['new_current_status_c'] .'</td>';
+                break;
+            case 'description':
+                $data .= '<td class="table-data">'. $row['description'] .'</td>';
+                break;
+            case 'new_key_action_c':
+                $data .= '<td class="table-data">'. $row['new_key_action_c'] .'</td>';
+                break;
+            case 'next_date_c':
+                $data .= '<td class="table-data">'. date( 'd/m/Y', strtotime($row['next_date_c'] ) ) .'</td>';
+                break;
+            case 'name_of_person_c':
+                $data .= '<td class="table-data">'. $row['name_of_person_c'] .'</td>';
+                break;
+        }
+        return $data;
+    }
+
+    function getActivityFilterHtml($type, $columnFilter){
+
+        $query = getQuery('DISTINCT(type_of_interaction_c)', 'calls_cstm');
+        $interactions = $this->mysql_fetch_assoc_all($query);
+        /* default fields */
+        $html = '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Activity Name</span>
+                <input type="text" class="form-control filter-name" name="filter-name" />
+            </div>';
+
+        $html .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Type of Interaction</span>
+                <select class="" name="filter-type_of_interaction">
+                    <option value="">Select Type</option>';
+        foreach($interactions as $i){
+            $html .= '<option value="'.$i['type_of_interaction_c'].'">'.beautify_label($i['type_of_interaction_c']).'</option>';
+        }
+        $html .= '</select></div>';
+
+        /*$html .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Related to</span>
+                <select class="activity-filter" name="filter-related_to">
+                    <option value="">Select</option>
+                    <option value="Accounts">Accounts</option>
+                    <option value="Opportunities">Opportunities</option>
+                    <option value="Calls">Calls</option>
+                    <option value="Document">Document</option>
+                </select></div>';*/
+
+        $columns = $this->ActivityColumns();
+        foreach($columns['default'] as $key => $c){
+            if(isset($columnFilter[$key])){
+                $html .= $this->ActivityfilterFields($type, $columnFilter[$key]);
+            }
+        }
+
+        foreach($columns['addons'] as $key => $c){
+            if(isset($columnFilter[$key])){
+                $html .= $this->ActivityfilterFields($type, $columnFilter[$key]);
+            }
+        }
+        
+        return $html;
+    }
+
+    function ActivityfilterFields($type, $columnFilter){
+        $data = '';
+        switch($columnFilter){
+            case 'related_to':
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Related to</span>
+                    <select class="activity-filter-related-to" name="filter-related_to_new">
+                        <option value="">Select</option>
+                        <option value="Accounts">Accounts</option>
+                        <option value="Opportunities">Opportunities</option>
+                        <option value="Calls">Activity</option>
+                        <option value="Document">Document</option>
+                    </select></div>';
+                break;
+            case 'status':
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Status</span>
+                    <select class="" name="filter-status" id="">
+                        <option value="">Select</option>
+                        <option value="Upcoming">Upcoming</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Overdue">Overdue</option>
+                    </select>
+                    
+                </div>';
+                break;
+            
+            case 'activity_date_c':
+                $data = '<div class="form-group">
+                    <div class="date-filter">
+                        <label>Activity Date Range</label><br>
+                        From: <input class="filterdatebox" name="filter-activity_date_c_from" id="closed_date_from" width="300" />
+                        To: <input class="filterdatebox" name="filter-activity_date_c_to" id="closed_date_to" width="300" />
+                    </div>
+                </div>';
+                break;
+            
+            case 'date_modified':
+                $data = '<div class="form-group">
+                    <div class="date-filter">
+                        <label>Modified Date Range</label><br>
+                        From: <input class="filterdatebox" name="filter-date_modified_from" id="closed_date_from" width="300" />
+                        To: <input class="filterdatebox" name="filter-date_modified_to" id="closed_date_to" width="300" />
+                    </div>
+                </div>';
+                break;
+            
+            case 'assigned_to_c':
+                $users = $this->get_users_with_team_options();
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Assigned To</span>
+                    <select class="select2" name="filter-assigned_to_c[]" id="" multiple>
+                        '.$users.'
+                    </select>
+                </div>';
+                break;
+            
+            case 'new_current_status_c':
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Comments</span>
+                    <input class="form-control" name="filter-new_current_status_c" id="" />
+                </div>';
+                break;
+            
+            case 'description':
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Summary of Interaction</span>
+                    <input class="form-control" name="filter-description" id="" />
+                </div>';
+                break;
+
+            case 'new_key_action_c':
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Key Actionable / Next Steps identified from the Interaction</span>
+                    <input class="form-control" name="filter-new_key_action_c" id="" />
+                </div>';
+                break;
+            
+
+            case 'next_date_c':
+                $data = '<div class="form-group">
+                    <div class="date-filter">
+                        <label>Next Follow Up Date</label><br>
+                        From: <input class="filterdatebox" name="filter-next_date_c_from" id="closed_date_from" width="300" />
+                        To: <input class="filterdatebox" name="filter-next_date_c_to" id="closed_date_to" width="300" />
+                    </div>
+                </div>';
+                break;
+            case 'name_of_person_c':
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Name of Person Contacted </span>
+                    <input class="form-control" name="filter-name_of_person_c" id="" />
+                </div>';
+                break;
+            
+            default:
+                $data = '';
+                break;
+        }
+        return $data;
+    }
+
+    /* End Activity Filters & Columns */
+
+    /* Activity Approvals */
+    /* get activity details for approval */
+    function action_get_activity_approval_item(){
+        try
+        {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            
+            $id = $_POST['id'];
+            $event = $_POST['event'];
+
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            $fetch_query = "SELECT c.*, cs.* FROM calls c JOIN activity_approval_table ap ON ap.acc_id = c.id LEFT JOIN calls_cstm cs ON c.id = cs.id_c WHERE c.deleted != 1 AND c.date_entered >= now() - interval '1200' day AND ap.id = '$id'";
+            $result = $GLOBALS['db']->query($fetch_query);
+            while($row = $GLOBALS['db']->fetchByAssoc($result))
+            {
+                $temp = ($event == 'Approve') ? 'Approval' : 'Rejection';
+                $data = '
+                <input type="hidden" name="acc_id" value="'.$row['id'].'" />
+                <input type="hidden" name="event" value="'.$event.'" />
+                <input type="hidden" name="approval_id" value="'.$id.'" />
+                <h2 class="approvalheading">'.$row['name'].'</h2><br>
+                <p class="approvalsubhead">'. $temp .' of Activity
+                </p>
+                <section>
+                    <div style="padding: 10px 15px;">
+                        <table class="approvaltable" width="100%">
+                            <tr class="tapprovalable-header-row-popup">
+                                <th class="approvaltable-header-popup">Activity</th>
+                                <th class="approvaltable-header-popup">Related To</th>
+                                <th class="approvaltable-header-popup">Status</th>
+                                <th class="approvaltable-header-popup">Activity Date</th>
+                                <th class="approvaltable-header-popup">Last Updated</th>
+                            </tr>';
+
+                        $data .='
+                            <tr>
+                                <td class="approvaltable-data-popup">'.$row['name'].'<br><span class="activity-type d-block">'. beautify_label($row['type_of_interaction_c']) .'</span></td>
+                                <td class="approvaltable-data-popup">'.getActivityRelatedTo($row['parent_type'], $row['parent_id']).'<br><span class="activity-related-type">'. $row['parent_type'] .'</span></td>
+                                <td class="approvaltable-data-boolean-popup">'.$row['status_new_c'].'</td>
+                                <td class="approvaltable-data-popup">'.date( 'd/m/Y', strtotime($row['activity_date_c']) ).'</td>
+                                <td class="approvaltable-data-popup">'.date( 'd/m/Y', strtotime($row['date_modified']) ).'</td>
+                            </tr>';
+                    $data .= '
+                        </table> <!-- /.col-md-12 -->
+                    </div>
+                    <div style="padding: 30px 15px 0;">
+                        <label style="font-family: "Noto Sans JP", sans-serif; padding-left: 15px; font-size: 15px;" for="approvaltype-comment">Write a comment</label>
+                        <!-- <textarea class="approvaltextarea" placeholder="Type here" style="border-color: #C0C0C0; font-family: "Noto Sans JP", sans-serif; border-radius: 3px; margin-top: 3px;" id="approvaltype-comment" rows="3"></textarea> -->
+                    </div>
+        
+                    <textarea class="approvaltextarea" name="comment" placeholder="Type Subject here" style="border-color: #C0C0C0; font-family: \'Noto Sans JP\', sans-serif; border-radius: 3px; margin-top: 10px; width: 94%; height: 100px;" id="approvalSubject" rows="1"></textarea>
+                    <div style=" padding-top: 20px;padding-bottom: 20px;padding-left: 20px;">
+                        <button class="btn1" type="button" onClick=updateActivityStatus();>'.$event.'</button>
+                        <button type="button" style="margin-left: 10px;" class="btn2" id="approvalclose" onClick="openActivityApprovalDialog(\'close\');">Cancel</button>
+                    </div>
+                </section>';
+            }
+            echo $data;
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+    
+    /* approve / reject pending activities */
+    function action_activity_status_update(){
+        try
+        {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            
+            $id = $_POST['acc_id'];
+            $approval_id = $_POST['approval_id'];
+            $event = $_POST['event'];
+            $comment = $_POST['comment'];
+
+            if($event == 'Approve')
+                $ApprovalStatus = '1';
+            else
+                $ApprovalStatus = '2';
+            
+            date_default_timezone_set('Asia/Kolkata');
+            $date = date('Y-m-d');
+        
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            $data = $this->getDbData('activity_approval_table', '*', "id = '$id' ");
+            
+            $data = $data[0];
+            $acc_id = $data['acc_id'];
+            $acc_type = $data['acc_type'];
+            $status = $data['status'];
+            $sender = $data['sender'];
+            $sent_time = $data['sent_time'];
+            $approver = $data['approver'];
+            $delegateID = $data['delegate_id'];
+            
+            // $insertQuery = "INSERT INTO activity_approval_table (";
+            // $insertFields = " acc_id, acc_type, status, sender, sent_time, approval_status, approver, delegate_id, ";
+            // if($this->isActivityDelegate($log_in_user_id, $id))
+            //     $insertFields .= " delegate_comment, delegate_approve_reject_date )";
+            // else
+            //     $insertFields .= " approver_comment, approve_reject_date )";
+            
+            // $insertValues = " VALUES ( '$acc_id', '$acc_type', '$status', '$sender', '$sent_time', '$ApprovalStatus', '$approver', '$delegateID', '$comment', '$date' ) ";
+
+            // $finalQuery = $insertQuery . $insertFields . $insertValues ;
+
+            $updateQuery = "UPDATE activity_approval_table SET approval_status = '$ApprovalStatus' ";
+            if($this->isActivityDelegate($log_in_user_id, $id))
+                $updateQuery .= ", delegate_comment = '$comment' , delegate_approve_reject_date = '$date' ";
+            else
+                $updateQuery .= " , approver_comment = '$comment' , approve_reject_date= '$date' ";
+            $updateQuery .= " WHERE acc_id = '$id' ";
+
+            if($db->query($updateQuery)==TRUE){
+                if($ApprovalStatus == 1){
+                    $updateOpportunity = "UPDATE calls_cstm SET status_new_c = 'Completed' WHERE id_c = '$id'";
+                    $db->query($updateOpportunity);
+                    require_once 'data/BeanFactory.php';
+                    require_once 'include/utils.php';
+                    $u_id = create_guid();
+                    $created_date= date("Y-m-d H:i:s", time());
+            		$sql_insert_audit = 'INSERT INTO `calls_audit`(`id`, `parent_id`, `date_created`, `created_by`, `field_name`, `data_type`, `before_value_string`, `after_value_string`, `before_value_text`, `after_value_text`) VALUES ("'.$u_id.'","'.$id.'","'.$created_date.'","'.$log_in_user_id.'","status_new_c","varchar","Apply for Completed","Completed"," "," ")';
+            		$result_audit = $GLOBALS['db']->query($sql_insert_audit);
+                }
+                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "query" => $updateQuery, "update_opportunity"=>$updateOpportunity));
+            }else{
+                echo json_encode(array("status"=>false, "message" => "Some error occured"));
+            }
+            
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured", "query" => $updateQuery));
+        }
+        die();
+    }
+
+    /* kalpaj queries */
+    public function get_activity_history(){
+        try {
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $day = $_COOKIE['day'];
+
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+
+            $self_count = "SELECT count(*) as totalCount FROM calls 
+                LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c 
+                WHERE assigned_user_id = '$log_in_user_id' AND deleted != 1 AND date_entered >= now() - interval '".$day."' day";
+            $response['self_count'] = executeCountQuery($self_count);
+
+            $user_manager = get_user_manager();
+
+            $team_count = "SELECT count(*) as totalCount from calls LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c WHERE  deleted != 1 AND date_entered >= now() - interval '".$day."' day AND assigned_user_id IN (SELECT id_c FROM users_cstm WHERE user_lineage LIKE '%$user_manager%' OR id_c='$user_manager')";
+            $response['team'] = executeCountQuery($team_count);
+
+            $sql4 = "SELECT count(DISTINCT(id)) as totalCount FROM `calls` WHERE deleted != 1 AND date_entered >= now() - interval '$day' day ";
+            
+            $response['organisation'] = executeCountQuery($sql4);
+            
+            return $response;
+            //echo json_encode(array("status"=>true, "data" => json_encode($response),"message" => "Successful"));
+
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+        
+    }
+
+    // delegate functions 
+    public function action_activity_delegated_dialog_info(){
+        try {
+            $db = \DBManagerFactory::getInstance();
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $GLOBALS['db'];
+
+            $delegated_user_id = $this->get_activity_delegated_user($log_in_user_id);
+            
+            if ($delegated_user_id) {
+                $delegated_user = $this->get_user_details_by_id($delegated_user_id);
+            }
+            
+            if (!empty(@$delegated_user) && (@$delegated_user['first_name'] || @$delegated_user['last_name'])) {
+                $delegated_user_name = $delegated_user['first_name'] . $delegated_user['last_name'];
+            }
+            $data = $delegated_user_id;
+            if(@$delegated_user_name):
+                $data = ' <table class="delegatetable">
+                            <thead>
+                                <tr class="delegatetable-header-row-popup">
+                                    <th class="delegatetable-header-popup">Current Delegate</th>
+                                    <th class="delegatetable-header-popup">Action Completed</th>
+                                    <th class="delegatetable-header-popup">Permissions</th>
+                                    <th></th>
+                                </tr></thead>';
+                $data .= '
+                    <tbody>
+                    <tr>
+                    <td class="delegatetable-data-popup">'.$delegated_user_name.'</td>
+                    <td class="delegatetable-data-popup" style="color: #00f;">'.$this->activity_delegateActionCompleted($delegated_user_id).'</td>
+                    <td class="delegatetable-data-popup">Edit</td>
+                    <td>
+                        <button type="button" style="margin-left: 100px; margin-bottom: 10px; margin-top: 20px;" class="btn2 remove-activity-delegate">Remove</button>
+                    </td>
+                </tr>';
+                $data .= '</tbody></table>';
+            endif; 
+        
+        
+            echo json_encode(array('delegated_info' => $data, 'delegated_id' => $log_in_user_id));
+        } catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+    }
+    public function action_activity_store_delegate_result(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $GLOBALS['db'];
+            $proxy = $_POST['Select_Proxy'];
+
+            $save_delegate_query = "UPDATE calls_cstm as c2 
+                LEFT JOIN calls ON calls.id = c2.id_c
+                SET c2.delegate_id = '$proxy' , delegated_date = now()
+                WHERE calls.deleted != 1 AND c2.user_id_c = '$log_in_user_id'";
+            
+            $save_delegate_query_result = $GLOBALS['db']->query($save_delegate_query);
+
+            $approvalDelegateUpdate = "UPDATE activity_approval_table SET delegate_id = '$proxy' WHERE approver = '$log_in_user_id' AND approval_status = 1";
+            $approvalDelegateUpdateQuery = $GLOBALS['db']->query($approvalDelegateUpdate);
+
+            //$fetch_organization_count = $GLOBALS['db']->fetchByAssoc($save_delegate_query_result);
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+    }
+    public function action_activity_remove_delegate_user(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $GLOBALS['db'];
+            $save_delegate_query = "UPDATE calls_cstm as c2 
+                LEFT JOIN calls ON calls.id = c2.id_c
+                SET c2.delegate_id = '', delegated_date = NULL
+                WHERE calls.deleted != 1 AND c2.user_id_c = '$log_in_user_id' ";
+            
+            $save_delegate_query_result = $GLOBALS['db']->query($save_delegate_query);
+
+            $save_delegate_query = "UPDATE activity_approval_table  
+                SET delegate_id = ''
+                WHERE approver = '$log_in_user_id'";
+            
+            $save_delegate_query_result = $GLOBALS['db']->query($save_delegate_query);
+
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+    }
+    function activity_delegateActionCompleted($userID){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+        $query = "SELECT count(*) as count FROM activity_approval_table aap";
+        $query .= " JOIN calls c ON c.id = aap.acc_id";
+        $query .= " WHERE approval_status = '1' AND c.deleted != 1 AND aap.approver = '$log_in_user_id' AND aap.delegate_id = '$userID' ";
+
+        $result = $GLOBALS['db']->query($query);
+        $count = $GLOBALS['db']->fetchByAssoc($result);
+        return $count['count'];
+    }
+
+    public function get_activity_delegated_user($log_in_user_id) {
+        $fetch_query = "SELECT Count(*) as count, calls.assigned_user_id, calls_cstm.delegate_id as delegate FROM calls
+        LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c WHERE deleted != 1  AND calls_cstm.user_id_c = '$log_in_user_id' GROUP BY calls_cstm.delegate_id ORDER BY count DESC";
+        $fetch_delegated_user = $GLOBALS['db']->query($fetch_query);
+        $fetch_delegated_user_result = $GLOBALS['db']->fetchByAssoc($fetch_delegated_user);
+        
+        if(!empty($fetch_delegated_user_result))
+            $delegated_user = $fetch_delegated_user_result['delegate'];
+        else
+            $delegated_user = 0;
+        return $delegated_user;
+    }
+    public function action_set_activity_reminder(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            global $current_user;
+            $time = $_POST['time'];
+            $frequency = $_POST['frequency'];
+            $activity_id = $_POST['activityId'];
+
+
+            $log_in_user_id = $current_user->id;
+
+            $fetch_query = "SELECT parent_id, parent_type from calls where id='$activity_id'";
+            $result = $GLOBALS['db']->query($fetch_query);
+            // echo json_encode(array("result "=>$result , "activity_is"=>$activity_id));
+
+            $data = $result->fetch_assoc();
+            $related_id = $data['parent_id'];
+            $related_type = $data['parent_type'];
+
+            $fetch_query = "SELECT frequency, time from activity_reminder where created_by = '$log_in_user_id' AND activity_id='$activity_id'";
+            $result = $GLOBALS['db']->query($fetch_query);
+
+
+            echo json_encode(array("result "=>$result));
+
+            if($result){
+                if ($result->num_rows > 0 ){
+                    $query = "UPDATE activity_reminder SET  frequency='$frequency' , time='$time' WHERE created_by='$log_in_user_id' AND activity_id='$activity_id'";
+                    $save_reminder_query = $GLOBALS['db']->query($query);
+                    echo json_encode(array('message'=>"Value Updated.","status"=>true));
+
+                }
+                else {
+                    $query = "INSERT INTO activity_reminder(related_id, related_type,activity_id, frequency, time, created_by, created_at) 
+                    VALUES ( '$related_id','$related_type','$activity_id','$frequency','$time','$log_in_user_id',now())";
+                    $save_reminder_query = $GLOBALS['db']->query($query);
+                    echo json_encode(array('message'=>"Value Instered.","status"=>true));   
+                }
+            }
+
+
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+
+
+
+
+
+
+    }
+    public function action_set_activity_for_tag(){
+        try {
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $activity_id = $_POST['activity_id'];
+            $activity_id = $_POST['activity_tag_id'];
+            $user_id_list = '';
+            if ($_POST['userIdList']) {
+                $user_id_list = $_POST['userIdList'];
+            }
+            if ($_POST['tag_activity']) {
+                $user_id_list = $_POST['tag_activity'];
+                $user_id_list = implode(',',$user_id_list);
+            }
+            $count_query = "SELECT * FROM calls_cstm WHERE id_c='$activity_id'";
+            $result = $GLOBALS['db']->query($count_query);
+
+            $sub_query = "UPDATE calls_cstm SET tag_hidden_c = '$user_id_list' WHERE id_c='$activity_id'";
+            $GLOBALS['db']->query($sub_query);
+
+            echo json_encode(array("status"=> true, "message" => "Value Updated"));
+        } catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+
+    }
+
+    function isActivityDelegate($userID, $id){
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+
+        $delegateQuery = "SELECT count(*) as count FROM activity_approval_table WHERE delegate_id = '$userID' AND id = '$id'";
+        $count = $GLOBALS['db']->query($delegateQuery);
+        $count = $GLOBALS['db']->fetchByAssoc($count);
+        return $count['count'];
+    }
+
+    function getActivityDelegateDetails(){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        $query = "SELECT u.first_name, u.last_name, cs.user_id_c FROM calls c JOIN calls_cstm cs ON cs.id_c = c.id JOIN users u ON u.id = cs.user_id_c WHERE c.deleted != 1 AND c.date_entered >= now() - interval '1200' day AND cs.delegate_id = '$log_in_user_id' GROUP BY cs.user_id_c ";
+        $result = $GLOBALS['db']->query($query);
+        $delegateData = array();
+        while($row = $GLOBALS['db']->fetchByAssoc($result)){
+            $dData = array(
+                'name' => $row['first_name'].' '.$row['last_name'],
+                'count' => $this->getActivityDelegateCount($row['user_id_c'])
+            );
+            array_push($delegateData, $dData);
+        }
+        $output = '';
+        foreach($delegateData as $d){
+            $output .= $d['name'].' - '.$d['count'].'<br>';
+        }
+        return $output;
+    }
+    function getActivityDelegateCount($userID){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        $query = "SELECT count(*) as count FROM activity_approval_table ap";
+        $query .= " JOIN calls c ON c.id = ap.acc_id";
+        $query .= " WHERE ap.approval_status = '0' AND c.deleted != 1 AND c.date_entered >= now() - interval '1200' day AND ap.approver = '$userID' AND ap.delegate_id = '$log_in_user_id' ";
+        $result = $GLOBALS['db']->query($query);
+        $count = $GLOBALS['db']->fetchByAssoc($result);
+        return $count['count'];
+    }
+    
+    public function action_activity_tag_dialog_info()
+    {
+        try {
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $activity_id = $_GET['id'];
+            $fetch_activity_info = "SELECT * FROM calls
+                LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c WHERE id = '$activity_id'";
+            $fetch_activity_info_result = $GLOBALS['db']->query($fetch_activity_info);
+            $row = $GLOBALS['db']->fetchByAssoc($fetch_activity_info_result);
+            $assigned_user_id = $row['assigned_user_id'];
+            $user_full_name = getUsername($assigned_user_id);
+            $sub_head = 'Selected members will be able to view details or take action';
+            $change_font = "Select Member";
+
+
+            $data = '
+                <h2 class="deselectheading">' . $row['name'] . '</h2><br>
+                <p class="deselectsubhead">'.$sub_head.'</p>
+                <hr class="deselectsolid">
+                <section class="deselectsection">
+                <table align="centered" width="100%">
+                    <thead>
+                    <tr class="tabname">
+                        <th>Last Update</th>
+                        <th>Activity Type</th>
+                        <th>Subject</th>
+                        <th>Assigned to</th>
+                        <th>End Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="tabvalue">
+                        <td>' . date_format(date_create($row['date_modified']), 'd/m/Y') . '</td>
+                        <td>' . ucfirst($row['type_of_interaction_c']) . '</td>
+                        <td>' . ucfirst($row['name']) . '</td>
+                        <td>' . ucwords($user_full_name). '</td>
+                        <td>'  . date_format(date_create($row['activity_date_c']), 'd/m/Y') . '</td>
+                        </tr>';
+            $data .= '</tbody></table>';
+            $optionList = $this->activity_tag_dialog_dropdown_info($activity_id);
+          echo json_encode(array('activity_info'=>$data,'activity_id'=>$activity_id, 'optionList'=> $optionList));
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+    public function get_assigned_user_activity($activity_id) {
+        $fetch_activity_info = "SELECT * FROM calls
+        LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c WHERE id = '$activity_id'";
+        $fetch_activity_info_result = $GLOBALS['db']->query($fetch_activity_info);
+        $result = $GLOBALS['db']->fetchByAssoc($fetch_activity_info_result);
+    }
+    public function activity_tag_dialog_dropdown_info($activity_id) {
+        try {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $fetch_query = "SELECT * FROM users WHERE deleted = 0 AND `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC";
+            $result = $GLOBALS['db']->query($fetch_query);
+            $data = '<select class="select2" name="tag_activity[]" id="" multiple>';
+            $tagged_user_query = "SELECT * from calls_cstm where id_c = '$activity_id'";
+            $result1 = $GLOBALS['db']->query($tagged_user_query);
+            $tagged_user_row = $result1->fetch_assoc();
+            $tagged_user_array = explode(',', $tagged_user_row['tag_hidden_c']);
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    $full_name = $row['first_name'] . ' ' . $row['last_name'];
+                    if (in_array($row['id'],$tagged_user_array)){
+                        $data .= '<option value="'.$row['id'].'" selected>'.$full_name.'</option>';
+                    }
+                    else{
+                        $data .= '<option value="'.$row['id'].'" >'.$full_name.'</option>';
+                    }
+                }
+            }
+            $data .= "</select>";
+            return $data;
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+    
+ public function action_activity_new_assigned_list(){
+     try{
+         $db = \DBManagerFactory::getInstance();
+        	$GLOBALS['db'];
+        	  
+        	   global $current_user; 
+        	   
+            $activity_id = $_POST['acc_id'];
+        	   $combined=array();
+        	  $id_array1=array();
+        	  $id_array=array();
+        	  $name_array=array();
+        	  $func_array=array();
+        	 $func1_array=array();
+              $h_array=array();
+              $r_name=array();
+              $number=array();
+              $Approved_array=array();
+              $Rejected_array=array();
+              $pending_array=array();
+              $func2_array=array();
+              $h1_array=array();
+              $rr_name=array();
+              $n=1;
+    	  $log_in_user_id = $current_user->id;
+    	  
+    	$query = "SELECT name,assigned_user_id FROM calls where id = '$activity_id'";
+    	$result_query = $GLOBALS['db']->query($query);
+    	while($row = $GLOBALS['db']->fetchByAssoc($result_query)) {
+    	    $activity_name = $row['name'];
+    	    $assigned_user_id = $row['assigned_user_id'];
+    	}
+    	$query_assigned = "SELECT CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) as assigned_name FROM users where id = '$assigned_user_id'";
+    	$result_query_assigned = $GLOBALS['db']->query($query_assigned);
+    	while($row = $GLOBALS['db']->fetchByAssoc($result_query_assigned)) {
+    	    $assigned_user_name = $row['assigned_name'];
+    	}
+    	 	
+        $sql7="SELECT CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS name FROM users WHERE id='".$log_in_user_id."'";
+    	    $result7 = $GLOBALS['db']->query($sql7);
+        while($row7 = $GLOBALS['db']->fetchByAssoc($result7)) 
+        {
+    	       $mc_name=$row7['name'];  
+    	       
+        }
+        	
+         $sql = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+        $result = $GLOBALS['db']->query($sql);
+        while($row = $GLOBALS['db']->fetchByAssoc($result)) 
+        {
+            $check_sales = $row['teamfunction_c'];
+            $check_mc = $row['mc_c'];
+            $check_team_lead = $row['teamheirarchy_c'];
+            
+        }
+         
+         
+         //*********************************** Flow Starts here**************************  
+        if($check_mc=='yes'){
+           
+       
+      $sql1 = "SELECT users_cstm.teamfunction_c,users_cstm.teamheirarchy_c, users1.id,CONCAT(IFNULL(users1.first_name,''), ' ', IFNULL(users1.last_name,'')) AS name,CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS r_name , rpt_cstm.teamfunction_c as r_r_tf, rpt_cstm.teamheirarchy_c as r_r_th FROM users INNER JOIN users as users1 ON users.id=users1.reports_to_id INNER JOIN users_cstm as rpt_cstm ON rpt_cstm.id_c= users1.reports_to_id INNER JOIN users_cstm ON users_cstm.id_c=users1.id  WHERE  users1.deleted=0 ORDER BY `name` ASC";
+       
+      // $sql1="SELECT users_cstm.teamfunction_c,users_cstm.teamheirarchy_c, users1.id,CONCAT(IFNULL(users1.first_name,''), ' ', IFNULL(users1.last_name,'')) AS name,CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS r_name FROM users INNER JOIN users as users1 ON users.id=users1.reports_to_id INNER JOIN users_cstm ON users_cstm.id_c=users1.id WHERE users1.id IN ('".implode("','",$id_array1)."') AND users1.deleted=0 ORDER BY `name` ASC";
+        $result1 = $GLOBALS['db']->query($sql1);
+        while($row1 = $GLOBALS['db']->fetchByAssoc($result1)) 
+        {
+            array_push($number,$n);
+            array_push($func1_array,$row1['teamfunction_c']);
+           
+            array_push($name_array,$row1['name']);
+          array_push($h_array,$row1['teamheirarchy_c']);
+            array_push($r_name,$row1['r_name']);
+            array_push($func2_array,$row1['r_r_tf']);
+            array_push($h1_array,$row1['r_r_th']);
+            $n++;
+        }
+        
+        
+      
+      $combined = array_map(function($b,$c,$d,$e,$f,$g) { if ($f==""){$f='MC';}return  $b.' / '.$c.' / '.$d.' -> '.$e.' / '.$f.' / '.$g; }, $name_array,$func1_array, $h_array,$r_name,$func2_array,$h1_array);
+      
+      $mc_no=$n+1;
+      $mc_no=strval($mc_no); 
+     
+      $mc_details=$mc_name.' / ';
+      
+      array_push($combined,$mc_details);
+      
+                    
+      echo json_encode(array('1'=>$name_array,'2'=>$h_array,'3'=>$r_name,'a'=>$combined,'acc_name'=>$activity_name, 'present_assigned_user'=> $assigned_user_name,'id'=> $activity_id));
+      
+        }
+        
+        
+        
+else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||$check_team_lead=='team_member_l3'||$check_team_lead=='team_lead'){
+           
+         $sql4='SELECT * FROM users WHERE reports_to_id="'.$log_in_user_id.'" AND deleted=0' ;
+          $result4 = $GLOBALS['db']->query($sql4);
+          
+          if($result4->num_rows>0){
+               
+              while($row4 = $GLOBALS['db']->fetchByAssoc($result4)) 
+                {
+                
+                  $id_array1[]=$row4["id"];
+                }
+              
+            array_push($id_array1,$log_in_user_id);
+            
+            
+            
+              
+                  
+                  $sql1="SELECT users_cstm.teamfunction_c,users_cstm.teamheirarchy_c, users1.id,CONCAT(IFNULL(users1.first_name,''), ' ', IFNULL(users1.last_name,'')) AS name,CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS r_name FROM users INNER JOIN users as users1 ON users.id=users1.reports_to_id INNER JOIN users_cstm ON users_cstm.id_c=users1.id WHERE users1.id IN ('".implode("','",$id_array1)."') AND users1.deleted=0 ORDER BY `name` ASC";
+        $result1 = $GLOBALS['db']->query($sql1);
+        while($row1 = $GLOBALS['db']->fetchByAssoc($result1)) 
+        {
+            array_push($number,$n);
+            array_push($func1_array,$row1['teamfunction_c']);
+           
+            array_push($name_array,$row1['name']);
+          array_push($h_array,$row1['teamheirarchy_c']);
+            array_push($r_name,$row1['r_name']);
+            $n++;
+        }
+        
+
+
+
+
+      
+      $combined = array_map(function($b,$c,$d,$e) { return  $b.' / '.$c.' / '.$d.' -> '.$e; }, $name_array,$func1_array, $h_array,$r_name);
+      
+     
+             echo json_encode(array('1'=>$name_array,'2'=>$h_array,'3'=>$r_name,'a'=>$combined,
+             'acc_name'=>$activity_name, 'present_assigned_user'=> $assigned_user_name,'id'=> $activity_id));
+          }
+          
+          else{
+            
+              echo json_encode("block");
+          }
+          
+        }
+        
+        
+        
+   
+     }catch(Exception $e){
+    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    	}
+		die();
+}
+   
+ //---------------------------------Update Activity assigned id------------------------------------    
+
+    public function action_activity_update_assigned(){
+     try{
+         $db = \DBManagerFactory::getInstance();
+        	$GLOBALS['db'];
+        	  
+        	   global $current_user; 
+        	    $log_in_user_id = $current_user->id;
+        	    $assigned_name=$_POST['assigned_name'];  // fetch the name of assignee here
+        	   $activity_id=$_POST['opp_id'];  // fetch the activity id to update the table
+        	 //  $tagged_user_frontend=$_POST[''];// fetch tagged users id from frontend in comma separated string
+        	   
+        	   
+        	  
+        	   
+        	//    $tagged_user_frontend_array=explode(',',$tagged_user_frontend);
+        	   
+        	   
+        	   $tagged_users_array = array();
+        	   
+        	     $sql="SELECT * FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."'";
+        	    
+        	     $result = $GLOBALS['db']->query($sql);
+        	     
+        while($row = $GLOBALS['db']->fetchByAssoc($result)) 
+        {
+            
+           
+            
+            
+          $assigned_id=$row['id'];
+          $approver_id=$row['reports_to_id'];
+           
+           
+    
+            
+        }
+        
+        $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."' WHERE id='".$activity_id."'";//updating new assigned id
+        
+      if($db->query($update_activty_querry)==TRUE){
+           
+          $update_activty_cstm_querry="UPDATE `calls_cstm` SET user_id_c='".$approver_id."',assigned_to_c='".$assigned_name."' WHERE id_c= '".$activity_id."'";//updating new assignee approver id
+           
+            if($db->query($update_activty_cstm_querry)==TRUE){
+                
+                $sql_tagged_activity_users_database="SELECT `tag_hidden_c` FROM `calls_cstm` WHERE id_c = '".$activity_id."'"; //tagged users from database
+                
+                  $result_tagged_database = $GLOBALS['db']->query($sql_tagged_activity_users_database);
+        	     
+                 while($row_tagged_database = $GLOBALS['db']->fetchByAssoc($result_tagged_database)) 
+                     {
+            
+                              $tagged_user_database=$row_tagged_database['tag_hidden_c'];
+                              
+           
+                      }
+                      
+                      $tagged_user_database_array=explode(',',$tagged_user_database);
+                      
+                    //  $tagged_users_array=array_merge($tagged_user_database_array,$tagged_user_frontend_array);
+                 
+                        $tagged_user_database_array=array_unique( $tagged_user_database_array);
+                 
+                 	if(in_array($approver_id, $tagged_user_database_array)){
+	    
+	    			   if (($key = array_search($approver_id, $tagged_user_database_array)) !== false) {
+	    			       
+                         unset( $tagged_user_database_array[$key]);
+                        }
+	    			}
+	    			
+	    				if(in_array($assigned_id, $tagged_user_database_array)){
+	    
+	    			   if (($key = array_search($assigned_id, $tagged_user_database_array)) !== false) {
+	    			       
+                         unset( $tagged_user_database_array[$key]);
+                        }
+	    			}
+	    			
+	    	        $tagged_users_array=implode(',', $tagged_user_database_array);
+	    	        
+	    	         $update_activty_cstm_tagged_querry="UPDATE `calls_cstm` SET tag_hidden_c='".$tagged_users_array."' WHERE id_c= '".$activity_id."'"; //updating tag users  id
+           
+	    		     //   $db->query($update_activty_cstm_tagged_querry);
+	    		        
+	    		          if($db->query($update_activty_cstm_tagged_querry)==TRUE){
+	    		              
+	    		             echo json_encode(array('message'=>true));
+	    		             
+	    		          }
+                 
+                
+            }
+           
+      }
+        
+     }catch(Exception $e){
+    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    	}
+		die();
+}
+
+
+ //---------------------------------Update Activity assigned id---END---------------------------------   
+ //----------------Activity Assigned history-------------------------------
+   public function action_activity_assigned_history(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+                $GLOBALS['db'];
+                
+                global $current_user; 
+                    $log_in_user_id = $current_user->id;
+                    $assigned_name=$_POST['assigned_name'];
+                    $activity_id=$_POST['opp_id'];
+                    
+              
+                    $sql="SELECT id,reports_to_id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
+                    
+                    $result = $GLOBALS['db']->query($sql);
+                    
+            while($row = $GLOBALS['db']->fetchByAssoc($result)) 
+            {
+                
+                
+            $assigned_id=$row['id'];
+            
+            $reports_to_id = $row['reports_to_id'];
+        
+                
+            }
+            
+        
+            
+            
+            $assigned_to_new= $assigned_id;
+            $approvers_new = $reports_to_id;
+            
+            
+            $sql41='SELECT calls_cstm.status_new_c,calls_cstm.activity_type_c,calls.assigned_user_id  FROM calls_cstm INNER JOIN calls ON calls.id=calls_cstm.id_c WHERE calls_cstm.id_c="'.$activity_id.'"';	    
+            $result41 = $GLOBALS['db']->query($sql41);
+            while($row41 = $GLOBALS['db']->fetchByAssoc($result41)) 
+            { 
+               $activity_status=$row41['status_new_c'];
+               $activity_type=$row41['activity_type_c'];
+               $assigned_id=$row41['assigned_user_id'];
+           
+            }
+           
+        
+            $sql51 ='SELECT id, acc_id, assigned_by, assigned_to_id FROM activity_assign_flow  WHERE acc_id="'.$activity_id.'" AND assigned_to_id="'.$assigned_id.'" AND id=(SELECT MAX(id) FROM activity_assign_flow WHERE acc_id="'.$activity_id.'")';
+                $result51 = $GLOBALS['db']->query($sql51);
+                
+                $count=$result51->num_rows;
+              // echo $count;
+                if($count>0){
+                    
+                }
+                else{ 
+                    
+                    $sql25='INSERT INTO `activity_assign_flow`(`acc_id`, `assigned_by`, `assigned_to_id`, `approver_ids`,`status`,acc_type) VALUES ("'.$activity_id.'","'.$log_in_user_id.'","'.$assigned_to_new.'","'.$approvers_new.'","'.$activity_status.'","'.$activity_type.'")';
+                    //$result25 = $GLOBALS['db']->query($sql25);
+                    if($db->query($sql25)==TRUE){
+                        
+                                        echo json_encode(array("status"=>true, "message" => "Success"));
+                    }
+                }
+                        
+            
+            
+            
+            
+            
+            
+            
+            
+        }catch(Exception $e){
+                echo json_encode(array("status"=>false, "message" => "Some error occured"));
+            }
+            die();
+    }
+//----------------Activity Assigned history-------------END------------------
+    
+//-----------------------activity delegate------------------------------
+
+// public function action_activity_store_delegate_result(){
+//         try{
+//             $db = \DBManagerFactory::getInstance();
+//             global $current_user;
+//             $log_in_user_id = $current_user->id;
+//             $GLOBALS['db'];
+//             $proxy = $_POST['Select_Proxy'];
+//             // $permission_to_edit = $_POST['delegate_Edit'];
+//             $save_delegate_query = "UPDATE calls_cstm as o2 
+//                 LEFT JOIN calls ON calls.id = o2.id_c
+//                 SET o2.delegate_id = '$proxy',o2.delegated_date = CURRENT_DATE
+//                 WHERE calls.deleted != 1 AND o2.user_id_c = '$log_in_user_id'";
+            
+//             $save_delegate_query_result = $GLOBALS['db']->query($save_delegate_query);
+
+//             $approvalDelegateUpdate = "UPDATE activity_approval_table SET delegate_id = '$proxy' WHERE approver = '$log_in_user_id' AND approval_status = 0";
+//             $approvalDelegateUpdateQuery = $GLOBALS['db']->query($approvalDelegateUpdate);
+
+//             //$fetch_organization_count = $GLOBALS['db']->fetchByAssoc($save_delegate_query_result);
+//         }catch(Exception $e){
+//             echo json_encode(array("status"=>false, "message" => "Some error occured"));
+//         }
+
+//     }
+    
+//     public function action_remove_activity_delegate_user(){
+//         try{
+//             $db = \DBManagerFactory::getInstance();
+//             global $current_user;
+//             $log_in_user_id = $current_user->id;
+//             $GLOBALS['db'];
+//             $save_delegate_query = "UPDATE calls_cstm as o2 
+//                 LEFT JOIN calls ON calls.id = o2.id_c
+//                 SET o2.delegate_id = ''
+//                 WHERE calls.deleted != 1 AND o2.user_id_c = '$log_in_user_id'";
+            
+//             $save_delegate_query_result = $GLOBALS['db']->query($save_delegate_query);
+
+//             $save_delegate_query = "UPDATE activity_approval_table  
+//                 SET delegate_id = ''
+//                 WHERE approver = '$log_in_user_id'";
+            
+//             $save_delegate_query_result = $GLOBALS['db']->query($save_delegate_query);
+
+//         }catch(Exception $e){
+//             echo json_encode(array("status"=>false, "message" => "Some error occured"));
+//         }
+//     }
+/**
+ * Sequence Flow
+ */
+    /* Get Seqeunce Flow */
+    public function action_getActivityStatusTimeline(){
+        try{
+            $accID = $_POST['accID']; 
+            $data = '<span class="close-sequence-flow-activity">×</span><div class="wrap padding-tb black-color">';
+  
+            $query = "SELECT name,created_by,assigned_user_id,date_entered FROM calls WHERE id = '$accID'";
+            $result = $GLOBALS['db']->query($query);
+            $result = $GLOBALS['db']->fetchByAssoc($result);
+            $created_by = $result['created_by'];
+  
+            $updatedDate = date('d/m/Y', strtotime($result['date_entered']));
+  
+            $data .= '<div class="d-block padding">
+                    <h2 class="">'.$result['name'].'</h2>
+                    <h3 class="gray-color">Approval/Rejection Audit Trail</h3>
+                </div>
+                <hr>';
+
+            /* Approval Query */
+            $approvalQuery = 
+                "SELECT 
+                    'approval' as type, '' as apply_for, ap.acc_id, u.first_name, u.last_name, ap.acc_id, ap.approval_status, ap.updated_at as date_time, UNIX_TIMESTAMP(ap.updated_at) as timestamp
+                FROM 
+                    activity_approval_table ap
+                JOIN
+                    users u ON u.id = ap.delegate_id OR u.id = approver
+                WHERE 
+                    ap.acc_id ='$accID'
+                ORDER BY ap.updated_at ASC
+            ";
+            $result = $GLOBALS['db']->query($approvalQuery);
+            $ApprovalData = $this->mysql_fetch_assoc_all($result);
+
+            /* Call Audits */
+            $auditQuery = 
+                "SELECT 
+                    'audit' as type, u.first_name, ca.parent_id as acc_id, u.last_name, ca.field_name, ca.before_value_string, ca.after_value_string as apply_for, ca.date_created as date_time, UNIX_TIMESTAMP(ca.date_created) as timestamp
+                FROM 
+                    calls_audit ca
+                JOIN 
+                    calls c ON c.id = ca.parent_id
+                JOIN
+                    users u ON u.id = c.assigned_user_id
+                WHERE 
+                    ca.parent_id ='$accID' AND ca.field_name = 'status_new_c' AND ca.after_value_string != 'Completed'
+                ORDER BY ca.date_created ASC
+            ";
+            $result = $GLOBALS['db']->query($auditQuery);
+            $auditData = $this->mysql_fetch_assoc_all($result);
+
+            $sequenceArray = array_merge($ApprovalData, $auditData);
+
+            /* assign flow */
+            $assignFlowQuery = 
+                "SELECT 
+                    'reassignment' as type, 'Reassignment' as apply_for, ra.acc_id, u.first_name, u.last_name, ra.assigned_by, ra.assigned_to_id, ra.date_time, UNIX_TIMESTAMP(ra.date_time) as timestamp
+                FROM 
+                    activity_assign_flow ra
+                JOIN
+                    users u ON u.id = ra.assigned_to_id
+                WHERE 
+                    ra.acc_id ='$accID' and (NOT (assigned_to_id ='$created_by' and assigned_by ='$created_by'))
+                ORDER BY ra.date_time ASC
+            ";
+            $result = $GLOBALS['db']->query($assignFlowQuery);
+            $assignFlowData = $this->mysql_fetch_assoc_all($result);
+
+            $sequenceArray = array_merge($sequenceArray, $assignFlowData);
+            
+            $sortArray = usort($sequenceArray, function($a, $b) {
+                return $a['timestamp'] <=> $b['timestamp'];
+            });
+            //print_r( $sequenceArray );
+            //die;
+  
+            /*$query1 = "select u.first_name, u.last_name, ap.acc_id, ap.updated_at, ap.datetime, ap.apply_for,ap.assigned_by, ap.Approved, ap.Rejected, ap.pending, ap.assign from 
+            ( (select acc_id , assigned_to_id, date_time as updated_at, 'Reassignment' as apply_for, assigned_by, 0 as Approved, 0 as Rejected, 0 as pending, 1 as assign from activity_assign_flow where acc_id ='$accID'
+            and (NOT (assigned_to_id ='$created_by' and status='Lead' and assigned_by ='$created_by')))
+            union (select acc_id , approver as assigned_to_id,updated_at as updated_at, '' as apply_for, '' as assigned_by,0 as Approved,0 as Rejected,0 as pending, 0 as assign from activity_approval_table where acc_id ='$accID') ) ap 
+            JOIN users u ON u.id = ap.assigned_to_id order by updated_at DESC LIMIT 1";
+            $result = $GLOBALS['db']->query($query1);
+            $result = $GLOBALS['db']->fetchByAssoc($result);
+  
+            $data .= '<div class="approved">';
+  
+  
+            $query = "
+            select u.first_name, u.last_name, ac.acc_id, ac.date_time, ac.apply_for,ac.assigned_by, ac.pending, ac.Approved, ac.Rejected, ac.assign 
+  
+            from 
+  
+            ((select acc_id , assigned_to_id, date_time, 'Reassignment' as apply_for, assigned_by,  0 as pending, 0 as Approved, 0 as Rejected, 1 as assign
+            from activity_assign_flow 
+            where acc_id ='$accID' and (NOT (assigned_to_id ='$created_by' and status='Lead' and assigned_by ='$created_by')))
+  
+            union
+  
+            (select acc_id , approver as assigned_to_id,updated_at as date_time, '' as apply_for, '' as assigned_by, if(approval_status = 0,1,0) as pending, if(approval_status = 1,1,0) as approved, if(approval_status = 2,1,0) as rejected, 1 as assign
+            from 
+            activity_approval_table where acc_id ='$accID')) as ac
+            JOIN 
+            users u ON u.id = ac.assigned_to_id ";
+            $recentUpdate = $query;
+            $recentUpdate .= " order by date_time DESC LIMIT 1";
+  
+            $result = $GLOBALS['db']->query($recentUpdate);
+            $result = $GLOBALS['db']->fetchByAssoc($result);
+            if($result):
+  
+                $full_name = $result['first_name'].' '.$result['last_name'];
+                $class = '';
+  
+                if($result['Approved'] == 1){
+                    $class = 'status-badge-green-b';
+                    $lineClass = 'green';
+                }else if($result['Rejected'] == 1){
+                    $class = 'status-badge-red-b';
+                    $lineClass = 'red';
+                } else if($result['pending'] == 1) {
+                    $class = 'status-badge-yellow-b';
+                    $result = 'yellow';
+                } else if ($result['assign'] == 1) {
+                    $class = 'status-badge-blue-b';
+                    $lineClass = 'blue';
+                    $assigned_by = $this->getUserName($result['assigned_by']);
+                    $full_name = $assigned_by. ' <i class="fa fa-arrow-right"></i> ' . $full_name;
+                }
+                $dateExtracted = substr($result['date_time'],0,10);
+                $updateDate = date('d/m/Y', strtotime($dateExtracted));
+  
+                $dateExtracted = substr($result['date_time'],0,10);
+                $updateDate = date('d/m/Y', strtotime($dateExtracted));*/
+            if(!empty($sequenceArray)):
+                $recentUpdate = end( $sequenceArray );
+                $full_name = $recentUpdate['first_name'].' '.$recentUpdate['last_name'];
+                $class = '';
+  
+                if( $recentUpdate['type'] == 'approval' && $recentUpdate['approval_status'] == 1 ){
+                    $class = 'status-badge-green-b';
+                    $lineClass = 'green';
+                }else if( $recentUpdate['type'] == 'approval' && $recentUpdate['approval_status'] == 2 ){
+                    $class = 'status-badge-red-b';
+                    $lineClass = 'red';
+                } else if( $recentUpdate['type'] == 'approval' && $recentUpdate['approval_status'] == 0 ) {
+                    $class = 'status-badge-yellow-b';
+                    $result = 'yellow';
+                } else if ($recentUpdate['type'] == 'reassignment') {
+                    $class = 'status-badge-blue-b';
+                    $lineClass = 'blue';
+                    $assigned_by = $this->getUserName($recentUpdate['assigned_by']);
+                    $full_name = $assigned_by. ' <i class="fa fa-arrow-right"></i> ' . $full_name;
+                }else if ($recentUpdate['type'] == 'audit' && $recentUpdate['apply_for'] == 'Upcoming'){
+                    $class = 'status-badge-orange-b';
+                    $lineClass = 'orange';
+                }else{
+                    $class = 'status-badge-gray-b';
+                    $lineClass = 'gray';
+                }
+                $dateExtracted = substr($recentUpdate['date_time'],0,10);
+                $updateDate = date('d/m/Y', strtotime($dateExtracted));
+  
+                $dateExtracted = substr($recentUpdate['date_time'],0,10);
+                $updateDate = date('d/m/Y', strtotime($dateExtracted));
+                $data .= '<div class="row padding">
+                        <div class="d-inline-block w-50 py-2">
+                            <h4 class="">Recent Update</h4>
+                            <!--<h5 class="'.$class.'">'.$this->getStatusCharActivity($recentUpdate['apply_for'],$recentUpdate['acc_id']).'</h5>-->
+                            <h5>'.$recentUpdate['first_name'].' '.$recentUpdate['last_name'].'<span class="status-badge '.$class.'">'.$this->getStatusCharActivity($recentUpdate['apply_for'],$recentUpdate['acc_id']).'</span></h5> 
+                        </div>
+                        <div class="d-inline-block w-50 align-self-end text-right">
+                            <h5 class="gray-color">'.$updateDate.'</h5>
+                        </div>
+                    </div>
+                    <hr>';
+            endif;
+  
+            $user = $this->get_user_details_by_id($created_by);
+            $first_name = $user['first_name'];
+            $last_name = $user['last_name'];
+            $full_name = "$first_name $last_name";
+            $data .= '<div class="approved">';
+            $data .= '<!-- For Lead stage -->
+                    <div class="row half-padding-tb">
+                        <div class="d-inline-block w-50">                            
+                            <h5><span class="status-badge-green-b">C</span>
+                            <span class="line-bottom green"></span> 
+                            <span style="font-size: 12px;margin:0">'.$full_name.'</span></h5> 
+                        </div>
+                        <div class="d-inline-block w-50 align-self-end text-right">
+                            <h5 class="gray-color">'.$updatedDate.'</h5>
+                        </div>
+                    </div>';
+            
+            /*$query .= " order by date_time ASC ";
+            $result = $GLOBALS['db']->query($query);
+            while($row = $GLOBALS['db']->fetchByAssoc($result)){
+                $full_name = $row['first_name'].' '.$row['last_name'];
+                $class = '';
+  
+                if($row['Approved'] == 1){
+                    $class = 'status-badge-green-b';
+                    $lineClass = 'green';
+                }else if($row['Rejected'] == 1){
+                    $class = 'status-badge-red-b';
+                    $lineClass = 'red';
+                } else if($row['pending'] == 1) {
+                    $class = 'status-badge-yellow-b';
+                    $lineClass = 'yellow';
+                } else if ($row['assign'] == 1) {
+                    $class = 'status-badge-blue-b';
+                    $lineClass = 'blue';
+                    $assigned_by = $this->getUserName($row['assigned_by']);
+                    $full_name = $assigned_by. ' <i class="fa fa-arrow-right"></i> ' . $full_name;
+                }
+                $dateExtracted = substr($row['date_time'],0,10);
+                $updateDate = date('d/m/Y', strtotime($dateExtracted));
+  
+                $data .= '<!-- single -->
+                    <div class="row half-padding-tb">
+                        <div class="d-inline-block" style="width:75%">
+                            <!--<h5><span class="status-badge-green-b">'.$this->getStatusCharActivity($row['apply_for'],$row['acc_id']).'</span> 
+                            <span class="line-bottom"></span> '.$this->getApproverNames($row['acc_id'], $row['apply_for'], 0).'</h5> -->
+  
+                            <h5><span class="'.$class.'">'.$this->getStatusCharActivity($row['apply_for'],$row['acc_id']).'</span> 
+                            <span class="line-bottom '.$lineClass.'"></span> 
+                            <span style="font-size: 12px;margin:0">'.$full_name.'</span></h5> 
+                        </div>
+                        <div class="d-inline-block align-self-end text-right" style="width:25%">
+                            <h5 class="gray-color">'.$updateDate.'</h5>
+                        </div>
+                    </div>';
+            }
+            $data .= '</div>';*/
+
+            foreach( $sequenceArray as $row ){
+                $full_name = $row['first_name'].' '.$row['last_name'];
+                $class = '';
+                $lineClass = '';
+                if( $row['type'] == 'approval' && $row['approval_status'] == 1 ){
+                    
+                    $class = 'status-badge-green-b';
+                    $lineClass = 'green';
+
+                }else if( $row['type'] == 'approval' && $row['approval_status'] == 2 ){
+                    
+                    $class = 'status-badge-red-b';
+                    $lineClass = 'red';
+
+                } else if($row['type'] == 'approval' && $row['approval_status'] == 0 ) {
+                    
+                    $class = 'status-badge-yellow-b';
+                    $lineClass = 'yellow';
+
+                } else if ($row['type'] == 'reassignment' && $row['type'] == 'reassignment' ) {
+                    
+                    $class = 'status-badge-blue-b';
+                    $lineClass = 'blue';
+                    $assigned_by = $this->getUserName($row['assigned_by']);
+                    $full_name = $assigned_by. ' <i class="fa fa-arrow-right"></i> ' . $full_name;
+
+                }else if ($row['type'] == 'audit' && $row['apply_for'] == 'Upcoming'){
+                    
+                    $class = 'status-badge-orange-b';
+                    $lineClass = 'orange';
+
+                }else{
+                    
+                    $class = 'status-badge-gray-b';
+                    $lineClass = 'gray';
+
+                }
+                $dateExtracted = substr($row['date_time'],0,10);
+                $updateDate = date('d/m/Y', strtotime($dateExtracted));
+  
+                $data .= '<!-- single -->
+                    <div class="row half-padding-tb">
+                        <div class="d-inline-block" style="width:75%">
+                            <!--<h5><span class="status-badge-green-b">'.$this->getStatusCharActivity($row['apply_for'],$row['acc_id']).'</span> 
+                            <span class="line-bottom"></span> '.$this->getApproverNames($row['acc_id'], $row['apply_for'], 0).'</h5> -->
+  
+                            <h5><span class="'.$class.'">'.$this->getStatusCharActivity($row['apply_for'],$row['acc_id']).'</span> 
+                            <span class="line-bottom '.$lineClass.'"></span> 
+                            <span style="font-size: 12px;margin:0">'.$full_name.'</span></h5> 
+                        </div>
+                        <div class="d-inline-block align-self-end text-right" style="width:25%">
+                            <h5 class="gray-color">'.$updateDate.'</h5>
+                        </div>
+                    </div>';
+            }
+            $data .= '</div>';
+  
+            $data .= '</div>';
+            echo json_encode(array('data' => $data, 'array' => $sequenceArray));
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+    
+    function checkRecentActivityForActivity($accID){
+        $query = "SELECT u.first_name, u.last_name, ap.updated_at, ap.approval_status FROM activity_approval_table ap JOIN users u ON u.id = ap.approver WHERE ap.acc_id = '$accID' AND ap.approval_status > 0 ORDER BY ap.id DESC LIMIT 1";
+        $recentActivity = $GLOBALS['db']->query($query);
+        $count = mysqli_num_rows($recentActivity);
+        return $count;
+    }
+    function getStatusCharActivity($status, $oppID = null){
+        switch ($status){
+            case 'Reassignment':
+                $statusChar = 'R';
+                break;
+            case 'Upcoming':
+                $statusChar = 'U';
+                break;
+            case 'Overdue':
+                $statusChar = 'OD';
+                break;    
+            default:
+                $statusChar = 'AC';
+                break;
+        }
+        return $statusChar;
+    }
+    
+     public function is_activity_tagging_applicable($activity_id) {
+        try {
+
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            $team_func_array = $team_func_array1 = $others_id_array = array();
+
+            $sql ="SELECT assigned_user_id FROM calls where id ='$activity_id' "; 
+            $result = $GLOBALS['db']->query($sql);
+            $row = $result->fetch_assoc();
+            $user_id = $row['assigned_user_id'];
+
+            $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
+            $result1 = $GLOBALS['db']->query($sql1);
+            $row = $result1->fetch_assoc();
+            if (strpos($row['user_lineage'], ',') !== false) {
+                $team_func_array = explode(',',  $row['user_lineage']);
+            }
+            $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+            $result3 = $GLOBALS['db']->query($sql3);
+            while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
+            {
+                $check_sales = $row3['teamfunction_c'];
+                $check_mc = $row3['mc_c'];
+                $check_team_lead = $row3['teamheirarchy_c'];
+
+            }
+
+            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) ){
+                return true;
+            }
+            else {
+                return false;
+            }
+
+
+        }catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+
+    public function is_activity_reminder_applicable($activity_id){
+        try{
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            $sql ="SELECT * FROM calls  where assigned_user_id= '$log_in_user_id' AND id='$activity_id'";
+            $result = $GLOBALS['db']->query($sql);
+            if ($result){
+                if ($result->num_rows > 0){
+                    return True;
+                }
+                else {
+                    return false;
+                }
+            }
+        }catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+    }
+    
+    
+
+}
 ?>

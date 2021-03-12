@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-02-19 11:38:41
+<?php /* Smarty version 2.6.31, created on 2021-03-12 18:27:29
          compiled from modules/Calls/tpls/footer.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'modules/Calls/tpls/footer.tpl', 114, false),)), $this); ?>
@@ -63,7 +63,7 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_inclu
 <script type='text/javascript' src='{sugar_getjspath file='include/javascript/popup_helper.js'}'></script>
 <script type="text/javascript" src="{sugar_getjspath file='cache/include/javascript/sugar_grp_yui2.js'}"></script>
 <script type="text/javascript" src="{sugar_getjspath file='cache/include/javascript/sugar_grp_yui_widgets.js'}"></script>
-  
+
 <script type="text/javascript">
 {literal}
 SUGAR.calls = {};

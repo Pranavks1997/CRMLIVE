@@ -11,22 +11,6 @@ array (
         'default' => true,
         'width' => '10%',
       ),
-      'current_user_only' => 
-      array (
-        'name' => 'current_user_only',
-        'label' => 'LBL_CURRENT_USER_FILTER',
-        'type' => 'bool',
-        'default' => true,
-        'width' => '10%',
-      ),
-      'favorites_only' => 
-      array (
-        'name' => 'favorites_only',
-        'label' => 'LBL_FAVORITES_FILTER',
-        'type' => 'bool',
-        'default' => true,
-        'width' => '10%',
-      ),
     ),
     'advanced_search' => 
     array (
@@ -44,27 +28,22 @@ array (
         'default' => true,
         'name' => 'parent_name',
       ),
-      'activity_date_c' => 
+      'type_of_interaction_c' => 
       array (
-        'type' => 'date',
+        'type' => 'enum',
         'default' => true,
-        'label' => 'LBL_ACTIVITY_DATE',
+        'studio' => 'visible',
+        'label' => 'LBL_TYPE_OF_INTERACTION',
         'width' => '10%',
-        'name' => 'activity_date_c',
+        'name' => 'type_of_interaction_c',
       ),
-      'next_date_c' => 
+      'status_new_c' => 
       array (
-        'type' => 'date',
+        'type' => 'varchar',
         'default' => true,
-        'label' => 'LBL_NEXT_DATE',
+        'label' => 'LBL_STATUS_NEW',
         'width' => '10%',
-        'name' => 'next_date_c',
-      ),
-      'status' => 
-      array (
-        'name' => 'status',
-        'default' => true,
-        'width' => '10%',
+        'name' => 'status_new_c',
       ),
       'assigned_user_id' => 
       array (
@@ -81,6 +60,38 @@ array (
         ),
         'default' => true,
         'width' => '10%',
+      ),
+      'activity_date_c' => 
+      array (
+        'type' => 'date',
+        'default' => true,
+        'label' => 'LBL_ACTIVITY_DATE',
+        'width' => '10%',
+        'name' => 'activity_date_c',
+      ),
+      'date_entered' => 
+      array (
+        'type' => 'datetime',
+        'label' => 'LBL_DATE_ENTERED',
+        'width' => '10%',
+        'default' => true,
+        'name' => 'date_entered',
+      ),
+      'next_date_c' => 
+      array (
+        'type' => 'date',
+        'default' => true,
+        'label' => 'LBL_NEXT_DATE',
+        'width' => '10%',
+        'name' => 'next_date_c',
+      ),
+      'name_of_person_c' => 
+      array (
+        'type' => 'varchar',
+        'default' => true,
+        'label' => 'LBL_NAME_OF_PERSON',
+        'width' => '10%',
+        'name' => 'name_of_person_c',
       ),
     ),
   ),

@@ -919,7 +919,7 @@
       'required' => false,
       'source' => 'custom_fields',
       'name' => 'bid_commercial_head_c',
-      'vname' => 'LBL_BID_COMMERCIAL_HEAD_C',
+      'vname' => 'LBL_BID_COMMERCIAL_HEAD',
       'type' => 'enum',
       'massupdate' => '0',
       'default' => 'na',

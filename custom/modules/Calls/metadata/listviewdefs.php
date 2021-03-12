@@ -1,6 +1,13 @@
 <?php
 $listViewDefs ['Calls'] = 
 array (
+  'NAME' => 
+  array (
+    'width' => '40%',
+    'label' => 'LBL_LIST_SUBJECT',
+    'link' => true,
+    'default' => true,
+  ),
   'TYPE_OF_INTERACTION_C' => 
   array (
     'type' => 'enum',
@@ -8,13 +15,6 @@ array (
     'studio' => 'visible',
     'label' => 'LBL_TYPE_OF_INTERACTION',
     'width' => '10%',
-  ),
-  'NAME' => 
-  array (
-    'width' => '40%',
-    'label' => 'LBL_LIST_SUBJECT',
-    'link' => true,
-    'default' => true,
   ),
   'PARENT_NAME' => 
   array (
@@ -32,13 +32,12 @@ array (
       1 => 'parent_type',
     ),
   ),
-  'ASSIGNED_USER_NAME' => 
+  'STATUS_NEW_C' => 
   array (
-    'width' => '2%',
-    'label' => 'LBL_LIST_ASSIGNED_TO_NAME',
-    'module' => 'Employees',
-    'id' => 'ASSIGNED_USER_ID',
+    'type' => 'varchar',
     'default' => true,
+    'label' => 'LBL_STATUS_NEW',
+    'width' => '10%',
   ),
   'ACTIVITY_DATE_C' => 
   array (
@@ -47,12 +46,27 @@ array (
     'label' => 'LBL_ACTIVITY_DATE',
     'width' => '10%',
   ),
-  'STATUS' => 
+  'ASSIGNED_USER_NAME' => 
   array (
-    'width' => '10%',
-    'label' => 'LBL_STATUS',
-    'link' => false,
+    'width' => '2%',
+    'label' => 'LBL_LIST_ASSIGNED_TO_NAME',
+    'module' => 'Employees',
+    'id' => 'ASSIGNED_USER_ID',
     'default' => true,
+  ),
+  'NEXT_DATE_C' => 
+  array (
+    'type' => 'date',
+    'default' => true,
+    'label' => 'LBL_NEXT_DATE',
+    'width' => '10%',
+  ),
+  'NAME_OF_PERSON_C' => 
+  array (
+    'type' => 'varchar',
+    'default' => true,
+    'label' => 'LBL_NAME_OF_PERSON',
+    'width' => '10%',
   ),
 );
 ;

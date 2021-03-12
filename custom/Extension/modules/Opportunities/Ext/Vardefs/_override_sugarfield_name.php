@@ -1,5 +1,5 @@
 <?php
- // created: 2021-03-02 13:33:30
+ // created: 2021-03-02 11:12:12
 $dictionary['Opportunity']['fields']['name']['audited']=true;
 $dictionary['Opportunity']['fields']['name']['inline_edit']=true;
 $dictionary['Opportunity']['fields']['name']['comments']='Name of the opportunity';

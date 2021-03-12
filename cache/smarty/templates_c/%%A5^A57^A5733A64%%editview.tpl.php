@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-02-19 11:18:54
+<?php /* Smarty version 2.6.31, created on 2021-03-12 18:33:19
          compiled from custom/include/tpls/editview.tpl */ ?>
 
 	<form method="post" action="/custom/modules/Opportunities/uploadAttchments.php">

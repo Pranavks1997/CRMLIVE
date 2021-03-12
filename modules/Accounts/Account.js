@@ -36,59 +36,19 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Powered by SugarCRM" and "Supercharged by SuiteCRM".
  */
-
-
-function open_contact_popup(module_name, width, height, initial_filter, close_popup, hide_clear_button, popup_request_data, popup_mode, create, metadata)
-{
-	// set the variables that the popup will pull from
-	window.document.popup_request_data = popup_request_data;
-	window.document.close_popup = close_popup;
-
-	// launch the popup
-	URL = 'index.php?mode=MultiSelect&'
-		+ 'module=' + module_name
-		+ '&action=ContactAddressPopup';
-	
-	if(initial_filter != '')
-	{
-		URL += '&query=true' + initial_filter;
-	}
-	
-	if(hide_clear_button)
-	{
-		URL += '&hide_clear_button=true';
-	}
-	
-	windowName = 'popup_window';
-	
-	windowFeatures = 'width=' + width
-		+ ',height=' + height
-		+ ',resizable=1,scrollbars=1';
-
-	if (popup_mode == '' && popup_mode == 'undefined') {
-		popup_mode='single';		
-	}
-	URL+='&mode='+popup_mode;
-	if (create == '' && create == 'undefined') {
-		create = 'false';
-	}
-	URL+='&create='+create;
-
-	if (metadata != '' && metadata != 'undefined') {
-		URL+='&metadata='+metadata;	
-	}
-
-	win = window.open(URL, windowName, windowFeatures);
-
-	if(window.focus)
-	{
-		// put the focus on the popup if the browser supports the focus() method
-		win.focus();
-	}
-
-	return win;
-}
-
-function set_focus(){
-	document.getElementById('name').focus();
-}
+function open_contact_popup(module_name,width,height,initial_filter,close_popup,hide_clear_button,popup_request_data,popup_mode,create,metadata)
+{window.document.popup_request_data=popup_request_data;window.document.close_popup=close_popup;URL='index.php?mode=MultiSelect&'
++'module='+module_name
++'&action=ContactAddressPopup';if(initial_filter!='')
+{URL+='&query=true'+initial_filter;}
+if(hide_clear_button)
+{URL+='&hide_clear_button=true';}
+windowName='popup_window';windowFeatures='width='+width
++',height='+height
++',resizable=1,scrollbars=1';if(popup_mode==''&&popup_mode=='undefined'){popup_mode='single';}
+URL+='&mode='+popup_mode;if(create==''&&create=='undefined'){create='false';}
+URL+='&create='+create;if(metadata!=''&&metadata!='undefined'){URL+='&metadata='+metadata;}
+win=window.open(URL,windowName,windowFeatures);if(window.focus)
+{win.focus();}
+return win;}
+function set_focus(){document.getElementById('name').focus();}

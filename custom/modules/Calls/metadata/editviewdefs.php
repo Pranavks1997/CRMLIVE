@@ -11,6 +11,10 @@ array (
         array (
           'file' => 'modules/Reminders/Reminders.js',
         ),
+        1 => 
+        array (
+          'file' => 'custom/modules/Calls/editview.css',
+        ),
       ),
       'maxColumns' => '2',
       'form' => 
@@ -34,6 +38,22 @@ array (
           ),
           1 => 'CANCEL',
           2 => 
+          array (
+            'customCode' => '<input type="button"  name="apply_for_complete_button" value="send for approval" id="apply_for_complete"  class="button"  />',
+          ),
+          3 => 
+          array (
+            'customCode' => '<input type="button"  name="approve_button" value="approve" id="approve_activity"  class="button"  />',
+          ),
+          4 => 
+          array (
+            'customCode' => '<input type="button"  name="reject_button" value="reject" id="reject_activity"  class="button"  />',
+          ),
+          5 => 
+          array (
+            'customCode' => '<input type="button"  name="complete_button" value="completed" id="complete_activity"  class="button"  />',
+          ),
+          6 => 
           array (
             'customCode' => '{if $fields.status.value != "Held"}<input title="{$APP.LBL_CLOSE_AND_CREATE_BUTTON_TITLE}" id="CLOSE_CREATE_HEADER" accessKey="{$APP.LBL_CLOSE_AND_CREATE_BUTTON_KEY}" class="button" onclick="SUGAR.calls.fill_invitees(); document.EditView.status.value=\'Held\'; document.EditView.action.value=\'Save\'; document.EditView.return_module.value=\'Calls\'; document.EditView.isDuplicate.value=true; document.EditView.isSaveAndNew.value=true; document.EditView.return_action.value=\'EditView\'; document.EditView.return_id.value=\'{$fields.id.value}\'; formSubmitCheck();" type="button" name="button" value="{$APP.LBL_CLOSE_AND_CREATE_BUTTON_LABEL}">{/if}',
           ),
@@ -82,6 +102,11 @@ function formSubmitCheck(){ldelim}var duration=true;if(typeof(isValidDuration)!=
           'newTab' => false,
           'panelDefault' => 'expanded',
         ),
+        'LBL_EDITVIEW_PANEL1' => 
+        array (
+          'newTab' => false,
+          'panelDefault' => 'expanded',
+        ),
       ),
       'syncDetailEditViews' => true,
     ),
@@ -91,17 +116,16 @@ function formSubmitCheck(){ldelim}var duration=true;if(typeof(isValidDuration)!=
       array (
         0 => 
         array (
-          0 => '',
+          0 => 
+          array (
+            'name' => 'activity_type_c',
+            'studio' => 'visible',
+            'label' => 'LBL_ACTIVITY_TYPE',
+          ),
           1 => 
           array (
-            'name' => 'status',
-            'fields' => 
-            array (
-              0 => 
-              array (
-                'name' => 'status',
-              ),
-            ),
+            'name' => 'status_new_c',
+            'label' => 'LBL_STATUS_NEW',
           ),
         ),
         1 => 
@@ -112,8 +136,9 @@ function formSubmitCheck(){ldelim}var duration=true;if(typeof(isValidDuration)!=
           ),
           1 => 
           array (
-            'name' => 'assigned_user_name',
-            'label' => 'LBL_ASSIGNED_TO_NAME',
+            'name' => 'approver_c',
+            'studio' => 'visible',
+            'label' => 'LBL_APPROVER',
           ),
         ),
         2 => 
@@ -124,7 +149,11 @@ function formSubmitCheck(){ldelim}var duration=true;if(typeof(isValidDuration)!=
             'studio' => 'visible',
             'label' => 'LBL_TYPE_OF_INTERACTION',
           ),
-          1 => '',
+          1 => 
+          array (
+            'name' => 'assigned_to_c',
+            'label' => 'LBL_ASSIGNED_TO_C',
+          ),
         ),
         3 => 
         array (
@@ -169,12 +198,21 @@ function formSubmitCheck(){ldelim}var duration=true;if(typeof(isValidDuration)!=
         array (
           0 => 
           array (
+            'name' => 'audit_trail_c',
+            'studio' => 'visible',
+            'label' => 'LBL_AUDIT_TRAIL',
+          ),
+        ),
+        7 => 
+        array (
+          0 => 
+          array (
             'name' => 'new_current_status_c',
             'studio' => 'visible',
             'label' => 'LBL_NEW_CURRENT_STATUS',
           ),
         ),
-        7 => 
+        8 => 
         array (
           0 => 
           array (
@@ -183,13 +221,64 @@ function formSubmitCheck(){ldelim}var duration=true;if(typeof(isValidDuration)!=
             'label' => 'LBL_DESCRIPTION',
           ),
         ),
-        8 => 
+        9 => 
         array (
           0 => 
           array (
             'name' => 'new_key_action_c',
             'studio' => 'visible',
             'label' => 'LBL_NEW_KEY_ACTION',
+          ),
+        ),
+      ),
+      'lbl_editview_panel1' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            'name' => 'untag_c',
+            'label' => 'LBL_UNTAG',
+          ),
+          1 => '',
+        ),
+        1 => 
+        array (
+          0 => 
+          array (
+            'name' => 'tag_c',
+            'label' => 'LBL_TAG',
+          ),
+          1 => '',
+        ),
+        2 => 
+        array (
+          0 => 
+          array (
+            'name' => 'tagged_comments_c',
+            'studio' => 'visible',
+            'label' => 'LBL_TAGGED_COMMENTS',
+          ),
+        ),
+        3 => 
+        array (
+          0 => 
+          array (
+            'name' => 'tag_hidden_c',
+            'label' => 'LBL_TAG_HIDDEN',
+          ),
+          1 => 
+          array (
+            'name' => 'untag_hidden_c',
+            'label' => 'LBL_UNTAG_HIDDEN',
+          ),
+        ),
+        4 => 
+        array (
+          0 => 
+          array (
+            'name' => 'assigned_user_name',
+            'label' => 'LBL_ASSIGNED_TO_NAME',
           ),
         ),
       ),

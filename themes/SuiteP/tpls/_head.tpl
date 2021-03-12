@@ -51,6 +51,9 @@
     <link href='themes/SuiteP/css/fonts.css' rel='stylesheet' type='text/css'>
     <link href="themes/SuiteP/css/grid.css" rel="stylesheet" type="text/css"/>
     <link href="themes/SuiteP/css/footable.core.css" rel="stylesheet" type="text/css"/>
+    
+
+    
    <!-- <title>{$APP.LBL_BROWSER_TITLE}</title>-->
         <title>CRM</title>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->

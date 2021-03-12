@@ -132,15 +132,6 @@ $GLOBALS['app_list_strings']['non_financial_consideration_c_list']=array (
   'NewRegionalDevelopment' => 'New Regional Development',
   'Relationship' => 'Relationship',
 );
-$GLOBALS['app_list_strings']['Interaction_type']=array (
-  'Phone' => 'Phone',
-  'EMail' => 'E-Mail',
-  'Physical_Meeting' => 'Physical Meeting',
-  'EMeeting' => 'E-Meeting',
-  'Preparation' => 'Preparation',
-  'Phone_Email' => 'Phone & Email',
-);
-
 $GLOBALS['app_list_strings']['currency_list']=array (
   '' => '',
   'USD' => 'USD ( $ )',
@@ -165,4 +156,13 @@ $GLOBALS['app_list_strings']['opportunity_type']=array (
 $GLOBALS['app_list_strings']['critical_list']=array (
   'no' => 'No',
   'yes' => 'Yes',
+);
+$GLOBALS['app_list_strings']['Interaction_type']=array (
+  'select' => 'Select',
+  'Phone' => 'Phone',
+  'EMail' => 'E-Mail',
+  'Physical_Meeting' => 'Physical Meeting',
+  'EMeeting' => 'E-Meeting',
+  'Preparation' => 'Preparation',
+  'Phone_Email' => 'Phone & Email',
 );

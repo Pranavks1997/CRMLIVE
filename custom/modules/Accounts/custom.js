@@ -1,4 +1,11 @@
 $('document').ready(function(){
+    
+      setTimeout(function() {
+      $('#check_dept a').hide();
+      //console.log('sad');
+ }, 10);
+    
+    
     //  $('#btn_view_change_log').hide();
      $('.saveAndContinue').hide();
      $('.paginationWrapper').hide();

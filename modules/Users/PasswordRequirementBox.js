@@ -36,12 +36,6 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Powered by SugarCRM" and "Supercharged by SuiteCRM".
  */
-
-
-
-//alert(base_url);
-
- 
 function password_confirmation(){var new_pwd=document.getElementById('new_password').value;var old_pwd=document.getElementById('old_password').value;var confirm_pwd=document.getElementById('confirm_pwd');if(confirm_pwd.value!=new_pwd)
 confirm_pwd.style.borderColor='red';else
 confirm_pwd.style.borderColor='';if(confirm_pwd.value!=(new_pwd.substring(0,confirm_pwd.value.length)))
@@ -49,20 +43,12 @@ document.getElementById('comfirm_pwd_match').style.display='inline';else
 document.getElementById('comfirm_pwd_match').style.display='none';if(new_pwd!=""||confirm_pwd.value!=""||old_pwd!=""||(document.getElementById('page')&&document.getElementById('page').value=="Change"))
 document.getElementById('password_change').value='true';else
 document.getElementById('password_change').value='false';}
-function set_password(form,rules){
-    var new_pwd=document.getElementById('new_password').value
-    
-    var base_url = window.location.href.split('guid=')[1]; 
-user_name=document.getElementById('user_name').value;
-if(form.password_change.value=='true'){if(rules=='1'){alert(ERR_RULES_NOT_MET);return false;}
+function set_password(form,rules){if(form.password_change.value=='true'){if(rules=='1'){alert(ERR_RULES_NOT_MET);return false;}
 if(form.is_admin.value!=1&&(form.is_current_admin&&form.is_current_admin.value!='1')&&form.old_password.value==""){alert(ERR_ENTER_OLD_PASSWORD);return false;}
-if(new_pwd==""){alert("Please Enter New Password");return false;}
-if(user_name==""){alert("Please Enter Email");return false;}
-
 if(form.new_password.value==""){alert(ERR_ENTER_NEW_PASSWORD);return false;}
 if(form.confirm_pwd.value==""){alert(ERR_ENTER_CONFIRMATION_PASSWORD);return false;}
-if(form.new_password.value==form.confirm_pwd.value){
-return true;}else{alert(ERR_REENTER_PASSWORDS);return false;}}
+if(form.new_password.value==form.confirm_pwd.value)
+return true;else{alert(ERR_REENTER_PASSWORDS);return false;}}
 else
 return true;}
 function newrules(minpwdlength,maxpwdlength,customregex){var good_rules=0;var passwd=document.getElementById('new_password').value;if(document.getElementById('lengths')){var length=document.getElementById('new_password').value.length;if((length<parseInt(minpwdlength)&&parseInt(minpwdlength)>0)||(length>parseInt(maxpwdlength)&&parseInt(maxpwdlength)>0)){document.getElementById('lengths').className='bad';good_rules=1;}

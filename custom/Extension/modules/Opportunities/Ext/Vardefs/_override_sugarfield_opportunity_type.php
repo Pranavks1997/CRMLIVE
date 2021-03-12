@@ -1,5 +1,5 @@
 <?php
- // created: 2021-02-24 15:45:04
+ // created: 2021-03-02 11:08:30
 $dictionary['Opportunity']['fields']['opportunity_type']['len']=100;
 $dictionary['Opportunity']['fields']['opportunity_type']['inline_edit']=true;
 $dictionary['Opportunity']['fields']['opportunity_type']['options']='opportunity_type';

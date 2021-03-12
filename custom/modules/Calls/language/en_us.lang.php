@@ -1,5 +1,5 @@
 <?php
-// created: 2021-01-27 13:12:04
+// created: 2021-03-12 18:27:23
 $mod_strings = array (
   'LBL_ACCOUNT' => 'Department',
   'LNK_NEW_CALL' => 'Create Activity',
@@ -23,7 +23,21 @@ $mod_strings = array (
   'LBL_NEW_STATUS' => 'Status old',
   'LBL_NEW_CURRENT_STATUS' => 'Comments:',
   'LBL_PARENT_TYPE' => 'Parent Type',
-  'LBL_STATUS' => 'Status',
+  'LBL_STATUS' => 'Status_old',
   'LBL_CREATED' => 'Assigned By',
   'LBL_FOR_QUICK_CREATE' => 'for quick create',
+  'LBL_ACTIVITY_TYPE' => 'Activity Type',
+  'LBL_ASSIGNED_TO_NAME' => 'assigned_to',
+  'LBL_ASSIGNED_TO_C' => 'Assigned To',
+  'LBL_TAG' => 'Tagged Users',
+  'LBL_UNTAG' => 'Untagged Users',
+  'LBL_EDITVIEW_PANEL1' => 'Tag/Untag Users',
+  'LBL_TAGGED_COMMENTS' => 'Tagged Users Comments',
+  'LBL_APPROVER_USER_ID' => 'Approver (related User ID)',
+  'LBL_APPROVER' => 'Approver',
+  'LBL_TAG_HIDDEN' => 'Tag hidden',
+  'LBL_UNTAG_HIDDEN' => 'Untag hidden',
+  'LBL_AUDIT_TRAIL' => 'Audit Trail',
+  'LBL_STATUS_NEW' => 'Status',
+  'LBL_SUBJECT' => 'Subject:',
 );

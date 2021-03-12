@@ -135,12 +135,7 @@ array (
         3 => 
         array (
           0 => 'opportunity_type',
-          1 => 
-          array (
-            'name' => 'critical_c',
-            'studio' => 'visible',
-            'label' => 'LBL_CRITICAL',
-          ),
+          1 => '',
         ),
         4 => 
         array (

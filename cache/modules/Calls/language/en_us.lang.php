@@ -1,5 +1,5 @@
 <?php
-// created: 2021-03-05 15:15:43
+// created: 2021-03-12 18:34:31
 $mod_strings = array (
   'LBL_ID' => 'ID',
   'LBL_DATE_ENTERED' => 'Date Created',
@@ -22,7 +22,7 @@ $mod_strings = array (
   'LBL_OPT_IN_PENDING_EMAIL_SENT' => 'Pending Confirm opt in, Confirm opt in sent',
   'LBL_OPT_IN_CONFIRMED' => 'Opted in',
   'LBL_ASSIGNED_TO_ID' => 'Assigned User',
-  'LBL_ASSIGNED_TO_NAME' => 'Assigned to',
+  'LBL_ASSIGNED_TO_NAME' => 'assigned_to',
   'LBL_SECURITYGROUPS' => 'Security Groups',
   'LBL_SECURITYGROUPS_SUBPANEL_TITLE' => 'Security Groups',
   'LBL_BLANK' => ' ',
@@ -41,7 +41,7 @@ $mod_strings = array (
   'LBL_SUBJECT' => 'Subject:',
   'LBL_REMINDER' => 'Reminder:',
   'LBL_CONTACT_NAME' => 'Contact:',
-  'LBL_STATUS' => 'Status',
+  'LBL_STATUS' => 'Status_old',
   'LBL_DIRECTION' => 'Direction:',
   'LBL_DATE' => 'Start Date:',
   'LBL_DURATION' => 'Duration:',
@@ -142,4 +142,16 @@ $mod_strings = array (
   'LBL_NEW_CURRENT_STATUS' => 'Comments:',
   'LBL_PARENT_TYPE' => 'Parent Type',
   'LBL_FOR_QUICK_CREATE' => 'for quick create',
+  'LBL_ACTIVITY_TYPE' => 'Activity Type',
+  'LBL_ASSIGNED_TO_C' => 'Assigned To',
+  'LBL_TAG' => 'Tagged Users',
+  'LBL_UNTAG' => 'Untagged Users',
+  'LBL_EDITVIEW_PANEL1' => 'Tag/Untag Users',
+  'LBL_TAGGED_COMMENTS' => 'Tagged Users Comments',
+  'LBL_APPROVER_USER_ID' => 'Approver (related User ID)',
+  'LBL_APPROVER' => 'Approver',
+  'LBL_TAG_HIDDEN' => 'Tag hidden',
+  'LBL_UNTAG_HIDDEN' => 'Untag hidden',
+  'LBL_AUDIT_TRAIL' => 'Audit Trail',
+  'LBL_STATUS_NEW' => 'Status',
 );

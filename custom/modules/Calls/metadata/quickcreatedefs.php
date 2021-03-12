@@ -11,6 +11,10 @@ array (
         array (
           'file' => 'custom/modules/Calls/quick_create_edit_view.js',
         ),
+        1 => 
+        array (
+          'file' => 'custom/modules/Calls/quick_create_custom.css',
+        ),
       ),
       'maxColumns' => '2',
       'form' => 
@@ -57,7 +61,12 @@ array (
       'useTabs' => false,
       'tabDefs' => 
       array (
-        'DEFAULT' => 
+        'LBL_CALL_INFORMATION' => 
+        array (
+          'newTab' => false,
+          'panelDefault' => 'expanded',
+        ),
+        'LBL_EDITVIEW_PANEL1' => 
         array (
           'newTab' => false,
           'panelDefault' => 'expanded',
@@ -66,9 +75,23 @@ array (
     ),
     'panels' => 
     array (
-      'default' => 
+      'lbl_call_information' => 
       array (
         0 => 
+        array (
+          0 => 
+          array (
+            'name' => 'activity_type_c',
+            'studio' => 'visible',
+            'label' => 'LBL_ACTIVITY_TYPE',
+          ),
+          1 => 
+          array (
+            'name' => 'status_new_c',
+            'label' => 'LBL_STATUS_NEW',
+          ),
+        ),
+        1 => 
         array (
           0 => 
           array (
@@ -80,21 +103,12 @@ array (
           ),
           1 => 
           array (
-            'name' => 'status',
-            'displayParams' => 
-            array (
-              'required' => true,
-            ),
-            'fields' => 
-            array (
-              0 => 
-              array (
-                'name' => 'status',
-              ),
-            ),
+            'name' => 'approver_c',
+            'studio' => 'visible',
+            'label' => 'LBL_APPROVER',
           ),
         ),
-        1 => 
+        2 => 
         array (
           0 => 
           array (
@@ -104,11 +118,11 @@ array (
           ),
           1 => 
           array (
-            'name' => 'assigned_user_name',
-            'label' => 'LBL_ASSIGNED_TO_NAME',
+            'name' => 'assigned_to_c',
+            'label' => 'LBL_ASSIGNED_TO_C',
           ),
         ),
-        2 => 
+        3 => 
         array (
           0 => 
           array (
@@ -121,7 +135,7 @@ array (
             'label' => 'LBL_NEXT_DATE',
           ),
         ),
-        3 => 
+        4 => 
         array (
           0 => 
           array (
@@ -134,7 +148,7 @@ array (
             'label' => 'LBL_NAME_OF_PERSON',
           ),
         ),
-        4 => 
+        5 => 
         array (
           0 => 
           array (
@@ -143,7 +157,16 @@ array (
           ),
           1 => '',
         ),
-        5 => 
+        6 => 
+        array (
+          0 => 
+          array (
+            'name' => 'audit_trail_c',
+            'studio' => 'visible',
+            'label' => 'LBL_AUDIT_TRAIL',
+          ),
+        ),
+        7 => 
         array (
           0 => 
           array (
@@ -152,7 +175,7 @@ array (
             'label' => 'LBL_NEW_CURRENT_STATUS',
           ),
         ),
-        6 => 
+        8 => 
         array (
           0 => 
           array (
@@ -161,13 +184,64 @@ array (
             'label' => 'LBL_DESCRIPTION',
           ),
         ),
-        7 => 
+        9 => 
         array (
           0 => 
           array (
             'name' => 'new_key_action_c',
             'studio' => 'visible',
             'label' => 'LBL_NEW_KEY_ACTION',
+          ),
+        ),
+      ),
+      'lbl_editview_panel1' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            'name' => 'untag_c',
+            'label' => 'LBL_UNTAG',
+          ),
+          1 => '',
+        ),
+        1 => 
+        array (
+          0 => 
+          array (
+            'name' => 'tag_c',
+            'label' => 'LBL_TAG',
+          ),
+          1 => '',
+        ),
+        2 => 
+        array (
+          0 => 
+          array (
+            'name' => 'tagged_comments_c',
+            'studio' => 'visible',
+            'label' => 'LBL_TAGGED_COMMENTS',
+          ),
+        ),
+        3 => 
+        array (
+          0 => 
+          array (
+            'name' => 'tag_hidden_c',
+            'label' => 'LBL_TAG_HIDDEN',
+          ),
+          1 => 
+          array (
+            'name' => 'untag_hidden_c',
+            'label' => 'LBL_UNTAG_HIDDEN',
+          ),
+        ),
+        4 => 
+        array (
+          0 => 
+          array (
+            'name' => 'assigned_user_name',
+            'label' => 'LBL_ASSIGNED_TO_NAME',
           ),
         ),
       ),

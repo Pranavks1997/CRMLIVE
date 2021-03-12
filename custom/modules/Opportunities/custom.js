@@ -6,7 +6,7 @@ $(document).ready(function () {
 
  $(".add_field_button").attr("class",'add_field_button add_btn button');
  //-------------------hiding navigation----
-  $(".opp_hide").hide();
+  // $(".opp_hide").hide();
   
   
   
@@ -462,9 +462,9 @@ $('#timing_button_c').find('option').css('background-color','white');
                           var endq = $('#end_quarter').val();
                           // var total = $('#total_input_value').val();
                    
-                   //alert(starty+" "+startq+" "+endy+" "+endq+""+total)
+                   //alert(starty+" "+startq+" "+endy+" "+endq+""+total)  && total!=''
                    
-                   if( starty!='' &&  endy!='' && startq!='' && endq!='' && total!='' ){
+                   if( starty!='' &&  endy!='' && startq!='' && endq!=''){
                    
                    
                    $('#financial_feasibility_l1_c').text("View L1 Details");
@@ -711,9 +711,10 @@ $('#timing_button_c').find('option').css('background-color','white');
      var endq = $('#end_quarter').val();
      var total = $('#total_input_value').val();
      
+     // && total!=''
      
      
-     if( starty!='' &&  endy!='' && startq!='' && endq!='' && total!='' ){
+     if( starty!='' &&  endy!='' && startq!='' && endq!=''){
       
     
       $('#financial_feasibility_l1_c').css("background","#2ecc71")
@@ -3501,7 +3502,9 @@ $( ".module-title-text" ).replaceWith( '<h2 class="module-title-text"> CREATE Op
     
     if($('#rfporeoipublished_c').val()=='yes' && $('#status_c').val()=='QualifiedLead'){
      
-     if( $('#startYear').val()!='' && $('#endYear').val()!='' && $('#total_input_value').val()!=''){
+     //&& $('#total_input_value').val()!=''
+     
+     if( $('#startYear').val()!='' && $('#endYear').val()!='' ){
      
     var t= $('#bid').val();
     
@@ -9881,8 +9884,8 @@ $.ajax({
          }else if(data == "block_tag_user_all"){
           $("#opportunity_type option[value='global']").attr("disabled",true);
            $("#opportunity_type option[value='non_global']").attr("disabled",true);
-          $(".dropdown-chose-list,.dropdown-display").hide(); 
-         $("[field=tagged_users_c]").append(`<span>${tagged_users_new}</span>`);
+       //   $(".dropdown-chose-list,.dropdown-display").hide(); 
+       //  $("[field=tagged_users_c]").append(`<span>${tagged_users_new}</span>`);
           $("[field=assigned_to_new_c]").attr("readonly",true);
            $("[field=critical_c],[data-label=LBL_CRITICAL]").hide();
           
@@ -9895,15 +9898,15 @@ $.ajax({
                     $("#opportunity_type option[value='global']").attr("disabled",true);
                   }
 
-         $(".dropdown-chose-list,.dropdown-display").hide(); 
-         $("[field=tagged_users_c]").append(`<span>${tagged_users_new}</span>`);
+      //   $(".dropdown-chose-list,.dropdown-display").hide(); 
+      //   $("[field=tagged_users_c]").append(`<span>${tagged_users_new}</span>`);
            $("[field=critical_c],[data-label=LBL_CRITICAL]").hide();
           
          }else if(data == "block_reports_to_user"){
           $("#opportunity_type option[value='global']").attr("disabled",true);
            $("#opportunity_type option[value='non_global']").attr("disabled",true);
-         $(".dropdown-chose-list,.dropdown-display").hide(); 
-         $("[field=tagged_users_c]").append(`<span>${tagged_users_new}</span>`);
+        // $(".dropdown-chose-list,.dropdown-display").hide(); 
+       //  $("[field=tagged_users_c]").append(`<span>${tagged_users_new}</span>`);
            $("[field=critical_c],[data-label=LBL_CRITICAL]").hide();
           
          }

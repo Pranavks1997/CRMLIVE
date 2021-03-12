@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-03-05 06:43:25
+<?php /* Smarty version 2.6.31, created on 2021-03-12 18:34:12
          compiled from cache/themes/SuiteP/modules/Calls/EditView.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('modifier', 'escape', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 55, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 115, false),array('modifier', 'lookup', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 155, false),array('modifier', 'count', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 257, false),array('modifier', 'default', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 770, false),array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 72, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 93, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 122, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 130, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 158, false),array('function', 'sugar_getscript', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 1087, false),array('function', 'sugar_getjspath', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 1093, false),array('block', 'minify', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 113, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('modifier', 'escape', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 55, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 115, false),array('modifier', 'lookup', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 154, false),array('modifier', 'count', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 256, false),array('modifier', 'default', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 825, false),array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 76, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 97, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 121, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 129, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 157, false),array('function', 'sugar_getscript', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 1415, false),array('function', 'sugar_getjspath', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 1421, false),array('block', 'minify', 'cache/themes/SuiteP/modules/Calls/EditView.tpl', 113, false),)), $this); ?>
 
 
 
@@ -103,6 +103,10 @@ if(custom_check_form('EditView'))SUGAR.ajaxUI.submitForm(_form);return false;" c
 &record=<?php echo ((is_array($_tmp=$_REQUEST['return_id'])) ? $this->_run_mod_handler('escape', true, $_tmp, 'url') : smarty_modifier_escape($_tmp, 'url')); ?>
 '); return false;" type="button" name="button" value="<?php echo $this->_tpl_vars['APP']['LBL_CANCEL_BUTTON_LABEL']; ?>
 " id="CANCEL"> <?php endif; ?>
+<input type="button" name="apply_for_complete_button" value="send for approval" id="apply_for_complete" class="button" //>
+<input type="button" name="approve_button" value="approve" id="approve_activity" class="button" //>
+<input type="button" name="reject_button" value="reject" id="reject_activity" class="button" //>
+<input type="button" name="complete_button" value="completed" id="complete_activity" class="button" //>
 <?php if ($this->_tpl_vars['fields']['status']['value'] != 'Held'): ?><input title="<?php echo $this->_tpl_vars['APP']['LBL_CLOSE_AND_CREATE_BUTTON_TITLE']; ?>
 " id="CLOSE_CREATE_HEADER" accessKey="<?php echo $this->_tpl_vars['APP']['LBL_CLOSE_AND_CREATE_BUTTON_KEY']; ?>
 " class="button" onclick="SUGAR.calls.fill_invitees(); document.EditView.status.value='Held'; document.EditView.action.value='Save'; document.EditView.return_module.value='Calls'; document.EditView.isDuplicate.value=true; document.EditView.isSaveAndNew.value=true; document.EditView.return_action.value='EditView'; document.EditView.return_id.value='<?php echo $this->_tpl_vars['fields']['id']['value']; ?>
@@ -164,69 +168,64 @@ if(custom_check_form('EditView'))SUGAR.ajaxUI.submitForm(_form);return false;" c
 
 
 <div class="col-xs-12 col-sm-6 edit-view-row-item">
-</div>
 
 
-<div class="col-xs-12 col-sm-6 edit-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label" data-label="LBL_STATUS">
+<div class="col-xs-12 col-sm-4 label" data-label="LBL_ACTIVITY_TYPE">
 
 <?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_STATUS','module' => 'Calls'), $this);?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_ACTIVITY_TYPE','module' => 'Calls'), $this);?>
 <?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
 <?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
 :
 
-<span class="required">*</span>
 <?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
 </div>
 
-<div class="col-xs-12 col-sm-8 edit-view-field " type="enum" field="status"  >
+<div class="col-xs-12 col-sm-8 edit-view-field " type="enum" field="activity_type_c"  >
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
 
 <?php if (! isset ( $this->_tpl_vars['config']['enable_autocomplete'] ) || $this->_tpl_vars['config']['enable_autocomplete'] == false): ?>
-<select name="<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+<select name="<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 " 
-id="<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+id="<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 " 
 title=''       
 >
-<?php if (isset ( $this->_tpl_vars['fields']['status']['value'] ) && $this->_tpl_vars['fields']['status']['value'] != ''): ?>
-<?php echo smarty_function_html_options(array('options' => $this->_tpl_vars['fields']['status']['options'],'selected' => $this->_tpl_vars['fields']['status']['value']), $this);?>
+<?php if (isset ( $this->_tpl_vars['fields']['activity_type_c']['value'] ) && $this->_tpl_vars['fields']['activity_type_c']['value'] != ''): ?>
+<?php echo smarty_function_html_options(array('options' => $this->_tpl_vars['fields']['activity_type_c']['options'],'selected' => $this->_tpl_vars['fields']['activity_type_c']['value']), $this);?>
 
 <?php else: ?>
-<?php echo smarty_function_html_options(array('options' => $this->_tpl_vars['fields']['status']['options'],'selected' => $this->_tpl_vars['fields']['status']['default']), $this);?>
+<?php echo smarty_function_html_options(array('options' => $this->_tpl_vars['fields']['activity_type_c']['options'],'selected' => $this->_tpl_vars['fields']['activity_type_c']['default']), $this);?>
 
 <?php endif; ?>
 </select>
 <?php else: ?>
-<?php $this->assign('field_options', $this->_tpl_vars['fields']['status']['options']); ?>
-<?php ob_start(); ?><?php echo $this->_tpl_vars['fields']['status']['value']; ?>
+<?php $this->assign('field_options', $this->_tpl_vars['fields']['activity_type_c']['options']); ?>
+<?php ob_start(); ?><?php echo $this->_tpl_vars['fields']['activity_type_c']['value']; ?>
 <?php $this->_smarty_vars['capture']['field_val'] = ob_get_contents(); ob_end_clean(); ?>
 <?php $this->assign('field_val', $this->_smarty_vars['capture']['field_val']); ?>
-<?php ob_start(); ?><?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+<?php ob_start(); ?><?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 <?php $this->_smarty_vars['capture']['ac_key'] = ob_get_contents(); ob_end_clean(); ?>
 <?php $this->assign('ac_key', $this->_smarty_vars['capture']['ac_key']); ?>
-<select style='display:none' name="<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+<select style='display:none' name="<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 " 
-id="<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+id="<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 " 
 title=''          
 >
-<?php if (isset ( $this->_tpl_vars['fields']['status']['value'] ) && $this->_tpl_vars['fields']['status']['value'] != ''): ?>
-<?php echo smarty_function_html_options(array('options' => $this->_tpl_vars['fields']['status']['options'],'selected' => $this->_tpl_vars['fields']['status']['value']), $this);?>
+<?php if (isset ( $this->_tpl_vars['fields']['activity_type_c']['value'] ) && $this->_tpl_vars['fields']['activity_type_c']['value'] != ''): ?>
+<?php echo smarty_function_html_options(array('options' => $this->_tpl_vars['fields']['activity_type_c']['options'],'selected' => $this->_tpl_vars['fields']['activity_type_c']['value']), $this);?>
 
 <?php else: ?>
-<?php echo smarty_function_html_options(array('options' => $this->_tpl_vars['fields']['status']['options'],'selected' => $this->_tpl_vars['fields']['status']['default']), $this);?>
+<?php echo smarty_function_html_options(array('options' => $this->_tpl_vars['fields']['activity_type_c']['options'],'selected' => $this->_tpl_vars['fields']['activity_type_c']['default']), $this);?>
 
 <?php endif; ?>
 </select>
 <input
-id="<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+id="<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 -input"
-name="<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+name="<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 -input"
 size="30"
 value="<?php echo ((is_array($_tmp=$this->_tpl_vars['field_val'])) ? $this->_run_mod_handler('lookup', true, $_tmp, $this->_tpl_vars['field_options']) : smarty_modifier_lookup($_tmp, $this->_tpl_vars['field_options'])); ?>
@@ -234,14 +233,14 @@ value="<?php echo ((is_array($_tmp=$this->_tpl_vars['field_val'])) ? $this->_run
 type="text" style="vertical-align: top;">
 <span class="id-ff multiple">
 <button type="button"><img src="<?php echo smarty_function_sugar_getimagepath(array('file' => "id-ff-down.png"), $this);?>
-" id="<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+" id="<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 -image"></button><button type="button"
-id="btn-clear-<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+id="btn-clear-<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 -input"
 title="Clear"
-onclick="SUGAR.clearRelateField(this.form, '<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
--input', '<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
-');sync_<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+onclick="SUGAR.clearRelateField(this.form, '<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
+-input', '<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
+');sync_<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 ()"><span class="suitepicon suitepicon-action-clear"></span></button>
 </span>
 <?php echo '
@@ -255,7 +254,7 @@ onclick="SUGAR.clearRelateField(this.form, '<?php echo $this->_tpl_vars['fields'
 			<?php echo '
 		(function (){
 			var selectElem = document.getElementById("'; ?>
-<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 <?php echo '");
 			
 			if (typeof select_defaults =="undefined")
@@ -296,19 +295,19 @@ onclick="SUGAR.clearRelateField(this.form, '<?php echo $this->_tpl_vars['fields'
 
 			
 	SUGAR.AutoComplete.<?php echo $this->_tpl_vars['ac_key']; ?>
-.inputNode = Y.one('#<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+.inputNode = Y.one('#<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 -input');
 	SUGAR.AutoComplete.<?php echo $this->_tpl_vars['ac_key']; ?>
-.inputImage = Y.one('#<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+.inputImage = Y.one('#<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 -image');
 	SUGAR.AutoComplete.<?php echo $this->_tpl_vars['ac_key']; ?>
-.inputHidden = Y.one('#<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+.inputHidden = Y.one('#<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 ');
 	
 			<?php echo '
 			function SyncToHidden(selectme){
 				var selectElem = document.getElementById("'; ?>
-<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 <?php echo '");
 				var doSimulateChange = false;
 				
@@ -331,14 +330,14 @@ onclick="SUGAR.clearRelateField(this.form, '<?php echo $this->_tpl_vars['fields'
 
 			//global variable 
 			sync_'; ?>
-<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 <?php echo ' = function(){
 				SyncToHidden();
 			}
 			function syncFromHiddenToWidget(){
 
 				var selectElem = document.getElementById("'; ?>
-<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 <?php echo '");
 
 				//if select no longer on page, kill timer
@@ -356,7 +355,7 @@ onclick="SUGAR.clearRelateField(this.form, '<?php echo $this->_tpl_vars['fields'
 				for (i=0;i<selectElem.options.length;i++){
 
 					if (selectElem.options[i].value==selectElem.value && document.activeElement != document.getElementById(\''; ?>
-<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 -input<?php echo '\'))
 						SUGAR.AutoComplete.'; ?>
 <?php echo $this->_tpl_vars['ac_key']; ?>
@@ -365,7 +364,7 @@ onclick="SUGAR.clearRelateField(this.form, '<?php echo $this->_tpl_vars['fields'
 			}
 
             YAHOO.util.Event.onAvailable("'; ?>
-<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 <?php echo '", syncFromHiddenToWidget);
 		'; ?>
 
@@ -510,7 +509,7 @@ SUGAR.AutoComplete.<?php echo $this->_tpl_vars['ac_key']; ?>
 <?php echo $this->_tpl_vars['ac_key']; ?>
 <?php echo '.optionsVisible = false;
 			var selectElem = document.getElementById("'; ?>
-<?php echo $this->_tpl_vars['fields']['status']['name']; ?>
+<?php echo $this->_tpl_vars['fields']['activity_type_c']['name']; ?>
 <?php echo '");
 			//if typed value is a valid option, do nothing
 			for (i=0;i<selectElem.options.length;i++)
@@ -570,7 +569,43 @@ SUGAR.AutoComplete.<?php echo $this->_tpl_vars['ac_key']; ?>
 </script> 
 '; ?>
 
-<?php endif; ?>&nbsp;
+<?php endif; ?>
+</div>
+
+<!-- [/hide] -->
+</div>
+
+
+<div class="col-xs-12 col-sm-6 edit-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label" data-label="LBL_STATUS_NEW">
+
+<?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_STATUS_NEW','module' => 'Calls'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+
+<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="varchar" field="status_new_c"  >
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<?php if (strlen ( $this->_tpl_vars['fields']['status_new_c']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['status_new_c']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['status_new_c']['value']); ?>
+<?php endif; ?>  
+<input type='text' name='<?php echo $this->_tpl_vars['fields']['status_new_c']['name']; ?>
+' 
+id='<?php echo $this->_tpl_vars['fields']['status_new_c']['name']; ?>
+' size='30' 
+maxlength='255' 
+value='<?php echo $this->_tpl_vars['value']; ?>
+' title=''      >
 </div>
 
 <!-- [/hide] -->
@@ -620,10 +655,10 @@ value='<?php echo $this->_tpl_vars['value']; ?>
 <div class="col-xs-12 col-sm-6 edit-view-row-item">
 
 
-<div class="col-xs-12 col-sm-4 label" data-label="LBL_ASSIGNED_TO_NAME">
+<div class="col-xs-12 col-sm-4 label" data-label="LBL_APPROVER">
 
 <?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_ASSIGNED_TO_NAME','module' => 'Calls'), $this);?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_APPROVER','module' => 'Calls'), $this);?>
 <?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
 <?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
 :
@@ -631,51 +666,51 @@ value='<?php echo $this->_tpl_vars['value']; ?>
 <?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
 </div>
 
-<div class="col-xs-12 col-sm-8 edit-view-field " type="relate" field="assigned_user_name"  >
+<div class="col-xs-12 col-sm-8 edit-view-field " type="relate" field="approver_c"  >
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
 
-<input type="text" name="<?php echo $this->_tpl_vars['fields']['assigned_user_name']['name']; ?>
-" class="sqsEnabled" tabindex="0" id="<?php echo $this->_tpl_vars['fields']['assigned_user_name']['name']; ?>
-" size="" value="<?php echo $this->_tpl_vars['fields']['assigned_user_name']['value']; ?>
+<input type="text" name="<?php echo $this->_tpl_vars['fields']['approver_c']['name']; ?>
+" class="sqsEnabled" tabindex="0" id="<?php echo $this->_tpl_vars['fields']['approver_c']['name']; ?>
+" size="" value="<?php echo $this->_tpl_vars['fields']['approver_c']['value']; ?>
 " title='' autocomplete="off"  	 >
-<input type="hidden" name="<?php echo $this->_tpl_vars['fields']['assigned_user_name']['id_name']; ?>
+<input type="hidden" name="<?php echo $this->_tpl_vars['fields']['approver_c']['id_name']; ?>
 " 
-id="<?php echo $this->_tpl_vars['fields']['assigned_user_name']['id_name']; ?>
+id="<?php echo $this->_tpl_vars['fields']['approver_c']['id_name']; ?>
 " 
-value="<?php echo $this->_tpl_vars['fields']['assigned_user_id']['value']; ?>
+value="<?php echo $this->_tpl_vars['fields']['user_id_c']['value']; ?>
 ">
 <span class="id-ff multiple">
-<button type="button" name="btn_<?php echo $this->_tpl_vars['fields']['assigned_user_name']['name']; ?>
-" id="btn_<?php echo $this->_tpl_vars['fields']['assigned_user_name']['name']; ?>
+<button type="button" name="btn_<?php echo $this->_tpl_vars['fields']['approver_c']['name']; ?>
+" id="btn_<?php echo $this->_tpl_vars['fields']['approver_c']['name']; ?>
 " tabindex="0" title="<?php echo smarty_function_sugar_translate(array('label' => 'LBL_ACCESSKEY_SELECT_USERS_TITLE'), $this);?>
 " class="button firstChild" value="<?php echo smarty_function_sugar_translate(array('label' => 'LBL_ACCESSKEY_SELECT_USERS_LABEL'), $this);?>
 "
 onclick='open_popup(
-"<?php echo $this->_tpl_vars['fields']['assigned_user_name']['module']; ?>
+"<?php echo $this->_tpl_vars['fields']['approver_c']['module']; ?>
 ", 
 600, 
 395,
 "", 
 true, 
 false, 
-<?php echo '{"call_back_function":"set_return","form_name":"EditView","field_to_name_array":{"id":"assigned_user_id","user_name":"assigned_user_name"}}'; ?>
+<?php echo '{"call_back_function":"set_return","form_name":"EditView","field_to_name_array":{"id":"user_id_c","name":"approver_c"}}'; ?>
 , 
 "single", 
 true
-);' ><span class="suitepicon suitepicon-action-select"></span></button><button type="button" name="btn_clr_<?php echo $this->_tpl_vars['fields']['assigned_user_name']['name']; ?>
-" id="btn_clr_<?php echo $this->_tpl_vars['fields']['assigned_user_name']['name']; ?>
+);' ><span class="suitepicon suitepicon-action-select"></span></button><button type="button" name="btn_clr_<?php echo $this->_tpl_vars['fields']['approver_c']['name']; ?>
+" id="btn_clr_<?php echo $this->_tpl_vars['fields']['approver_c']['name']; ?>
 " tabindex="0" title="<?php echo smarty_function_sugar_translate(array('label' => 'LBL_ACCESSKEY_CLEAR_USERS_TITLE'), $this);?>
 "  class="button lastChild"
-onclick="SUGAR.clearRelateField(this.form, '<?php echo $this->_tpl_vars['fields']['assigned_user_name']['name']; ?>
-', '<?php echo $this->_tpl_vars['fields']['assigned_user_name']['id_name']; ?>
+onclick="SUGAR.clearRelateField(this.form, '<?php echo $this->_tpl_vars['fields']['approver_c']['name']; ?>
+', '<?php echo $this->_tpl_vars['fields']['approver_c']['id_name']; ?>
 ');"  value="<?php echo smarty_function_sugar_translate(array('label' => 'LBL_ACCESSKEY_CLEAR_USERS_LABEL'), $this);?>
 " ><span class="suitepicon suitepicon-action-clear"></span></button>
 </span>
 <script type="text/javascript">
 SUGAR.util.doWhen(
 		"typeof(sqs_objects) != 'undefined' && typeof(sqs_objects['<?php echo $this->_tpl_vars['form_name']; ?>
-_<?php echo $this->_tpl_vars['fields']['assigned_user_name']['name']; ?>
+_<?php echo $this->_tpl_vars['fields']['approver_c']['name']; ?>
 ']) != 'undefined'",
 		enableQS
 );
@@ -1100,6 +1135,38 @@ SUGAR.AutoComplete.<?php echo $this->_tpl_vars['ac_key']; ?>
 
 
 <div class="col-xs-12 col-sm-6 edit-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label" data-label="LBL_ASSIGNED_TO_C">
+
+<?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_ASSIGNED_TO_C','module' => 'Calls'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+
+<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="varchar" field="assigned_to_c"  >
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<?php if (strlen ( $this->_tpl_vars['fields']['assigned_to_c']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['assigned_to_c']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['assigned_to_c']['value']); ?>
+<?php endif; ?>  
+<input type='text' name='<?php echo $this->_tpl_vars['fields']['assigned_to_c']['name']; ?>
+' 
+id='<?php echo $this->_tpl_vars['fields']['assigned_to_c']['name']; ?>
+' size='30' 
+maxlength='255' 
+value='<?php echo $this->_tpl_vars['value']; ?>
+' title=''      >
+</div>
+
+<!-- [/hide] -->
 </div>
 <div class="clear"></div>
 <div class="clear"></div>
@@ -1419,6 +1486,47 @@ value='<?php echo $this->_tpl_vars['value']; ?>
 <div class="col-xs-12 col-sm-12 edit-view-row-item">
 
 
+<div class="col-xs-12 col-sm-2 label" data-label="LBL_AUDIT_TRAIL">
+
+<?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_AUDIT_TRAIL','module' => 'Calls'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+
+<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="text" field="audit_trail_c" colspan='3' >
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<?php if (empty ( $this->_tpl_vars['fields']['audit_trail_c']['value'] )): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['audit_trail_c']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['audit_trail_c']['value']); ?>
+<?php endif; ?>
+<textarea  id='<?php echo $this->_tpl_vars['fields']['audit_trail_c']['name']; ?>
+' name='<?php echo $this->_tpl_vars['fields']['audit_trail_c']['name']; ?>
+'
+rows="4"
+cols="20"
+title='' tabindex="0" 
+ ><?php echo $this->_tpl_vars['value']; ?>
+</textarea>
+<?php echo ''; ?>
+
+</div>
+
+<!-- [/hide] -->
+</div>
+<div class="clear"></div>
+
+
+
+<div class="col-xs-12 col-sm-12 edit-view-row-item">
+
+
 <div class="col-xs-12 col-sm-2 label" data-label="LBL_NEW_CURRENT_STATUS">
 
 <?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
@@ -1427,6 +1535,7 @@ value='<?php echo $this->_tpl_vars['value']; ?>
 <?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
 :
 
+<span class="required">*</span>
 <?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
 </div>
 
@@ -1532,6 +1641,299 @@ title='' tabindex="0"
 </textarea>
 <?php echo ''; ?>
 
+</div>
+
+<!-- [/hide] -->
+</div>
+<div class="clear"></div>
+</div>                    </div>
+</div>
+</div>
+
+
+
+
+<div class="panel panel-default">
+<div class="panel-heading ">
+<a class="" role="button" data-toggle="collapse-edit" aria-expanded="false">
+<div class="col-xs-10 col-sm-11 col-md-11">
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_EDITVIEW_PANEL1','module' => 'Calls'), $this);?>
+
+</div>
+</a>
+</div>
+<div class="panel-body panel-collapse collapse in panelContainer" id="detailpanel_0" data-id="LBL_EDITVIEW_PANEL1">
+<div class="tab-content">
+<!-- tab_panel_content.tpl -->
+<div class="row edit-view-row">
+
+
+
+<div class="col-xs-12 col-sm-6 edit-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label" data-label="LBL_UNTAG">
+
+<?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_UNTAG','module' => 'Calls'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+
+<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="varchar" field="untag_c"  >
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<?php if (strlen ( $this->_tpl_vars['fields']['untag_c']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['untag_c']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['untag_c']['value']); ?>
+<?php endif; ?>  
+<input type='text' name='<?php echo $this->_tpl_vars['fields']['untag_c']['name']; ?>
+' 
+id='<?php echo $this->_tpl_vars['fields']['untag_c']['name']; ?>
+' size='30' 
+maxlength='255' 
+value='<?php echo $this->_tpl_vars['value']; ?>
+' title=''      >
+</div>
+
+<!-- [/hide] -->
+</div>
+
+
+<div class="col-xs-12 col-sm-6 edit-view-row-item">
+</div>
+<div class="clear"></div>
+<div class="clear"></div>
+
+
+
+<div class="col-xs-12 col-sm-6 edit-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label" data-label="LBL_TAG">
+
+<?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_TAG','module' => 'Calls'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+
+<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="varchar" field="tag_c"  >
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<?php if (strlen ( $this->_tpl_vars['fields']['tag_c']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['tag_c']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['tag_c']['value']); ?>
+<?php endif; ?>  
+<input type='text' name='<?php echo $this->_tpl_vars['fields']['tag_c']['name']; ?>
+' 
+id='<?php echo $this->_tpl_vars['fields']['tag_c']['name']; ?>
+' size='30' 
+maxlength='255' 
+value='<?php echo $this->_tpl_vars['value']; ?>
+' title=''      >
+</div>
+
+<!-- [/hide] -->
+</div>
+
+
+<div class="col-xs-12 col-sm-6 edit-view-row-item">
+</div>
+<div class="clear"></div>
+<div class="clear"></div>
+
+
+
+<div class="col-xs-12 col-sm-12 edit-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label" data-label="LBL_TAGGED_COMMENTS">
+
+<?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_TAGGED_COMMENTS','module' => 'Calls'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+
+<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="text" field="tagged_comments_c" colspan='3' >
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<?php if (empty ( $this->_tpl_vars['fields']['tagged_comments_c']['value'] )): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['tagged_comments_c']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['tagged_comments_c']['value']); ?>
+<?php endif; ?>
+<textarea  id='<?php echo $this->_tpl_vars['fields']['tagged_comments_c']['name']; ?>
+' name='<?php echo $this->_tpl_vars['fields']['tagged_comments_c']['name']; ?>
+'
+rows="4"
+cols="20"
+title='' tabindex="0" 
+ ><?php echo $this->_tpl_vars['value']; ?>
+</textarea>
+<?php echo ''; ?>
+
+</div>
+
+<!-- [/hide] -->
+</div>
+<div class="clear"></div>
+
+
+
+<div class="col-xs-12 col-sm-6 edit-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label" data-label="LBL_TAG_HIDDEN">
+
+<?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_TAG_HIDDEN','module' => 'Calls'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+
+<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="varchar" field="tag_hidden_c"  >
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<?php if (strlen ( $this->_tpl_vars['fields']['tag_hidden_c']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['tag_hidden_c']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['tag_hidden_c']['value']); ?>
+<?php endif; ?>  
+<input type='text' name='<?php echo $this->_tpl_vars['fields']['tag_hidden_c']['name']; ?>
+' 
+id='<?php echo $this->_tpl_vars['fields']['tag_hidden_c']['name']; ?>
+' size='30' 
+maxlength='255' 
+value='<?php echo $this->_tpl_vars['value']; ?>
+' title=''      >
+</div>
+
+<!-- [/hide] -->
+</div>
+
+
+<div class="col-xs-12 col-sm-6 edit-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label" data-label="LBL_UNTAG_HIDDEN">
+
+<?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_UNTAG_HIDDEN','module' => 'Calls'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+
+<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="varchar" field="untag_hidden_c"  >
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<?php if (strlen ( $this->_tpl_vars['fields']['untag_hidden_c']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['untag_hidden_c']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['untag_hidden_c']['value']); ?>
+<?php endif; ?>  
+<input type='text' name='<?php echo $this->_tpl_vars['fields']['untag_hidden_c']['name']; ?>
+' 
+id='<?php echo $this->_tpl_vars['fields']['untag_hidden_c']['name']; ?>
+' size='30' 
+maxlength='255' 
+value='<?php echo $this->_tpl_vars['value']; ?>
+' title=''      >
+</div>
+
+<!-- [/hide] -->
+</div>
+<div class="clear"></div>
+<div class="clear"></div>
+
+
+
+<div class="col-xs-12 col-sm-12 edit-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label" data-label="LBL_ASSIGNED_TO_NAME">
+
+<?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_ASSIGNED_TO_NAME','module' => 'Calls'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+
+<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="relate" field="assigned_user_name" colspan='3' >
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<input type="text" name="<?php echo $this->_tpl_vars['fields']['assigned_user_name']['name']; ?>
+" class="sqsEnabled" tabindex="0" id="<?php echo $this->_tpl_vars['fields']['assigned_user_name']['name']; ?>
+" size="" value="<?php echo $this->_tpl_vars['fields']['assigned_user_name']['value']; ?>
+" title='' autocomplete="off"  	 >
+<input type="hidden" name="<?php echo $this->_tpl_vars['fields']['assigned_user_name']['id_name']; ?>
+" 
+id="<?php echo $this->_tpl_vars['fields']['assigned_user_name']['id_name']; ?>
+" 
+value="<?php echo $this->_tpl_vars['fields']['assigned_user_id']['value']; ?>
+">
+<span class="id-ff multiple">
+<button type="button" name="btn_<?php echo $this->_tpl_vars['fields']['assigned_user_name']['name']; ?>
+" id="btn_<?php echo $this->_tpl_vars['fields']['assigned_user_name']['name']; ?>
+" tabindex="0" title="<?php echo smarty_function_sugar_translate(array('label' => 'LBL_ACCESSKEY_SELECT_USERS_TITLE'), $this);?>
+" class="button firstChild" value="<?php echo smarty_function_sugar_translate(array('label' => 'LBL_ACCESSKEY_SELECT_USERS_LABEL'), $this);?>
+"
+onclick='open_popup(
+"<?php echo $this->_tpl_vars['fields']['assigned_user_name']['module']; ?>
+", 
+600, 
+395,
+"", 
+true, 
+false, 
+<?php echo '{"call_back_function":"set_return","form_name":"EditView","field_to_name_array":{"id":"assigned_user_id","user_name":"assigned_user_name"}}'; ?>
+, 
+"single", 
+true
+);' ><span class="suitepicon suitepicon-action-select"></span></button><button type="button" name="btn_clr_<?php echo $this->_tpl_vars['fields']['assigned_user_name']['name']; ?>
+" id="btn_clr_<?php echo $this->_tpl_vars['fields']['assigned_user_name']['name']; ?>
+" tabindex="0" title="<?php echo smarty_function_sugar_translate(array('label' => 'LBL_ACCESSKEY_CLEAR_USERS_TITLE'), $this);?>
+"  class="button lastChild"
+onclick="SUGAR.clearRelateField(this.form, '<?php echo $this->_tpl_vars['fields']['assigned_user_name']['name']; ?>
+', '<?php echo $this->_tpl_vars['fields']['assigned_user_name']['id_name']; ?>
+');"  value="<?php echo smarty_function_sugar_translate(array('label' => 'LBL_ACCESSKEY_CLEAR_USERS_LABEL'), $this);?>
+" ><span class="suitepicon suitepicon-action-clear"></span></button>
+</span>
+<script type="text/javascript">
+SUGAR.util.doWhen(
+		"typeof(sqs_objects) != 'undefined' && typeof(sqs_objects['<?php echo $this->_tpl_vars['form_name']; ?>
+_<?php echo $this->_tpl_vars['fields']['assigned_user_name']['name']; ?>
+']) != 'undefined'",
+		enableQS
+);
+</script>
 </div>
 
 <!-- [/hide] -->
@@ -1664,6 +2066,10 @@ if(custom_check_form('EditView'))SUGAR.ajaxUI.submitForm(_form);return false;" c
 &record=<?php echo ((is_array($_tmp=$_REQUEST['return_id'])) ? $this->_run_mod_handler('escape', true, $_tmp, 'url') : smarty_modifier_escape($_tmp, 'url')); ?>
 '); return false;" type="button" name="button" value="<?php echo $this->_tpl_vars['APP']['LBL_CANCEL_BUTTON_LABEL']; ?>
 " id="CANCEL"> <?php endif; ?>
+<input type="button" name="apply_for_complete_button" value="send for approval" id="apply_for_complete" class="button" //>
+<input type="button" name="approve_button" value="approve" id="approve_activity" class="button" //>
+<input type="button" name="reject_button" value="reject" id="reject_activity" class="button" //>
+<input type="button" name="complete_button" value="completed" id="complete_activity" class="button" //>
 <?php if ($this->_tpl_vars['fields']['status']['value'] != 'Held'): ?><input title="<?php echo $this->_tpl_vars['APP']['LBL_CLOSE_AND_CREATE_BUTTON_TITLE']; ?>
 " id="CLOSE_CREATE_HEADER" accessKey="<?php echo $this->_tpl_vars['APP']['LBL_CLOSE_AND_CREATE_BUTTON_KEY']; ?>
 " class="button" onclick="SUGAR.calls.fill_invitees(); document.EditView.status.value='Held'; document.EditView.action.value='Save'; document.EditView.return_module.value='Calls'; document.EditView.isDuplicate.value=true; document.EditView.isSaveAndNew.value=true; document.EditView.return_action.value='EditView'; document.EditView.return_id.value='<?php echo $this->_tpl_vars['fields']['id']['value']; ?>
@@ -1872,7 +2278,40 @@ addToValidate(\'EditView\', \'reschedule_history\', \'varchar\', false,\''; ?>
 addToValidate(\'EditView\', \'reschedule_count\', \'varchar\', false,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_RESCHEDULE_COUNT','module' => 'Calls','for_js' => true), $this);?>
 <?php echo '\' );
-addToValidate(\'EditView\', \'new_current_status_c\', \'text\', false,\''; ?>
+addToValidate(\'EditView\', \'status_new_c\', \'varchar\', false,\''; ?>
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_STATUS_NEW','module' => 'Calls','for_js' => true), $this);?>
+<?php echo '\' );
+addToValidate(\'EditView\', \'tag_c\', \'varchar\', false,\''; ?>
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_TAG','module' => 'Calls','for_js' => true), $this);?>
+<?php echo '\' );
+addToValidate(\'EditView\', \'approver_c\', \'relate\', false,\''; ?>
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_APPROVER','module' => 'Calls','for_js' => true), $this);?>
+<?php echo '\' );
+addToValidate(\'EditView\', \'untag_hidden_c\', \'varchar\', false,\''; ?>
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_UNTAG_HIDDEN','module' => 'Calls','for_js' => true), $this);?>
+<?php echo '\' );
+addToValidate(\'EditView\', \'assigned_to_c\', \'varchar\', false,\''; ?>
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_ASSIGNED_TO_C','module' => 'Calls','for_js' => true), $this);?>
+<?php echo '\' );
+addToValidate(\'EditView\', \'user_id_c\', \'id\', false,\''; ?>
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_APPROVER_USER_ID','module' => 'Calls','for_js' => true), $this);?>
+<?php echo '\' );
+addToValidate(\'EditView\', \'untag_c\', \'varchar\', false,\''; ?>
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_UNTAG','module' => 'Calls','for_js' => true), $this);?>
+<?php echo '\' );
+addToValidate(\'EditView\', \'tag_hidden_c\', \'varchar\', false,\''; ?>
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_TAG_HIDDEN','module' => 'Calls','for_js' => true), $this);?>
+<?php echo '\' );
+addToValidate(\'EditView\', \'audit_trail_c\', \'text\', false,\''; ?>
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_AUDIT_TRAIL','module' => 'Calls','for_js' => true), $this);?>
+<?php echo '\' );
+addToValidate(\'EditView\', \'tagged_comments_c\', \'text\', false,\''; ?>
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_TAGGED_COMMENTS','module' => 'Calls','for_js' => true), $this);?>
+<?php echo '\' );
+addToValidate(\'EditView\', \'activity_type_c\', \'enum\', false,\''; ?>
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_ACTIVITY_TYPE','module' => 'Calls','for_js' => true), $this);?>
+<?php echo '\' );
+addToValidate(\'EditView\', \'new_current_status_c\', \'text\', true,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_NEW_CURRENT_STATUS','module' => 'Calls','for_js' => true), $this);?>
 <?php echo '\' );
 addToValidate(\'EditView\', \'type_of_interaction_c\', \'enum\', true,\''; ?>
@@ -1907,4 +2346,9 @@ addToValidateBinaryDependency(\'EditView\', \'assigned_user_name\', \'alpha\', f
 <?php echo ': '; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_ASSIGNED_TO','module' => 'Calls','for_js' => true), $this);?>
 <?php echo '\', \'assigned_user_id\' );
-</script><script language="javascript">if(typeof sqs_objects == \'undefined\'){var sqs_objects = new Array;}sqs_objects[\'EditView_assigned_user_name\']={"form":"EditView","method":"get_user_array","field_list":["user_name","id"],"populate_list":["assigned_user_name","assigned_user_id"],"required_list":["assigned_user_id"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};sqs_objects[\'EditView_parent_name\']={"form":"EditView","method":"query","modules":["Accounts"],"group":"or","field_list":["name","id"],"populate_list":["parent_name","parent_id"],"required_list":["parent_id"],"conditions":[{"name":"name","op":"like_custom","end":"%","value":""}],"order":"name","limit":"30","no_match_text":"No Match"};</script>'; ?>
+addToValidateBinaryDependency(\'EditView\', \'approver_c\', \'alpha\', false,\''; ?>
+<?php echo smarty_function_sugar_translate(array('label' => 'ERR_SQS_NO_MATCH_FIELD','module' => 'Calls','for_js' => true), $this);?>
+<?php echo ': '; ?>
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_APPROVER','module' => 'Calls','for_js' => true), $this);?>
+<?php echo '\', \'user_id_c\' );
+</script><script language="javascript">if(typeof sqs_objects == \'undefined\'){var sqs_objects = new Array;}sqs_objects[\'EditView_approver_c\']={"form":"EditView","method":"query","modules":["Users"],"group":"or","field_list":["name","id"],"populate_list":["approver_c","user_id_c"],"required_list":["parent_id"],"conditions":[{"name":"name","op":"like_custom","end":"%","value":""}],"order":"name","limit":"30","no_match_text":"No Match"};sqs_objects[\'EditView_parent_name\']={"form":"EditView","method":"query","modules":["Accounts"],"group":"or","field_list":["name","id"],"populate_list":["parent_name","parent_id"],"required_list":["parent_id"],"conditions":[{"name":"name","op":"like_custom","end":"%","value":""}],"order":"name","limit":"30","no_match_text":"No Match"};sqs_objects[\'EditView_assigned_user_name\']={"form":"EditView","method":"get_user_array","field_list":["user_name","id"],"populate_list":["assigned_user_name","assigned_user_id"],"required_list":["assigned_user_id"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};</script>'; ?>

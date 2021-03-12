@@ -414,7 +414,7 @@ onclick="SUGAR.clearRelateField(this.form, '{$fields.rfporeoipublished_c.name}-i
 <div class="col-xs-12 col-sm-8 edit-view-field " type="file" field="filename"  >
 {counter name="panelFieldCount" print=false}
 
-<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=cxpcvbeq_n0AnZ1zDZZwcw'></script>
+<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=IJcr12pbKUM2dzFteowGaw'></script>
 {if !empty($fields.filename.value) }
 {assign var=showRemove value=true}
 {else}
@@ -720,272 +720,6 @@ onclick="SUGAR.clearRelateField(this.form, '{$fields.opportunity_type.name}-inpu
 
 
 <div class="col-xs-12 col-sm-6 edit-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label" data-label="LBL_CRITICAL">
-
-{minify}
-{capture name="label" assign="label"}{sugar_translate label='LBL_CRITICAL' module='Opportunities'}{/capture}
-{$label|strip_semicolon}:
-
-{/minify}
-</div>
-
-<div class="col-xs-12 col-sm-8 edit-view-field " type="enum" field="critical_c"  >
-{counter name="panelFieldCount" print=false}
-
-{if !isset($config.enable_autocomplete) || $config.enable_autocomplete==false}
-<select name="{$fields.critical_c.name}" 
-id="{$fields.critical_c.name}" 
-title=''       
->
-{if isset($fields.critical_c.value) && $fields.critical_c.value != ''}
-{html_options options=$fields.critical_c.options selected=$fields.critical_c.value}
-{else}
-{html_options options=$fields.critical_c.options selected=$fields.critical_c.default}
-{/if}
-</select>
-{else}
-{assign var="field_options" value=$fields.critical_c.options }
-{capture name="field_val"}{$fields.critical_c.value}{/capture}
-{assign var="field_val" value=$smarty.capture.field_val}
-{capture name="ac_key"}{$fields.critical_c.name}{/capture}
-{assign var="ac_key" value=$smarty.capture.ac_key}
-<select style='display:none' name="{$fields.critical_c.name}" 
-id="{$fields.critical_c.name}" 
-title=''          
->
-{if isset($fields.critical_c.value) && $fields.critical_c.value != ''}
-{html_options options=$fields.critical_c.options selected=$fields.critical_c.value}
-{else}
-{html_options options=$fields.critical_c.options selected=$fields.critical_c.default}
-{/if}
-</select>
-<input
-id="{$fields.critical_c.name}-input"
-name="{$fields.critical_c.name}-input"
-size="30"
-value="{$field_val|lookup:$field_options}"
-type="text" style="vertical-align: top;">
-<span class="id-ff multiple">
-<button type="button"><img src="{sugar_getimagepath file="id-ff-down.png"}" id="{$fields.critical_c.name}-image"></button><button type="button"
-id="btn-clear-{$fields.critical_c.name}-input"
-title="Clear"
-onclick="SUGAR.clearRelateField(this.form, '{$fields.critical_c.name}-input', '{$fields.critical_c.name}');sync_{$fields.critical_c.name}()"><span class="suitepicon suitepicon-action-clear"></span></button>
-</span>
-{literal}
-<script>
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal} = [];
-	{/literal}
-
-			{literal}
-		(function (){
-			var selectElem = document.getElementById("{/literal}{$fields.critical_c.name}{literal}");
-			
-			if (typeof select_defaults =="undefined")
-				select_defaults = [];
-			
-			select_defaults[selectElem.id] = {key:selectElem.value,text:''};
-
-			//get default
-			for (i=0;i<selectElem.options.length;i++){
-				if (selectElem.options[i].value==selectElem.value)
-					select_defaults[selectElem.id].text = selectElem.options[i].innerHTML;
-			}
-
-			//SUGAR.AutoComplete.{$ac_key}.ds = 
-			//get options array from vardefs
-			var options = SUGAR.AutoComplete.getOptionsArray("");
-
-			YUI().use('datasource', 'datasource-jsonschema',function (Y) {
-				SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.ds = new Y.DataSource.Function({
-				    source: function (request) {
-				    	var ret = [];
-				    	for (i=0;i<selectElem.options.length;i++)
-				    		if (!(selectElem.options[i].value=='' && selectElem.options[i].innerHTML==''))
-				    			ret.push({'key':selectElem.options[i].value,'text':selectElem.options[i].innerHTML});
-				    	return ret;
-				    }
-				});
-			});
-		})();
-		{/literal}
-	
-	{literal}
-		YUI().use("autocomplete", "autocomplete-filters", "autocomplete-highlighters", "node","node-event-simulate", function (Y) {
-	{/literal}
-			
-	SUGAR.AutoComplete.{$ac_key}.inputNode = Y.one('#{$fields.critical_c.name}-input');
-	SUGAR.AutoComplete.{$ac_key}.inputImage = Y.one('#{$fields.critical_c.name}-image');
-	SUGAR.AutoComplete.{$ac_key}.inputHidden = Y.one('#{$fields.critical_c.name}');
-	
-			{literal}
-			function SyncToHidden(selectme){
-				var selectElem = document.getElementById("{/literal}{$fields.critical_c.name}{literal}");
-				var doSimulateChange = false;
-				
-				if (selectElem.value!=selectme)
-					doSimulateChange=true;
-				
-				selectElem.value=selectme;
-
-				for (i=0;i<selectElem.options.length;i++){
-					selectElem.options[i].selected=false;
-					if (selectElem.options[i].value==selectme)
-						selectElem.options[i].selected=true;
-				}
-
-				if (doSimulateChange)
-					SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('change');
-			}
-
-			//global variable 
-			sync_{/literal}{$fields.critical_c.name}{literal} = function(){
-				SyncToHidden();
-			}
-			function syncFromHiddenToWidget(){
-
-				var selectElem = document.getElementById("{/literal}{$fields.critical_c.name}{literal}");
-
-				//if select no longer on page, kill timer
-				if (selectElem==null || selectElem.options == null)
-					return;
-
-				var currentvalue = SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.get('value');
-
-				SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.simulate('keyup');
-
-				for (i=0;i<selectElem.options.length;i++){
-
-					if (selectElem.options[i].value==selectElem.value && document.activeElement != document.getElementById('{/literal}{$fields.critical_c.name}-input{literal}'))
-						SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.set('value',selectElem.options[i].innerHTML);
-				}
-			}
-
-            YAHOO.util.Event.onAvailable("{/literal}{$fields.critical_c.name}{literal}", syncFromHiddenToWidget);
-		{/literal}
-
-		SUGAR.AutoComplete.{$ac_key}.minQLen = 0;
-		SUGAR.AutoComplete.{$ac_key}.queryDelay = 0;
-		SUGAR.AutoComplete.{$ac_key}.numOptions = {$field_options|@count};
-		if(SUGAR.AutoComplete.{$ac_key}.numOptions >= 300) {literal}{
-			{/literal}
-			SUGAR.AutoComplete.{$ac_key}.minQLen = 1;
-			SUGAR.AutoComplete.{$ac_key}.queryDelay = 200;
-			{literal}
-		}
-		{/literal}
-		if(SUGAR.AutoComplete.{$ac_key}.numOptions >= 3000) {literal}{
-			{/literal}
-			SUGAR.AutoComplete.{$ac_key}.minQLen = 1;
-			SUGAR.AutoComplete.{$ac_key}.queryDelay = 500;
-			{literal}
-		}
-		{/literal}
-		
-	SUGAR.AutoComplete.{$ac_key}.optionsVisible = false;
-	
-	{literal}
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.plug(Y.Plugin.AutoComplete, {
-		activateFirstItem: true,
-		{/literal}
-		minQueryLength: SUGAR.AutoComplete.{$ac_key}.minQLen,
-		queryDelay: SUGAR.AutoComplete.{$ac_key}.queryDelay,
-		zIndex: 99999,
-
-				
-		{literal}
-		source: SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.ds,
-		
-		resultTextLocator: 'text',
-		resultHighlighter: 'phraseMatch',
-		resultFilters: 'phraseMatch',
-	});
-
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.expandHover = function(ex){
-		var hover = YAHOO.util.Dom.getElementsByClassName('dccontent');
-		if(hover[0] != null){
-			if (ex) {
-				var h = '1000px';
-				hover[0].style.height = h;
-			}
-			else{
-				hover[0].style.height = '';
-			}
-		}
-	}
-		
-	if({/literal}SUGAR.AutoComplete.{$ac_key}.minQLen{literal} == 0){
-		// expand the dropdown options upon focus
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('focus', function () {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.ac.sendRequest('');
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.optionsVisible = true;
-		});
-	}
-
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('click', function(e) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('click');
-		});
-		
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('dblclick', function(e) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('dblclick');
-		});
-
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('focus', function(e) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('focus');
-		});
-
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('mouseup', function(e) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('mouseup');
-		});
-
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('mousedown', function(e) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('mousedown');
-		});
-
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.on('blur', function(e) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.simulate('blur');
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.optionsVisible = false;
-			var selectElem = document.getElementById("{/literal}{$fields.critical_c.name}{literal}");
-			//if typed value is a valid option, do nothing
-			for (i=0;i<selectElem.options.length;i++)
-				if (selectElem.options[i].innerHTML==SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.get('value'))
-					return;
-			
-			//typed value is invalid, so set the text and the hidden to blank
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.set('value', select_defaults[selectElem.id].text);
-			SyncToHidden(select_defaults[selectElem.id].key);
-		});
-	
-	// when they click on the arrow image, toggle the visibility of the options
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputImage.ancestor().on('click', function () {
-		if (SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.optionsVisible) {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.blur();
-		} else {
-			SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.focus();
-		}
-	});
-
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.ac.on('query', function () {
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputHidden.set('value', '');
-	});
-
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.ac.on('visibleChange', function (e) {
-		SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.expandHover(e.newVal); // expand
-	});
-
-	// when they select an option, set the hidden input with the KEY, to be saved
-	SUGAR.AutoComplete.{/literal}{$ac_key}{literal}.inputNode.ac.on('select', function(e) {
-		SyncToHidden(e.result.raw.key);
-	});
- 
-});
-</script> 
-{/literal}
-{/if}
-</div>
-
-<!-- [/hide] -->
 </div>
 <div class="clear"></div>
 <div class="clear"></div>
@@ -2365,7 +2099,7 @@ value='{$value}' title=''      >
 <div class="col-xs-12 col-sm-6 edit-view-row-item">
 
 
-<div class="col-xs-12 col-sm-4 label" data-label="LBL_NON_FINANCIAL_RADIO_C">
+<div class="col-xs-12 col-sm-4 label" data-label="LBL_NON_FINANCIAL_RADIO">
 
 {minify}
 {capture name="label" assign="label"}{sugar_translate label='LBL_NON_FINANCIAL_RADIO' module='Opportunities'}{/capture}
@@ -2460,7 +2194,7 @@ value='{$value}' title=''      >
 <div class="col-xs-12 col-sm-6 edit-view-row-item">
 
 
-<div class="col-xs-12 col-sm-4 label" data-label="LBL_ASSIGNED_TO_NEW_C">
+<div class="col-xs-12 col-sm-4 label" data-label="LBL_ASSIGNED_TO_NEW">
 
 {minify}
 {capture name="label" assign="label"}{sugar_translate label='LBL_ASSIGNED_TO_NEW' module='Opportunities'}{/capture}
@@ -5476,15 +5210,13 @@ addToValidate('EditView', 'project_scope_c', 'text', false,'{/literal}{sugar_tra
 addToValidate('EditView', 'expected_inflow_c', 'date', false,'{/literal}{sugar_translate label='LBL_EXPECTED_INFLOW' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'rfp_eoi_projected_c', 'date', false,'{/literal}{sugar_translate label='LBL_RFP_EOI_PROJECTED' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'jjwg_maps_address_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_JJWG_MAPS_ADDRESS' module='Opportunities' for_js=true}{literal}' );
-addToValidate('EditView', 'assigned_to_c', 'relate', false,'{/literal}{sugar_translate label='LBL_ASSIGNED_TO' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'work_order_achieved_c', 'date', false,'{/literal}{sugar_translate label='LBL_WORK_ORDER_ACHIEVED' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'country_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_COUNTRY' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'rfp_eoi_published_achieved_c', 'date', false,'{/literal}{sugar_translate label='LBL_RFP_EOI_PUBLISHED_ACHIEVED' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'bid_strategy_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_BID_STRATEGY' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'rfp_eoi_summary_c', 'text', false,'{/literal}{sugar_translate label='LBL_RFP_EOI_SUMMARY' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'select_approver_c', 'relate', false,'{/literal}{sugar_translate label='LBL_SELECT_APPROVER' module='Opportunities' for_js=true}{literal}' );
-addToValidate('EditView', 'non_financial_radio_c', 'radioenum', false,'{/literal}{sugar_translate label='LBL_NON_FINANCIAL_RADIO_C' module='Opportunities' for_js=true}{literal}' );
-addToValidate('EditView', 'user_id3_c', 'id', false,'{/literal}{sugar_translate label='LBL_ASSIGNED_TO_USER_ID' module='Opportunities' for_js=true}{literal}' );
+addToValidate('EditView', 'non_financial_radio_c', 'radioenum', false,'{/literal}{sugar_translate label='LBL_NON_FINANCIAL_RADIO' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'budget_source_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_BUDGET_SOURCE' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'new_department_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_NEW_DEPARTMENT' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'tagged_hiden_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_TAGGED_HIDEN' module='Opportunities' for_js=true}{literal}' );
@@ -5494,6 +5226,7 @@ addToValidate('EditView', 'rfp_eoi_published_projected_c', 'date', false,'{/lite
 addToValidate('EditView', 'work_order_projected_c', 'date', false,'{/literal}{sugar_translate label='LBL_WORK_ORDER_PROJECTED' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'rfporeoipublished_c', 'enum', true,'{/literal}{sugar_translate label='LBL_RFP/EOIPUBLISHED' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'sector_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_SECTOR' module='Opportunities' for_js=true}{literal}' );
+addToValidate('EditView', 'test_checkbox_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_TEST_CHECKBOX' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'budget_head_amount_c', 'float', false,'{/literal}{sugar_translate label='LBL_BUDGET_HEAD_AMOUNT' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'financial_feasibility_l1_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_FINANCIAL_FEASIBILITY_L1' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'comments_c', 'text', false,'{/literal}{sugar_translate label='LBL_COMMENTS' module='Opportunities' for_js=true}{literal}' );
@@ -5519,7 +5252,7 @@ addToValidate('EditView', 'source_details_c', 'varchar', false,'{/literal}{sugar
 addToValidate('EditView', 'budget_allocated_oppertunity_c', 'float', false,'{/literal}{sugar_translate label='LBL_BUDGET_ALLOCATED_OPPERTUNITY' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'untagged_hidden_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_UNTAGGED_HIDDEN' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'tagged_users_comments_c', 'text', false,'{/literal}{sugar_translate label='LBL_TAGGED_USERS_COMMENTS' module='Opportunities' for_js=true}{literal}' );
-addToValidate('EditView', 'assigned_to_new_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_ASSIGNED_TO_NEW_C' module='Opportunities' for_js=true}{literal}' );
+addToValidate('EditView', 'assigned_to_new_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_ASSIGNED_TO_NEW' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'jjwg_maps_geocode_status_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_JJWG_MAPS_GEOCODE_STATUS' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'applyfor_c', 'enum', false,'{/literal}{sugar_translate label='LBL_APPLYFOR' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'risk_c', 'text', false,'{/literal}{sugar_translate label='LBL_RISK' module='Opportunities' for_js=true}{literal}' );

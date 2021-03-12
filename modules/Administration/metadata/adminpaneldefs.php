@@ -1,3 +1,4 @@
+
 <?php
 /**
  *
@@ -40,97 +41,99 @@
 
 global $current_user,$admin_group_header;
 
+
+
 //users and security.
 $admin_option_defs=array();
 $admin_option_defs['Users']['user_management']= array('UserManagement','LBL_MANAGE_USERS_TITLE','LBL_MANAGE_USERS','./index.php?module=Users&action=index', 'user-management');
-// $admin_option_defs['Users']['roles_management']= array('Roles','LBL_MANAGE_ROLES_TITLE','LBL_MANAGE_ROLES','./index.php?module=ACLRoles&action=index', 'roles');
-// $admin_option_defs['Administration']['password_management']= array('Password','LBL_MANAGE_PASSWORD_TITLE','LBL_MANAGE_PASSWORD','./index.php?module=Administration&action=PasswordManager', 'password');
-// $admin_group_header[]= array('LBL_USERS_TITLE','',false,$admin_option_defs, 'LBL_USERS_DESC');
-// $license_management = false;
-//     if (!isset($GLOBALS['sugar_config']['hide_admin_licensing']) || !$GLOBALS['sugar_config']['hide_admin_licensing']) {
-//         $license_management = array('License','LBL_MANAGE_LICENSE_TITLE','LBL_MANAGE_LICENSE','./index.php?module=Administration&action=LicenseSettings');
-//     }
+$admin_option_defs['Users']['roles_management']= array('Roles','LBL_MANAGE_ROLES_TITLE','LBL_MANAGE_ROLES','./index.php?module=ACLRoles&action=index', 'roles');
+$admin_option_defs['Administration']['password_management']= array('Password','LBL_MANAGE_PASSWORD_TITLE','LBL_MANAGE_PASSWORD','./index.php?module=Administration&action=PasswordManager', 'password');
+$admin_group_header[]= array('LBL_USERS_TITLE','',false,$admin_option_defs, 'LBL_USERS_DESC');
+$license_management = false;
+    if (!isset($GLOBALS['sugar_config']['hide_admin_licensing']) || !$GLOBALS['sugar_config']['hide_admin_licensing']) {
+        $license_management = array('License','LBL_MANAGE_LICENSE_TITLE','LBL_MANAGE_LICENSE','./index.php?module=Administration&action=LicenseSettings');
+    }
 
-// //system.
-// $admin_option_defs=array();
-// $admin_option_defs['Administration']['configphp_settings']= array('Administration','LBL_CONFIGURE_SETTINGS_TITLE','LBL_CONFIGURE_SETTINGS','./index.php?module=Configurator&action=EditView', 'system-settings');
-// $admin_option_defs['Administration']['import']= array('Import','LBL_IMPORT_WIZARD','LBL_IMPORT_WIZARD_DESC','./index.php?module=Import&action=step1&import_module=Administration', 'import');
-// // $admin_option_defs['Administration']['locale']= array('Currencies','LBL_MANAGE_LOCALE','LBL_LOCALE','./index.php?module=Administration&action=Locale&view=default', 'locale');
+//system.
+$admin_option_defs=array();
+$admin_option_defs['Administration']['configphp_settings']= array('Administration','LBL_CONFIGURE_SETTINGS_TITLE','LBL_CONFIGURE_SETTINGS','./index.php?module=Configurator&action=EditView', 'system-settings');
+$admin_option_defs['Administration']['import']= array('Import','LBL_IMPORT_WIZARD','LBL_IMPORT_WIZARD_DESC','./index.php?module=Import&action=step1&import_module=Administration', 'import');
+$admin_option_defs['Administration']['locale']= array('Currencies','LBL_MANAGE_LOCALE','LBL_LOCALE','./index.php?module=Administration&action=Locale&view=default', 'locale');
 
-// if (!defined('TEMPLATE_URL')) {
-//     $admin_option_defs['Administration']['upgrade_wizard']= array('Upgrade','LBL_UPGRADE_WIZARD_TITLE','LBL_UPGRADE_WIZARD','./index.php?module=UpgradeWizard&action=index', 'upgrade-wizard');
-// }
+if (!defined('TEMPLATE_URL')) {
+    $admin_option_defs['Administration']['upgrade_wizard']= array('Upgrade','LBL_UPGRADE_WIZARD_TITLE','LBL_UPGRADE_WIZARD','./index.php?module=UpgradeWizard&action=index', 'upgrade-wizard');
+}
 
-// $admin_option_defs['Administration']['currencies_management']= array('Currencies','LBL_MANAGE_CURRENCIES','LBL_CURRENCY','./index.php?module=Currencies&action=index', 'currencies');
+$admin_option_defs['Administration']['currencies_management']= array('Currencies','LBL_MANAGE_CURRENCIES','LBL_CURRENCY','./index.php?module=Currencies&action=index', 'currencies');
 
-// if (!isset($GLOBALS['sugar_config']['hide_admin_backup']) || !$GLOBALS['sugar_config']['hide_admin_backup']) {
-//     $admin_option_defs['Administration']['backup_management']= array('Backups','LBL_BACKUPS_TITLE','LBL_BACKUPS','./index.php?module=Administration&action=Backups', 'backups');
-// }
+if (!isset($GLOBALS['sugar_config']['hide_admin_backup']) || !$GLOBALS['sugar_config']['hide_admin_backup']) {
+    $admin_option_defs['Administration']['backup_management']= array('Backups','LBL_BACKUPS_TITLE','LBL_BACKUPS','./index.php?module=Administration&action=Backups', 'backups');
+}
 
-// $admin_option_defs['Administration']['languages']= array('Currencies','LBL_MANAGE_LANGUAGES','LBL_LANGUAGES','./index.php?module=Administration&action=Languages&view=default', 'languages');
+$admin_option_defs['Administration']['languages']= array('Currencies','LBL_MANAGE_LANGUAGES','LBL_LANGUAGES','./index.php?module=Administration&action=Languages&view=default', 'languages');
 
-// $admin_option_defs['Administration']['repair']= array('Repair','LBL_UPGRADE_TITLE','LBL_UPGRADE','./index.php?module=Administration&action=Upgrade', 'repair');
+$admin_option_defs['Administration']['repair']= array('Repair','LBL_UPGRADE_TITLE','LBL_UPGRADE','./index.php?module=Administration&action=Upgrade', 'repair');
 
-// $admin_option_defs['Administration']['global_search']=array('icon_SearchForm','LBL_GLOBAL_SEARCH_SETTINGS','LBL_GLOBAL_SEARCH_SETTINGS_DESC','./index.php?module=Administration&action=GlobalSearchSettings', 'global-search');
+$admin_option_defs['Administration']['global_search']=array('icon_SearchForm','LBL_GLOBAL_SEARCH_SETTINGS','LBL_GLOBAL_SEARCH_SETTINGS_DESC','./index.php?module=Administration&action=GlobalSearchSettings', 'global-search');
 
-// if (!isset($GLOBALS['sugar_config']['hide_admin_diagnostics']) || !$GLOBALS['sugar_config']['hide_admin_diagnostics']) {
-//     $admin_option_defs['Administration']['diagnostic']= array('Diagnostic','LBL_DIAGNOSTIC_TITLE','LBL_DIAGNOSTIC_DESC','./index.php?module=Administration&action=Diagnostic', 'diagnostic');
-// }
+if (!isset($GLOBALS['sugar_config']['hide_admin_diagnostics']) || !$GLOBALS['sugar_config']['hide_admin_diagnostics']) {
+    $admin_option_defs['Administration']['diagnostic']= array('Diagnostic','LBL_DIAGNOSTIC_TITLE','LBL_DIAGNOSTIC_DESC','./index.php?module=Administration&action=Diagnostic', 'diagnostic');
+}
 
-// // Connector Integration
-// $admin_option_defs['Administration']['connector_settings']=array('icon_Connectors','LBL_CONNECTOR_SETTINGS','LBL_CONNECTOR_SETTINGS_DESC','./index.php?module=Connectors&action=ConnectorSettings', 'connectors');
-
-
-// // Theme Enable/Disable
-// $admin_option_defs['Administration']['theme_settings']=array('icon_AdminThemes','LBL_THEME_SETTINGS','LBL_THEME_SETTINGS_DESC','./index.php?module=Administration&action=ThemeSettings', 'themes');
-
-// $admin_option_defs['Administration']['scheduler'] = array('Schedulers','LBL_SUITE_SCHEDULER_TITLE','LBL_SUITE_SCHEDULER','./index.php?module=Schedulers&action=index', 'scheduler');
-
-// $admin_option_defs['Administration']['feed_settings']=array('icon_SugarFeed','LBL_SUITEFEED_SETTINGS','LBL_SUITEFEED_SETTINGS_DESC','./index.php?module=SugarFeed&action=AdminSettings', 'activity-streams');
+// Connector Integration
+$admin_option_defs['Administration']['connector_settings']=array('icon_Connectors','LBL_CONNECTOR_SETTINGS','LBL_CONNECTOR_SETTINGS_DESC','./index.php?module=Connectors&action=ConnectorSettings', 'connectors');
 
 
+// Theme Enable/Disable
+$admin_option_defs['Administration']['theme_settings']=array('icon_AdminThemes','LBL_THEME_SETTINGS','LBL_THEME_SETTINGS_DESC','./index.php?module=Administration&action=ThemeSettings', 'themes');
+
+$admin_option_defs['Administration']['scheduler'] = array('Schedulers','LBL_SUITE_SCHEDULER_TITLE','LBL_SUITE_SCHEDULER','./index.php?module=Schedulers&action=index', 'scheduler');
+
+$admin_option_defs['Administration']['feed_settings']=array('icon_SugarFeed','LBL_SUITEFEED_SETTINGS','LBL_SUITEFEED_SETTINGS_DESC','./index.php?module=SugarFeed&action=AdminSettings', 'activity-streams');
 
 
 
-// require_once 'include/SugarOAuthServer.php';
-// if (SugarOAuthServer::enabled()) {
-//     $admin_option_defs['Administration']['oauth_keys'] = array(
-//         'Password',
-//         'LBL_OAUTH_TITLE',
-//         'LBL_OAUTH',
-//         './index.php?module=OAuthKeys&action=index',
-//         'oauth-keys'
-//     );
-// }
 
-// $admin_option_defs['Administration']['oauth2_clients'] = array(
-//     'Password',
-//     'LBL_OAUTH2_CLIENTS_TITLE',
-//     'LBL_OAUTH2_CLIENTS',
-//     './index.php?module=OAuth2Clients&action=index',
-//     'password'
-// );
+
+require_once 'include/SugarOAuthServer.php';
+if (SugarOAuthServer::enabled()) {
+    $admin_option_defs['Administration']['oauth_keys'] = array(
+        'Password',
+        'LBL_OAUTH_TITLE',
+        'LBL_OAUTH',
+        './index.php?module=OAuthKeys&action=index',
+        'oauth-keys'
+    );
+}
+
+$admin_option_defs['Administration']['oauth2_clients'] = array(
+    'Password',
+    'LBL_OAUTH2_CLIENTS_TITLE',
+    'LBL_OAUTH2_CLIENTS',
+    './index.php?module=OAuth2Clients&action=index',
+    'password'
+);
 
 $admin_group_header[]= array('LBL_ADMINISTRATION_HOME_TITLE','',false,$admin_option_defs, 'LBL_ADMINISTRATION_HOME_DESC');
 
 
-// //email manager.
-// $admin_option_defs=array();
-// $admin_option_defs['Emails']['mass_Email_config']= array('EmailMan','LBL_MASS_EMAIL_CONFIG_TITLE','LBL_MASS_EMAIL_CONFIG_DESC','./index.php?module=EmailMan&action=config', 'email-settings');
+//email manager.
+$admin_option_defs=array();
+$admin_option_defs['Emails']['mass_Email_config']= array('EmailMan','LBL_MASS_EMAIL_CONFIG_TITLE','LBL_MASS_EMAIL_CONFIG_DESC','./index.php?module=EmailMan&action=config', 'email-settings');
 
-// $admin_option_defs['Campaigns']['campaignconfig']= array('EmailCampaigns','LBL_CAMPAIGN_CONFIG_TITLE','LBL_CAMPAIGN_CONFIG_DESC','./index.php?module=EmailMan&action=campaignconfig', 'campaign-email-settings');
+$admin_option_defs['Campaigns']['campaignconfig']= array('EmailCampaigns','LBL_CAMPAIGN_CONFIG_TITLE','LBL_CAMPAIGN_CONFIG_DESC','./index.php?module=EmailMan&action=campaignconfig', 'campaign-email-settings');
 
-// $admin_option_defs['Emails']['mailboxes']= array('EmailInbound','LBL_MANAGE_MAILBOX','LBL_MAILBOX_DESC','./index.php?module=InboundEmail&action=index', 'inbound-email');
-// $admin_option_defs['Emails']['mailboxes_outbound']= array('EmailOutbound','LBL_MANAGE_MAILBOX_OUTBOUND','LBL_MAILBOX_OUTBOUND_DESC','./index.php?module=OutboundEmailAccounts&action=index', 'outbound-email');
-// $admin_option_defs['Campaigns']['mass_Email']= array('EmailQueue','LBL_MASS_EMAIL_MANAGER_TITLE','LBL_MASS_EMAIL_MANAGER_DESC','./index.php?module=EmailMan&action=index', 'email-queue');
-
-
-// $admin_group_header[]= array('LBL_EMAIL_TITLE','',false,$admin_option_defs, 'LBL_EMAIL_DESC');
+$admin_option_defs['Emails']['mailboxes']= array('EmailInbound','LBL_MANAGE_MAILBOX','LBL_MAILBOX_DESC','./index.php?module=InboundEmail&action=index', 'inbound-email');
+$admin_option_defs['Emails']['mailboxes_outbound']= array('EmailOutbound','LBL_MANAGE_MAILBOX_OUTBOUND','LBL_MAILBOX_OUTBOUND_DESC','./index.php?module=OutboundEmailAccounts&action=index', 'outbound-email');
+$admin_option_defs['Campaigns']['mass_Email']= array('EmailQueue','LBL_MASS_EMAIL_MANAGER_TITLE','LBL_MASS_EMAIL_MANAGER_DESC','./index.php?module=EmailMan&action=index', 'email-queue');
 
 
+$admin_group_header[]= array('LBL_EMAIL_TITLE','',false,$admin_option_defs, 'LBL_EMAIL_DESC');
 
 
-// studio.
+
+
+//studio.
 $admin_option_defs=array();
 $admin_option_defs['studio']['studio']= array('Studio','LBL_STUDIO','LBL_STUDIO_DESC','./index.php?module=ModuleBuilder&action=index&type=studio', 'studio');
 if (isset($GLOBALS['beanFiles']['iFrame'])) {
@@ -209,8 +212,8 @@ $admin_group_header[] = array(
 
 
 $admin_option_defs = array();
-// $admin_option_defs['Administration']['securitygroup_management'] = array('SecuritySuiteGroupManagement', 'LBL_MANAGE_SECURITYGROUPS_TITLE', 'LBL_MANAGE_SECURITYGROUPS', './index.php?module=SecurityGroups&action=index', 'security');
-// $admin_option_defs['Administration']['securitygroup_config'] = array('SecurityGroupsManagement', 'LBL_CONFIG_SECURITYGROUPS_TITLE', 'LBL_CONFIG_SECURITYGROUPS', './index.php?module=SecurityGroups&action=config', 'security-suite-group-management');
+$admin_option_defs['Administration']['securitygroup_management'] = array('SecuritySuiteGroupManagement', 'Business Vertical Management', 'Business Vertical Management', './index.php?module=SecurityGroups&action=index', 'security');
+$admin_option_defs['Administration']['securitygroup_config'] = array('SecurityGroupsManagement', 'Business Vertical Settings', 'Business Vertical Settings', './index.php?module=SecurityGroups&action=config', 'security-suite-group-management');
 
 $admin_option_defs['Administration'] = array_merge((array)$admin_group_header[0][3]['Administration'], (array)$admin_option_defs['Administration']);
 
@@ -218,86 +221,86 @@ $admin_option_defs['Administration'] = array_merge((array)$admin_group_header[0]
 $admin_group_header[0] = array('LBL_USERS_TITLE', '', false, array_merge((array)$admin_group_header[0][3], (array)$admin_option_defs), 'LBL_USERS_DESC');
 
 
-// $admin_option_defs=array();
-// $admin_option_defs['Administration']['aos'] = array(
-//     'AOS',
-//     'LBL_AOS_SETTINGS',
-//     'LBL_CHANGE_SETTINGS',
-//     './index.php?module=Administration&action=AOSAdmin',
-//     'aos-settings'
-// );
+$admin_option_defs=array();
+$admin_option_defs['Administration']['aos'] = array(
+    'AOS',
+    'LBL_AOS_SETTINGS',
+    'LBL_CHANGE_SETTINGS',
+    './index.php?module=Administration&action=AOSAdmin',
+    'aos-settings'
+);
 
-// $admin_option_defs['Administration']['aod'] = array(
-//     'AOD',
-//     'LBL_AOD_SETTINGS',
-//     'LBL_CHANGE_SETTINGS_AOD',
-//     './index.php?module=Administration&action=AODAdmin',
-//     'aod-settings'
-// );
-// $admin_option_defs['Administration']['aop'] = array(
-//     'AOP',
-//     'LBL_AOP_SETTINGS',
-//     'LBL_CHANGE_SETTINGS_AOP',
-//     './index.php?module=Administration&action=AOPAdmin',
-//     'aop-settings'
-// );
+$admin_option_defs['Administration']['aod'] = array(
+    'AOD',
+    'LBL_AOD_SETTINGS',
+    'LBL_CHANGE_SETTINGS_AOD',
+    './index.php?module=Administration&action=AODAdmin',
+    'aod-settings'
+);
+$admin_option_defs['Administration']['aop'] = array(
+    'AOP',
+    'LBL_AOP_SETTINGS',
+    'LBL_CHANGE_SETTINGS_AOP',
+    './index.php?module=Administration&action=AOPAdmin',
+    'aop-settings'
+);
 
-// $admin_option_defs['Administration']['business_hours'] = array(
-//     'AOBH_BusinessHours',
-//     'LBL_BUSINESS_HOURS',
-//     'LBL_AOP_BUSINESS_HOURS_DESC',
-//     './index.php?module=Administration&action=BusinessHours',
-//     'aobh-businesshours'
-// );
+$admin_option_defs['Administration']['business_hours'] = array(
+    'AOBH_BusinessHours',
+    'LBL_BUSINESS_HOURS',
+    'LBL_AOP_BUSINESS_HOURS_DESC',
+    './index.php?module=Administration&action=BusinessHours',
+    'aobh-businesshours'
+);
 
-// $admin_group_header['sagility'] = array(
-//     'LBL_SALESAGILITY_ADMIN',
-//     '',
-//     false,
-//     $admin_option_defs,
-//     ''
-// );
+$admin_group_header['sagility'] = array(
+    'LBL_SALESAGILITY_ADMIN',
+    '',
+    false,
+    $admin_option_defs,
+    ''
+);
 
 
-// $admin_option_defs = [];
+$admin_option_defs = [];
 
-// $admin_option_defs['Administration']['search_wrapper'] = [
-//     'icon_SearchForm',
-//     'LBL_SEARCH_WRAPPER',
-//     'LBL_SEARCH_WRAPPER_DESC',
-//     './index.php?module=Administration&action=SearchSettings',
-//     'global-search'
-// ];
+$admin_option_defs['Administration']['search_wrapper'] = [
+    'icon_SearchForm',
+    'LBL_SEARCH_WRAPPER',
+    'LBL_SEARCH_WRAPPER_DESC',
+    './index.php?module=Administration&action=SearchSettings',
+    'global-search'
+];
 
-// $admin_option_defs['Administration']['global_search'] = [
-//     'icon_SearchForm',
-//     'LBL_SEARCH_MODULES',
-//     'LBL_SEARCH_MODULES_HELP',
-//     './index.php?module=Administration&action=GlobalSearchSettings',
-//     'global-search'
-// ];
+$admin_option_defs['Administration']['global_search'] = [
+    'icon_SearchForm',
+    'LBL_SEARCH_MODULES',
+    'LBL_SEARCH_MODULES_HELP',
+    './index.php?module=Administration&action=GlobalSearchSettings',
+    'global-search'
+];
 
-// $admin_option_defs['Administration']['elastic_search'] = [
-//     'ElasticSearchIndexerSettings',
-//     'LBL_ELASTIC_SEARCH_SETTINGS',
-//     'LBL_ELASTIC_SEARCH_SETTINGS_DESC',
-//     './index.php?module=Administration&action=ElasticSearchSettings',
-//     'global-search'
-// ];
+$admin_option_defs['Administration']['elastic_search'] = [
+    'ElasticSearchIndexerSettings',
+    'LBL_ELASTIC_SEARCH_SETTINGS',
+    'LBL_ELASTIC_SEARCH_SETTINGS_DESC',
+    './index.php?module=Administration&action=ElasticSearchSettings',
+    'global-search'
+];
 
-// // SearchWrapper
-// $admin_group_header[] = [
-//     'LBL_SEARCH_HEADER',
-//     '',
-//     false,
-//     $admin_option_defs,
-//     'LBL_SEARCH_HEADER_DESC'
-// ];
+// SearchWrapper
+$admin_group_header[] = [
+    'LBL_SEARCH_HEADER',
+    '',
+    false,
+    $admin_option_defs,
+    'LBL_SEARCH_HEADER_DESC'
+];
 
-// //bugs.
-// $admin_option_defs=array();
-// $admin_option_defs['Bugs']['bug_tracker']= array('Releases','LBL_MANAGE_RELEASES','LBL_RELEASE','./index.php?module=Releases&action=index', 'releases');
-// $admin_group_header[]= array('LBL_BUG_TITLE','',false,$admin_option_defs, 'LBL_BUG_DESC');
+//bugs.
+$admin_option_defs=array();
+$admin_option_defs['Bugs']['bug_tracker']= array('Releases','LBL_MANAGE_RELEASES','LBL_RELEASE','./index.php?module=Releases&action=index', 'releases');
+$admin_group_header[]= array('LBL_BUG_TITLE','',false,$admin_option_defs, 'LBL_BUG_DESC');
 
 
 if (file_exists('custom/modules/Administration/Ext/Administration/administration.ext.php')) {

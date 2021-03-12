@@ -296,18 +296,7 @@
                                        <a href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3Dindex%26return_module%3DOpportunities%26return_action%3DDetailView">View Opportunities</a>
                                     </li>
                                     <li>
-                                         {php}
-                                        global $current_user;
-                                           $this->_tpl_vars['current_user_function'] = $current_user->teamfunction_c;
-                                           $this->_tpl_vars['current_user_admin'] = $current_user->is_admin;
-                                           $this->_tpl_vars['current_user_mc'] = $current_user->mc_c;
-                                           {/php}
-                                           {if $current_user_admin!=1}
-                                           {if $current_user_function|strstr:'^sales^' || $current_user_mc=="yes"}
-                                       <a id="opp_hide" class="dashboard_opp_hide" href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3DEditView%26return_module%3DOpportunities%26return_action%3DDetailView">Create Opportunities</a>
-                                       {/if}
-                                       {/if}
-                                    
+                                       <a id="opp_hide" class="dashboard_opp_hide" href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3DEditView%26return_module%3DOpportunities%26return_action%3DDetailView">Create Opportunity</a>
                                     </li>
                               
                                 {foreach from=$modules.extra item=submodulename key=submodule}
@@ -322,7 +311,7 @@
                       {foreach from=$groupTabs item=modules key=group name=groupList}
                         {capture name=extraparams assign=extraparams}parentTab={$group}{/capture}
                         <li class="topnav {if $smarty.foreach.groupList.last}all{/if}">
-                            <span class="notCurrentTabLeft">&nbsp;</span><span  class="notCurrentTab">
+                            <span class="notCurrentTabLeft">&nbsp;</span><span id="check_dept" class="notCurrentTab">
                             <a href="#" id="grouptab_{$smarty.foreach.groupList.index}" class="dropdown-toggle grouptab opp_hide">Departments</a>
                             <span class="notCurrentTabRight">&nbsp;</span>
                             <ul class="dropdown-menu" role="menu"  {if $smarty.foreach.groupList.last} class="All"{/if}>
@@ -332,6 +321,29 @@
                                     </li>
                                     <li>
                                        <a  href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DAccounts%26action%3DEditView%26return_module%3DAccounts%26return_action%3Dindex">Create Departments</a>
+                                    </li>
+                              
+                                {foreach from=$modules.extra item=submodulename key=submodule}
+                                    <li>
+                                        <a href="{sugar_link module=$submodule link_only=1 extraparams=$extraparams}">{$submodulename}</a>
+                                    </li>
+                                {/foreach}
+                            </ul>
+                        </li>
+                    {/foreach}
+                    {foreach from=$groupTabs item=modules key=group name=groupList}
+                        {capture name=extraparams assign=extraparams}parentTab={$group}{/capture}
+                        <li class="topnav {if $smarty.foreach.groupList.last}all{/if}">
+                            <span class="notCurrentTabLeft">&nbsp;</span><span id="check_activity" class="notCurrentTab">
+                            <a href="#" id="grouptab_{$smarty.foreach.groupList.index}" class="dropdown-toggle grouptab opp_hide">Activities</a>
+                            <span class="notCurrentTabRight">&nbsp;</span>
+                            <ul class="dropdown-menu" role="menu"  {if $smarty.foreach.groupList.last} class="All"{/if}>
+                          
+                                    <li>
+                                       <a href="index.php?module=Calls&action=index">View Activities</a>
+                                    </li>
+                                    <li>
+                                       <a  href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DCalls%26action%3DEditView%26return_module%3DCalls%26return_action%3DDetailView">Create Activities</a>
                                     </li>
                               
                                 {foreach from=$modules.extra item=submodulename key=submodule}

@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-02-19 11:18:45
+<?php /* Smarty version 2.6.31, created on 2021-03-12 18:25:56
          compiled from themes/SuiteP/tpls/_head.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_getimagepath', 'themes/SuiteP/tpls/_head.tpl', 68, false),array('function', 'sugar_getjspath', 'themes/SuiteP/tpls/_head.tpl', 79, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_getimagepath', 'themes/SuiteP/tpls/_head.tpl', 71, false),array('function', 'sugar_getjspath', 'themes/SuiteP/tpls/_head.tpl', 82, false),)), $this); ?>
 <!DOCTYPE html>
 <html <?php echo $this->_tpl_vars['langHeader']; ?>
 >
@@ -18,6 +18,9 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_getim
     <link href='themes/SuiteP/css/fonts.css' rel='stylesheet' type='text/css'>
     <link href="themes/SuiteP/css/grid.css" rel="stylesheet" type="text/css"/>
     <link href="themes/SuiteP/css/footable.core.css" rel="stylesheet" type="text/css"/>
+    
+
+    
    <!-- <title><?php echo $this->_tpl_vars['APP']['LBL_BROWSER_TITLE']; ?>
 </title>-->
         <title>CRM</title>

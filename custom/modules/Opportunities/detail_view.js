@@ -126,43 +126,43 @@ $('#whole_subpanel_history').remove();
  var id=$('#formDetailView input[name=record]').val();
  // alert(id);
 
-  $.ajax({
-        url : 'index.php?module=Opportunities&action=fetch_l1',
-        type : 'POST',
-        dataType: "json",
-          data :
-            {
-                id,
+  // $.ajax({
+  //       url : 'index.php?module=Opportunities&action=fetch_l1',
+  //       type : 'POST',
+  //       dataType: "json",
+  //         data :
+  //           {
+  //               id,
                 
-            },
-            success: function (return_data) {
+  //           },
+  //           success: function (return_data) {
                 
-                if(return_data.status == true ){
-                    //console.log('in');
-                     if (return_data.total_input_value!='') {
+  //               if(return_data.status == true ){
+  //                   //console.log('in');
+  //                    if (return_data.total_input_value!='') {
                        
 
 
-                       $('#total_input_value').val(return_data.total_input_value);
+  //                      $('#total_input_value').val(return_data.total_input_value);
                        
                    
-                   }
+  //                  }
                    
-        //   if(return_data.l1_html != ''&& return_data.l1_input!=""){
+  //       //   if(return_data.l1_html != ''&& return_data.l1_input!=""){
               
              
-        //       var l1HTML_decoded = decodeHTML(return_data.l1_html);
-        //       //var l1INPUT_decoded = decodeHTML(return_data.l1_input);
-        //       $('#total_value').html(l1HTML_decoded);
-        //       $('#total_value input').each(function(index) {
-        //           $(this).val(decodeHTML(return_data.l1_input[index]));
-        //         });
+  //       //       var l1HTML_decoded = decodeHTML(return_data.l1_html);
+  //       //       //var l1INPUT_decoded = decodeHTML(return_data.l1_input);
+  //       //       $('#total_value').html(l1HTML_decoded);
+  //       //       $('#total_value input').each(function(index) {
+  //       //           $(this).val(decodeHTML(return_data.l1_input[index]));
+  //       //         });
               
-        //          }
-                }
+  //       //          }
+  //               }
                 
-            }
-  });
+  //           }
+  // });
  
    $.ajax({
         url : 'index.php?module=Opportunities&action=fetch_year_quarters',
@@ -180,7 +180,8 @@ $('#whole_subpanel_history').remove();
                 var end_quarter=return_data.end_quarter;
                 var num_of_bidders=return_data.num_of_bidders;
                 var total=return_data.total;
-                
+             //  alert(total);
+               $('#total_input_value').val(total);
                 
                  if(start_year!=''&& start_quarter !=''&& end_quarter!=''&& end_year !=''){
                   
@@ -223,8 +224,8 @@ $('#whole_subpanel_history').remove();
                           // var total = $('#total_input_value').val();
                    
                     
-                  // alert(starty+" "+startq+" "+endy+" "+endq+""+total);
-                   if( starty!='' &&  endy!='' && startq!='' && endq!='' && total!='' ){
+                  // alert(starty+" "+startq+" "+endy+" "+endq+""+total); && total!=''
+                   if( starty!='' &&  endy!='' && startq!='' && endq!=''){
                    
                    
                    $('#financial_feasibility_l1_c').text("View L1 Details");
@@ -900,235 +901,6 @@ $('#whole_subpanel_history').remove();
   
   // //************************************************DUMMY END*******************************************************************************************
   
-  
-    //---------------------------hiding the tab based on the rfp==no and status---------------------------
-    
-   // if($("#rfporeoipublished_c").val() == "no" && $("#status_c").val() == "Lead" ){
-     
-     
-      
-   //     $("#top-panel-1").hide() ;
-   //     $("#top-panel-3").hide() ;
-   //     $("#top-panel-4").hide() ;
-   //     $("#top-panel-5").hide() ;
-   //     $("#top-panel-6").hide() ;
-   // }
-   
-   // if($("#rfporeoipublished_c").val() == "no" && $("#status_c").val() == "QualifiedLead" ){
-       
-   //     $("#top-panel-1").show() ;
-   //     $("#top-panel-3").show() ;
-       
-   //     $("#top-panel-4").hide() ;
-   //     $("#top-panel-5").hide() ;
-   //     $("#top-panel-6").hide() ;
-   // }
-   
-   // if($("#rfporeoipublished_c").val() == "no" && $("#status_c").val() == "Qualified" ){
-       
-   //    $("#top-panel-1").show() ;
-   //     $("#top-panel-3").show() ;
-   //     $("#top-panel-4").show() ;
-   //     $("#top-panel-5").hide() ;
-   //      $("#top-panel-6").hide() ;
-      
-   // }
-   
-   // if($("#rfporeoipublished_c").val() == "no" && $("#status_c").val() == "QualifiedDpr" ){
-    
-   //     $("#top-panel-1").show() ;
-   //     $("#top-panel-3").show() ;
-   //     $("#top-panel-4").show() ;
-   //     $("#top-panel-5").hide() ;
-   //      $("#top-panel-6").hide() ;
-        
-   //      if($('#filename a:eq(0)').text() !=""){
-   //        $("#filename a:eq(1)").show();
-   //      }else{
-   //         $("#filename a:eq(1)").hide();
-   //         $('#filename a:eq(0)').removeAttr("href");
-   //       $('#filename a:eq(0)').append("File is not uploaded")
-   //      }
-         
-       
-   // }
-   
-   // if($("#rfporeoipublished_c").val() == "no" && $("#status_c").val() == "QualifiedBid" ){
-   //    $("#top-panel-1").show() ;
-   //     $("#top-panel-3").show() ;
-   //     $("#top-panel-4").show() ;
-   //     $("#top-panel-5").show() ;
-   //     $("#top-panel-6").hide() ; 
-       
-      
-   //      if($('#filename a:eq(0)').text() !=""){
-   //        $("#filename a:eq(1)").show();
-   //      }else{
-   //         $("#filename a:eq(1)").hide();
-   //         $('#filename a:eq(0)').removeAttr("href");
-   //       $('#filename a:eq(0)').append("File is not uploaded")
-   //      }
-   // }
-   
-   // if($("#rfporeoipublished_c").val() == "no" && $("#status_c").val() == "Closed" ){
-   //    $("#top-panel-1").show() ;
-   //     $("#top-panel-3").show() ;
-   //     $("#top-panel-4").show() ;
-   //     $("#top-panel-5").show() ;
-   //     $("#top-panel-6").hide() ; 
-       
-       
-      
-   //      if($('#filename a:eq(0)').text() !=""){
-   //        $("#filename a:eq(1)").show();
-   //      }else{
-   //         $("#filename a:eq(1)").hide();
-   //         $('#filename a:eq(0)').removeAttr("href");
-   //       $('#filename a:eq(0)').append("File is not uploaded")
-   //      }
-   // }
-   
-   // //---------------------------hiding the tab based on the rfp == no and status----end-----------------------
-   
-   
-   
-   // //---------------------------hiding the tab based on the rfp == yes and status----start-----------------------
-   
-   //  if($("#rfporeoipublished_c").val() == "yes" && $("#status_c").val() == "Lead" ){
-     
-     
-      
-   //     $("#top-panel-1").hide() ;
-   //     $("#top-panel-3").hide() ;
-   //     $("#top-panel-4").hide() ;
-   //     $("#top-panel-5").hide() ;
-   //     $("#top-panel-6").hide() ;
-       
-       
-   //      if($('#filename a:eq(0)').text() !=""){
-   //        $("#filename a:eq(1)").show();
-   //      }else{
-   //         $("#filename a:eq(1)").hide();
-   //         $('#filename a:eq(0)').removeAttr("href");
-   //       $('#filename a:eq(0)').append("File is not uploaded")
-   //      }
-   // }
-   
-   //  if($("#rfporeoipublished_c").val() == "yes" && $("#status_c").val() == "QualifiedLead" ){
-       
-   //     $("#top-panel-1").show() ;
-   //     $("#top-panel-3").show() ;
-   //     $("#top-panel-4").show() ;
-   //     $("#top-panel-5").hide() ;
-       
-   //    $("#top-panel-6").hide() ;
-      
-      
-   //      if($('#filename a:eq(0)').text() !=""){
-   //        $("#filename a:eq(1)").show();
-   //      }else{
-   //         $("#filename a:eq(1)").hide();
-   //         $('#filename a:eq(0)').removeAttr("href");
-   //       $('#filename a:eq(0)').append("File is not uploaded")
-   //      }
-   // }
-   
-   // if($("#rfporeoipublished_c").val() == "yes" && $("#status_c").val() == "QualifiedBid" ){
-   //    $("#top-panel-1").show() ;
-   //     $("#top-panel-3").show() ;
-   //     $("#top-panel-4").show() ;
-   //     $("#top-panel-5").show() ;
-   //     $("#top-panel-6").hide() ;
-      
-     
-   //      if($('#filename a:eq(0)').text() !=""){
-   //        $("#filename a:eq(1)").show();
-   //      }else{
-   //         $("#filename a:eq(1)").hide();
-   //         $('#filename a:eq(0)').removeAttr("href");
-   //       $('#filename a:eq(0)').append("File is not uploaded")
-   //      }
-       
-   // }
-   
-   // if($("#rfporeoipublished_c").val() == "yes" && $("#status_c").val() == "Closed" ){
-   //    $("#top-panel-1").show() ;
-   //     $("#top-panel-3").show() ;
-   //     $("#top-panel-4").show() ;
-   //     $("#top-panel-5").show() ;
-   //     $("#top-panel-6").hide() ;
-      
-      
-   //      if($('#filename a:eq(0)').text() !=""){
-   //        $("#filename a:eq(1)").show();
-   //      }else{
-   //         $("#filename a:eq(1)").hide();
-   //         $('#filename a:eq(0)').removeAttr("href");
-   //       $('#filename a:eq(0)').append("File is not uploaded")
-   //      }
-       
-   // }
-   //  //---------------------------hiding the tab based on the rfp == yes and status----end-----------------------
-   
-   // //-------------hiding tabs for not_required-----------------------------------
-   //  if($("#rfporeoipublished_c").val() == "not_required" && $("#status_c").val() == "Lead" ){
-     
-     
-      
-   //     $("#top-panel-1").hide() ;
-   //     $("#top-panel-3").hide() ;
-   //     $("#top-panel-4").hide() ;
-   //     $("#top-panel-5").hide() ;
-   //    $("#top-panel-6").hide() ;
-   // }
-   
-   // if($("#rfporeoipublished_c").val() == "not_required" && $("#status_c").val() == "QualifiedLead" ){
-       
-   //     $("#top-panel-1").show() ;
-   //     $("#top-panel-3").show() ;
-       
-   //     $("#top-panel-4").hide() ;
-   //     $("#top-panel-5").hide() ;
-   //     $("#top-panel-6").hide() ;
-   // }
-   
-   // if($("#rfporeoipublished_c").val() == "not_required" && $("#status_c").val() == "Qualified" ){
-       
-   //    $("#top-panel-1").show() ;
-   //     $("#top-panel-3").show() ;
-   //     $("#top-panel-4").show() ;
-   //     $("#top-panel-5").hide() ;
-       
-   //     $("#top-panel-6").hide() ;
-   // }
-   
-   // if($("#rfporeoipublished_c").val() == "not_required" && $("#status_c").val() == "QualifiedDpr" ){
-   //     $("#top-panel-1").show() ;
-   //     $("#top-panel-3").show() ;
-   //     $("#top-panel-4").hide() ;
-   //     $("#top-panel-5").show() ;
-       
-   //    $("#top-panel-6").hide() ;
-   // }
-   
-   // if($("#rfporeoipublished_c").val() == "not_required" && $("#status_c").val() == "Closed" ){
-   //     $("#top-panel-1").show() ;
-   //     $("#top-panel-3").show() ;
-   //     $("#top-panel-4").hide() ;
-   //     $("#top-panel-5").show() ;
-       
-   //    $("#top-panel-6").hide() ;
-   // }
-   
-   // //-------------hiding tabs for not_required---------END--------------------------
-   
-  
-   
-  
-   
-   
-   //****************************************************END********************************************************************************************
-   
    //****************************************to remove edit and delete options and check untag users in Detail View opportunities****************************
     var opp_id=$('#formDetailView input[name=record]').val();
     var status = $("#status_c").val();
@@ -1695,7 +1467,19 @@ function removeAttachment(fileName, extension) {
  //---------------------------------L1 button-----------END--------------------  
  //---------------------------------L2 button-------------------------------
    $("#financial_feasibility_l2_c").on('click',function(){
-     $(".open-button1").trigger('click');
+   //$(".open-button1").trigger('click');
+     
+     
+           document.getElementById("myForm").style.display = "block";
+       document.getElementById("mtwenty").style.display = "block";
+       document.getElementById("mtenth").style.display = "block";
+       document.getElementById("close2").style.display = "block";
+        document.getElementById("tenth").style.display = "inline";
+         document.getElementById("chec").style.display = "inline";
+          document.getElementById("stage").style.display = "inline";
+           document.getElementById("milestone").style.display = "inline";
+        document.getElementById("close1").style.display = "none";
+ 
      
        var currency=$('#currency_c').val();
       

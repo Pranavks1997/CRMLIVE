@@ -1,4 +1,10 @@
 $(document).ready(function() {
+ 
+  setTimeout(function() {
+      $('#check_dept a').hide();
+      //console.log('sad');
+ }, 10);
+ 
    $('.paginationWrapper').hide();
 $('[field=website]').css({"overflow-wrap": "anywhere"});
 
