@@ -37,7 +37,7 @@
 
     <!-- Navbar end -->
     <div class="W1400px">
-        <div class="d-flex">
+        <div class="d-flex margin-top-adjust">
             <h3 class="page-title">
                 Dashboard
             </h3>
@@ -311,12 +311,12 @@
         <!-- Modal content -->
         <div class="deselect-modal-content">
             <span class="deselectclose" onclick="openDeselectDialog('close')">&times;</span>
-            <form>
+            <form class="test-tag">
                     <div id="opportunity_info">
                         <!-- /.col-md-12 -->
                     </div>
-                    <input type="hidden" id="hidden_multi_select" value="" />
-                    <input name="hidden_user" id="hidden_user" style="cursor: pointer;padding-right: 40px;" onclick="deselectDropDownClicked()" readonly/>
+                    <input type="hidden" id="tag_opporunity_id" name= "tag_opporunity_id" value="" />
+                    <!-- <input name="hidden_user" id="hidden_user" style="cursor: pointer;padding-right: 40px;" onclick="deselectDropDownClicked()" readonly/>
                     <i class="fa fa-caret-down icon-dropdown-deselect" style="cursor: pointer;" id="deselect-drop-icon" onclick="clearDeselectDropDownValue()"></i>
                     <select id="deselect_members" name="multi_search_filter" onfocusout="deselectDropDownClicked()" multiple class="form-control selectpicker" 
                                                  style="width:250px;
@@ -326,7 +326,10 @@
                                                         position: absolute;
                                                         height: 105px !important;
                                                         ">
-                    </select>
+                    </select> -->
+                    <div id = "deselect_members_tag">
+
+                    </div>
                     <br><div style="height: 20px;"></div>
                     <div>
                         <button class="saveBtnDeselect" type="button" onclick="openDeselectDialog('submit')">Save</button>
@@ -660,14 +663,16 @@
         <!-- Modal content -->
         <div class="deselect-modal-content">
             <span class="deselectclose" onclick="handleTagDialog('close')">&times;</span>
-            <form>
+            <form class="activity_tag_func">
                     <div id="activity_tag_info">
                         
                     </div>
                     <br><div style="height: 20px;"></div>
-                    <input type="hidden" id="activity_hidden_multi_select" value="" />
-                    <input name="hidden_user" id="activity_hidden_user" style="cursor: pointer;padding-right: 40px;" onclick="activitydeselectDropDownClicked()" readonly/>
-                    <i class="fa fa-caret-down icon-dropdown-deselect" style="cursor: pointer;" id="deselect-drop-icon" onclick="activityclearDeselectDropDownValue()"></i>
+                    <input type="hidden" id="activity_tag_id" name="activity_tag_id" value="" />
+                    <div id="activity_member_info">
+
+                    </div>
+                    <!-- <i class="fa fa-caret-down icon-dropdown-deselect" style="cursor: pointer;" id="deselect-drop-icon" onclick="activityclearDeselectDropDownValue()"></i>
                     <select id="activity_member_info" name="multi_search_filter" onfocusout="activitydeselectDropDownClicked()" multiple class="form-control selectpicker" 
                                                  style="width:250px;
                                                         padding: 0px;
@@ -677,7 +682,7 @@
                                                         height: 105px !important;
                                                         display:None;
                                                         "> 
-                    </select>
+                    </select> -->
                     <br><div style="height: 20px;"></div>
                     <div>
                         <button class="saveBtnDeselect" type="button" onclick="handleTagDialog('submit')">Save</button>
@@ -692,5 +697,6 @@
     <script src="modules/Home/js/script.js"></script>
     <script src="modules/Home/js/functions.js"></script>
     <script src="modules/Home/js/activityFunction.js"></script>
+    <script src="modules/Home/js/documentFunction.js"></script>
 </body>
 </html>
