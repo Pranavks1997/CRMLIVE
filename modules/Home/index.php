@@ -697,5 +697,6 @@
     <script src="modules/Home/js/script.js"></script>
     <script src="modules/Home/js/functions.js"></script>
     <script src="modules/Home/js/activityFunction.js"></script>
+    <script src="modules/Home/js/documentFunction.js"></script>
 </body>
 </html>
