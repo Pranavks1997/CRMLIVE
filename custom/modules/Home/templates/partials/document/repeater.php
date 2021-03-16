@@ -33,7 +33,9 @@
                 <div style="display: flex; width: 80%; align-items: center; padding: 10px; justify-content: space-between; margin-left: 20px;">
                 
                     <button class="tag1" id="reassignmentBtn" style="margin-right: 7px;width: 15px;" onclick="activityfetchReassignmentDialog('<?php echo $row['id']; ?>')">
+
                         <?php //if ($this->is_activity_reassignment_applicable($row['id'])): ?>
+
                             <i id="reassignment-icon" title="Re-assign User" class="fa fa-user" aria-hidden="true" style="color:black; font-size: 1.8rem;"> </i>
                         <?php// endif; ?>
                     </button>
@@ -43,15 +45,18 @@
                         <?php // endif; ?>
                     </button>
                     <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="fetchTagDialog('<?php echo $row['id']; ?>')">
+
                         <?php //if ($this->is_activity_tagging_applicable($row['id'])) { ?>
-                            <i id="search-icon" class="fa fa-tag" aria-hidden="true"> </i>
+       <i id="search-icon" class="fa fa-tag" aria-hidden="true"> </i>
                         <?php //} ?>
                     </button>
                     <a style="width: 15px;" href="index.php?module=Calls&action=DetailView&record=<?php echo $row['id']; ?>" class="eye" id="search-btn">
                         <i id="search-icon" class="fa fa-eye" aria-hidden="true"> </i>
                     </a>
                     <button class="" id="reminderBtn" style="width: 15px;" onclick="fetchReminderDialog('<?php echo $row['id']; ?>')">
+
                         <?php //if ($this->is_activity_reminder_applicable($row['id'])) { ?>
+
                             <i id="reminder-icon" class="fa fa-bell" aria-hidden="true"> </i>
                         <?php// } ?>
                     </button>

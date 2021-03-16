@@ -8,7 +8,9 @@
             $status = $_GET['status'] ?? '';
         ?>   
         <li class="tableHeader-Content">
+
             <h2 style="margin: 10px; color: white; font-size: 2.4rem; font-weight: bold; ">Document </h2>
+
         </li>
         <!-- <li class="tableHeader-Content">
             <div id="global-opportunities" class="global-opportunities <?php echo $type == 'global' ? 'active': ''; ?>" onclick="dateBetween('<?php echo $day; ?>', '', '' ,'', '', 'global', 1)">Global Opportunities (<?php echo $global_organization_count; ?>) </div>
@@ -27,16 +29,19 @@
                     <div style="display: flex; justify-content: center; align-items: center;">
                         <input type="search" placeholder="Search by name" class="document-search" id="document-search" data-method="document" data-day="<?php echo $day; ?>" value="<?php echo $searchTerm; ?>" name="search" />
                         <button class="searchhh document-search-btn" id="search-btn">
+
                             <i id="search-icon" class="fa fa-search" aria-hidden="true"> </i>
                         </button>
                     </div>
                     <div style="display: flex; margin-left: auto;">
+
 
                         <button class="filter" id="filter_myBtn" onclick="openDocumentFilterDialog()" style="padding:10; border: none !important;">
                             <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
                         </button>
                 
                         <button class="cog" id="setting_myBtn" onclick="openDocumentSettingDialog('document');" style="padding:10; border: none !important;">
+
                             <i id="setting_myBtn" class="fa fa-list" aria-hidden="true"> </i>
                         </button>
                     </div>
