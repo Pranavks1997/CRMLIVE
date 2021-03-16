@@ -2182,10 +2182,13 @@ padding: 15px 5px;
   }
 
 /* Activity Fixes*/
-.activity-title{ font-size: 13px; color: #F08377; margin: 5px 0; }
+.activity-title , 
+.document-title{ font-size: 13px; color: #F08377; margin: 5px 0; }
 .activity-type,
-.activity-related-type{ color: #9e9e9e; }
-.activity-related-name{ font-size: 13px; color: #000000; margin: 5px 0; }
+.activity-related-type,
+.document-related-type{ color: #9e9e9e; }
+.activity-related-name,
+.document-related-name{ font-size: 13px; color: #000000; margin: 5px 0; }
 
 #criticalBtn{
     background-color: transparent;
