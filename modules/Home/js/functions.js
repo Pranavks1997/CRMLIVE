@@ -101,8 +101,8 @@ function dateBetween(dateBetween, searchTerm = null, page = null, filter = 0, st
             }
             document.getElementById('search-icon').style.color = "green";
         },
-        complete: function(){
-    	    $('.spinner').fadeOut();
+        complete: function () {
+            $('.spinner').fadeOut();
             console.log('Data Loaded');
         }
     });
@@ -226,95 +226,95 @@ function updateStatus() {
             //$('#approval-data').html(data);
             var assigned_name = data.assigned_name;
             var assigned_id = data.assigned_id;
-            var s=data.opp_status;
-            var r=data.rfp; 
-            var opps_id= data.opps_id
-            if(r=="Yes"){
-                r="yes";
+            var s = data.opp_status;
+            var r = data.rfp;
+            var opps_id = data.opps_id
+            if (r == "Yes") {
+                r = "yes";
             }
-            else if(r=="No"){
-                r="no";
+            else if (r == "No") {
+                r = "no";
             }
-            else if(r=="Not Required"){
-                r="not_required";
+            else if (r == "Not Required") {
+                r = "not_required";
             }
             $.ajax({
-                        url : 'index.php?module=Opportunities&action=fetch_reporting_manager',
-                        type : 'POST',
-                        dataType: "json",
-                        data:{
-                        opps_id,
-                        assigned_name,
-                        assigned_id,
-                        s,
-                        r
-                        },
-                        success : function(data_approver){
-                        
-                        
+                url: 'index.php?module=Opportunities&action=fetch_reporting_manager',
+                type: 'POST',
+                dataType: "json",
+                data: {
+                    opps_id,
+                    assigned_name,
+                    assigned_id,
+                    s,
+                    r
+                },
+                success: function (data_approver) {
+
+
                     // data=JSON.parse(data_approver);
-                        var multiple_approvers_id=data_approver.approvers_id;
-                        if(r=='no'){
-                            
-                            if(s=='Qualified'){
-                                
-                                $.ajax({
-                                        url : 'index.php?module=Home&action=update_multiple_approver',
-                                        type : 'POST',
-                                        dataType: "json",
-                                        data:{
-                                        opps_id,
-                                        multiple_approvers_id
-                                        },
-                                        success : function(data_approver){
-                                            
-                                        }
-                                                })
-                                
-                            }
-                            
+                    var multiple_approvers_id = data_approver.approvers_id;
+                    if (r == 'no') {
+
+                        if (s == 'Qualified') {
+
+                            $.ajax({
+                                url: 'index.php?module=Home&action=update_multiple_approver',
+                                type: 'POST',
+                                dataType: "json",
+                                data: {
+                                    opps_id,
+                                    multiple_approvers_id
+                                },
+                                success: function (data_approver) {
+
+                                }
+                            })
+
                         }
-                        else if(r=='yes'){
-                            if(s=='QualifiedLead'){
-                                $.ajax({
-                                        url : 'index.php?module=Home&action=update_multiple_approver',
-                                        type : 'POST',
-                                        dataType: "json",
-                                        data:{
-                                        opps_id,
-                                        multiple_approvers_id
-                                        },
-                                        success : function(data_approver){
-                                            
-                                        }
-                                                })
-                                
-                                
-                            }
-                            
+
+                    }
+                    else if (r == 'yes') {
+                        if (s == 'QualifiedLead') {
+                            $.ajax({
+                                url: 'index.php?module=Home&action=update_multiple_approver',
+                                type: 'POST',
+                                dataType: "json",
+                                data: {
+                                    opps_id,
+                                    multiple_approvers_id
+                                },
+                                success: function (data_approver) {
+
+                                }
+                            })
+
+
                         }
-                        else if(r=='not_required'){
-                            if(s=='Qualified'){
-                                $.ajax({
-                                        url : 'index.php?module=Home&action=update_multiple_approver',
-                                        type : 'POST',
-                                        dataType: "json",
-                                        data:{
-                                        opps_id,
-                                        multiple_approvers_id
-                                        },
-                                        success : function(data_approver){
-                                            
-                                        }
-                                                })
-                                
-                                
-                            }
-                            
+
+                    }
+                    else if (r == 'not_required') {
+                        if (s == 'Qualified') {
+                            $.ajax({
+                                url: 'index.php?module=Home&action=update_multiple_approver',
+                                type: 'POST',
+                                dataType: "json",
+                                data: {
+                                    opps_id,
+                                    multiple_approvers_id
+                                },
+                                success: function (data_approver) {
+
+                                }
+                            })
+
+
                         }
-                        
-                        
-                    } 
+
+                    }
+
+
+                }
             });
         }
     });
@@ -410,16 +410,16 @@ function openSettingDialog(event, type = null, value = null) {
         dialog.style.display = "block"
     }
 
-    if(event == 'opportunities'){
+    if (event == 'opportunities') {
         $('.settings-section').val('opportunities');
-    }else if(event == 'pendings'){
+    } else if (event == 'pendings') {
         $('.settings-section').val('pendings');
     }
 
-    if(type){
+    if (type) {
         $('.settings-type').val(type);
     }
-    if(value){
+    if (value) {
         $('.settings-type-value').val(value);
     }
 
@@ -556,7 +556,6 @@ function fetchDelegateDialog() {
         type: 'GET',
         data: {},
         success: function (data) {
-            debugger
             var parsed_data = JSON.parse(data);
             $('#delegated_info').html(parsed_data.delegated_info);
             // dialog.style.display = "block";
@@ -631,7 +630,7 @@ function getUserDetails() {
             var addOpportunity = document.getElementById('add_opportunity');
             var parsed_data = JSON.parse(data);
             if ((parsed_data && parsed_data.user_team && !(parsed_data.user_team.includes('^sales^')))
-                    || parsed_data.user_id == '1') {
+                || parsed_data.user_id == '1') {
                 addOpportunity.style.display = "none";
                 setTimeout(function () {
                     var hideOpportunity = document.getElementsByClassName('dashboard_opp_hide');
@@ -890,46 +889,46 @@ function initializeReportTable(changedVal = '3.14') {
         method: "GET",
         success: function (data) {
             var parsed_data = JSON.parse(data);
-            if(parsed_data) {
+            if (parsed_data) {
                 var hot = new Handsontable(example1, {
                     data: parsed_data.data,
                     colHeaders: true,
                     rowHeaders: true,
                     manualColumnResize: true,
-                    columns: [{type: 'text', readOnly: true},{readOnly: true},{readOnly: true},{readOnly: true},{readOnly: true},
-                    {readOnly: true},{readOnly: true},{readOnly: true},{readOnly: true},{readOnly: true},
-                    {readOnly: true},{readOnly: true},{readOnly: true},{readOnly: true},{readOnly: true},
-                    {readOnly: true},{readOnly: true},{readOnly: true},{readOnly: true},{readOnly: true},{readOnly: true}],
+                    columns: [{ type: 'text', readOnly: true }, { readOnly: true }, { readOnly: true }, { readOnly: true }, { readOnly: true },
+                    { readOnly: true }, { readOnly: true }, { readOnly: true }, { readOnly: true }, { readOnly: true },
+                    { readOnly: true }, { readOnly: true }, { readOnly: true }, { readOnly: true }, { readOnly: true },
+                    { readOnly: true }, { readOnly: true }, { readOnly: true }, { readOnly: true }, { readOnly: true }, { readOnly: true }],
                     colWidths: [200, 60, 150, 60, 150,
-                         60, 150, 60, 150, 60,
-                         150, 60, 150, 60, 150,
-                         60, 150, 60, 150, 100, 100],
+                        60, 150, 60, 150, 60,
+                        150, 60, 150, 60, 150,
+                        60, 150, 60, 150, 100, 100],
                     // filters: true,
                     // dropdownMenu: true,
                     width: '100%',
                     height: 320,
                     // rowHeights: 25,
                     nestedHeaders: [
-                      ['', {label: '', colspan: 18}, ''],
-                      ['', {label: 'Number of Contracts Created and Total Value of Contracts', colspan: 2}, {label: 'Lead Stage', colspan: 2}, {label: 'Qualified Lead Stage', colspan: 2},
-                      {label: 'Qualified Opportunity Stage', colspan: 2}, {label: 'Qualified DPR Stage', colspan: 2}, {label: 'Qualified Bid Stage', colspan: 2},
-                      {label: 'Closed Win Stage', colspan: 2},{label: 'Closed Lost Stage', colspan: 2}, {label: 'Dropped Stage', colspan: 2}],
-                      ['Users', 'Number Of Contracts', 'Total Value Of Contracts', 'Number', 'Value', 'Number', 'Value', 'Number', 'Value',
-                      'Number', 'Value', 'Number', 'Value', 'Number', 'Value', 'Number', 'Value', 'Number', 'Value',
-                      'Participated In', 'Expected Inflow Date']
+                        ['', { label: '', colspan: 18 }, ''],
+                        ['', { label: 'Number of Contracts Created and Total Value of Contracts', colspan: 2 }, { label: 'Lead Stage', colspan: 2 }, { label: 'Qualified Lead Stage', colspan: 2 },
+                            { label: 'Qualified Opportunity Stage', colspan: 2 }, { label: 'Qualified DPR Stage', colspan: 2 }, { label: 'Qualified Bid Stage', colspan: 2 },
+                            { label: 'Closed Win Stage', colspan: 2 }, { label: 'Closed Lost Stage', colspan: 2 }, { label: 'Dropped Stage', colspan: 2 }],
+                        ['Users', 'Number Of Contracts', 'Total Value Of Contracts', 'Number', 'Value', 'Number', 'Value', 'Number', 'Value',
+                            'Number', 'Value', 'Number', 'Value', 'Number', 'Value', 'Number', 'Value', 'Number', 'Value',
+                            'Participated In', 'Expected Inflow Date']
                     ],
                     collapsibleColumns: [
-                      {row: -3, col: 1, collapsible: true},
+                        { row: -3, col: 1, collapsible: true },
                     ],
                     columnSorting: true,
                     // fixedRowsBottom: 1,
                     afterGetColHeader: function (col, TH) {
                         $(TH).css('text-align', 'left');
-                     }
-              
-                  });
-                  hot.getPlugin('collapsibleColumns').collapseSection({row: -3, col: 1});
-                  window.hot = hot;
+                    }
+
+                });
+                hot.getPlugin('collapsibleColumns').collapseSection({ row: -3, col: 1 });
+                window.hot = hot;
             }
         }
     });
@@ -974,7 +973,7 @@ function criticalStatus(id) {
             }
         })
     }
-    
+
 }
 
 function criticalStatusChanged(id, noRefresh = null) {
@@ -989,10 +988,9 @@ function criticalStatusChanged(id, noRefresh = null) {
         success: function (data) {
             var main_data = JSON.parse(data);
             alert("Removed Opportunity from Critical List");
-            debugger
             $('#criticalStatusCount').html(main_data.critical_status_count);
             criticalIcon.style.color = "black";
-            if(!noRefresh) {
+            if (!noRefresh) {
                 dateBetween(day, '', '', '', '', 'critical', 1);
             }
         }
@@ -1008,7 +1006,7 @@ function criticalStatusChanged(id, noRefresh = null) {
         loadOpportunities();
     });
 
-    function loadOpportunities(){
+    function loadOpportunities() {
         var day = Cookies.get('day');
         $('.spinner').fadeIn();
         fetchByStatus('qualifylead');
