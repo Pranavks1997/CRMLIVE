@@ -6631,6 +6631,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
     */
 
+    
     function action_getPendingDocumentList(){
         try
         {
@@ -6640,17 +6641,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
             global $current_user;
             $log_in_user_id = $current_user->id;
-            
-            $status         = $_GET['status'];
-            $qlLeadCount    = $this->getOpportunityStatusCount('qualifylead');
-            $qlOppCount     = $this->getOpportunityStatusCount('qualifyOpportunity');
-            $qlDPRCount     = $this->getOpportunityStatusCount('qualifyDpr');
-            $qlBidCount     = $this->getOpportunityStatusCount('qualifyBid');
-            $qlClosedCount  = $this->getOpportunityStatusCount('closure');
-            $qlDroppedCount = $this->getOpportunityStatusCount('Dropping');
 
-            
-            $columnAmount                   = isset( $_GET['Amount'] ) ? $_GET['Amount'] : '';
+            /*$columnAmount                   = isset( $_GET['Amount'] ) ? $_GET['Amount'] : '';
             $columnREPEOI                   = isset( $_GET['REP-EOI-Published'] ) ? $_GET['REP-EOI-Published'] : '';
             $columnClosedDate               = isset( $_GET['Closed-Date'] ) ? $_GET['Closed-Date'] : '';
             $columnClosedBy                 = isset( $_GET['Closed-by'] ) ? $_GET['Closed-by'] : '';
@@ -6660,9 +6652,9 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $columnTaggedMembers            = isset( $_GET['Tagged-Members'] ) ? $_GET['Tagged-Members'] : '';
             $columnViewedBy                 = isset( $_GET['Viewed-by'] ) ? $_GET['Viewed-by'] : '';
             $columnPreviousResponsibility   = isset( $_GET['Previous-Responsbility'] ) ? $_GET['Previous-Responsbility'] : '';
-            $columnAttachment               = isset( $_GET['Attachment'] ) ? $_GET['Attachment'] : '';
+            $columnAttachment               = isset( $_GET['Attachment'] ) ? $_GET['Attachment'] : '';*/
             
-            $maxQuery   = "SELECT row_count FROM approval_table 
+            /*$maxQuery   = "SELECT row_count FROM approval_table 
                     WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 
                     AND ( ap.approver_rejector = '$log_in_user_id' OR ap.delegate_id = '$log_in_user_id' ) 
                     AND ap.apply_for = '$status' 
@@ -6672,28 +6664,26 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $rowCount   = $GLOBALS['db']->fetchByAssoc($result);
 
             if($rowCount)
-                $rowCount = $rowCount['row_count'];
-
-            $fetch_query = getPendingOpportunitiesQuery($rowCount);
+                $rowCount = $rowCount['row_count'];*/
 
             //Pagination Count
-            $limit = 5;
+            /*$limit = 5;
             $paginationQuery = $GLOBALS['db']->query($fetch_query);
             $totalCount = mysqli_num_rows($paginationQuery);
             $numberOfPages = ceil( $totalCount / $limit );
             
             $offset = $_GET['page'] ? ($_GET['page'] - 1) * $limit : 0;
 
-            $fetch_query .= " LIMIT $offset, $limit";
+            $fetch_query .= " LIMIT $offset, $limit";*/
 
             ob_start();
             include_once 'templates/partials/pending-document-requests/main.php';
             $content = ob_get_contents();
             ob_end_clean();
 
-            $result = $GLOBALS['db']->query($fetch_query);
-
-            $response = $this->mysql_fetch_assoc_all($result); //get all result in an array
+            $fetch_query    = getActivityQuery(); // getActivity Query
+            $result         = $GLOBALS['db']->query($fetch_query);
+            $response       = $this->mysql_fetch_assoc_all($result); //get all result in an array
 
             /* Pending Activity repeater HTML (Table ROW) */
             ob_start();
@@ -6703,7 +6693,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
 
             //Pagination 
-            $page = $_GET['page'] ? $_GET['page'] : 1;
+            /*$page = $_GET['page'] ? $_GET['page'] : 1;
             if ($totalCount > ( $page * $limit)){
                 $currentPost = ($page * $limit);
             } else {
@@ -6718,12 +6708,12 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 'type'   => '',
             );
             
-            $content .= $this->documentpagination($page, $numberOfPages, $type, '30', '', $_GET['filter']);
-            $content .= '</div>';
+            $content .= $this->activitypagination($page, $numberOfPages, $type, '30', '', $_GET['filter']);
+            $content .= '</div>';*/
 
             // echo $content;
-            $columnFilterHtml   = $this->getColumnFilters($_GET['status'], 'pending');
-            $filters            = $this->getFilterHtml('opportunity', $_GET);
+            $columnFilterHtml   = $this->getDocumentColumnFilters('pendings');
+            $filters            = $this->getDocumentFilterHtml('activity', $_GET);
 
             echo json_encode(array(
                 'data'                      => $content,
@@ -6736,7 +6726,40 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         }
         die();
     }
+    public function action_document_pending_count(){
+        try {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+    
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
 
+            $PRC = 0;
+
+            $query = "SELECT id FROM calls WHERE deleted != 1 AND date_entered >= now() - interval '1200' day";
+            $result = $GLOBALS['db']->query($query);
+            $response = $this->mysql_fetch_assoc_all($result); //get all result in an array
+            foreach($response as $r){
+                $id = $r['id'];
+                $query = "SELECT approval_status FROM activity_approval_table WHERE acc_id = '$id' AND ( approver = '$log_in_user_id' OR delegate_id = '$log_in_user_id' ) ORDER BY `id` DESC LIMIT 1";
+                $result = $GLOBALS['db']->query($query);
+                $count = $GLOBALS['db']->fetchByAssoc($result);
+                if($count && $count['approval_status'] == '0')
+                    $PRC += 1;
+            }
+
+            echo json_encode(
+                array(
+                    'data' => "$PRC <i class=\"fa fa-angle-double-down\" aria-hidden=\"true\"></i>",
+                    'count' => $PRC
+                )
+            );
+        }
+        catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
     public function action_getDocument(){
         try
         {
@@ -6749,23 +6772,6 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             
             $day        = $_GET['days'];
             $searchTerm = isset($_GET['searchTerm']) ? $_GET['searchTerm'] : '';
-            $type       = isset($_GET['type']) ? $_GET['type'] : '';
-            $status     = isset($_GET['status']) ? $_GET['status'] : '';
-            $dropped    = isset($_GET['dropped']) ? $_GET['dropped'] : '';
-
-            /* getting column filters to variables */
-            $columnAmount                   = isset( $_GET['Amount'] ) ? $_GET['Amount'] : '';
-            $columnREPEOI                   = isset( $_GET['REP-EOI-Published'] ) ? $_GET['REP-EOI-Published'] : '';
-            $columnClosedDate               = isset( $_GET['Closed-Date'] ) ? $_GET['Closed-Date'] : '';
-            $columnClosedBy                 = isset( $_GET['Closed-by'] ) ? $_GET['Closed-by'] : '';
-            $columnDateCreated              = isset( $_GET['Date-Created'] ) ? $_GET['Date-Created'] : '';
-            $columnDateClosed               = isset( $_GET['Date-Closed'] ) ? $_GET['Date-Closed'] : '';
-
-            $columnTaggedMembers            = isset( $_GET['Tagged-Members'] ) ? $_GET['Tagged-Members'] : '';
-            $columnViewedBy                 = isset( $_GET['Viewed-by'] ) ? $_GET['Viewed-by'] : '';
-            $columnPreviousResponsibility   = isset( $_GET['Previous-Responsbility'] ) ? $_GET['Previous-Responsbility'] : '';
-            $columnAttachment               = isset( $_GET['Attachment'] ) ? $_GET['Attachment'] : '';
-            /* end column filters */
 
             $user_for_delegates             = '';
             $self_count                     = 0;
@@ -6776,50 +6782,24 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $fetch_by_status_c              = '';
 
             $user_team                      = userTeam($log_in_user_id);
-            $total                          = getCount('opportunities');
-            $global_organization_count      = getCount('opportunities', " opportunity_type = 'global' ");
-            $non_global_organization_count  = $this->get_non_global_op_count($day);
 
-            $selfCountQuery = "SELECT count(*) as totalCount FROM opportunities 
-                LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
-                WHERE assigned_user_id = '$log_in_user_id' AND deleted != 1 AND date_entered >= now() - interval '".$day."' day";
-            $self_count = executeCountQuery($selfCountQuery);
-
-            $teamCountQuery = "SELECT count(*) as totalCount from opportunities 
-                LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
-                WHERE  deleted != 1 AND date_entered >= now() - interval '".$day."' day AND 
-                assigned_user_id IN (
-                    SELECT id_c FROM users_cstm WHERE teamfunction_c = (
-                        SELECT teamfunction_c FROM users_cstm WHERE id_c = '$log_in_user_id'
-                    )
-                )";
-            $team_count = executeCountQuery($teamCountQuery);
+            $counts = $this->get_document_history();
+            if( !empty($counts) ){
+                $self_count = $counts['self_count'];
+                $team_count = $counts['team'];
+                $total      = $counts['organisation'];
+            }
 
             $fetch_by_status    = "";
             $result             = array();
 
-            $fetch_status_leads         = "SELECT count(oc.id_c) as mainCount, oc.status_c FROM opportunities o LEFT JOIN opportunities_cstm oc ON o.id = oc.id_c WHERE o.deleted != 1 AND o.date_entered >= now() - interval '".$day."' day GROUP BY oc.status_c";
-            $fetch_status_leads_result  = $GLOBALS['db']->query($fetch_status_leads);
-
-            $Lead_chunk                 = $this->get_default_chunk('Lead');
-            $QualifiedLead_chunk        = $this->get_default_chunk('QualifiedLead'); 
-            $QualifiedOpportunity_chunk = $this->get_default_chunk('Qualified');
-            $QualifiedDpr_chunk         = $this->get_default_chunk('QualifiedDpr');
-            $QualifiedBid_chunk         = $this->get_default_chunk('QualifiedBid'); 
-            $CloseWin_chunk             = $this->get_default_chunk('ClosedWin');
-            $ClosedLost_chunk           = $this->get_default_chunk('ClosedLost');
-            $Dropped_chunk              = $this->get_default_chunk('Dropped');
-            
-            $fetch_by_status .= $Lead_chunk .$QualifiedLead_chunk . $QualifiedOpportunity_chunk . $QualifiedDpr_chunk . $QualifiedBid_chunk . $CloseWin_chunk . $ClosedLost_chunk .$Dropped_chunk;
-            /* end generate cards */
-
-            /* Opportunities main HTML */
+            /* Activities main HTML */
             ob_start();
             include_once 'templates/partials/document/main.php';
             $content = ob_get_contents();
             ob_end_clean();
 
-            $fetch_query = getOpportunitiesQuery(); // getOpportunities Query
+            $fetch_query = getActivityQuery(); // getActivity Query
 
             //Pagination Query
             $limit = 5;
@@ -6834,7 +6814,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $result = $GLOBALS['db']->query($fetch_query);
             $response = $this->mysql_fetch_assoc_all($result); //get all result in an array
 
-            /* Opportunities repeater HTML (Table ROW) */
+            /* Activities repeater HTML (Table ROW) */
             ob_start();
             include_once 'templates/partials/document/repeater.php';
             $content .= ob_get_contents();
@@ -6858,16 +6838,16 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $content .= '<p class="d-inline-block">Showing '.$currentPost.' of '.$totalCount.'</p>';
 
             $type = array(
-                'method' => 'opportunity',
-                'status' => $_GET['status'],
-                'type' => $_GET['type']
+                'method' => 'document',
+                'status' => '',
+                'type' => ''
             );
 
             $content .= $this->documentpagination($page, $numberOfPages, $type, $day, $searchTerm, $_GET['filter']);
             $content .= '</div>';
             /* End Pagination HTML */
-            $columnFilterHtml   = $this->getColumnFilters($_GET['status']);
-            $filters            = $this->getFilterHtml('opportunity', $_GET);
+            $columnFilterHtml   = $this->getDocumentColumnFilters();
+            $filters            = $this->getDocumentFilterHtml('document', $_GET);
 
             echo json_encode(array(
                 'data'                      => $content,
@@ -6875,18 +6855,92 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 'self_count'                => $self_count,
                 'team_count'                => $team_count,
                 'delegate'                  => $this->checkDelegate(),
-                'delegateDetails'           => $this->getDelegateDetails(),
+                'delegateDetails'           => $this->getDocumentDelegateDetails(),
                 'global_organization_count' => $global_organization_count,
                 'non_global_organization'   =>  $non_global_organization_count,
                 'fetched_by_status'         =>  $fetch_by_status,
                 'columnFilter'              => $columnFilterHtml,
-                'filters'                   => $filters
+                'filters'                   => $filters,
+                'user_id'                   => $log_in_user_id,
+            
             ));
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
         die();
     }
+
+    function getDocumentDelegateDetails(){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        $query = "SELECT u.first_name, u.last_name, cs.user_id_c FROM calls c JOIN calls_cstm cs ON cs.id_c = c.id JOIN users u ON u.id = cs.user_id_c WHERE c.deleted != 1 AND c.date_entered >= now() - interval '1200' day AND cs.delegate_id = '$log_in_user_id' GROUP BY cs.user_id_c ";
+        $result = $GLOBALS['db']->query($query);
+        $delegateData = array();
+        while($row = $GLOBALS['db']->fetchByAssoc($result)){
+            $dData = array(
+                'name' => $row['first_name'].' '.$row['last_name'],
+                'count' => $this->getDocumentDelegateCount($row['user_id_c'])
+            );
+            array_push($delegateData, $dData);
+        }
+        $output = '';
+        foreach($delegateData as $d){
+            $output .= $d['name'].' - '.$d['count'].'<br>';
+        }
+        return $output;
+    }
+
+    function getDocumentDelegateCount($userID){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        $query = "SELECT count(*) as count FROM activity_approval_table ap";
+        $query .= " JOIN calls c ON c.id = ap.acc_id";
+        $query .= " WHERE ap.approval_status = '0' AND c.deleted != 1 AND c.date_entered >= now() - interval '1200' day AND ap.approver = '$userID' AND ap.delegate_id = '$log_in_user_id' ";
+        $result = $GLOBALS['db']->query($query);
+        $count = $GLOBALS['db']->fetchByAssoc($result);
+        return $count['count'];
+    }
+
+    public function get_document_history(){
+        try {
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $day = $_COOKIE['day'];
+
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+
+            $self_count = "SELECT count(*) as totalCount FROM calls 
+                LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c 
+                WHERE assigned_user_id = '$log_in_user_id' AND deleted != 1 AND date_entered >= now() - interval '".$day."' day";
+            $response['self_count'] = executeCountQuery($self_count);
+
+            $user_manager = get_user_manager();
+
+            $team_count = "SELECT count(*) as totalCount from calls LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c WHERE  deleted != 1 AND date_entered >= now() - interval '".$day."' day AND assigned_user_id IN (SELECT id_c FROM users_cstm WHERE user_lineage LIKE '%$user_manager%' OR id_c='$user_manager')";
+            $response['team'] = executeCountQuery($team_count);
+
+            $sql4 = "SELECT count(DISTINCT(id)) as totalCount FROM `calls` WHERE deleted != 1 AND date_entered >= now() - interval '$day' day ";
+            
+            $response['organisation'] = executeCountQuery($sql4);
+            
+            return $response;
+            //echo json_encode(array("status"=>true, "data" => json_encode($response),"message" => "Successful"));
+
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+        
+    }
+
+
+
     function documentpagination($page, $numberOfPages, $type, $day, $searchTerm, $filter){
 
         $ends_count = 1;  //how many items at the ends (before and after [...])
@@ -6935,20 +6989,10 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $LeadCount = round($this->getDocumentStatusCountGraph('Lead', $day) / $totalCount * 100, 0);
             $QualifiedLeadCount = round($this->getDocumentStatusCountGraph('QualifiedLead', $day) / $totalCount * 100, 0);
             $QualifiedOpporunityCount = round($this->getDocumentStatusCountGraph('Qualified', $day) / $totalCount * 100, 0);
-            $QualifiedDPR = round($this->getDocumentStatusCountGraph('QualifiedDpr', $day) / $totalCount * 100, 0);
-            $QualifiedBid = round($this->getDocumentStatusCountGraph('QualifiedBid', $day) / $totalCount * 100, 0);
-            $Drop = round($this->getDocumentStatusCountGraph('Dropped', $day) / $totalCount * 100, 0);
-            $CloseWon = round($this->getDocumentStatusCountGraph('Closed', $day, 'won') / $totalCount * 100, 0);
-            $CloseLost = round($this->getDocumentStatusCountGraph('Closed', $day, 'lost') / $totalCount * 100, 0);
         }
         $LeadCount = $LeadCount ? $LeadCount : 0;
         $QualifiedLeadCount = $QualifiedLeadCount ? $QualifiedLeadCount : 0;
         $QualifiedOpporunityCount = $QualifiedOpporunityCount ? $QualifiedOpporunityCount : 0;
-        $QualifiedDPR = $QualifiedDPR ? $QualifiedDPR : 0;
-        $QualifiedBid = $QualifiedBid ? $QualifiedBid : 0;
-        $CloseWon = $CloseWon ? $CloseWon : 0;
-        $CloseLost = $CloseLost ? $CloseLost : 0;
-        $Drop = $Drop ? $Drop : 0;
         
         $data = '';
 
@@ -6972,40 +7016,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                     <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedOpporunityCount.'%</p>
                 </div>';
         endif;
-
-        if($QualifiedDPR):
-            $data .= '<div style="width: '.$QualifiedDPR.'%" class="graph-bar-each">
-                    <div style="width: 100%; height: 70px; background-color: #FFFF00;"></div>
-                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedDPR.'%</p>
-                </div>';
-        endif; 
-
-        // if($QualifiedBid):
-        //     $data .= '<div style="width: '.$QualifiedBid.'%" class="graph-bar-each">
-        //             <div style="width: 100%; height: 70px; background-color: #00FF00;"></div>
-        //             <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedBid.'%</p>
-        //         </div>';
-        // endif;
         
-        // if($CloseWon):
-        //     $data .= '<div style="width: '.$CloseWon.'%" class="graph-bar-each">
-        //             <div style="width: 100%; height: 70px; background-color: #006400;"></div>
-        //             <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$CloseWon.'%</p>
-        //         </div>';
-        // endif;
-        // if($CloseLost):
-        //     $data .= '<div style="width: '.$CloseLost.'%" class="graph-bar-each">
-        //             <div style="width: 100%; height: 70px; background-color: #FF7F00;"></div>
-        //             <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$CloseLost.'%</p>
-        //         </div>';
-        // endif;
-
-        // if($Drop):
-        //     $data .= '<div style="width: '.$Drop.'%" class="graph-bar-each">
-        //             <div style="width: 100%; height: 70px; background-color: #FF0000;"></div>
-        //             <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$Drop.'%</p>
-        //         </div>';
-        // endif; 
         echo json_encode(array("data"=>$data, "message" => "Success"));
         // echo $data;
         die;
@@ -7024,6 +7035,372 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         $count = $GLOBALS['db']->fetchByAssoc($count);
         return $count['count'];
     }
+
+
+    /* Document Filters & Columns */
+    function getDocumentColumnFilters($type = null){
+        /* Default Columns */
+        if($type){
+            $columnFilterHtml = '<form class="document-pending-settings-form sort-column">';
+            $columnFilterHtml .= '<input type="hidden" name="document-settings-section" class="document-pending-settings-section" value="" />
+            <input type="hidden" name="document-settings-type" class="document-pending-settings-type" value="" />
+            <input type="hidden" name="document-settings-type-value" class="document-pending-settings-type-value" value="" />';
+        }else{
+            $columnFilterHtml = '<form class="document-settings-form sort-column">';
+            $columnFilterHtml .= '<input type="hidden" name="document-settings-section" class="document-settings-section" value="" />
+            <input type="hidden" name="document-settings-type" class="document-settings-type" value="" />
+            <input type="hidden" name="document-settings-type-value" class="document-settings-type-value" value="" />';
+        }
+        $columnFields = $this->DocumentColumns();
+        $i = 0;
+        foreach($columnFields['default'] as $key => $field){
+            $style = '';
+            if($i <= 1)
+                $style = 'class="nondrag" style="pointer-events:none; background: #eeeeef;"';
+
+            if($i == 2){
+                $columnFilterHtml .= '<ul id="sortable1" class="sortable1 connectedSortable">';
+            }
+
+            $columnFilterHtml .= 
+                '<li '.$style.'>
+                    <input class="settingInputs" type="checkbox" id="name-select" name="'.$key.'" value="'.$key.'" checked="True" style="display: none">
+                    <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="'.$key.'" checked="True" style="display: none">
+                    <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> '.$field.'</label>
+                </li>';
+            $i++;
+        }
+        $columnFilterHtml .= '</ul></form>';
+
+        /* Addon Columns */
+        $columnFilterHtml .= '<div class="divider"></div><ul id="sortable2" class="sortable2 sort-column connectedSortable" style="padding-right: 0; float: right;">';
+        foreach($columnFields['addons'] as $key => $field){
+            $columnFilterHtml .= 
+                '<li>
+                    <input class="settingInputs" type="checkbox" id="name-select" name="'.$key.'" value="'.$key.'" checked="True" style="display: none">
+                    <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="'.$key.'" checked="True" style="display: none">
+                    <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> '.$field.'</label>
+                </li>';
+        }
+        $columnFilterHtml .= '</ul>';
+
+        return $columnFilterHtml;
+    }
+
+    function DocumentColumns(){
+        $fields = array();
+
+        $default = array(
+            'name'                  => 'Activity Name',
+            'related_to'            => 'Related To',
+            'status'                => 'Status',
+            'activity_date_c'       => 'Activity Due Date',
+            'assigned_to_c'         => 'Assigned To',
+            'next_date_c'           => 'Next Follow-Up / Interaction Date',
+            'name_of_person_c'      => 'Name of Person Contacted'
+        );
+
+        $default2 = array(
+            'new_current_status_c'          => 'Comments',
+            // 'description'                   => 'Summary of Interaction',
+            // 'new_key_action_c'              => 'Key Actionable / Next Steps identified from the Interaction',
+            
+
+        );
+
+        $fields['default'] = $default;
+        $fields['addons'] = $default2;
+
+        return $fields;
+    }
+
+    function getDocumentColumnFiltersHeader($columnFilter){
+
+        $data = '';
+        $customColumns = $_GET['customDocumentColumns'];
+        if($customColumns):
+        foreach($customColumns as $key => $column){
+            $data .= $this->getDocumentColumnHtml($column);
+        }
+        endif;
+
+        return $data;
+    }
+
+    function getDocumentColumnHtml($column){
+        $data = '';
+        switch($column){
+            case 'name':
+                $data .= '<th class="table-header">Activity Name</th>';
+                break; 
+            case 'related_to':
+                $data .= '<th class="table-header">Related To</th>';
+                break;
+            case 'status':
+                $data .= '<th class="table-header">Status</th>';
+                break;
+            case 'activity_date_c':
+                $data .= '<th class="table-header">Activity Due Date</th>';
+                break;
+            // case 'date_modified':
+            //     $data .= '<th class="table-header">Last Modified</th>';
+            //     break;
+            case 'assigned_to_c':
+                $data .= '<th class="table-header">Assigned To</th>';
+                break;
+            case 'new_current_status_c':
+                $data .= '<th class="table-header">Comments</th>';
+                break;
+            case 'description':
+                $data .= '<th class="table-header">Summary of Interaction</th>';
+                break;
+            case 'new_key_action_c':
+                $data .= '<th class="table-header">Key Actionable / Next Steps identified from the Interaction</th>';
+                break;
+            case 'next_date_c':
+                $data .= '<th class="table-header">Next Follow-Up / Interaction Date</th>';
+                break;
+            case 'name_of_person_c':
+                $data .= '<th class="table-header">Name of Person Contacted</th>';
+                break;
+        }
+        return $data;
+    }
+
+    function getDocumentColumnFiltersBody($columnFilter, $row){
+
+        $data = '';
+        $customColumns = @$_GET['customDocumentColumns'];
+
+        if($customColumns):
+        foreach($customColumns as $column){
+            $data .= $this->getDocumentColumnDataHtml($column, $row);
+        }
+        endif;
+
+        return $data;
+
+    }
+
+    function getDocumentColumnDataHtml($column, $row){
+        $data = '';
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+
+        switch($column){
+            case 'name':
+                $data .= '<td class="table-data">';
+                    $data .= '<a href="index.php?module=Calls&action=DetailView&record='.$row['id'].'">';
+
+                    $tag_icon_query = 'SELECT * FROM calls_cstm where id_c = "' .$row['id'].'"';
+                    $result = $GLOBALS['db']->query($tag_icon_query);
+                    $tagged_user = $result->fetch_assoc();
+                    $tagged_user_array = explode(',',$tagged_user['tag_hidden_c']); 
+
+                    $data .= '<h2 class="activity-title">'. $row['name'];
+                    if (in_array($log_in_user_id,$tagged_user_array)){
+                        $data .= '   <i class="fa fa-tag" style="font-size: 12px; color:green"></i></h2></a>';
+                    }
+                    else {
+                        $data .= '</h2></a>';
+                    }
+                    $data .= '<span class="activity-type d-block">'. beautify_label($row['type_of_interaction_c']) .'</span></td>';
+
+                    break; 
+            case 'related_to':
+                $parent_type = '';
+                $data .= '<td class="table-data">';
+                $data .= '<h2 class="activity-related-name">'. getActivityRelatedTo($row['parent_type'], $row['parent_id']) .'</h2>';
+                if( strtolower($row['parent_type']) == 'calls'){
+                    $parent_type = 'Activity';
+                }
+                elseif( strtolower($row['parent_type']) == 'accounts'){
+                    $parent_type = 'Department';
+                }
+                else{
+                    $parent_type = $row['parent_type'];
+                }
+                $data .= '<span class="activity-related-type">'. $parent_type .'</span></td>';
+                break;
+            case 'status':
+                $data .= '<td class="table-data">'. $row['status_new_c'] .'</td>';
+                break;
+            case 'activity_date_c':
+                $data .= '<td class="table-data">'. date( 'd/m/Y', strtotime($row['activity_date_c']) ) .'</td>';
+                break;
+            // case 'date_modified':
+            //     $data .= '<td class="table-data">'. date( 'd/m/Y', strtotime($row['date_modified']) ) .'</td>';
+            //     break;
+            case 'assigned_to_c':
+                $data .= '<td class="table-data">'. $row['assigned_to_c'] .'</td>';
+                break;
+            case 'new_current_status_c':
+                $data .= '<td class="table-data">'. $row['new_current_status_c'] .'</td>';
+                break;
+            case 'description':
+                $data .= '<td class="table-data">'. $row['description'] .'</td>';
+                break;
+            case 'new_key_action_c':
+                $data .= '<td class="table-data">'. $row['new_key_action_c'] .'</td>';
+                break;
+            case 'next_date_c':
+                $data .= '<td class="table-data">'. date( 'd/m/Y', strtotime($row['next_date_c'] ) ) .'</td>';
+                break;
+            case 'name_of_person_c':
+                $data .= '<td class="table-data">'. $row['name_of_person_c'] .'</td>';
+                break;
+        }
+        return $data;
+    }
+
+    function getDocumentFilterHtml($type, $columnFilter){
+
+        $query = getQuery('DISTINCT(type_of_interaction_c)', 'calls_cstm');
+        $interactions = $this->mysql_fetch_assoc_all($query);
+        /* default fields */
+        $html = '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Activity Name</span>
+                <input type="text" class="form-control filter-name" name="filter-name" />
+            </div>';
+
+        $html .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Type of Interaction</span>
+                <select class="" name="filter-type_of_interaction">
+                    <option value="">Select Type</option>';
+        foreach($interactions as $i){
+            $html .= '<option value="'.$i['type_of_interaction_c'].'">'.beautify_label($i['type_of_interaction_c']).'</option>';
+        }
+        $html .= '</select></div>';
+
+        /*$html .= '<div class="form-group">
+                <span class="primary-responsibilty-filter-head">Related to</span>
+                <select class="activity-filter" name="filter-related_to">
+                    <option value="">Select</option>
+                    <option value="Accounts">Accounts</option>
+                    <option value="Opportunities">Opportunities</option>
+                    <option value="Calls">Calls</option>
+                    <option value="Document">Document</option>
+                </select></div>';*/
+
+        $columns = $this->DocumentColumns();
+        foreach($columns['default'] as $key => $c){
+            if(isset($columnFilter[$key])){
+                $html .= $this->DocumentfilterFields($type, $columnFilter[$key]);
+            }
+        }
+
+        foreach($columns['addons'] as $key => $c){
+            if(isset($columnFilter[$key])){
+                $html .= $this->DocumentfilterFields($type, $columnFilter[$key]);
+            }
+        }
+        
+        return $html;
+    }
+
+    function DocumentfilterFields($type, $columnFilter){
+        $data = '';
+        switch($columnFilter){
+            case 'related_to':
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Related to</span>
+                    <select class="activity-filter-related-to" name="filter-related_to_new">
+                        <option value="">Select</option>
+                        <option value="Accounts">Accounts</option>
+                        <option value="Opportunities">Opportunities</option>
+                        <option value="Calls">Activity</option>
+                        <option value="Document">Document</option>
+                    </select></div>';
+                break;
+            case 'status':
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Status</span>
+                    <select class="" name="filter-status" id="">
+                        <option value="">Select</option>
+                        <option value="Upcoming">Upcoming</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Overdue">Overdue</option>
+                    </select>
+                    
+                </div>';
+                break;
+            
+            case 'activity_date_c':
+                $data = '<div class="form-group">
+                    <div class="date-filter">
+                        <label>Activity Date Range</label><br>
+                        From: <input class="filterdatebox" name="filter-activity_date_c_from" id="closed_date_from" width="300" />
+                        To: <input class="filterdatebox" name="filter-activity_date_c_to" id="closed_date_to" width="300" />
+                    </div>
+                </div>';
+                break;
+            
+            case 'date_modified':
+                $data = '<div class="form-group">
+                    <div class="date-filter">
+                        <label>Modified Date Range</label><br>
+                        From: <input class="filterdatebox" name="filter-date_modified_from" id="closed_date_from" width="300" />
+                        To: <input class="filterdatebox" name="filter-date_modified_to" id="closed_date_to" width="300" />
+                    </div>
+                </div>';
+                break;
+            
+            case 'assigned_to_c':
+                $users = $this->get_users_with_team_options();
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Assigned To</span>
+                    <select class="select2" name="filter-assigned_to_c[]" id="" multiple>
+                        '.$users.'
+                    </select>
+                </div>';
+                break;
+            
+            case 'new_current_status_c':
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Comments</span>
+                    <input class="form-control" name="filter-new_current_status_c" id="" />
+                </div>';
+                break;
+            
+            case 'description':
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Summary of Interaction</span>
+                    <input class="form-control" name="filter-description" id="" />
+                </div>';
+                break;
+
+            case 'new_key_action_c':
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Key Actionable / Next Steps identified from the Interaction</span>
+                    <input class="form-control" name="filter-new_key_action_c" id="" />
+                </div>';
+                break;
+            
+
+            case 'next_date_c':
+                $data = '<div class="form-group">
+                    <div class="date-filter">
+                        <label>Next Follow Up Date</label><br>
+                        From: <input class="filterdatebox" name="filter-next_date_c_from" id="closed_date_from" width="300" />
+                        To: <input class="filterdatebox" name="filter-next_date_c_to" id="closed_date_to" width="300" />
+                    </div>
+                </div>';
+                break;
+            case 'name_of_person_c':
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Name of Person Contacted </span>
+                    <input class="form-control" name="filter-name_of_person_c" id="" />
+                </div>';
+                break;
+            
+            default:
+                $data = '';
+                break;
+        }
+        return $data;
+    }
+
+    /* End Document Filters & Columns */
     
 
 }

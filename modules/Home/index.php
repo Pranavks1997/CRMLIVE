@@ -694,6 +694,119 @@
 
     </div>
 
+
+
+<!-- ************** Document Filter  ************* -->
+    <div id="document-settings-modal" class="setting-modal">
+        <!-- Modal content -->
+        <div class="setting-modal-content">
+            <span class="closeSetting" onclick="openDocumentSettingDialog('close')">&times;</span>
+            <h2 class="setting_heading">Drag / Drop Columns to be Displayed / Hidden</h2>
+            <p class="setting_subhead">Select 7 columns for the table</p>
+            <!-- <hr style="color: #D1D0CE"> -->
+            <div class="search-column-container">
+                <input type="text" class="document-search-column1" placeholder="Search here" />
+                <i class="fa fa-search"></i>
+            </div>
+            <div class="search-column-heading-container">
+                <h2 class="search-column-heading">Displayed</h2>
+                <h2 class="search-column-heading">Hidden</h2>
+            </div>
+            <section class="section">
+                <div class="opportunity-settings" id="document-settings">
+                    
+                </div>
+            </section>
+            <div style=" padding-top: 10px;padding-bottom: 20px;padding-left: 20px;">
+                <button class="settings_btn1" type="button" onclick="commitDocumentFilter();">Save</button>
+                <button style="margin-left: 10px;" class="settings_btn2" type="button" onclick="openDocumentSettingDialog('discard')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="document-pending-settings-modal" class="setting-modal">
+        <!-- Modal content -->
+        <div class="setting-modal-content">
+            <span class="closeSetting" onclick="openDocumentPendingSettingsDialog('close')">&times;</span>
+
+            <h2 class="setting_heading">Drag / Drop Columns to be Displayed / Hidden</h2>
+            <p class="setting_subhead">Select 7 columns for the table</p>
+            <div class="search-column-container">
+                <input type="text" class="document-search-column2" placeholder="Search here" />
+                <i class="fa fa-search"></i>
+            </div>
+            <div class="search-column-heading-container">
+                <h2 class="search-column-heading">Displayed</h2>
+                <h2 class="search-column-heading">Hidden</h2>
+            </div>
+            <!-- <hr style="color: #D1D0CE"> -->
+            <section class="section">
+                <div class="opportunity-settings" id="document-pending-settings">
+                    
+                </div>
+
+            </section>
+            <div style=" padding-top: 10px;padding-bottom: 20px;padding-left: 20px;">
+                <button class="settings_btn1" type="button" onclick="commitDocumentPendingFilter();">Save</button>
+                <button style="margin-left: 10px;" class="settings_btn2" type="button" onclick="openDocumentPendingSettingsDialog('discard')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="document-filter" class="filter_modal">
+        <!-- Modal content -->
+        <div class="filtermodal-content">
+            <span class="filterclose" onclick="openDocumentFilterDialog('close')" style="cursor:pointer;font-size:18px;float: right;">&times;</span>
+            <form class="document-filter">
+
+                <input type="hidden" class="filter-type" name="filter-type" value="" />
+                <input type="hidden" class="filter-value" name="filter-value" value="" />
+                <input type="hidden" class="filter-status" name="filter-status" value="" />
+
+                <h2 class="filterheading">Filter</h2>
+                <p class="filtersubhead">Fill out the following details</p>
+                <hr class="filtersolid">
+                <section class="filtersection" style="margin-top: 10px;">
+                    <div class="filter-body" style="padding-top: 10px; padding-right: 15px; margin-bottom: 20px; display: block; max-height: 350px; overflow: hidden; overflow-y: scroll"></div>
+                    <div>
+                        <button class="btn1" type="button" id="filter_submit" onclick="openDocumentFilterDialog('submit')">Filter</button>
+                        <button class="btn2" type="button" id="filter_discard" onclick="openDocumentFilterDialog('close')" style="border-color: #8a8a8a">Close</button>
+                        <a id="filter_clear" class="clear-filter" data-type="document">Clear Filter</a>
+                    </div>
+                </section>
+            </form>
+        </div>
+
+    </div>
+
+
+    <div id="document-pending-filter" class="filter_modal">
+        <!-- Modal content -->
+        <div class="filtermodal-content">
+            <span class="filterclose" onclick="openDocumentPendingFilterDialog('close')" style="cursor:pointer;font-size:18px;float: right;">&times;</span>
+            <form class="document-pending-filter">
+
+                <input type="hidden" class="filter-type" name="type" value="" />
+                <input type="hidden" class="filter-value" name="value" value="" />
+                <input type="hidden" class="filter-status" name="status" value="" />
+
+                <h2 class="filterheading">Filter</h2>
+                <p class="filtersubhead">Fill out the following details</p>
+                <hr class="filtersolid">
+                <section class="filtersection" style="margin-top: 10px;">
+                    <div class="filter-body" style="padding-top: 10px; padding-right: 15px; margin-bottom: 20px; display: block; max-height: 350px; overflow: hidden; overflow-y: scroll"></div>
+                    <div>
+                        <button class="btn1" type="button" id="filter_submit" onclick="openDocumentPendingFilterDialog('submit')">Filter</button>
+                        <button class="btn2" type="button" id="filter_discard" onclick="openDocumentPendingFilterDialog('close')" style="border-color: #8a8a8a">Close</button>
+                        <a id="filter_clear" class="clear-filter" data-type="document-pending">Clear Filter</a>
+                    </div>        
+                </section>
+            </form>
+        </div>
+
+    </div>
+
+
     <script src="modules/Home/js/script.js"></script>
     <script src="modules/Home/js/functions.js"></script>
     <script src="modules/Home/js/activityFunction.js"></script>
