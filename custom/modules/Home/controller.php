@@ -6959,8 +6959,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $content .= $this->documentpagination($page, $numberOfPages, $type, $day, $searchTerm, $_GET['filter']);
             $content .= '</div>';
             // /* End Pagination HTML */
-            $columnFilterHtml   = $this->getDocumentColumnFilters($_GET['status']);
-            $filters            = $this->getFilterHtml('opportunity', $_GET);
+            // $columnFilterHtml   = $this->getDocumentColumnFilters($_GET['status']);
+            $filters            = $this->getFilterHtml('document', $_GET);
 
             echo json_encode(array(
                 'data'                      => $content,
@@ -6972,7 +6972,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 'global_organization_count' => $global_organization_count,
                 'non_global_organization'   =>  $non_global_organization_count,
                 'fetched_by_status'         =>  $fetch_by_status,
-                'columnFilter'              => $columnFilterHtml,
+                // 'columnFilter'              => $columnFilterHtml,
                 'filters'                   => $filters
             ));
         }catch(Exception $e){
@@ -7120,6 +7120,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
         $data = '';
         $customColumns = $_GET['customDocumentColumns'];
+        // echo $_GET['customDocumentColumns'];
         if($customColumns):
         foreach($customColumns as $key => $column){
             $data .= $this->getDocumentColumnHtml($column);
