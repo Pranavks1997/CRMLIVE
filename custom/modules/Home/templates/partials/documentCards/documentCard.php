@@ -1,8 +1,8 @@
 <div style="display: flex; flex-direction: column; margin: 10px;width: 200px;">
     <p style="width: 150px;color: grey;font-size: 16px;padding-left: 5px;" id="daysFilterContainer">
-        <span id="daysFilterAllLabel"></span> 
-        <span id="daysFilterOpp">Document over last</span> 
-        <span id="daysFilter">30</span> 
+        <span id="daysFilterAllLabelDoc"></span> 
+        <span id="daysFilterDoc">Document over last</span> 
+        <span id="doc-daysFilter">30</span> 
         <span id="daysFilterDays">days</span> 
     </p>
     <div style="display: flex; margin-top: 10px">
