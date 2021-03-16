@@ -305,6 +305,179 @@
                 }
         return $acc_id_show;
     }
+
+    function private_documents() {
+        global $current_user;
+            
+        $login_user_id=$current_user->id;
+            
+        $doc_id=array();
+            
+        $assigned_user_id = array();
+        $multiple_approver_id = array();
+        $lineage = array();
+        $tagged_users=array();
+        $doc_type= array();
+        $doc_id_show=array();
+        $bid_commercial_id=array();
+        $mc_id=array();
+        $delegte_id=array();
+       
+       
+     
+        $sql_opp="SELECT documents.id,documents.assigned_user_id,documents_cstm.document_visibility_c,documents_cstm.user_id_c AS approvers,documents_cstm.tagged_hidden_c AS tagged_users_id, users_cstm.user_lineage as lineage FROM documents INNER JOIN documents_cstm ON documents_cstm.id_c=documents.id LEFT JOIN users_cstm ON users_cstm.id_c = documents.assigned_user_id WHERE documents.deleted=0";
+            $result_opp = $GLOBALS['db']->query($sql_opp);
+            
+            while($row_opp = $GLOBALS['db']->fetchByAssoc($result_opp) )
+                {
+                $doc_id[]=$row_opp['id'];
+                $assigned_user_id[]=$row_opp['assigned_user_id'];
+                $multiple_approver_id[]=$row_opp['approvers'];
+                $lineage[]=$row_opp['lineage'];
+                $tagged_users[]=$row_opp['tagged_users_id'];
+                $doc_type[]=$row_opp['document_visibility_c'];
+                
+                }
+                
+            //	echo json_encode($tagged_users);
+            $sql_bid="SELECT id_c FROM `users_cstm` LEFT JOIN users ON users_cstm.id_c=users.id WHERE `bid_commercial_head_c`='commercial_team_head' OR `bid_commercial_head_c`='bid_team_head' AND users.deleted=0";
+            $result_bid = $GLOBALS['db']->query($sql_bid);
+            
+            while($row_bid = $GLOBALS['db']->fetchByAssoc($result_bid) )
+                {
+                $bid_commercial_id[]=$row_bid['id_c'];
+                
+                }
+
+            $sql_mc="SELECT id_c FROM `users_cstm` LEFT JOIN users ON users_cstm.id_c=users.id WHERE `mc_c`='yes' AND users.deleted=0";
+            $result_mc = $GLOBALS['db']->query($sql_mc);
+            
+            while($row_mc = $GLOBALS['db']->fetchByAssoc($result_mc) )
+                {
+                $mc_id[]=$row_mc['id_c'];
+                
+                }
+                
+            
+                
+                if(in_array($login_user_id,$mc_id) || $current_user->is_admin==1){
+                    $doc_id_show=$doc_id;
+                }
+                else{
+                            
+                
+                    
+                    for($i=0;$i<count($doc_id);$i++){
+                        
+                    
+                        if($doc_type[$i]=='global'){
+                            array_push($doc_id_show,$doc_id[$i]);
+                        }
+                        if($doc_type[$i]=='non_global'){
+                            
+                            
+                        
+
+                            if( in_array($login_user_id,explode(',',$tagged_users[$i])) || in_array($login_user_id,explode(',',$lineage[$i])) || in_array($login_user_id,explode(',',$multiple_approver_id[$i])) || in_array($login_user_id,explode(',',$assigned_user_id[$i]))  ) {
+                            
+                        
+                            
+                                array_push($doc_id_show,$doc_id[$i]);
+                                
+                            }
+                            
+                        
+                        }
+                    }
+                    
+                    
+                }
+        return $doc_id_show;
+    }
+
+    function getDocumentFilterQuery(){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+
+        $fetch_query = '';
+
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-name'] ) && $_GET['filter-name'] ){
+            $name           = $_GET['filter-name'] ?? '';
+            $fetch_query    .= " AND calls.name LIKE '%$name%' ";
+        }
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-related_to_new'] ) && $_GET['filter-related_to_new'] ){
+            $relatedTo      = $_GET['filter-related_to_new'] ?? '';
+            $fetch_query    .= " AND calls.parent_type = '$relatedTo' ";
+        }
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-status'] ) && $_GET['filter-status'] ){
+            $status         = $_GET['filter-status'] ?? '';
+            $fetch_query    .= " AND calls_cstm.status_new_c = '$status' ";
+        }
+        if( isset( $_GET['filter'] ) && ( isset( $_GET['filter-activity_date_c_from'] ) || isset( $_GET['filter-activity_date_c_to'] ) ) && $_GET['filter-activity_date_c_from'] && $_GET['filter-activity_date_c_to'] ){
+            $activityDateFrom   = date_format_helper($_GET['filter-activity_date_c_from']) ?? '';
+            $activityDateTo     = date_format_helper($_GET['filter-activity_date_c_to']) ?? '';
+            $fetch_query        .= " AND DATE(calls_cstm.activity_date_c) BETWEEN '$activityDateFrom' AND '$activityDateTo' ";
+        }
+        if( isset( $_GET['filter'] ) && ( isset( $_GET['filter-date_modified_from'] ) || isset( $_GET['filter-date_modified_to'] ) ) && $_GET['filter-date_modified_from'] && $_GET['filter-date_modified_to'] ){
+            $activityDateFrom   = date_format_helper($_GET['filter-date_modified_from']) ?? '';
+            $activityDateTo     = date_format_helper($_GET['filter-date_modified_to']) ?? '';
+            $fetch_query        .= " AND DATE(calls.date_modified) BETWEEN '$activityDateFrom' AND '$activityDateTo' ";
+        }
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-assigned_to_c'] ) && $_GET['filter-assigned_to_c'] ){
+            $assignedTo      = $_GET['filter-assigned_to_c'] ?? '';
+            $fetch_query .= " AND (";
+            foreach($assignedTo as $key => $res){
+                if($key)
+                    $fetch_query .= " OR ";
+                if (strpos($res, 'andTeam') !== false) {
+                    $arr = explode('andTeam',$res,0);
+                    $arr[0] = chop($arr[0],"andTeam");
+                    $a = $arr[0];
+                    $fetch_query .= " calls.assigned_user_id IN 
+                    (SELECT id_c FROM users_cstm WHERE user_lineage LIKE '%$a%' OR id_c = '$a') ";
+                } else {
+                    $fetch_query .= " calls.assigned_user_id = '$res' ";
+                }
+            }
+            $fetch_query .= " )";
+        }
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-new_current_status_c'] ) && $_GET['filter-new_current_status_c'] ){
+            $comments       = $_GET['filter-new_current_status_c'] ?? '';
+            $fetch_query    .= " AND calls_cstm.new_current_status_c = '$comments' ";
+        }
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-description'] ) && $_GET['filter-description'] ){
+            $description     = $_GET['filter-description'] ?? '';
+            $fetch_query    .= " AND calls.description LIKE '%$description%' ";
+        }
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-new_key_action_c'] ) && $_GET['filter-new_key_action_c'] ){
+            $newKeyAction   = $_GET['filter-new_key_action_c'] ?? '';
+            $fetch_query    .= " AND calls_cstm.new_key_action_c = '$newKeyAction' ";
+        }
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-non_financial_consideration_c'] ) && $_GET['filter-non_financial_consideration_c'] ){
+            $nonFinancial   = $_GET['filter-non_financial_consideration_c'] ?? '';
+            $fetch_query    .= " AND calls_cstm.non_financial_consideration_c = '$nonFinancial' ";
+        }
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-audit_trail_c'] ) && $_GET['filter-audit_trail_c'] ){
+            $auditTrial   = $_GET['filter-audit_trail_c'] ?? '';
+            $fetch_query    .= " AND calls_cstm.audit_trail_c = '$auditTrial' ";
+        }
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-approver_c'] ) && $_GET['filter-approver_c'] ){
+            $approver       = $_GET['filter-approver_c'] ?? '';
+            $fetch_query    .= " AND calls_cstm.user_id_c = '$approver' ";
+        }
+        if( isset( $_GET['filter'] ) && ( isset( $_GET['filter-next_date_c_from'] ) || isset( $_GET['filter-next_date_c_to'] ) ) && $_GET['filter-next_date_c_from'] && $_GET['filter-next_date_c_to'] ){
+            $nextDateFrom   = date_format_helper($_GET['filter-next_date_c_from']) ?? '';
+            $nextDateTo     = date_format_helper($_GET['filter-next_date_c_to']) ?? '';
+            $fetch_query    .= " AND DATE(calls_cstm.next_date_c) BETWEEN '$nextDateFrom' AND '$nextDateTo' ";
+        }
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-name_of_person_c'] ) && $_GET['filter-name_of_person_c'] ){
+            $contactPerson  = $_GET['filter-name_of_person_c'] ?? '';
+            $fetch_query    .= " AND calls_cstm.name_of_person_c = '$contactPerson' ";
+        }
+        
+        return $fetch_query;
+    }
+
     function getFilterQuery(){
         global $current_user;
         $log_in_user_id = $current_user->id;

@@ -1,3 +1,51 @@
+function openDocumentFilterDialog(event) {
+    var dialog = document.getElementById('document-filter');
+    if (event === "discard") {
+        dialog.style.display = "none";
+    } else if (event === "close") {
+        dialog.style.display = "none";
+    } else if (event == 'submit') {
+        documentFilterHelper('document-filter');
+        dialog.style.display = "none";
+    } else {
+        dialog.style.display = "block"
+    }
+}
+
+function documentFilterHelper(ref) {
+    var day = Cookies.get('day') ? Cookies.get('day') : 30;
+    if (ref == 'document-filter') {
+        var filterMethod = $('.document-filter .filter-method').val();
+        var filterDay = $('.document-filter .filter-day').val();
+        var filterType = $('.document-filter .filter-type').val();
+        var filterStatus = $('.document-filter .filter-status').val();
+    } else {
+        var filterMethod = $('.document-pending-filter .filter-method').val();
+        var filterDay = $('.document-pending-filter .filter-day').val();
+        var filterStatus = $('.document-pending-filter .filter-status').val();
+    }
+
+    if (ref == 'document-filter') {
+        documentdateBetween(day, '', '', 1, filterStatus, filterType, '', 0);
+    } else {
+        fetchDocumentByStatus(1, '', 0);
+    }
+}
+
+function openDocumentPendingFilterDialog(event) {
+    var dialog = document.getElementById('document-pending-filter');
+    if (event === "discard") {
+        dialog.style.display = "none";
+    } else if (event === "close") {
+        dialog.style.display = "none";
+    } else if (event == 'submit') {
+        documentFilterHelper('document-pending-filter');
+        dialog.style.display = "none";
+    } else {
+        dialog.style.display = "block"
+    }
+}
+
 function openPendingDocumentRequestTable(event) {
     var temp = document.getElementsByClassName('pending-document-request-count');
     var pendingReqCount = temp[0].innerText;
@@ -13,6 +61,7 @@ function openPendingDocumentRequestTable(event) {
     }
     fetchDocumentByStatus();
 }
+
 function getPendingDocumentRequestCount() {
     $.ajax({
         url: 'index.php?module=Home&action=document_pending_count',
@@ -30,6 +79,111 @@ function getPendingDocumentRequestCount() {
             }
         }
     });
+}
+
+function documentSearchColumns(text) {
+    // Search text
+    //case-insensitive
+    class1 = "document-settings";
+    class2 = "document-pending-settings";
+    jQuery.expr[':'].contains = function (a, i, m) {
+        return jQuery(a).text().toUpperCase()
+            .indexOf(m[3].toUpperCase()) >= 0;
+    };
+    //hiding other that matching
+    if (text != '') {
+        $("#" + class1 + " #sortable2 li")
+            .hide()
+            .filter(':contains("' + text + '")')
+            .show();
+        $("#" + class2 + " #sortable2 li")
+            .hide()
+            .filter(':contains("' + text + '")')
+            .show();
+    }
+    else {
+        $("#" + class1 + " li").show();
+        $("#" + class2 + " li").show();
+    }
+}
+
+function openDocumentSettingDialog(event) {
+
+    var dialog = document.getElementById('document-settings-modal');
+    $('#search-column1').val('');
+    documentSearchColumns('');
+    if (event === "discard") {
+        dialog.style.display = "none";
+    } else if (event === "close") {
+        dialog.style.display = "none";
+    } else if (event === "submit") {
+
+    } else {
+        dialog.style.display = "block"
+    }
+
+    if(event == 'document'){
+        $('.document-settings-section').val('document');
+    }else if(event == 'pendings'){
+        $('.document-settings-section').val('document-pendings');
+    }
+
+}
+
+function commitDocumentFilter() {
+    var settingsSection = $('.document-settings-section').val();
+    var settingsType = $('.document-settings-type').val();
+    var settingsStatus = $('.document-settings-status').val();
+    var settingsValue = $('.document-settings-type-value').val();
+    var day = Cookies.get('day');
+
+    if (settingsSection == 'document') {
+        documentdateBetween(day, '', '', '', 0);
+    } else {
+        fetchDocumentByStatus('', '', 0);
+    }
+    openDocumentSettingDialog('close');
+}
+
+function openDocumentSettingDialog(event) {
+
+    var dialog = document.getElementById('document-settings-modal');
+    $('#search-column1').val('');
+    activitySearchColumns('');
+    if (event === "discard") {
+        dialog.style.display = "none";
+    } else if (event === "close") {
+        dialog.style.display = "none";
+    } else if (event === "submit") {
+
+    } else {
+        dialog.style.display = "block"
+    }
+
+    if(event == 'activity'){
+        $('.document-settings-section').val('document');
+    }else if(event == 'pendings'){
+        $('.document-settings-section').val('document-pendings');
+    }
+
+}
+
+
+
+function getDefaultDocumentColumns(type) {
+    if (type == 'document') {
+        var html = $('#document-settings');
+        var DefaultColumns = '<form class="document-settings-form sort-column">';
+    } else if (type == 'pending') {
+        var html = $('#document-pending-settings');
+        var DefaultColumns = '<form class="document-pending-settings-form sort-column">';
+    }
+
+    DefaultColumns += '<input type="hidden" name="document-settings-section" class="document-settings-section" value=""> <input type="hidden" name="acitivity-settings-type" class="document-settings-type" value=""> <input type="hidden" name="document-settings-type-value" class="document-settings-type-value" value=""> <ul id="sortable1" class="sortable1 connectedSortable ui-sortable"> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="name" value="name" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="name" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Document</label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="related_to" value="related_to" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="related_to" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Related To</label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="status" value="status" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="status" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Status</label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="document_date_c" value="document_date_c" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="document_date_c" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> End Date</label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="date_modified" value="date_modified" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="date_modified" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Last Updated</label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="assigned_to_c" value="assigned_to_c" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="assigned_to_c" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Assigned To</label> </li>';
+    DefaultColumns += '<li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="next_date_c" value="next_date_c" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="next_date_c" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Next Follow-Up / Interaction Date</label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="name_of_person_c" value="name_of_person_c" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="name_of_person_c" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Name of Person Contacted</label> </li></ul>';
+    html.html(DefaultColumns);
+    initSortable();
+
 }
 
 function fetchDocumentByStatus(filter = 0, page = null, changeColumns = 1) {
@@ -65,6 +219,108 @@ function fetchDocumentByStatus(filter = 0, page = null, changeColumns = 1) {
     });
 }
 
+
+// function documentdateBetween(dateBetween, searchTerm = null, page = null, filter = 0, status = null, type = null, dropped = null, changeColumns = 1) {
+//     Cookies.set('day', dateBetween, { expires: 1 });
+//     if (changeColumns) // reset columns
+//         getDefaultDocumentColumns('document');
+
+//     var tabContent = document.getElementById('tab_30days_content');
+//     $.ajax({
+//         url: 'index.php?module=Home&action=getDocument&' + $('.settings-form').serialize() + '&' + $('.document-filter').serialize() + '&filter=' + filter,
+//         type: 'GET',
+//         data: {
+//             days: dateBetween,
+//             searchTerm: searchTerm,
+//             page: page,
+//             status: status,
+//             type: type,
+//             dropped: dropped,
+//         },
+//         success: function (check) {
+//             console.log("getDocument" ,check);
+//             if (dateBetween == '1200') {
+//                 $('#daysFilterAllLabelDoc').html('All Documents');
+//                 $('#daysFilterDoc').html('');
+//                 $('#doc-daysFilter').html('');
+//                 $('#daysFilterDays').html('');
+//             } else {
+//                 $('#daysFilterAllLabelDoc').html('');
+//                 $('#daysFilterDoc').html('Documents Over Last');
+//                 $('#daysFilterDays').html('Days');
+//                 $('#doc-daysFilter').html(dateBetween);
+//             }
+//             var data = JSON.parse(check);
+
+//             if (!data.delegate) {
+//                 $('#delegateBtn').remove();
+//             }
+
+//             if (changeColumns) {
+//                 $('#document-settings').html(data.columnFilter);
+//                 initSortable();
+//             }
+
+//             if (!filter) {
+//                 $('.opportunity-filter .filter-body').html(data.filters);
+//                 initSelect2();
+//             }
+
+
+//             // /* Filter Values */
+//             $('.document-filter .filter-method').val('opportunities');
+//             $('.document-filter .filter-day').val(dateBetween);
+//             // $('.opportunity-filter .filter-status').val(status);
+//             // $('.opportunity-filter .filter-type').val(type);
+
+//             if (dateBetween === '30') {
+//                 // $('#documenttableContent').html(data.data);
+//                 $('#orgDocumentCount').html(data.total);
+//                 $('#selfDocumentCount').html(data.self_count);
+//                 $('#myTeamDocumentCount').html(data.team_count);
+//                 $('#delegateDocumentName').html("<p>Bharat Karnani- 35</p><p>Pranav- 20</p><p>Webknot- 25</p>");
+//                 // if (data.delegateDetails)
+//                 //     $('#delegateDocumentCount').html(data.delegateDetails);
+
+//                 // $('#fetchedByStatus').html(data.fetched_by_status);
+//                 tabContent.style.display = 'block';
+//             } else if (dateBetween === '60') {
+//                 $('#documenttableContent').html(data.data);
+//                 $('#orgDocumentCount').html(data.total);
+//                 $('#selfDocumentCount').html(data.self_count);
+//                 $('#myTeamDocumentCount').html(data.team_count);
+//                 $('#delegateDocumentName').html("<p>Bharat- 15</p><p>Pranav- 20</p><p>Webknot- 25</p>");
+//                 // if (data.delegate_name != '') {
+//                 //     $('#delegateDocumentCount').html("5");
+//                 // }
+//                 // $('#fetchedByStatus').html(data.fetched_by_status)
+//                 tabContent.style.display = 'block';
+
+//                 document.getElementsByClassName('btn-30-days').style.color = "#c2c2c2";
+//             } else {
+//                 $('#documenttableContent').html(data.data);
+//                 $('#orgDocumentCount').html(data.total);
+//                 $('#selfDocumentCount').html(data.self_count);
+//                 $('#myTeamDocumentCount').html(data.team_count);
+//                 // $('#delegateName').html(data.delegate_name);
+//                 // $('#delegateDocumentName').html("<p>Bharat- 15</p><p>Pranav- 20</p><p>Webknot- 25</p>");
+//                 // if (data.delegate_name != '') {
+//                 //     $('#delegateCount').html(data.delegated_count);
+//                 // }
+//                 // $('#fetchedByStatus').html(data.fetched_by_status)
+//                 tabContent.style.display = 'block';
+
+//                 document.getElementsByClassName('btn-30-days').style.color = "#c2c2c2";
+
+//             }
+//             document.getElementById('search-icon').style.color = "green";
+//         }
+//     });
+//     var i, tabcontent, tablinks;
+
+// }
+
+
 function documentdateBetween(dateBetween, searchTerm = null, page = null, filter = 0, changeColumns = 1) {
     Cookies.set('day', dateBetween, { expires: 1 });
     if (changeColumns) // reset columns
@@ -83,17 +339,22 @@ function documentdateBetween(dateBetween, searchTerm = null, page = null, filter
         success: function (check) {
             var i, tabcontent, tablinks;
             if (dateBetween == '1200') {
-                $('#daysFilterAllLabelAct').html('All Document');
-                $('#daysFilterAct').html('');
-                $('#act-daysFilter').html('');
+
+                $('#daysFilterAllLabelDoc').html('All Documents');
+                $('#daysFilterDoc').html('');
+                $('#doc-daysFilter').html('');
                 $('#daysFilterDays').html('');
             } else {
-                $('#daysFilterAllLabelAct').html('');
-                $('#daysFilterAct').html('Documents Over Last');
+                $('#daysFilterAllLabelDoc').html('');
+                $('#daysFilterDoc').html('Documents Over Last');
                 $('#daysFilterDays').html('Days');
-                $('#act-daysFilter').html(dateBetween);
+                $('#doc-daysFilter').html(dateBetween);
+
             }
+            console.log("get ACtivity ", check);
+
             var data = JSON.parse(check);
+            // console.log("get ACtivity ", check);
 
             if (!data.delegate) {
                 $('#delegateBtn').remove();
@@ -112,6 +373,7 @@ function documentdateBetween(dateBetween, searchTerm = null, page = null, filter
             /* Filter Values */
             $('.document-filter .filter-method').val('document');
             $('.document-filter .filter-day').val(dateBetween);
+
             $('#documenttableContent').html(data.data);
             $('#orgDocumentCount').html(data.total);
             $('#selfDocumentCount').html(data.self_count);
@@ -121,7 +383,9 @@ function documentdateBetween(dateBetween, searchTerm = null, page = null, filter
             if (data.delegateDetails != '') {
                 $('#delegateDocumentName').html(data.delegateDetails);
             }
-            if (tabContent) {
+
+            if(tabContent) {
+
                 tabContent.style.display = 'block';
             }
 
@@ -134,11 +398,13 @@ function documentdateBetween(dateBetween, searchTerm = null, page = null, filter
             // }
             // document.getElementById('search-icon').style.color = "green";
         },
-        complete: function () {
-            $('.spinner').fadeOut();
+
+        complete: function(){
+    	    $('.spinner').fadeOut();
             console.log('Data Loaded');
         }
     });
+    
 
     var i, tabcontent, tablinks;
 
@@ -174,6 +440,7 @@ function updateActivityStatus() {
         data: $('.activity-approval-form').serialize(),
         success: function (data) {
             data = JSON.parse(data);
+
             if (data.status) {
                 fetchDocumentByStatus();
                 getPendingDocumentRequestCount();
@@ -185,6 +452,7 @@ function updateActivityStatus() {
         }
     });
 }
+
 
 function commitDocumentPendingFilter() {
     debugger
@@ -380,10 +648,12 @@ function getDelegateMembersDocument() {
     });
 }
 
+
 (function ($) {
     $(document).on('click', '#three-tab', function () {
         var day = Cookies.get('day') ? Cookies.get('day') : 30;
         $('.spinner').fadeIn();
+
         fetchDocumentByStatus();
         getPendingDocumentRequestCount();
         documentdateBetween(day);
@@ -405,11 +675,13 @@ function getDelegateMembersDocument() {
         }
     });
 
+
     $('.document-search-column1').keyup(function () {
         var text = $(this).val().toUpperCase();
         documentSearchColumns(text);
     });
     $('.document-search-column2').keyup(function () {
+
         var text = $(this).val().toUpperCase();
         documentSearchColumns(text);
     });
