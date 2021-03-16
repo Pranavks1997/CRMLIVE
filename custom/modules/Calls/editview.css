@@ -1,0 +1,10 @@
+#new_current_status_c {
+    width: 120%;
+}
+
+.ui-autocomplete { 
+          /*  cursor:pointer; */
+            height:120px!important; 
+            overflow-y:scroll!important;
+            width: 27%!important;
+        }    

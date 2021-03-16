@@ -1,0 +1,33 @@
+.content #tab-actions > .dropdown-menu{
+    left:0 !important;
+}
+
+table.view {
+    width: 550px !important;
+        margin-top: 50px !important;
+
+}
+
+#post_error{
+    display: none;
+}
+#user_name{
+    width:53% !important;
+}
+
+img{
+    display: none;
+} 
+
+
+table td{
+    padding-left:2% !important;
+}
+
+.View {
+     border:none !important;
+}
+
+body {
+    background:none!important;
+}
