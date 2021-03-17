@@ -7026,60 +7026,15 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
             global $current_user;
             $log_in_user_id = $current_user->id;
-            
-            $status         = $_GET['status'];
-            // $qlLeadCount    = $this->getOpportunityStatusCount('qualifylead');
-            // $qlOppCount     = $this->getOpportunityStatusCount('qualifyOpportunity');
-            // $qlDPRCount     = $this->getOpportunityStatusCount('qualifyDpr');
-            // $qlBidCount     = $this->getOpportunityStatusCount('qualifyBid');
-            // $qlClosedCount  = $this->getOpportunityStatusCount('closure');
-            // $qlDroppedCount = $this->getOpportunityStatusCount('Dropping');
 
-            
-            $columnAmount                   = isset( $_GET['Amount'] ) ? $_GET['Amount'] : '';
-            $columnREPEOI                   = isset( $_GET['REP-EOI-Published'] ) ? $_GET['REP-EOI-Published'] : '';
-            $columnClosedDate               = isset( $_GET['Closed-Date'] ) ? $_GET['Closed-Date'] : '';
-            $columnClosedBy                 = isset( $_GET['Closed-by'] ) ? $_GET['Closed-by'] : '';
-            $columnDateCreated              = isset( $_GET['Date-Created'] ) ? $_GET['Date-Created'] : '';
-            $columnDateClosed               = isset( $_GET['Date-Closed'] ) ? $_GET['Date-Closed'] : '';
+            ob_start();
+            include_once 'templates/partials/pending-document-requests/main.php';
+            $content = ob_get_contents();
+            ob_end_clean();
 
-            $columnTaggedMembers            = isset( $_GET['Tagged-Members'] ) ? $_GET['Tagged-Members'] : '';
-            $columnViewedBy                 = isset( $_GET['Viewed-by'] ) ? $_GET['Viewed-by'] : '';
-            $columnPreviousResponsibility   = isset( $_GET['Previous-Responsbility'] ) ? $_GET['Previous-Responsbility'] : '';
-            $columnAttachment               = isset( $_GET['Attachment'] ) ? $_GET['Attachment'] : '';
-            
-            $maxQuery   = "SELECT row_count FROM approval_table 
-                    WHERE ap.Approved = 0 AND ap.Rejected = 0 AND ap.pending = 1 
-                    AND ( ap.approver_rejector = '$log_in_user_id' OR ap.delegate_id = '$log_in_user_id' ) 
-                    AND ap.apply_for = '$status' 
-                    ORDER BY row_count 
-                    DESC LIMIT 1";
-            $result     = $GLOBALS['db']->query($maxQuery);
-            $rowCount   = $GLOBALS['db']->fetchByAssoc($result);
-
-            if($rowCount)
-                $rowCount = $rowCount['row_count'];
-
-            $fetch_query = getPendingOpportunitiesQuery($rowCount);
-
-            //Pagination Count
-            $limit = 5;
-            $paginationQuery = $GLOBALS['db']->query($fetch_query);
-            $totalCount = mysqli_num_rows($paginationQuery);
-            $numberOfPages = ceil( $totalCount / $limit );
-            
-            $offset = $_GET['page'] ? ($_GET['page'] - 1) * $limit : 0;
-
-            $fetch_query .= " LIMIT $offset, $limit";
-
-            // ob_start();
-            // include_once 'templates/partials/pending-document-requests/main.php';
-            // $content = ob_get_contents();
-            // ob_end_clean();
-
-            $result = $GLOBALS['db']->query($fetch_query);
-
-            $response = $this->mysql_fetch_assoc_all($result); //get all result in an array
+            $fetch_query    = getDocumentQuery(); // getActivity Query
+            $result         = $GLOBALS['db']->query($fetch_query);
+            $response       = $this->mysql_fetch_assoc_all($result); //get all result in an array
 
             /* Pending Activity repeater HTML (Table ROW) */
             ob_start();
@@ -7089,7 +7044,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
 
             //Pagination 
-            $page = $_GET['page'] ? $_GET['page'] : 1;
+            /*$page = $_GET['page'] ? $_GET['page'] : 1;
             if ($totalCount > ( $page * $limit)){
                 $currentPost = ($page * $limit);
             } else {
@@ -7104,12 +7059,12 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 'type'   => '',
             );
             
-            $content .= $this->documentpagination($page, $numberOfPages, $type, '30', '', $_GET['filter']);
-            $content .= '</div>';
+            $content .= $this->activitypagination($page, $numberOfPages, $type, '30', '', $_GET['filter']);
+            $content .= '</div>';*/
 
             // echo $content;
-            $columnFilterHtml   = $this->getColumnFilters($_GET['status'], 'pending');
-            $filters            = $this->getFilterHtml('opportunity', $_GET);
+            $columnFilterHtml   = $this->getDocumentColumnFilters('pendings');
+            $filters            = $this->getDocumentFilterHtml('document', $_GET);
 
             echo json_encode(array(
                 'data'                      => $content,
@@ -7122,6 +7077,42 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         }
         die();
     }
+
+    public function action_document_pending_count(){
+        try {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            $PRC = 0;
+
+            $query = "SELECT id FROM documents WHERE deleted != 1 AND date_entered >= now() - interval '1200' day";
+            $result = $GLOBALS['db']->query($query);
+            $response = $this->mysql_fetch_assoc_all($result); //get all result in an array
+            foreach($response as $r){
+                $id = $r['id'];
+                $query = "SELECT approval_status FROM document_approval_table WHERE doc_id = '$id' AND ( approver = '$log_in_user_id' OR delegate_id = '$log_in_user_id' ) ORDER BY `id` DESC LIMIT 1";
+                $result = $GLOBALS['db']->query($query);
+                $count = $GLOBALS['db']->fetchByAssoc($result);
+                if($count && $count['approval_status'] == '0')
+                    $PRC += 1;
+            }
+            echo json_encode(
+                array(
+                    'data' => "$PRC <i class=\"fa fa-angle-double-down\" aria-hidden=\"true\"></i>",
+                    'count' => $PRC
+                )
+            );
+        }
+        catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+
 
     public function get_document_history(){
         try {
@@ -7304,7 +7295,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 'self_count'                => $self_count,
                 'team_count'                => $team_count,
                 'delegate'                  => $this->checkDelegate(),
-                'delegateDetails'           => $this->getDelegateDetails(),
+                'delegateDetails'           => $this->getDocumentDelegateDetails(),
                 'global_organization_count' => $global_organization_count,
                 'non_global_organization'   =>  $non_global_organization_count,
                 'fetched_by_status'         =>  $fetch_by_status,
@@ -7316,6 +7307,45 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         }
         die();
     }
+
+    function getDocumentDelegateDetails(){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        $query = "SELECT u.first_name, u.last_name, ds.user_id_c FROM documents d JOIN documents_cstm ds ON ds.id_c = d.id JOIN users u ON u.id = ds.user_id_c WHERE d.deleted != 1 AND d.date_entered >= now() - interval '1200' day AND ds.delegate_id = '$log_in_user_id' GROUP BY ds.user_id_c ";
+        $result = $GLOBALS['db']->query($query);
+        $delegateData = array();
+        while($row = $GLOBALS['db']->fetchByAssoc($result)){
+            $dData = array(
+                'name' => $row['first_name'].' '.$row['last_name'],
+                'count' => $this->getDocumentDelegateCount($row['user_id_c'])
+            );
+            array_push($delegateData, $dData);
+        }
+        $output = '';
+        foreach($delegateData as $d){
+            $output .= $d['name'].' - '.$d['count'].'<br>';
+        }
+        return $output;
+    }
+
+    function getDocumentDelegateCount($userID){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        $query = "SELECT count(*) as count FROM document_approval_table dp";
+        $query .= " JOIN documents d ON d.id = dp.doc_id";
+        $query .= " WHERE dp.approval_status = '0' AND d.deleted != 1 AND d.date_entered >= now() - interval '1200' day AND dp.approver = '$userID' AND dp.delegate_id = '$log_in_user_id' ";
+        $result = $GLOBALS['db']->query($query);
+        $count = $GLOBALS['db']->fetchByAssoc($result);
+        return $count['count'];
+    }
+    
+
+    
     function getDocumentFilterHtml($type, $columnFilter){
 
         $query = getQuery('DISTINCT(template_type)', 'documents');
@@ -7534,9 +7564,9 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                     $tag_icon_query = 'SELECT * FROM documents_cstm where id_c = "' .$row['id'].'"';
                     $result = $GLOBALS['db']->query($tag_icon_query);
                     $tagged_user = $result->fetch_assoc();
-                    $tagged_user_array = explode(',',$tagged_user['tag_hidden_c']); 
+                    $tagged_user_array = explode(',',$tagged_user['tagged_hidden_c']); 
 
-                    $data .= '<h2 class="document-title">'. $row['name'];
+                    $data .= '<h2 class="document-title">'. $row['document_name'];
                     if (in_array($log_in_user_id,$tagged_user_array)){
                         $data .= '   <i class="fa fa-tag" style="font-size: 12px; color:green"></i></h2></a>';
                     }
@@ -7563,7 +7593,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 break;
             case 'uploaded_by':
                 $data .= '<td class="table-data">';
-                $data .= '<h2 class="document-related-uploaded_by">'. $row['followup_file'] .'</h2>';
+                $data .= '<h2 class="document-related-uploaded_by">'. $row['created_by'] .'</h2>';
                 $data .= '<span class="document-related-uploaded_date">'. date( 'd/m/Y', strtotime($row['follow_up_date_c']) ) .'</span></td>';
                 break;
             // case 'date_modified':
@@ -7591,152 +7621,6 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         return $data;
     }
 
-    // function getActivityFilterHtml($type, $columnFilter){
-
-    //     $query = getQuery('DISTINCT(type_of_interaction_c)', 'calls_cstm');
-    //     $interactions = $this->mysql_fetch_assoc_all($query);
-    //     /* default fields */
-    //     $html = '<div class="form-group">
-    //             <span class="primary-responsibilty-filter-head">Activity Name</span>
-    //             <input type="text" class="form-control filter-name" name="filter-name" />
-    //         </div>';
-
-    //     $html .= '<div class="form-group">
-    //             <span class="primary-responsibilty-filter-head">Type of Interaction</span>
-    //             <select class="" name="filter-type_of_interaction">
-    //                 <option value="">Select Type</option>';
-    //     foreach($interactions as $i){
-    //         $html .= '<option value="'.$i['type_of_interaction_c'].'">'.beautify_label($i['type_of_interaction_c']).'</option>';
-    //     }
-    //     $html .= '</select></div>';
-
-    //     /*$html .= '<div class="form-group">
-    //             <span class="primary-responsibilty-filter-head">Related to</span>
-    //             <select class="activity-filter" name="filter-related_to">
-    //                 <option value="">Select</option>
-    //                 <option value="Accounts">Accounts</option>
-    //                 <option value="Opportunities">Opportunities</option>
-    //                 <option value="Calls">Calls</option>
-    //                 <option value="Document">Document</option>
-    //             </select></div>';*/
-
-    //     $columns = $this->ActivityColumns();
-    //     foreach($columns['default'] as $key => $c){
-    //         if(isset($columnFilter[$key])){
-    //             $html .= $this->ActivityfilterFields($type, $columnFilter[$key]);
-    //         }
-    //     }
-
-    //     foreach($columns['addons'] as $key => $c){
-    //         if(isset($columnFilter[$key])){
-    //             $html .= $this->ActivityfilterFields($type, $columnFilter[$key]);
-    //         }
-    //     }
-        
-    //     return $html;
-    // }
-
-    // function ActivityfilterFields($type, $columnFilter){
-    //     $data = '';
-    //     switch($columnFilter){
-    //         case 'related_to':
-    //             $data = '<div class="form-group">
-    //                 <span class="primary-responsibilty-filter-head">Related to</span>
-    //                 <select class="activity-filter-related-to" name="filter-related_to_new">
-    //                     <option value="">Select</option>
-    //                     <option value="Accounts">Accounts</option>
-    //                     <option value="Opportunities">Opportunities</option>
-    //                     <option value="Calls">Activity</option>
-    //                     <option value="Document">Document</option>
-    //                 </select></div>';
-    //             break;
-    //         case 'status':
-    //             $data = '<div class="form-group">
-    //                 <span class="primary-responsibilty-filter-head">Status</span>
-    //                 <select class="" name="filter-status" id="">
-    //                     <option value="">Select</option>
-    //                     <option value="Upcoming">Upcoming</option>
-    //                     <option value="Completed">Completed</option>
-    //                     <option value="Overdue">Overdue</option>
-    //                 </select>
-                    
-    //             </div>';
-    //             break;
-            
-    //         case 'activity_date_c':
-    //             $data = '<div class="form-group">
-    //                 <div class="date-filter">
-    //                     <label>Activity Date Range</label><br>
-    //                     From: <input class="filterdatebox" name="filter-activity_date_c_from" id="closed_date_from" width="300" />
-    //                     To: <input class="filterdatebox" name="filter-activity_date_c_to" id="closed_date_to" width="300" />
-    //                 </div>
-    //             </div>';
-    //             break;
-            
-    //         case 'date_modified':
-    //             $data = '<div class="form-group">
-    //                 <div class="date-filter">
-    //                     <label>Modified Date Range</label><br>
-    //                     From: <input class="filterdatebox" name="filter-date_modified_from" id="closed_date_from" width="300" />
-    //                     To: <input class="filterdatebox" name="filter-date_modified_to" id="closed_date_to" width="300" />
-    //                 </div>
-    //             </div>';
-    //             break;
-            
-    //         case 'assigned_to_c':
-    //             $users = $this->get_users_with_team_options();
-    //             $data = '<div class="form-group">
-    //                 <span class="primary-responsibilty-filter-head">Assigned To</span>
-    //                 <select class="select2" name="filter-assigned_to_c[]" id="" multiple>
-    //                     '.$users.'
-    //                 </select>
-    //             </div>';
-    //             break;
-            
-    //         case 'new_current_status_c':
-    //             $data = '<div class="form-group">
-    //                 <span class="primary-responsibilty-filter-head">Comments</span>
-    //                 <input class="form-control" name="filter-new_current_status_c" id="" />
-    //             </div>';
-    //             break;
-            
-    //         case 'description':
-    //             $data = '<div class="form-group">
-    //                 <span class="primary-responsibilty-filter-head">Summary of Interaction</span>
-    //                 <input class="form-control" name="filter-description" id="" />
-    //             </div>';
-    //             break;
-
-    //         case 'new_key_action_c':
-    //             $data = '<div class="form-group">
-    //                 <span class="primary-responsibilty-filter-head">Key Actionable / Next Steps identified from the Interaction</span>
-    //                 <input class="form-control" name="filter-new_key_action_c" id="" />
-    //             </div>';
-    //             break;
-            
-
-    //         case 'next_date_c':
-    //             $data = '<div class="form-group">
-    //                 <div class="date-filter">
-    //                     <label>Next Follow Up Date</label><br>
-    //                     From: <input class="filterdatebox" name="filter-next_date_c_from" id="closed_date_from" width="300" />
-    //                     To: <input class="filterdatebox" name="filter-next_date_c_to" id="closed_date_to" width="300" />
-    //                 </div>
-    //             </div>';
-    //             break;
-    //         case 'name_of_person_c':
-    //             $data = '<div class="form-group">
-    //                 <span class="primary-responsibilty-filter-head">Name of Person Contacted </span>
-    //                 <input class="form-control" name="filter-name_of_person_c" id="" />
-    //             </div>';
-    //             break;
-            
-    //         default:
-    //             $data = '';
-    //             break;
-    //     }
-    //     return $data;
-    // }
     function documentpagination($page, $numberOfPages, $type, $day, $searchTerm, $filter){
 
         $ends_count = 1;  //how many items at the ends (before and after [...])
@@ -7776,6 +7660,9 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         return $data;
     }
 
+    //TODO : 
+    // Chanage the name of the variable 
+    // look at this function again =.
     public function action_get_document_graph(){
         $day = $_GET['dateBetween'];
         $totalCount = 0;
@@ -7785,20 +7672,10 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $LeadCount = round($this->getDocumentStatusCountGraph('Lead', $day) / $totalCount * 100, 0);
             $QualifiedLeadCount = round($this->getDocumentStatusCountGraph('QualifiedLead', $day) / $totalCount * 100, 0);
             $QualifiedOpporunityCount = round($this->getDocumentStatusCountGraph('Qualified', $day) / $totalCount * 100, 0);
-            $QualifiedDPR = round($this->getDocumentStatusCountGraph('QualifiedDpr', $day) / $totalCount * 100, 0);
-            $QualifiedBid = round($this->getDocumentStatusCountGraph('QualifiedBid', $day) / $totalCount * 100, 0);
-            $Drop = round($this->getDocumentStatusCountGraph('Dropped', $day) / $totalCount * 100, 0);
-            $CloseWon = round($this->getDocumentStatusCountGraph('Closed', $day, 'won') / $totalCount * 100, 0);
-            $CloseLost = round($this->getDocumentStatusCountGraph('Closed', $day, 'lost') / $totalCount * 100, 0);
         }
         $LeadCount = $LeadCount ? $LeadCount : 0;
         $QualifiedLeadCount = $QualifiedLeadCount ? $QualifiedLeadCount : 0;
         $QualifiedOpporunityCount = $QualifiedOpporunityCount ? $QualifiedOpporunityCount : 0;
-        $QualifiedDPR = $QualifiedDPR ? $QualifiedDPR : 0;
-        $QualifiedBid = $QualifiedBid ? $QualifiedBid : 0;
-        $CloseWon = $CloseWon ? $CloseWon : 0;
-        $CloseLost = $CloseLost ? $CloseLost : 0;
-        $Drop = $Drop ? $Drop : 0;
         
         $data = '';
 
@@ -7822,40 +7699,6 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                     <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedOpporunityCount.'%</p>
                 </div>';
         endif;
-
-        if($QualifiedDPR):
-            $data .= '<div style="width: '.$QualifiedDPR.'%" class="graph-bar-each">
-                    <div style="width: 100%; height: 70px; background-color: #FFFF00;"></div>
-                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedDPR.'%</p>
-                </div>';
-        endif; 
-
-        // if($QualifiedBid):
-        //     $data .= '<div style="width: '.$QualifiedBid.'%" class="graph-bar-each">
-        //             <div style="width: 100%; height: 70px; background-color: #00FF00;"></div>
-        //             <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedBid.'%</p>
-        //         </div>';
-        // endif;
-        
-        // if($CloseWon):
-        //     $data .= '<div style="width: '.$CloseWon.'%" class="graph-bar-each">
-        //             <div style="width: 100%; height: 70px; background-color: #006400;"></div>
-        //             <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$CloseWon.'%</p>
-        //         </div>';
-        // endif;
-        // if($CloseLost):
-        //     $data .= '<div style="width: '.$CloseLost.'%" class="graph-bar-each">
-        //             <div style="width: 100%; height: 70px; background-color: #FF7F00;"></div>
-        //             <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$CloseLost.'%</p>
-        //         </div>';
-        // endif;
-
-        // if($Drop):
-        //     $data .= '<div style="width: '.$Drop.'%" class="graph-bar-each">
-        //             <div style="width: 100%; height: 70px; background-color: #FF0000;"></div>
-        //             <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$Drop.'%</p>
-        //         </div>';
-        // endif; 
         echo json_encode(array("data"=>$data, "message" => "Success"));
         // echo $data;
         die;

@@ -2186,9 +2186,11 @@ padding: 15px 5px;
 .document-title{ font-size: 13px; color: #F08377; margin: 5px 0; }
 .activity-type,
 .activity-related-type,
-.document-related-type{ color: #9e9e9e; }
+.document-related-type,
+.document-related-uploaded_date{ color: #9e9e9e; }
 .activity-related-name,
-.document-related-name{ font-size: 13px; color: #000000; margin: 5px 0; }
+.document-related-name,
+.document-related-uploaded_by{ font-size: 13px; color: #000000; margin: 5px 0; }
 
 #criticalBtn{
     background-color: transparent;

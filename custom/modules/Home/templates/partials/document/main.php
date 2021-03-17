@@ -8,7 +8,7 @@
             $status = $_GET['status'] ?? '';
         ?>   
         <li class="tableHeader-Content">
-            <h2 style="margin: 10px; color: white; font-size: 2.4rem; font-weight: bold; ">Document </h2>
+            <h2 style="margin: 10px; color: white; font-size: 2.4rem; font-weight: bold; ">Documents </h2>
         </li>
         <!-- <li class="tableHeader-Content">
             <div id="global-opportunities" class="global-opportunities <?php echo $type == 'global' ? 'active': ''; ?>" onclick="dateBetween('<?php echo $day; ?>', '', '' ,'', '', 'global', 1)">Global Opportunities (<?php echo $global_organization_count; ?>) </div>

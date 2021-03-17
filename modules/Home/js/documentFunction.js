@@ -145,6 +145,9 @@ function commitDocumentFilter() {
     openDocumentSettingDialog('close');
 }
 
+
+
+
 function openDocumentSettingDialog(event) {
 
     var dialog = document.getElementById('document-settings-modal');
@@ -166,6 +169,26 @@ function openDocumentSettingDialog(event) {
         $('.document-settings-section').val('document-pendings');
     }
 
+}
+
+
+// TODO :
+
+// check with thsi function.
+function getDelegateMembersDocument() {
+    $.ajax({
+        url: "index.php?module=Home&action=delegate_members",
+        method: "GET",
+        success: function (data) {
+            var parsed_data = JSON.parse(data);
+            // console.log(parsed_data);
+            $('#activity_Select_Proxy').html(parsed_data.members);
+            $('#activity_Select_Proxy').val('');
+            $('.responsibility').html(parsed_data.members);
+            document.getElementById('responsibility1').value = null;
+            document.getElementById('responsibility').value = null;
+        }
+    });
 }
 
 
@@ -401,10 +424,10 @@ function documentdateBetween(dateBetween, searchTerm = null, page = null, filter
 }
 
 function documentpaginate(page, method, day, searchTerm = null, filter = 0, status = null, type = null) {
-    if (method == 'opportunity') {
+    if (method == 'document') {
         documentdateBetween(day, searchTerm, page, filter, status, type, 0);
     } else if (method == 'pending') {
-        fetchByStatus(status, filter, page, 0);
+        fetchDocumentByStatus(status, filter, page, 0);
     }
 }
 
@@ -421,6 +444,9 @@ function getDocumentGraph(dateBetween) {
         }
     });
 }
+
+// Todo : Change the function...
+// Look at the functions
 
 function updateActivityStatus() {
     var Status = $('.changed-status').val();
@@ -443,6 +469,42 @@ function updateActivityStatus() {
     });
 }
 
+function openDocumentPendingSettingsDialog(event, type = null, value = null) {
+    var dialog = document.getElementById('document-pending-settings-modal');
+    $('.document-search-column1').val('');
+    documentSearchColumns('');
+    if (event === "discard") {
+        dialog.style.display = "none";
+    } else if (event === "close") {
+        dialog.style.display = "none";
+    } else if (event === "submit") {
+
+    } else {
+        dialog.style.display = "block"
+    }
+
+    $('.document-pending-settings-section').val('pendings');
+    if (type) {
+        $('.document-pending-settings-type').val(type);
+    }
+    if (value) {
+        $('.document-pending-settings-type-value').val(value);
+    }
+}
+
+
+function commitDocumentPendingFilter() {
+    debugger
+    var settingsSection = $('.document-pending-settings-section').val();
+    var settingsType = $('.document-pending-settings-type').val();
+    var settingsValue = $('.document-pending-settings-type-value').val();
+    $('.document-search-column2').val('');
+    documentSearchColumns('');
+    fetchDocumentByStatus('', '', 0);
+    openDocumentPendingSettingsDialog('close');
+}
+
+
 (function ($) {
     $(document).on('click', '#three-tab', function () {
         var day = Cookies.get('day') ? Cookies.get('day') : 30;
@@ -460,25 +522,34 @@ function updateActivityStatus() {
         $('.btn-days-filter').css('color', '');
         $(this).css('color', 'black');
     });
+
+    // TODO  
+    // Check with serach of the activity.
     $(document).on('click', '.activity-search-btn', function () {
-        activitySearchHelper();
+        documentSearchHelper();
     });
+    // TODO  
+    // Check with serach of the activity.
     $(document).on('keyup', '#activity-search', function (event) {
         if (event.keyCode === 13) {
-            activitySearchHelper();
+            documentSearchHelper();
         }
     });
 
-    $('.activity-search-column1').keyup(function () {
+    $('.document-search-column1').keyup(function () {
         var text = $(this).val().toUpperCase();
         documentSearchColumns(text);
     });
-    $('.activity-search-column2').keyup(function () {
+    $('.document-search-column2').keyup(function () {
         var text = $(this).val().toUpperCase();
         documentSearchColumns(text);
     });
 
     /* Clear filter on click */
+
+
+    // TODO  
+    // Check with serach of the activity.
     $('.clear-filter').on('click', function (event) {
         event.preventDefault();
         var type = $(this).data('type');
