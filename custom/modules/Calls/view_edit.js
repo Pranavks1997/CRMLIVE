@@ -724,13 +724,7 @@ $.ajax({
                 }
                  
             });  
-                     
-         
-                
-
- 
- 
-        }
+         }
      
  });
 
@@ -1201,6 +1195,12 @@ $('#approve_activity').on('click',function validation(view){
     $('#reject_comments').hide();
   });   
 
+$("#close_approve").on('click',function(){
+   
+    $('#approve_comments').hide();
+  });   
+
+
 //---------------------------------------click comments Approve or reject--------END--------------------------------------
 
 //------------------------------------Update Approve or Reject----------------------------------------
@@ -1250,6 +1250,7 @@ $('#approve_activity').on('click',function validation(view){
        }
      
  });
+ 
   $('#submit_comment_reject').on('click',function(){
       
       var comment_reject=$('#get_comments_reject').val();

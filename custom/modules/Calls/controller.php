@@ -8,8 +8,7 @@ class CallsController extends SugarController
     function action_oppurtunity_status(){
         try{
             $opp_id = $_POST['opp_id'];
-            
-            
+        
              $name = array();
     		    $date=array();
     		    $description=array();

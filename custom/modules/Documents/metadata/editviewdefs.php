@@ -13,6 +13,29 @@ array (
           0 => '<input type="hidden" name="old_id" value="{$fields.document_revision_id.value}">',
           1 => '<input type="hidden" name="contract_id" value="{$smarty.request.contract_id}">',
         ),
+        'buttons' => 
+        array (
+          0 => 
+          array (
+            'customCode' => '<input title="Save" accesskey="a" class="button primary" onclick="var _form = document.getElementById(\'EditView\'); _form.action.value=\'Save\'; if(check_form(\'EditView\'))SUGAR.ajaxUI.submitForm(_form);return false;" type="submit" name="button" value="Save" id="SAVE">',
+          ),
+          1 => 'CANCEL',
+          2 => 
+        
+          array (
+            'customCode' => '<input type="button"  name="send_for_approval" value="send for approval" id="apply_for_complete"  class="button"  />',
+          ),
+          3 =>
+          array (
+            'customCode' => '<input type="button"  name="approve_button" value="approve" id="approve_document"  class="button"  />',
+          ),
+          
+          4=>
+          array (
+            'customCode' => '<input type="button"  name="reject_button" value="reject" id="reject_document"  class="button"  />',
+          ),
+         
+        ),
       ),
       'maxColumns' => '2',
       'widths' => 
