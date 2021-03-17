@@ -480,6 +480,8 @@ function activityFilterHelper(ref) {
 
     if (ref == 'activity-filter') {
         activitydateBetween(day, '', '', 1, filterStatus, filterType, '', 0);
+        console.log("filter status , filter Type", filterStatus,filterType);
+
     } else {
         fetchActivityByStatus(1, '', 0);
     }

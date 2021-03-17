@@ -400,79 +400,40 @@
         $log_in_user_id = $current_user->id;
 
         $fetch_query = '';
-
-        if( isset( $_GET['filter'] ) && isset( $_GET['filter-name'] ) && $_GET['filter-name'] ){
-            $name           = $_GET['filter-name'] ?? '';
-            $fetch_query    .= " AND calls.name LIKE '%$name%' ";
+        
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-document_name'] ) && $_GET['filter-name'] ){
+            $name           = $_GET['filter-document_name'] ?? '';
+            $fetch_query    .= " AND documents.document_name LIKE '%$name%' ";
         }
-        if( isset( $_GET['filter'] ) && isset( $_GET['filter-related_to_new'] ) && $_GET['filter-related_to_new'] ){
-            $relatedTo      = $_GET['filter-related_to_new'] ?? '';
-            $fetch_query    .= " AND calls.parent_type = '$relatedTo' ";
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-related_to'] ) && $_GET['filter-related_to'] ){
+            $relatedTo      = $_GET['filter-related_to'] ?? '';
+            $fetch_query    .= " AND documents_cstm.parent_type = '$relatedTo' ";
         }
-        if( isset( $_GET['filter'] ) && isset( $_GET['filter-status'] ) && $_GET['filter-status'] ){
-            $status         = $_GET['filter-status'] ?? '';
-            $fetch_query    .= " AND calls_cstm.status_new_c = '$status' ";
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-document_type'] ) && $_GET['filter-document_type'] ){
+            $document_type         = $_GET['filter-document_type'] ?? '';
+            $fetch_query    .= " AND documents.template_type = '$document_type' ";
         }
-        if( isset( $_GET['filter'] ) && ( isset( $_GET['filter-activity_date_c_from'] ) || isset( $_GET['filter-activity_date_c_to'] ) ) && $_GET['filter-activity_date_c_from'] && $_GET['filter-activity_date_c_to'] ){
-            $activityDateFrom   = date_format_helper($_GET['filter-activity_date_c_from']) ?? '';
-            $activityDateTo     = date_format_helper($_GET['filter-activity_date_c_to']) ?? '';
-            $fetch_query        .= " AND DATE(calls_cstm.activity_date_c) BETWEEN '$activityDateFrom' AND '$activityDateTo' ";
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-category'] ) && $_GET['filter-category'] ){
+            $category         = $_GET['filter-category'] ?? '';
+            $fetch_query    .= " AND documents_cstm.category_c = '$category' ";
         }
-        if( isset( $_GET['filter'] ) && ( isset( $_GET['filter-date_modified_from'] ) || isset( $_GET['filter-date_modified_to'] ) ) && $_GET['filter-date_modified_from'] && $_GET['filter-date_modified_to'] ){
-            $activityDateFrom   = date_format_helper($_GET['filter-date_modified_from']) ?? '';
-            $activityDateTo     = date_format_helper($_GET['filter-date_modified_to']) ?? '';
-            $fetch_query        .= " AND DATE(calls.date_modified) BETWEEN '$activityDateFrom' AND '$activityDateTo' ";
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-sub_category'] ) && $_GET['filter-sub_category'] ){
+            $sub_category         = $_GET['filter-sub_category'] ?? '';
+            $fetch_query    .= " AND documents_cstm.sub_category_c = '$sub_category' ";
         }
-        if( isset( $_GET['filter'] ) && isset( $_GET['filter-assigned_to_c'] ) && $_GET['filter-assigned_to_c'] ){
-            $assignedTo      = $_GET['filter-assigned_to_c'] ?? '';
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-uploaded-by'] ) && $_GET['filter-uploaded-by'] ){
+            $assignedTo      = $_GET['filter-uploaded-by'] ?? '';
             $fetch_query .= " AND (";
             foreach($assignedTo as $key => $res){
-                if($key)
+                if($key){
                     $fetch_query .= " OR ";
-                if (strpos($res, 'andTeam') !== false) {
-                    $arr = explode('andTeam',$res,0);
-                    $arr[0] = chop($arr[0],"andTeam");
-                    $a = $arr[0];
-                    $fetch_query .= " calls.assigned_user_id IN 
-                    (SELECT id_c FROM users_cstm WHERE user_lineage LIKE '%$a%' OR id_c = '$a') ";
-                } else {
-                    $fetch_query .= " calls.assigned_user_id = '$res' ";
+                    $fetch_query .= " documents.created_by = '$res' ";
+                }
+                else {
+                    $fetch_query .= " documents.created_by = '$res' ";
                 }
             }
             $fetch_query .= " )";
-        }
-        if( isset( $_GET['filter'] ) && isset( $_GET['filter-new_current_status_c'] ) && $_GET['filter-new_current_status_c'] ){
-            $comments       = $_GET['filter-new_current_status_c'] ?? '';
-            $fetch_query    .= " AND calls_cstm.new_current_status_c = '$comments' ";
-        }
-        if( isset( $_GET['filter'] ) && isset( $_GET['filter-description'] ) && $_GET['filter-description'] ){
-            $description     = $_GET['filter-description'] ?? '';
-            $fetch_query    .= " AND calls.description LIKE '%$description%' ";
-        }
-        if( isset( $_GET['filter'] ) && isset( $_GET['filter-new_key_action_c'] ) && $_GET['filter-new_key_action_c'] ){
-            $newKeyAction   = $_GET['filter-new_key_action_c'] ?? '';
-            $fetch_query    .= " AND calls_cstm.new_key_action_c = '$newKeyAction' ";
-        }
-        if( isset( $_GET['filter'] ) && isset( $_GET['filter-non_financial_consideration_c'] ) && $_GET['filter-non_financial_consideration_c'] ){
-            $nonFinancial   = $_GET['filter-non_financial_consideration_c'] ?? '';
-            $fetch_query    .= " AND calls_cstm.non_financial_consideration_c = '$nonFinancial' ";
-        }
-        if( isset( $_GET['filter'] ) && isset( $_GET['filter-audit_trail_c'] ) && $_GET['filter-audit_trail_c'] ){
-            $auditTrial   = $_GET['filter-audit_trail_c'] ?? '';
-            $fetch_query    .= " AND calls_cstm.audit_trail_c = '$auditTrial' ";
-        }
-        if( isset( $_GET['filter'] ) && isset( $_GET['filter-approver_c'] ) && $_GET['filter-approver_c'] ){
-            $approver       = $_GET['filter-approver_c'] ?? '';
-            $fetch_query    .= " AND calls_cstm.user_id_c = '$approver' ";
-        }
-        if( isset( $_GET['filter'] ) && ( isset( $_GET['filter-next_date_c_from'] ) || isset( $_GET['filter-next_date_c_to'] ) ) && $_GET['filter-next_date_c_from'] && $_GET['filter-next_date_c_to'] ){
-            $nextDateFrom   = date_format_helper($_GET['filter-next_date_c_from']) ?? '';
-            $nextDateTo     = date_format_helper($_GET['filter-next_date_c_to']) ?? '';
-            $fetch_query    .= " AND DATE(calls_cstm.next_date_c) BETWEEN '$nextDateFrom' AND '$nextDateTo' ";
-        }
-        if( isset( $_GET['filter'] ) && isset( $_GET['filter-name_of_person_c'] ) && $_GET['filter-name_of_person_c'] ){
-            $contactPerson  = $_GET['filter-name_of_person_c'] ?? '';
-            $fetch_query    .= " AND calls_cstm.name_of_person_c = '$contactPerson' ";
         }
         
         return $fetch_query;
@@ -859,6 +820,27 @@
                 break;
             case 'Calls':
                 $data = getQueryData('name', 'calls', 'id = "'.$id.'"');
+                break;
+            default:
+                $data = '';
+                break;
+        }
+        return $data;
+    }
+    function getDocumentRelatedTo($type, $id){
+        $data = '' ; 
+        switch($type){
+            case 'Accounts':
+                $data = getQueryData('name', 'accounts', 'id = "'.$id.'"');
+                break;
+            case 'Opportunities':
+                $data = getQueryData('name', 'opportunities', 'id = "'.$id.'"');
+                break;
+            case 'Calls':
+                $data = getQueryData('name', 'calls', 'id = "'.$id.'"');
+                break;
+            case 'Documents':
+                $data = getQueryData('document_name AS name', 'documents', 'id = "'.$id.'"');
                 break;
             default:
                 $data = '';

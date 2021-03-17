@@ -24,8 +24,11 @@ function documentFilterHelper(ref) {
         var filterDay = $('.document-pending-filter .filter-day').val();
         var filterStatus = $('.document-pending-filter .filter-status').val();
     }
+    console.log("ref --",ref);
 
     if (ref == 'document-filter') {
+        console.log("filter status , filter Type", filterStatus,filterType);
+
         documentdateBetween(day, '', '', 1, filterStatus, filterType, '', 0);
     } else {
         fetchDocumentByStatus(1, '', 0);
@@ -201,8 +204,7 @@ function getDefaultDocumentColumns(type) {
         var html = $('#document-pending-settings');
         var DefaultColumns = '<form class="document-pending-settings-form sort-column">';
     }
-    DefaultColumns += '<input type="hidden" name="document-settings-section" class="document-settings-section" value="" /><input type="hidden" name="document-settings-type" class="document-settings-type" value="" /><input type="hidden" name="document-settings-type-value" class="document-settings-type-value" value="" /><ul id="sortable1" class="sortable1 connectedSortable ui-sortable"> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="name" value="name" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="name" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name"> Documents</label> </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="related_to" value="related_to" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="related_to" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name"> Related To</label> </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="document_type" value="document_type" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="document_type" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name"> Document type</label> </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="category" value="category" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="category" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name"> Category</label> </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="sub_category" value="sub_category" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="sub_category" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name"> Sub Category</label> </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="uploaded_by" value="uploaded_by" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="uploaded_by" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name"> Uploaded by</label> </li></ul>';
-
+    DefaultColumns += '<input type="hidden" name="document-settings-section" class="document-settings-section" value=""/><input type="hidden" name="document-settings-type" class="document-settings-type" value=""/><input type="hidden" name="document-settings-type-value" class="document-settings-type-value" value=""/><ul id="sortable1" class="sortable1 connectedSortable ui-sortable"> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="name" value="name" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="name" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name" > Documents</label > </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="document_type" value="document_type" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="document_type" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name" > Document type</label > </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="category" value="category" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="category" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name" > Category</label > </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="sub_category" value="sub_category" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="sub_category" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name" > Sub Category</label > </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="related_to" value="related_to" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="related_to" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name" > Related To</label > </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="uploaded_by" value="uploaded_by" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="uploaded_by" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name" > Uploaded by</label > </li></ul>';
     html.html(DefaultColumns);
     initSortable();
 }
@@ -240,105 +242,6 @@ function fetchDocumentByStatus(filter = 0, page = null, changeColumns = 1) {
     });
 }
 
-// function documentdateBetween(dateBetween, searchTerm = null, page = null, filter = 0, status = null, type = null, dropped = null, changeColumns = 1) {
-//     Cookies.set('day', dateBetween, { expires: 1 });
-//     if (changeColumns) // reset columns
-//         getDefaultDocumentColumns('document');
-
-//     var tabContent = document.getElementById('tab_30days_content');
-//     $.ajax({
-//         url: 'index.php?module=Home&action=getDocument&' + $('.settings-form').serialize() + '&' + $('.document-filter').serialize() + '&filter=' + filter,
-//         type: 'GET',
-//         data: {
-//             days: dateBetween,
-//             searchTerm: searchTerm,
-//             page: page,
-//             status: status,
-//             type: type,
-//             dropped: dropped,
-//         },
-//         success: function (check) {
-//             console.log("getDocument" ,check);
-//             if (dateBetween == '1200') {
-//                 $('#daysFilterAllLabelDoc').html('All Documents');
-//                 $('#daysFilterDoc').html('');
-//                 $('#doc-daysFilter').html('');
-//                 $('#daysFilterDays').html('');
-//             } else {
-//                 $('#daysFilterAllLabelDoc').html('');
-//                 $('#daysFilterDoc').html('Documents Over Last');
-//                 $('#daysFilterDays').html('Days');
-//                 $('#doc-daysFilter').html(dateBetween);
-//             }
-//             var data = JSON.parse(check);
-
-//             if (!data.delegate) {
-//                 $('#delegateBtn').remove();
-//             }
-
-//             if (changeColumns) {
-//                 $('#document-settings').html(data.columnFilter);
-//                 initSortable();
-//             }
-
-//             if (!filter) {
-//                 $('.opportunity-filter .filter-body').html(data.filters);
-//                 initSelect2();
-//             }
-
-
-//             // /* Filter Values */
-//             $('.document-filter .filter-method').val('opportunities');
-//             $('.document-filter .filter-day').val(dateBetween);
-//             // $('.opportunity-filter .filter-status').val(status);
-//             // $('.opportunity-filter .filter-type').val(type);
-
-//             if (dateBetween === '30') {
-//                 // $('#documenttableContent').html(data.data);
-//                 $('#orgDocumentCount').html(data.total);
-//                 $('#selfDocumentCount').html(data.self_count);
-//                 $('#myTeamDocumentCount').html(data.team_count);
-//                 $('#delegateDocumentName').html("<p>Bharat Karnani- 35</p><p>Pranav- 20</p><p>Webknot- 25</p>");
-//                 // if (data.delegateDetails)
-//                 //     $('#delegateDocumentCount').html(data.delegateDetails);
-
-//                 // $('#fetchedByStatus').html(data.fetched_by_status);
-//                 tabContent.style.display = 'block';
-//             } else if (dateBetween === '60') {
-//                 $('#documenttableContent').html(data.data);
-//                 $('#orgDocumentCount').html(data.total);
-//                 $('#selfDocumentCount').html(data.self_count);
-//                 $('#myTeamDocumentCount').html(data.team_count);
-//                 $('#delegateDocumentName').html("<p>Bharat- 15</p><p>Pranav- 20</p><p>Webknot- 25</p>");
-//                 // if (data.delegate_name != '') {
-//                 //     $('#delegateDocumentCount').html("5");
-//                 // }
-//                 // $('#fetchedByStatus').html(data.fetched_by_status)
-//                 tabContent.style.display = 'block';
-
-//                 document.getElementsByClassName('btn-30-days').style.color = "#c2c2c2";
-//             } else {
-//                 $('#documenttableContent').html(data.data);
-//                 $('#orgDocumentCount').html(data.total);
-//                 $('#selfDocumentCount').html(data.self_count);
-//                 $('#myTeamDocumentCount').html(data.team_count);
-//                 // $('#delegateName').html(data.delegate_name);
-//                 // $('#delegateDocumentName').html("<p>Bharat- 15</p><p>Pranav- 20</p><p>Webknot- 25</p>");
-//                 // if (data.delegate_name != '') {
-//                 //     $('#delegateCount').html(data.delegated_count);
-//                 // }
-//                 // $('#fetchedByStatus').html(data.fetched_by_status)
-//                 tabContent.style.display = 'block';
-
-//                 document.getElementsByClassName('btn-30-days').style.color = "#c2c2c2";
-
-//             }
-//             document.getElementById('search-icon').style.color = "green";
-//         }
-//     });
-//     var i, tabcontent, tablinks;
-
-// }
 
 function documentdateBetween(dateBetween, searchTerm = null, page = null, filter = 0, changeColumns = 1) {
     Cookies.set('day', dateBetween, { expires: 1 });
@@ -423,9 +326,10 @@ function documentdateBetween(dateBetween, searchTerm = null, page = null, filter
 
 }
 
-function documentpaginate(page, method, day, searchTerm = null, filter = 0, status = null, type = null) {
+function documentpaginate(page, method, day, searchTerm = null, filter = 0) {
     if (method == 'document') {
-        documentdateBetween(day, searchTerm, page, filter, status, type, 0);
+        console.log("documentpaginate" , searchTerm);
+        documentdateBetween(day, searchTerm, page, filter, 0);
     } else if (method == 'pending') {
         fetchDocumentByStatus(status, filter, page, 0);
     }
@@ -493,6 +397,7 @@ function openDocumentPendingSettingsDialog(event, type = null, value = null) {
 }
 
 
+
 function commitDocumentPendingFilter() {
     debugger
     var settingsSection = $('.document-pending-settings-section').val();
@@ -503,6 +408,45 @@ function commitDocumentPendingFilter() {
     fetchDocumentByStatus('', '', 0);
     openDocumentPendingSettingsDialog('close');
 }
+
+/* Download Button Click */
+$(document).on('click', '#document_download_btn', function () {
+    var type = $(this).data('type');
+    var value = $(this).data('value');
+    var action = $(this).data('action');
+    var formData = '';
+    var dropped = '';
+    if (action == 'dayFilter') {
+        formData = { day: value, filter: 1 };
+    } else if (action == 'type') {
+        formData = { csvtype: value, filter: 1 }
+    } else {
+        dropped = $(this).data('dropped') ? $(this).data('dropped') : '';
+        formData = { status_c: value, dropped: dropped, filter: 1 }
+    }
+
+    if (type == 'document')
+        var url = "index.php?module=Home&action=document_export&" + $('.document-filter').serialize();
+    else
+        var url = "index.php?module=Home&action=document_export&" + $('.pending-filter').serialize();
+    console.log("url", url);
+
+    $.ajax({
+        url: url,
+        method: "GET",
+        data: formData,
+        success: function (data) {
+            console.log(data);
+            // data = JSON.parse(data);
+            // console.log(data);
+            // if (data.status == 'success') {
+            //     window.location.href = 'index.php?module=Home&action=downloadCSV';
+            // } else {
+            //     alert('Somthing went wrong. Please try again');
+            // }
+        }
+    });
+});
 
 // :::::::::::::::::::::::::::::::::::::::::::: Joytirmoy Code :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -541,6 +485,17 @@ function handleNoteDialog(event) {
 
 // :::::::::::::::::::::::::::::::::::::::::::: Joytirmoy Code :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
+function documentSearchHelper() {
+    var $this = $('#document-search');
+    var searchTerm = $this.val();
+    console.log("Serach Term ", searchTerm);
+    var method = $this.data('method');
+    var day = $this.data('day');
+    var type = $this.data('type');
+    var status = $this.data('status');
+    documentdateBetween(day, searchTerm, '', '', 0);
+}
+
 
 (function ($) {
     $(document).on('click', '#three-tab', function () {
@@ -562,12 +517,12 @@ function handleNoteDialog(event) {
 
     // TODO  
     // Check with serach of the activity.
-    $(document).on('click', '.activity-search-btn', function () {
+    $(document).on('click', '.document-search-btn', function () {
         documentSearchHelper();
     });
     // TODO  
     // Check with serach of the activity.
-    $(document).on('keyup', '#activity-search', function (event) {
+    $(document).on('keyup', '#document-search', function (event) {
         if (event.keyCode === 13) {
             documentSearchHelper();
         }
@@ -590,12 +545,12 @@ function handleNoteDialog(event) {
     $('.clear-filter').on('click', function (event) {
         event.preventDefault();
         var type = $(this).data('type');
-        if (type == 'activity') {
-            $('.activity-filter input:not([type=hidden]').val('');
-            $('.activity-filter select').val('');
+        if (type == 'document') {
+            $('.document-filter input:not([type=hidden]').val('');
+            $('.document-filter select').val('');
         } else {
-            $('.activity-pending-filter input:not([type=hidden]').val('');
-            $('.activity-pending-filter select').val('');
+            $('.document-pending-filter input:not([type=hidden]').val('');
+            $('.document-pending-filter select').val('');
         }
         $('.select2-selection__rendered').html('');
         $('.responsibility').val('');
