@@ -47,6 +47,12 @@
                             <i id="search-icon" class="fa fa-tag" aria-hidden="true"> </i>
                         <?php } ?>
                     </button>
+
+                    <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="fetchNoteDialog('<?php echo $row['id']; ?>')">
+                        <?php if ($this->is_document_note_applicable($row['id'])) { ?>
+                            <i id="search-icon" class="fa fa-pencil-square" aria-hidden="true"> </i>
+                        <?php } ?>
+                    </button>
                     <a style="width: 15px;" href="index.php?module=Calls&action=DetailView&record=<?php echo $row['id']; ?>" class="eye" id="search-btn">
                         <i id="search-icon" class="fa fa-eye" aria-hidden="true"> </i>
                     </a>
