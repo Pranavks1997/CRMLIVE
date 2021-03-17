@@ -3898,540 +3898,205 @@ public function action_new_assigned_list(){
     }
 
 
-public function action_update_home_assigned_id(){
-    try{
-        $db = \DBManagerFactory::getInstance();
-           $GLOBALS['db'];
-             
-              global $current_user; 
-               $log_in_user_id = $current_user->id;
-               $assigned_name=$_POST['assigned_name'];
-               $opportunity_id=$_POST['opp_id'];
-                $sql="SELECT id,reports_to_id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
-               
-                $result = $GLOBALS['db']->query($sql);
-                
-                $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
-                $result_tlr = $GLOBALS['db']->query($sql_tlr);
-                while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
-                
-            $team_lead_name=$row_tlr['name'];
-            $team_lead_id=$row_tlr['id'];
-            }
-                
-            }
-            else if($team_h=="l2"){
-                
-                $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'"))';
-                $result_tlr = $GLOBALS['db']->query($sql_tlr);
-                while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
-                
-            $team_lead_name=$row_tlr['name'];
-            $team_lead_id=$row_tlr['id'];
-            }
-                
-            }
-            else if($team_h=="l3"){
-                
-                $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")))';
-                $result_tlr = $GLOBALS['db']->query($sql_tlr);
-                while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
-                
-            $team_lead_name=$row_tlr['name'];
-            $team_lead_id=$row_tlr['id'];
-            }
-                
-                
-                
-            }
-           
-                
-                $sql6='SELECT * FROM users WHERE id="'.$assigned_id.'"';
-                $result6 = $GLOBALS['db']->query($sql6);
-            while($row6 = $GLOBALS['db']->fetchByAssoc($result6)) 
-            {
-                $reports_to=$row6['reports_to_id'];  
-                
-            }
-                    $sql7="SELECT CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS name FROM users WHERE id='".$log_in_user_id."'";
-                $result7 = $GLOBALS['db']->query($sql7);
-            while($row7 = $GLOBALS['db']->fetchByAssoc($result7)) 
-            {
-                $mc_name=$row7['name'];  
-                
-            }
-                
-            $sql = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
-            $result = $GLOBALS['db']->query($sql);
-            while($row = $GLOBALS['db']->fetchByAssoc($result)) 
-            {
-                $check_sales = $row['teamfunction_c'];
-                $check_mc = $row['mc_c'];
-                $check_team_lead = $row['teamheirarchy_c'];
-                
-            }
-            
-            
-            //*********************************** Flow Starts here**************************  
-            if($check_mc=='yes'){
-            
-                
-                $sql3 = "SELECT * FROM users_cstm" ;
-            $result3 = $GLOBALS['db']->query($sql3);
-            while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
-            {
-            $func_array=$row3['teamfunction_c'];
-            
-            $array = explode(",",$func_array);
-            
-            if($rfp=='no'|| $rfp=='select'){
-            
-                if($status=='Lead'){
-                
-                        if(in_array("^sales^",$array)){
-                        
-                        $id_array1[]=$row3["id_c"];
-                
-                    };
-                }
-                
-                else if($status=='QualifiedLead'){
-                        if(in_array("^sales^",$array)||in_array("^presales^",$array)){
-                        $id_array1[]=$row3["id_c"];
-                
-                    };
-                }
-                else if($status=='Qualified'){
-                    
-                    if(in_array("^sales^",$array)||in_array("^presales^",$array)){
-                        $id_array1[]=$row3["id_c"];
-                
-                    };
-                    
-                }
-                else if($status=='QualifiedDpr'){
-                    
-                    if(in_array("^sales^",$array)||in_array("^bid^",$array)){
-                        $id_array1[]=$row3["id_c"];
-                
-                    };
-                    
-                }
-                else if($status=='QualifiedBid'){
-                    if(in_array("^sales^",$array)||in_array("^bid^",$array)){
-                        $id_array1[]=$row3["id_c"];
-                
-                    };
-                }
-                else if($status=='Closed'){
-                        if(in_array("^sales^",$array)){
-                        $id_array1[]=$row3["id_c"];
-                
-                    };
-                }
-                else if($status=='Drop'){
-                        if(in_array("^sales^",$array)){
-                        $id_array1[]=$row3["id_c"];
-                
-                    };
-                }
-            }
-            else if($rfp=='yes' || $rfp=='select'){
-                
-                if($status=='Lead'){
-                        if(in_array("^sales^",$array)){
-                        $id_array1[]=$row3["id_c"];
-                
-                    };
-                }
-                
-                else if($status=='QualifiedLead'){
-                    if(in_array("^sales^",$array)||in_array("^presales^",$array)||in_array("^bid^",$array)){
-                        $id_array1[]=$row3["id_c"];
-                
-                    };
-                }
-            
-                else if($status=='QualifiedBid'){
-                    if(in_array("^sales^",$array)||in_array("^bid^",$array)){
-                        $id_array1[]=$row3["id_c"];
-                
-                    };
-                }
-                else if($status=='Closed'){
-                        if(in_array("^sales^",$array)){
-                        $id_array1[]=$row3["id_c"];
-                
-                    };
-                }
-                else if($status=='Drop'){
-                        if(in_array("^sales^",$array)){
-                        $id_array1[]=$row3["id_c"];
-                
-                    };
-                }
-                
-                
-                
-            }
-            else if($rfp=='not_required' || $rfp=='select'){
-                
-                
-                if($status=='Lead'){
-                        if(in_array("^sales^",$array)){
-                        $id_array1[]=$row3["id_c"];
-                
-                    };
-                }
-                
-                else if($status=='QualifiedLead'){
-                    if(in_array("^sales^",$array)||in_array("^presales^",$array)){
-                        $id_array1[]=$row3["id_c"];
-                
-                    };
-                }
-                else if($status=='Qualified'){
-                    if(in_array("^sales^",$array)||in_array("^presales^",$array)){
-                        $id_array1[]=$row3["id_c"];
-                
-                    };
-                }
-                else if($status=='QualifiedDpr'){
-                    if(in_array("^sales^",$array)||in_array("^bid^",$array)){
-                        $id_array1[]=$row3["id_c"];
-                
-                    };
-                }
-            
-                else if($status=='Closed'){
-                        if(in_array("^sales^",$array)){
-                        $id_array1[]=$row3["id_c"];
-                
-                    };
-                }
-                else if($status=='Drop'){
-                        if(in_array("^sales^",$array)){
-                        $id_array1[]=$row3["id_c"];
-                
-                    };
-                }
-                
-                
-            }
-        
-            
-            }
-            
-            
-    
-        
-        // $sql1 = "SELECT users.id, CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS name,users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE id IN ('".implode("','",$id_array1)."') AND users.deleted = 0 ORDER BY `name` ASC";
-        
-        $sql1 = "SELECT users_cstm.teamfunction_c,users_cstm.teamheirarchy_c, users1.id,CONCAT(IFNULL(users1.first_name,''), ' ', IFNULL(users1.last_name,'')) AS name,CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS r_name , rpt_cstm.teamfunction_c as r_r_tf, rpt_cstm.teamheirarchy_c as r_r_th FROM users INNER JOIN users as users1 ON users.id=users1.reports_to_id INNER JOIN users_cstm as rpt_cstm ON rpt_cstm.id_c= users1.reports_to_id INNER JOIN users_cstm ON users_cstm.id_c=users1.id  WHERE users1.id IN ('".implode("','",$id_array1)."') AND users1.deleted=0 ORDER BY `name` ASC";
-            $result1 = $GLOBALS['db']->query($sql1);
-            while($row1 = $GLOBALS['db']->fetchByAssoc($result1)) 
-            {
-                array_push($number,$n);
-                array_push($func1_array,$row1['teamfunction_c']);
-            
-                array_push($name_array,$row1['name']);
-            array_push($h_array,$row1['teamheirarchy_c']);
-                array_push($r_name,$row1['r_name']);
-                array_push($func2_array,$row1['r_r_tf']);
-                array_push($h1_array,$row1['r_r_th']);
-                $n++;
-            }
-            
-
-
-
-
-        
-        $combined = array_map(function($b,$c,$d,$e,$f,$g) { if ($f==""){$f='MC';}return  $b.' / '.$c.' / '.$d.' -> '.$e.' / '.$f.' / '.$g; }, $name_array,$func1_array, $h_array,$r_name,$func2_array,$h1_array);      
-        $mc_no=$n+1;
-        $mc_no=strval($mc_no); 
-        
-        $mc_details=$mc_name.' / MC / ';
-        
-        array_push($combined,$mc_details);
-        
-    
-        
-        echo json_encode(array('1'=>$name_array,'2'=>$h_array,'3'=>$r_name,'a'=>$combined,'op_name'=>$op_name,'id'=>$opportunity_id,'present_assigned_user'=>$present_assigned_user));
-        
-        
-            }
-            
-            
-            else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||$check_team_lead=='team_member_l3'||$check_team_lead=='team_lead'){
-            
-            $sql4='SELECT * FROM users WHERE reports_to_id="'.$log_in_user_id.'" AND deleted=0' ;
-            $result4 = $GLOBALS['db']->query($sql4);
-            
-            if($result4->num_rows>0){
-                
-                while($row4 = $GLOBALS['db']->fetchByAssoc($result4)) 
-                    {
-                    
-                    $id_array1[]=$row4["id"];
-                    }
-                
-                array_push($id_array1,$log_in_user_id);
-               
-              
-               
-                if($log_in_user_id==$assigned_id||$log_in_user_id==$reports_to||$opportunity_id=='' || $log_in_user_id==$team_lead_id){
-                    
-              
-                    
-                    $sql1="SELECT users_cstm.teamfunction_c,users_cstm.teamheirarchy_c, users1.id,CONCAT(IFNULL(users1.first_name,''), ' ', IFNULL(users1.last_name,'')) AS name,CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS r_name FROM users INNER JOIN users as users1 ON users.id=users1.reports_to_id INNER JOIN users_cstm ON users_cstm.id_c=users1.id WHERE users1.id IN ('".implode("','",$id_array1)."') AND users1.deleted=0 ORDER BY `name` ASC";
-                        $result1 = $GLOBALS['db']->query($sql1);
-                        while($row1 = $GLOBALS['db']->fetchByAssoc($result1)) 
-                        {
-                            array_push($number,$n);
-                            array_push($func1_array,$row1['teamfunction_c']);
-                        
-                            array_push($name_array,$row1['name']);
-                        array_push($h_array,$row1['teamheirarchy_c']);
-                            array_push($r_name,$row1['r_name']);
-                            $n++;
-                        }
-                        
-
-
-
-
-        
-        $combined = array_map(function($b,$c,$d,$e) { return  $b.' / '.$c.' / '.$d.' -> '.$e; }, $name_array,$func1_array, $h_array,$r_name);
-        
-        
-            
-        
-        echo json_encode(array('1'=>$name_array,'2'=>$h_array,'3'=>$r_name,'a'=>$combined, 'op_name'=>$op_name,'id'=>$opportunity_id,'present_assigned_user'=>$present_assigned_user));
-                    
-                    
-                }
-                
-                else{
-                    echo json_encode("block");
-                }
-            }
-            
-            else{
-                
-                echo json_encode("block");
-            }
-            
-            }
-            
-            
-            
-    
-        }catch(Exception $e){
-                echo json_encode(array("status"=>false, "message" => "Some error occured"));
-            }
-            die();
-    }
-
-
-public function action_update_home_assigned_id(){
-    try{
-        $db = \DBManagerFactory::getInstance();
-           $GLOBALS['db'];
-             
-              global $current_user; 
-               $log_in_user_id = $current_user->id;
-               $assigned_name=$_POST['assigned_name'];
-               $opportunity_id=$_POST['opp_id'];
-                $sql="SELECT id,reports_to_id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
-               
-                $result = $GLOBALS['db']->query($sql);
-                
-       while($row = $GLOBALS['db']->fetchByAssoc($result)) 
-       {
-           
-           
-         $assigned_id=$row['id'];
-          
-         $reports_to_id = $row['reports_to_id'];
-   
-           
-       }
-       
-           $sql_tl="SELECT case when teamheirarchy_c='team_member_l1' then 'l1' when teamheirarchy_c ='team_member_l2' then 'l2' when teamheirarchy_c ='team_member_l3' then 'l3' when teamheirarchy_c='team_lead' then 'tl' end AS 'heirarchy' FROM users_cstm WHERE id_c='".$assigned_id."'";
-       
-       $result_tl = $GLOBALS['db']->query($sql_tl);
-       
-    while ($row_tl = mysqli_fetch_assoc($result_tl)){
-           
-          $team_h=$row_tl['heirarchy'];
-       }
-      
-        if($team_h=="tl"){
-            
-           $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
-           $result_tlr = $GLOBALS['db']->query($sql_tlr);
-           while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
-           
-          $team_lead_name=$row_tlr['name'];
-          $team_lead_id=$row_tlr['id'];
-       }
-       
-       
-           
-       }
-      
-      else if($team_h=="l1"){
-           
-           $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
-           $result_tlr = $GLOBALS['db']->query($sql_tlr);
-           while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
-           
-          $team_lead_name=$row_tlr['name'];
-          $team_lead_id=$row_tlr['id'];
-       }
-           
-       }
-       else if($team_h=="l2"){
-           
-             $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'"))';
-           $result_tlr = $GLOBALS['db']->query($sql_tlr);
-           while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
-           
-          $team_lead_name=$row_tlr['name'];
-          $team_lead_id=$row_tlr['id'];
-       }
-           
-       }
-       else if($team_h=="l3"){
-           
-            $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")))';
-           $result_tlr = $GLOBALS['db']->query($sql_tlr);
-           while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
-           
-          $team_lead_name=$row_tlr['name'];
-          $team_lead_id=$row_tlr['id'];
-       }
-           
-           
-           
-       }
-       
-       if($assigned_id==''){
-           
-           echo json_encode(array("message"=>'false'));
-           
-       }
-       else{
-       
-       $sql1='SELECT * FROM opportunities_cstm WHERE id_c="'.$opportunity_id.'"';
-              
-              $result1 = $GLOBALS['db']->query($sql1);
-            
-               if($result1->num_rows>0){
-                   
-                   while($row1= $GLOBALS['db']->fetchByAssoc($result1)) 
-       {
-                     $multiple=$row1['multiple_approver_c'];
-                     $status_new=$row1['status_c'];
-                     $rfp_new=$row1['rfporeoipublished_c'];
-       }
-               $sql23='UPDATE `opportunities_cstm` SET `assigned_to_new_c`="'.$assigned_name.'" WHERE id_c="'.$opportunity_id.'"';
-                
-                $result23 = $GLOBALS['db']->query($sql23);
-                  
-                $sql2='UPDATE `opportunities` SET `assigned_user_id`="'.$assigned_id.'" WHERE id="'.$opportunity_id.'"';
-                
-                $result2 = $GLOBALS['db']->query($sql2);
-                
-                if($rfp_new=='no'){
-                    if($status_new=='Qualified' || $status_new=='QualifiedDpr' || $status_new=='QualifiedBid' || $status_new=='Closed'){
-                       $reports_to_id=$team_lead_id;
-                        
-                    }
-                    
-                }
-               else if($rfp_new=='yes'){
-                   if($status_new=='QualifiedLead' || $status_new=='QualifiedBid' || $status_new=='Closed'){
-                        $reports_to_id=$team_lead_id;
-                    }
-                    
-                }
-               else if($rfp_new=='not_required'){
-                    
-               
-                   if($status_new=='Qualified' || $status_new=='QualifiedDpr' || $status_new=='QualifiedBid' || $status_new=='Closed'){
-                       
-                       
-                         $reports_to_id=$team_lead_id;
-                         
-                         
-                    }
-                    
-                }
-              
-                
-                 if($db->query($sql2)==TRUE){
-                     
-                        $multiple_array=explode(',',$multiple);
-                        
-                        if(count($multiple_array)>1){
-                            
-                            $key=0;
-                             unset($multiple_array[$key]);
-                             array_unshift($multiple_array,$reports_to_id);
-                             
-                             $reports=implode(',',$multiple_array);
-                             
-                              $sql3='UPDATE `opportunities_cstm` SET `multiple_approver_c`="'.$reports.'" WHERE id_c="'.$opportunity_id.'"';
-                      $result3 = $GLOBALS['db']->query($sql3);
-                      
-                     $sql31='UPDATE `opportunities_cstm` SET `user_id2_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
-                      $result31 = $GLOBALS['db']->query($sql31);
-                      
-                      if($db->query($sql3)==TRUE){
-                          echo json_encode(array("status"=>true, "message" => "Success"));
-                          
-                      }
-                             
-                        }
-                        else{
-                             $sql31='UPDATE `opportunities_cstm` SET `user_id2_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
-                      $result31 = $GLOBALS['db']->query($sql31);
-                             $sql3='UPDATE `opportunities_cstm` SET `multiple_approver_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
-                      $result3 = $GLOBALS['db']->query($sql3);
-                      
-                      if($db->query($sql3)==TRUE){
-                          echo json_encode(array("status"=>true, "message" => "Success"));
-                      }
-                        }
+    public function action_update_home_assigned_id(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+               $GLOBALS['db'];
                  
-                     
-                  
-             
+                  global $current_user; 
+                   $log_in_user_id = $current_user->id;
+                   $assigned_name=$_POST['assigned_name'];
+                   $opportunity_id=$_POST['opp_id'];
+                    $sql="SELECT id,reports_to_id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
+                   
+                    $result = $GLOBALS['db']->query($sql);
+                    
+           while($row = $GLOBALS['db']->fetchByAssoc($result)) 
+           {
+               
+               
+             $assigned_id=$row['id'];
+              
+             $reports_to_id = $row['reports_to_id'];
+       
+               
+           }
+           
+               $sql_tl="SELECT case when teamheirarchy_c='team_member_l1' then 'l1' when teamheirarchy_c ='team_member_l2' then 'l2' when teamheirarchy_c ='team_member_l3' then 'l3' when teamheirarchy_c='team_lead' then 'tl' end AS 'heirarchy' FROM users_cstm WHERE id_c='".$assigned_id."'";
+           
+           $result_tl = $GLOBALS['db']->query($sql_tl);
+           
+        while ($row_tl = mysqli_fetch_assoc($result_tl)){
+               
+              $team_h=$row_tl['heirarchy'];
+           }
+          
+            if($team_h=="tl"){
                 
-         }
-               }
-               else{
-                   echo json_encode(array("status"=>true, "message" => "Failed"));
-               }
-       }
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-    }catch(Exception $e){
-           echo json_encode(array("status"=>false, "message" => "Some error occured"));
-       }
-       die();
-}
+               $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
+               $result_tlr = $GLOBALS['db']->query($sql_tlr);
+               while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+               
+              $team_lead_name=$row_tlr['name'];
+              $team_lead_id=$row_tlr['id'];
+           }
+           
+           
+               
+           }
+          
+          else if($team_h=="l1"){
+               
+               $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
+               $result_tlr = $GLOBALS['db']->query($sql_tlr);
+               while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+               
+              $team_lead_name=$row_tlr['name'];
+              $team_lead_id=$row_tlr['id'];
+           }
+               
+           }
+           else if($team_h=="l2"){
+               
+                 $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'"))';
+               $result_tlr = $GLOBALS['db']->query($sql_tlr);
+               while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+               
+              $team_lead_name=$row_tlr['name'];
+              $team_lead_id=$row_tlr['id'];
+           }
+               
+           }
+           else if($team_h=="l3"){
+               
+                $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")))';
+               $result_tlr = $GLOBALS['db']->query($sql_tlr);
+               while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+               
+              $team_lead_name=$row_tlr['name'];
+              $team_lead_id=$row_tlr['id'];
+           }
+               
+               
+               
+           }
+           
+           if($assigned_id==''){
+               
+               echo json_encode(array("message"=>'false'));
+               
+           }
+           else{
+           
+           $sql1='SELECT * FROM opportunities_cstm WHERE id_c="'.$opportunity_id.'"';
+                  
+                  $result1 = $GLOBALS['db']->query($sql1);
+                
+                   if($result1->num_rows>0){
+                       
+                       while($row1= $GLOBALS['db']->fetchByAssoc($result1)) 
+           {
+                         $multiple=$row1['multiple_approver_c'];
+                         $status_new=$row1['status_c'];
+                         $rfp_new=$row1['rfporeoipublished_c'];
+           }
+                   $sql23='UPDATE `opportunities_cstm` SET `assigned_to_new_c`="'.$assigned_name.'" WHERE id_c="'.$opportunity_id.'"';
+                    
+                    $result23 = $GLOBALS['db']->query($sql23);
+                      
+                    $sql2='UPDATE `opportunities` SET `assigned_user_id`="'.$assigned_id.'" WHERE id="'.$opportunity_id.'"';
+                    
+                    $result2 = $GLOBALS['db']->query($sql2);
+                    
+                    if($rfp_new=='no'){
+                        if($status_new=='Qualified' || $status_new=='QualifiedDpr' || $status_new=='QualifiedBid' || $status_new=='Closed'){
+                           $reports_to_id=$team_lead_id;
+                            
+                        }
+                        
+                    }
+                   else if($rfp_new=='yes'){
+                       if($status_new=='QualifiedLead' || $status_new=='QualifiedBid' || $status_new=='Closed'){
+                            $reports_to_id=$team_lead_id;
+                        }
+                        
+                    }
+                   else if($rfp_new=='not_required'){
+                        
+                   
+                       if($status_new=='Qualified' || $status_new=='QualifiedDpr' || $status_new=='QualifiedBid' || $status_new=='Closed'){
+                           
+                           
+                             $reports_to_id=$team_lead_id;
+                             
+                             
+                        }
+                        
+                    }
+                  
+                    
+                     if($db->query($sql2)==TRUE){
+                         
+                            $multiple_array=explode(',',$multiple);
+                            
+                            if(count($multiple_array)>1){
+                                
+                                $key=0;
+                                 unset($multiple_array[$key]);
+                                 array_unshift($multiple_array,$reports_to_id);
+                                 
+                                 $reports=implode(',',$multiple_array);
+                                 
+                                  $sql3='UPDATE `opportunities_cstm` SET `multiple_approver_c`="'.$reports.'" WHERE id_c="'.$opportunity_id.'"';
+                          $result3 = $GLOBALS['db']->query($sql3);
+                          
+                         $sql31='UPDATE `opportunities_cstm` SET `user_id2_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
+                          $result31 = $GLOBALS['db']->query($sql31);
+                          
+                          if($db->query($sql3)==TRUE){
+                              echo json_encode(array("status"=>true, "message" => "Success"));
+                              
+                          }
+                                 
+                            }
+                            else{
+                                 $sql31='UPDATE `opportunities_cstm` SET `user_id2_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
+                          $result31 = $GLOBALS['db']->query($sql31);
+                                 $sql3='UPDATE `opportunities_cstm` SET `multiple_approver_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
+                          $result3 = $GLOBALS['db']->query($sql3);
+                          
+                          if($db->query($sql3)==TRUE){
+                              echo json_encode(array("status"=>true, "message" => "Success"));
+                          }
+                            }
+                     
+                         
+                      
+                 
+                    
+             }
+                   }
+                   else{
+                       echo json_encode(array("status"=>true, "message" => "Failed"));
+                   }
+           }
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+        }catch(Exception $e){
+               echo json_encode(array("status"=>false, "message" => "Some error occured"));
+           }
+           die();
+    }
+    
 
 public function action_assigned_history(){
         try{
