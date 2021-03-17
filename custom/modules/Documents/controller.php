@@ -6,7 +6,7 @@ require_once('include/MVC/Controller/SugarController.php');
 class DocumentsController extends SugarController
 {
    
- //-------------------------------Fetch Reporting manager------------------------------------------------
+//-------------------------------Fetch Reporting manager------------------------------------------------
 
     public function action_fetch_reporting_manager()
         {
@@ -146,10 +146,11 @@ class DocumentsController extends SugarController
       }
       die();
     }
-//-------------------------------Fetch Reporting manager--------------END----------------------------------
-//---------------------------------Editview tagged users ----------------------------------------------
+//-------------------------------Fetch Reporting manager--------------END--------------------------------
 
-public function action_tagged_users_list(){
+//---------------------------------Editview tagged users ------------------------------------------------
+
+    public function action_tagged_users_list(){
      try{  
         global $current_user;
        $doc_id = $_POST['doc_id'];
@@ -218,13 +219,82 @@ public function action_tagged_users_list(){
 
 //---------------------------------Editview tagged users --------END--------------------------------------
 
+//------------------------------------------Category and Sub-category---------------------------------------
+
+    public function action_category() 
+     {
+         
+     
+     try{
+         $db = \DBManagerFactory::getInstance();
+        	$GLOBALS['db'];
+        	
+        	$sql='SELECT * FROM documents_category';
+        
+        $result = $GLOBALS['db']->query($sql);
+        
+        $category_list = array();
+       
+      while ($row = mysqli_fetch_assoc($result)) {
+      
+      $category_list[]=$row;
+       
+    }
+   echo json_encode($category_list);
+        
+      
+     }catch(Exception $e){
+    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    	}
+		die();
+  }
+   
+    public function action_subCategory() 
+     {
+         
+        if(isset($_POST['category_name']))
+            {
+                $category = $_POST['category_name'];
+               
+            }
+
+         try{
+        $db = \DBManagerFactory::getInstance();
+        	$GLOBALS['db'];
+        	
+        	$sql='SELECT document_sub_category.name,document_sub_category.category_id FROM  document_sub_category INNER JOIN documents_category ON document_sub_category.category_id=documents_category.id WHERE documents_category.name="'.$category.'"';
+        
+        $result = $GLOBALS['db']->query($sql);
+        
+        $subCategory_list = array();
+        $status = array(status=>true);
+       
+      while ($row = mysqli_fetch_assoc($result)) {
+     
+       $subCategory_list[]=$row;
+       
+    }
+   echo json_encode( $subCategory_list);
+      
+         }catch(Exception $e){
+    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    	}
+		die();
+        
+  }
+
+//------------------------------------------Category and Sub-category----------END-----------------------------
+
+
+
+
 
 
 //--------------------------------Assigned user list according to login user-------------------
 
 
            
-// public function action_new_assigned_list(){
+            // public function action_new_assigned_list(){
 //      try{
 //          $db = \DBManagerFactory::getInstance();
 //         	$GLOBALS['db'];
@@ -441,7 +511,7 @@ public function action_tagged_users_list(){
 
 //-------------------------------------fetch assigned id---------------------------------------
 
-// public function action_fetch_assigned_id(){
+        // public function action_fetch_assigned_id(){
 //      try{
 //          $db = \DBManagerFactory::getInstance();
 //         	$GLOBALS['db'];

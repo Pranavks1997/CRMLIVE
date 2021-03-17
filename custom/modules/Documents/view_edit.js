@@ -16,6 +16,9 @@ $( document ).ready(function() {
        $('#btn_parent_name,#follow_up_date_c_trigger').hide();
        $('#tagged_hidden_c,[data-label="LBL_TAGGED_HIDDEN"]').hide();  
        
+        $('input[name="send_for_approval"]').hide();
+        $('input[name="approve_button"]').hide();
+        $('input[name="reject_button"]').hide();
    //-----------------------------------------------Hide onload--------------------------------------
    
           $('#approver_c').attr('readonly',true);
@@ -48,7 +51,7 @@ $( document ).ready(function() {
     
    //------------------------for global----------------------
    
-   //---------Approver----------------------------------
+   //---------------Approver----------------------------------
    
              $.ajax({
                 url : 'index.php?module=Documents&action=fetch_reporting_manager',
@@ -68,12 +71,14 @@ $( document ).ready(function() {
      
              });
  
-   //---------Approver----------------------------------
+   //---------------Approver----------------------------------
    
    
   if(doc_id == ""){
         
       $(".panel-heading:contains('Tag Users') ,#detailpanel_0").hide(); 
+      
+      
   }
   
    if(doc_id != ""){
@@ -158,6 +163,7 @@ $( document ).ready(function() {
                  status
                 },
                 success : function(data){
+                 
                     
                 }
                  
@@ -229,6 +235,8 @@ $(document).on('click', function () {
        
 
 //----------------------send approval/apply for complete ----------END---------------------------------------
+
+
   $('#approve_document').on('click',function validation(view){
      $('#approve_comments').css("display","block");
 });
@@ -248,6 +256,8 @@ $(document).on('click', function () {
    
     $('#approve_comments').hide();
   });   
+  
+  
  
   $('#submit_comment_approve').on('click',function(){
      
@@ -338,6 +348,247 @@ $(document).on('click', function () {
       
   });
   
+  
+  //------------------------------dropdown for sector-----------------------
+    var selected_category = $("#category_c").val();
+    
+    $("#category_c").replaceWith('<select name="category_c" id="category_c" onchange="categoryFunction(this.value)"></select>');
+  
+     $.ajax({
+    url : 'index.php?module=Documents&action=category',
+        type : 'GET',
+        success : function(all_category_list){
+          if(selected_category == ""){
+            var list = '<option value=""></option> +'; 
+          }else{
+                    var list = '<option value="'+selected_category+'">'+selected_category+'</option> +';
+                }
+            
+            all_category_list=JSON.parse(all_category_list);
+            all_category_list.forEach((category)=>{
+              if(category.name != selected_category){
+                list+='<option value="'+category.name+'">'+category.name+'</option>';
+              }
+            })
+            $("#category_c").html(list);
+        }
+});
+  
+  //-----------------------------------------Dependable dropdown according to sector selection----------------
+  
+  var selected_subCategory = $("#sub_category_c").val();
+  $("#sub_category_c").replaceWith('<select name="sub_category_c" id="sub_category_c"></select>');
 
+    if(selected_subCategory !== ""){
+      $.ajax({
+      type: "POST",
+      url:
+        "index.php?module=Documents&action=subCategory",
+      data: { category_name:selected_category },
+      success: function (data) {
+            var list = '<option value="'+selected_subCategory+'">'+selected_subCategory+'</option> +';
+          data=JSON.parse(data);
+            data.forEach((subcategory)=>{
+              if(subcategory.name != selected_subCategory){
+                list+='<option value="'+subcategory.name+'">'+subcategory.name+'</option>';
+              }
+            });
+            $("#sub_category_c").html(list);
+      },
+    });
+    }
+    
+   
+  
+  //--------------------------------------------------------onchange category -------------------------
+  
+  categoryFunction = function(category){
+   
+   
+    $.ajax({
+      type: "POST",
+     url:
+        "index.php?module=Documents&action=subCategory",
+      data: { category_name:category },
+      success: function (data) {
+       
+          // $("#sub_sector1_c").append(data);
+         $("#sub_category_c").replaceWith('<select name="sub_category_c" id="sub_category_c"></select>');
+             var list = '<option value=""></option> +';
+          
+          data=JSON.parse(data);
+            data.forEach((subcategory)=>{
+            
+                list+='<option value="'+subcategory.name+'">'+subcategory.name+'</option>';
+              
+            });
+            $("#sub_category_c").html(list);
+      },
+    });
+  }
+  
+   //--------------------------------------------------------onchange category -------------------------
+  
+  
+  //-----------------------------------------------Astericks--------------------------------------
+   if ($("[data-label=LBL_STATUS] span").text() == "") {
+             $("[data-label=LBL_STATUS]").append(
+              "<span style='color:red;'>*</span>"
+              );
+               } 
+               
+    if ($("[data-label=LBL_TEMPLATE_TYPE] span").text() == "") {
+             $("[data-label=LBL_TEMPLATE_TYPE]").append(
+              "<span style='color:red;'>*</span>"
+              );
+               }           
+               
+    if ($("[data-label='RELATED TO'] span").text() == "") {
+             $("[data-label='RELATED TO']").append(
+              "<span style='color:red;'>*</span>"
+              );
+               } 
+               
+    if ($("[data-label=LBL_APPROVER] span").text() == "") {
+             $("[data-label=LBL_APPROVER]").append(
+              "<span style='color:red;'>*</span>"
+              );
+               }      
+    
+     if ($("[data-label=LBL_ASSIGNED_TO_NAME] span").text() == "") {
+             $("[data-label=LBL_ASSIGNED_TO_NAME]").append(
+              "<span style='color:red;'>*</span>"
+              );
+               }
+               
+     if ($("[data-label=LBL_CATEGORY] span").text() == "") {
+             $("[data-label=LBL_CATEGORY]").append(
+              "<span style='color:red;'>*</span>"
+              );
+               }
+               
+               
+    if ($("[data-label=LBL_SUB_CATEGORY] span").text() == "") {
+             $("[data-label=LBL_SUB_CATEGORY]").append(
+              "<span style='color:red;'>*</span>"
+              );
+               }           
+  //-----------------------------------------------Astericks------END--------------------------------
+  
+  //------------------------------------Custom Validation--------------------------------------------
+    check_form = function(view){
+        var validate = true;
+         var alert_validation = [];
+         
+        if($('#status_c').val()==''){
+            
+             alert_validation.push("Status");
+            
+              $("#status_c").css("background-color", "Red");
+               validate = false;
+        }
+        
+         if($('#parent_name').val()==''){
+            
+             alert_validation.push("Related To");
+            
+              $("#parent_name").css("background-color", "Red");
+               validate = false;
+        }
+        
+         if($('#template_type').val()==''){
+            
+             alert_validation.push("Document Type");
+            
+              $("#template_type").css("background-color", "Red");
+               validate = false;
+         }
+         
+          if($('#category_c').val()==''){
+            
+             alert_validation.push("Category");
+            
+              $("#category_c").css("background-color", "Red");
+               validate = false;
+         }
+         
+         if($('#sub_category_c').val()==''){
+            
+             alert_validation.push("Sub Category");
+            
+              $("#sub_category_c").css("background-color", "Red");
+               validate = false;
+         }
+       
+       
+       //------------------------------------- 
+           if(validate == false){
+           if(alert_validation.length>0) {
+            alert(`Please fill the required fields : \n${alert_validation.join('\n')} `);
+           }
+             
+          }
+        
+        if(validate && check_form(view)) {
+            alert_validation = [];
+              return true;
+        }
+        else {
+              return false;
+        }
+    }
+   //------------------------------------Custom Validation--------------------------------------------
+   
+        $("#status_c").on("click", function () {
+  //console.log("if in");
+        
+          if ($("#status_c").css("background-color", "Red")) {
+            // console.log("check in");
+        
+            $("#status_c").css("background-color", "#d8f5ee");
+          }
+    });
+    
+     $("[field=template_type]").on("click", function () {
+  //console.log("if in");
+        
+          if ($("#template_type").css("background-color", "Red")) {
+            // console.log("check in");
+        
+            $("#template_type").css("background-color", "#d8f5ee");
+          }
+    });
+    
+    $("#category_c").on("click", function () {
+  //console.log("if in");
+        
+          if ($("#category_c").css("background-color", "Red")) {
+            // console.log("check in");
+        
+            $("#category_c").css("background-color", "#d8f5ee");
+          }
+    });
+   
+     $("#sub_category_c").on("click", function () {
+  //console.log("if in");
+        
+          if ($("#sub_category_c").css("background-color", "Red")) {
+            // console.log("check in");
+        
+            $("#sub_category_c").css("background-color", "#d8f5ee");
+          }
+    });
+    
+    $("#parent_name").on("click", function () {
+  //console.log("if in");
+        
+          if ($("#parent_name").css("background-color", "Red")) {
+            // console.log("check in");
+        
+            $("#parent_name").css("background-color", "#d8f5ee");
+          }
+    });
+   
+  
 //***************************************Write code above this line***************************************  
 });

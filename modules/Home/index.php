@@ -7,10 +7,11 @@
     <title> Dashboard </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
-    <!--<link rel="stylesheet" type="text/css" href="modules/Home/css/style.css" />-->
+    <link rel="stylesheet" type="text/css" href="modules/Home/css/style.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://cdn.jsdelivr.net/npm/handsontable@8.3.1/dist/handsontable.full.min.js"></script>
@@ -27,7 +28,7 @@
     
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link href="themes/SuiteP/css/style.css" rel="stylesheet" type="text/css"/>
+
 </head>
 
 <body>
@@ -36,7 +37,7 @@
 
     <!-- Navbar end -->
     <div class="W1400px">
-        <div class="d-flex">
+        <div class="d-flex margin-top-adjust">
             <h3 class="page-title">
                 Dashboard
             </h3>
