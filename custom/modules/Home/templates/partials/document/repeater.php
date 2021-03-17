@@ -43,9 +43,9 @@
                         <?php // endif; ?>
                     </button>
                     <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="fetchTagDialog('<?php echo $row['id']; ?>')">
-                        <?php //if ($this->is_activity_tagging_applicable($row['id'])) { ?>
+                        <?php if ($this->is_document_tagging_applicable($row['id'])) { ?>
                             <i id="search-icon" class="fa fa-tag" aria-hidden="true"> </i>
-                        <?php //} ?>
+                        <?php } ?>
                     </button>
                     <a style="width: 15px;" href="index.php?module=Calls&action=DetailView&record=<?php echo $row['id']; ?>" class="eye" id="search-btn">
                         <i id="search-icon" class="fa fa-eye" aria-hidden="true"> </i>

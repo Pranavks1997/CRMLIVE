@@ -7383,6 +7383,118 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         return $count['count'];
     }
     
+    ///  ::::::::::::::::::::::::::::::::::::::::::::::::::::::  Joytrimoy Code ::::::::::::::::::::::::::::::::::::::::::::::::::
+
+    public function action_set_note_for_document() {
+        try {
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $doc_id = $_POST['doc_id'];
+            $note = $_POST['note'];
+            $user_id = $_POST['user_id'];
+
+            $query = "INSERT INTO document_note (doc_id, created_by, notes) VALUES ('$doc_id', '$user_id', '$note')";
+            $GLOBALS['db']->query($query);
+
+            echo json_encode(array("status"=> true, "message" => "Note Added"));
+        } catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+    public function is_document_tagging_applicable($document_id) {
+        try {
+
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            $team_func_array = $team_func_array1 = $others_id_array = array();
+
+            $sql ="SELECT assigned_user_id FROM documents where id ='$document_id' ";
+            $result = $GLOBALS['db']->query($sql);
+            $row = $result->fetch_assoc();
+            $user_id = $row['assigned_user_id'];
+
+            $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
+            $result1 = $GLOBALS['db']->query($sql1);
+            $row = $result1->fetch_assoc();
+            if (strpos($row['user_lineage'], ',') !== false) {
+                $team_func_array = explode(',',  $row['user_lineage']);
+            }
+            $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+            $result3 = $GLOBALS['db']->query($sql3);
+            while($row3 = $GLOBALS['db']->fetchByAssoc($result3))
+            {
+                $check_sales = $row3['teamfunction_c'];
+                $check_mc = $row3['mc_c'];
+                $check_team_lead = $row3['teamheirarchy_c'];
+
+            }
+
+            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) ){
+                return true;
+            }
+            else {
+                return false;
+            }
+
+
+        }catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+    // Function for checking DB if the specific document note is applicable
+    public function is_document_note_applicable($note_id) {
+        try {
+
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            $team_func_array = $team_func_array1 = $others_id_array = array();
+
+            $sql ="SELECT created_by FROM document_note where id ='$note_id' ";
+            $result = $GLOBALS['db']->query($sql);
+            $row = $result->fetch_assoc();
+            $user_id = $row['assigned_user_id'];
+
+            $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
+            $result1 = $GLOBALS['db']->query($sql1);
+            $row = $result1->fetch_assoc();
+            if (strpos($row['user_lineage'], ',') !== false) {
+                $team_func_array = explode(',',  $row['user_lineage']);
+            }
+            $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+            $result3 = $GLOBALS['db']->query($sql3);
+            while($row3 = $GLOBALS['db']->fetchByAssoc($result3))
+            {
+                $check_sales = $row3['teamfunction_c'];
+                $check_mc = $row3['mc_c'];
+                $check_team_lead = $row3['teamheirarchy_c'];
+
+            }
+
+            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) ){
+                return true;
+            }
+            else {
+                return false;
+            }
+
+
+        }catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+    ///  ::::::::::::::::::::::::::::::::::::::::::::::::::::::  Joytrimoy Code ::::::::::::::::::::::::::::::::::::::::::::::::::
 
 }
 ?>
