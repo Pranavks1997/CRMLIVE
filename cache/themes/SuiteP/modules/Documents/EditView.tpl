@@ -416,8 +416,8 @@ value='{$value}' title=''      >
 <div class="col-xs-12 col-sm-8 edit-view-field " type="file" field="filename"  >
 {counter name="panelFieldCount" print=false}
 
-<script type="text/javascript" src='cache/include/externalAPI.cache.js?v=zRGWPbb7a3Vnl0VspKxE8A'></script>
-<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=zRGWPbb7a3Vnl0VspKxE8A'></script>
+<script type="text/javascript" src='cache/include/externalAPI.cache.js?v=N1JlhY16czvZF3MPCN-ngQ'></script>
+<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=N1JlhY16czvZF3MPCN-ngQ'></script>
 {if !empty($fields.filename.value) }
 {assign var=showRemove value=true}
 {else}
@@ -1118,7 +1118,7 @@ value='{$value}' title=''      >
 <div class="col-xs-12 col-sm-8 edit-view-field " type="file" field="followup"  >
 {counter name="panelFieldCount" print=false}
 
-<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=zRGWPbb7a3Vnl0VspKxE8A'></script>
+<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=N1JlhY16czvZF3MPCN-ngQ'></script>
 {if !empty($fields.followup.value) }
 {assign var=showRemove value=true}
 {else}

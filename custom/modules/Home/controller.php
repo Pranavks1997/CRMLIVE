@@ -1339,6 +1339,7 @@ class HomeController extends SugarController{
                     <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$Drop.'%</p>
                 </div>';
         endif; 
+
         echo $data;
         die();
     }
@@ -5117,17 +5118,23 @@ public function is_activity_reassignment_applicable($activity_id) {
         switch($column){
             case 'name':
                 $data .= '<td class="table-data">';
-                $data .= '<a href="index.php?module=Calls&action=DetailView&record='.$row['id'].'">';
-                $data .= '<h2 class="activity-title">'. $row['name'] .'</h2></a>';
-                $tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
-                $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
-                $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
-                $tagged_users = ($tagged_user_query_fetch_row['user_id']) ? $tagged_user_query_fetch_row['user_id'] : '';
-                if ((strpos($tagged_users, $log_in_user_id) !== false) && $log_in_user_id != 1) {
-                $data .= '<i class="fa fa-tag" style="font-size: 12px; color:green"></i>';
-                }
-                $data .= '<span class="activity-type d-block">'. beautify_label($row['type_of_interaction_c']) .'</span></td>';
-                break; 
+                    $data .= '<a href="index.php?module=Calls&action=DetailView&record='.$row['id'].'">';
+
+                    $tag_icon_query = 'SELECT * FROM calls_cstm where id_c = "' .$row['id'].'"';
+                    $result = $GLOBALS['db']->query($tag_icon_query);
+                    $tagged_user = $result->fetch_assoc();
+                    $tagged_user_array = explode(',',$tagged_user['tag_hidden_c']); 
+
+                    $data .= '<h2 class="activity-title">'. $row['name'];
+                    if (in_array($log_in_user_id,$tagged_user_array)){
+                        $data .= '   <i class="fa fa-tag" style="font-size: 12px; color:green"></i></h2></a>';
+                    }
+                    else {
+                        $data .= '</h2></a>';
+                    }
+                    $data .= '<span class="activity-type d-block">'. beautify_label($row['type_of_interaction_c']) .'</span></td>';
+
+                    break; 
             case 'related_to':
                 $parent_type = '';
                 $data .= '<td class="table-data">';
@@ -5189,7 +5196,7 @@ public function is_activity_reassignment_applicable($activity_id) {
                 <select class="" name="filter-type_of_interaction">
                     <option value="">Select Type</option>';
         foreach($interactions as $i){
-            $html .= '<option value="'.$i['type_of_interaction_c'].'">'.$i['type_of_interaction_c'].'</option>';
+            $html .= '<option value="'.$i['type_of_interaction_c'].'">'.beautify_label($i['type_of_interaction_c']).'</option>';
         }
         $html .= '</select></div>';
 
