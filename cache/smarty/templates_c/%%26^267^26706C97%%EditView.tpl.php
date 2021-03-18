@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-03-17 14:57:41
+<?php /* Smarty version 2.6.31, created on 2021-03-18 10:38:45
          compiled from cache/themes/SuiteP/modules/Documents/EditView.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('modifier', 'escape', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 49, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 107, false),array('modifier', 'lookup', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 146, false),array('modifier', 'count', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 248, false),array('modifier', 'default', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 1182, false),array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 68, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 89, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 113, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 121, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 149, false),array('function', 'sugar_getimage', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 443, false),array('function', 'sugar_image', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 458, false),array('function', 'sugar_getscript', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 1376, false),array('block', 'minify', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 105, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('modifier', 'escape', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 51, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 109, false),array('modifier', 'lookup', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 148, false),array('modifier', 'count', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 250, false),array('modifier', 'default', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 1184, false),array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 70, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 91, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 115, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 123, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 151, false),array('function', 'sugar_getimage', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 445, false),array('function', 'sugar_image', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 460, false),array('function', 'sugar_getscript', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 1380, false),array('block', 'minify', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 107, false),)), $this); ?>
 
 
 <script>
@@ -67,7 +67,11 @@ smarty_core_load_plugins(array('plugins' => array(array('modifier', 'escape', 'c
 <input type="hidden" name="contract_id" value="<?php echo $_REQUEST['contract_id']; ?>
 ">   
 <div class="buttons">
-<input title="Save" accesskey="a" class="button primary" onclick="var _form = document.getElementById('EditView'); _form.action.value='Save'; if(check_form('EditView'))SUGAR.ajaxUI.submitForm(_form);return false;" type="submit" name="button" value="Save" id="SAVE"/>
+<input type="submit" value="Save" name="button" id="SAVE_HEADER" 
+onclick="var _form = document.getElementById('EditView'); _form.return_id.value=''; _form.action.value='Save'; 
+if(custom_check_form('EditView'))SUGAR.ajaxUI.submitForm(_form);return false;" class="button" accesskey="<?php echo $this->_tpl_vars['APP']['LBL_SAVE_BUTTON_KEY']; ?>
+" title="<?php echo $this->_tpl_vars['APP']['LBL_SAVE_BUTTON_TITLE']; ?>
+" //>
 <?php if (! empty ( $_REQUEST['return_action'] ) && ( $_REQUEST['return_action'] == 'DetailView' && ! empty ( $_REQUEST['return_id'] ) )): ?><input title="<?php echo $this->_tpl_vars['APP']['LBL_CANCEL_BUTTON_TITLE']; ?>
 " accessKey="<?php echo $this->_tpl_vars['APP']['LBL_CANCEL_BUTTON_KEY']; ?>
 " class="button" onclick="SUGAR.ajaxUI.loadContent('index.php?action=DetailView&module=<?php echo ((is_array($_tmp=$_REQUEST['return_module'])) ? $this->_run_mod_handler('escape', true, $_tmp, 'url') : smarty_modifier_escape($_tmp, 'url')); ?>
@@ -622,8 +626,8 @@ value='<?php echo $this->_tpl_vars['value']; ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
 
-<script type="text/javascript" src='cache/include/externalAPI.cache.js?v=N1JlhY16czvZF3MPCN-ngQ'></script>
-<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=N1JlhY16czvZF3MPCN-ngQ'></script>
+<script type="text/javascript" src='cache/include/externalAPI.cache.js?v=fbfpJj1eEVGEv1gmM3v0MQ'></script>
+<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=fbfpJj1eEVGEv1gmM3v0MQ'></script>
 <?php if (! empty ( $this->_tpl_vars['fields']['filename']['value'] )): ?>
 <?php $this->assign('showRemove', true); ?>
 <?php else: ?>
@@ -1625,7 +1629,7 @@ value='<?php echo $this->_tpl_vars['value']; ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
 
-<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=N1JlhY16czvZF3MPCN-ngQ'></script>
+<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=fbfpJj1eEVGEv1gmM3v0MQ'></script>
 <?php if (! empty ( $this->_tpl_vars['fields']['followup']['value'] )): ?>
 <?php $this->assign('showRemove', true); ?>
 <?php else: ?>
@@ -1921,7 +1925,11 @@ title='' tabindex="0"
 </script>
 <?php $this->assign('place', '_FOOTER'); ?> <!-- to be used for id for buttons with custom code in def files-->
 <div class="buttons">
-<input title="Save" accesskey="a" class="button primary" onclick="var _form = document.getElementById('EditView'); _form.action.value='Save'; if(check_form('EditView'))SUGAR.ajaxUI.submitForm(_form);return false;" type="submit" name="button" value="Save" id="SAVE"/>
+<input type="submit" value="Save" name="button" id="SAVE_HEADER" 
+onclick="var _form = document.getElementById('EditView'); _form.return_id.value=''; _form.action.value='Save'; 
+if(custom_check_form('EditView'))SUGAR.ajaxUI.submitForm(_form);return false;" class="button" accesskey="<?php echo $this->_tpl_vars['APP']['LBL_SAVE_BUTTON_KEY']; ?>
+" title="<?php echo $this->_tpl_vars['APP']['LBL_SAVE_BUTTON_TITLE']; ?>
+" //>
 <?php if (! empty ( $_REQUEST['return_action'] ) && ( $_REQUEST['return_action'] == 'DetailView' && ! empty ( $_REQUEST['return_id'] ) )): ?><input title="<?php echo $this->_tpl_vars['APP']['LBL_CANCEL_BUTTON_TITLE']; ?>
 " accessKey="<?php echo $this->_tpl_vars['APP']['LBL_CANCEL_BUTTON_KEY']; ?>
 " class="button" onclick="SUGAR.ajaxUI.loadContent('index.php?action=DetailView&module=<?php echo ((is_array($_tmp=$_REQUEST['return_module'])) ? $this->_run_mod_handler('escape', true, $_tmp, 'url') : smarty_modifier_escape($_tmp, 'url')); ?>

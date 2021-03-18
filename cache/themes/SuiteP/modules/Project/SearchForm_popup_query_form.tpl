@@ -32,7 +32,7 @@
             }
 
             <div class="col-xs-12">
-                                <label for='name_advanced'>{sugar_translate label='LBL_OPPORTUNITY_NAME' module='Opportunities'}</label>
+                                <label for='name_advanced'>{sugar_translate label='LBL_NAME' module='Project'}</label>
                             </div>
             <div class="form-item">
                                 
@@ -61,12 +61,30 @@
             }
 
             <div class="col-xs-12">
-                                <label for='account_name_advanced'>{sugar_translate label='LBL_ACCOUNT_NAME' module='Opportunities'}</label>
+                                <label for='estimated_start_date_advanced'>{sugar_translate label='LBL_DATE_START' module='Project'}</label>
                             </div>
             <div class="form-item">
                                 
-<input type="text" name="{$fields.account_name_advanced.name}"  class= "sqsEnabled sqsNoAutofill"    id="{$fields.account_name_advanced.name}" size="30" value="{$fields.account_name_advanced.value}" title='' autocomplete="off"  >
-<input type="hidden"  id="{$fields.account_id_advanced.name}" value="{$fields.account_id_advanced.value}">
+<span class="dateTime">
+{assign var=date_value value=$fields.estimated_start_date_advanced.value }
+<input class="date_input" autocomplete="off" type="text" name="{$fields.estimated_start_date_advanced.name}" id="{$fields.estimated_start_date_advanced.name}" value="{$date_value}" title=''  tabindex='0'    size="11" maxlength="10" >
+    <button type="button" id="{$fields.estimated_start_date_advanced.name}_trigger" class="btn btn-danger" onclick="return false;"><span class="suitepicon suitepicon-module-calendar" alt="{$APP.LBL_ENTER_DATE}"></span></button>
+</span>
+<script type="text/javascript">
+Calendar.setup ({ldelim}
+inputField : "{$fields.estimated_start_date_advanced.name}",
+form : "popup_query_form",
+ifFormat : "{$CALENDAR_FORMAT}",
+daFormat : "{$CALENDAR_FORMAT}",
+button : "{$fields.estimated_start_date_advanced.name}_trigger",
+singleClick : true,
+dateStr : "{$date_value}",
+startWeekday: {$CALENDAR_FDOW|default:'0'},
+step : 1,
+weekNumbers:false
+{rdelim}
+);
+</script>
 
                             </div>
         </div>
@@ -84,11 +102,31 @@
             }
 
             <div class="col-xs-12">
-                                <label for='opportunity_type_advanced'>{sugar_translate label='LBL_TYPE' module='Opportunities'}</label>
+                                <label for='estimated_end_date_advanced'>{sugar_translate label='LBL_DATE_END' module='Project'}</label>
                             </div>
             <div class="form-item">
                                 
-{html_options id='opportunity_type_advanced' name='opportunity_type_advanced[]' options=$fields.opportunity_type_advanced.options size="6" class="templateGroupChooser" multiple="1" selected=$fields.opportunity_type_advanced.value}
+<span class="dateTime">
+{assign var=date_value value=$fields.estimated_end_date_advanced.value }
+<input class="date_input" autocomplete="off" type="text" name="{$fields.estimated_end_date_advanced.name}" id="{$fields.estimated_end_date_advanced.name}" value="{$date_value}" title=''  tabindex='0'    size="11" maxlength="10" >
+    <button type="button" id="{$fields.estimated_end_date_advanced.name}_trigger" class="btn btn-danger" onclick="return false;"><span class="suitepicon suitepicon-module-calendar" alt="{$APP.LBL_ENTER_DATE}"></span></button>
+</span>
+<script type="text/javascript">
+Calendar.setup ({ldelim}
+inputField : "{$fields.estimated_end_date_advanced.name}",
+form : "popup_query_form",
+ifFormat : "{$CALENDAR_FORMAT}",
+daFormat : "{$CALENDAR_FORMAT}",
+button : "{$fields.estimated_end_date_advanced.name}_trigger",
+singleClick : true,
+dateStr : "{$date_value}",
+startWeekday: {$CALENDAR_FDOW|default:'0'},
+step : 1,
+weekNumbers:false
+{rdelim}
+);
+</script>
+
                             </div>
         </div>
     </div>
@@ -105,11 +143,11 @@
             }
 
             <div class="col-xs-12">
-                                <label for='sales_stage_advanced'>{sugar_translate label='LBL_SALES_STAGE' module='Opportunities'}</label>
+                                <label for='status_advanced'>{sugar_translate label='LBL_STATUS' module='Project'}</label>
                             </div>
             <div class="form-item">
                                 
-{html_options id='sales_stage_advanced' name='sales_stage_advanced[]' options=$fields.sales_stage_advanced.options size="6" class="templateGroupChooser" multiple="1" selected=$fields.sales_stage_advanced.value}
+{html_options id='status_advanced' name='status_advanced[]' options=$fields.status_advanced.options size="6" class="templateGroupChooser" multiple="1" selected=$fields.status_advanced.value}
                             </div>
         </div>
     </div>
@@ -126,11 +164,11 @@
             }
 
             <div class="col-xs-12">
-                                <label for='assigned_user_id_advanced'>{sugar_translate label='LBL_ASSIGNED_TO' module='Opportunities'}</label>
+                                <label for='priority_advanced'>{sugar_translate label='LBL_PRIORITY' module='Project'}</label>
                             </div>
             <div class="form-item">
                                 
-{html_options id='assigned_user_id_advanced' name='assigned_user_id_advanced[]' options=$fields.assigned_user_id_advanced.options size="6" class="templateGroupChooser" multiple="1" selected=$fields.assigned_user_id_advanced.value}
+{html_options id='priority_advanced' name='priority_advanced[]' options=$fields.priority_advanced.options size="6" class="templateGroupChooser" multiple="1" selected=$fields.priority_advanced.value}
                             </div>
         </div>
     </div>
@@ -251,4 +289,4 @@
         });
     });
     {/literal}
-</script>{literal}<script language="javascript">if(typeof sqs_objects == 'undefined'){var sqs_objects = new Array;}sqs_objects['popup_query_form_modified_by_name_advanced']={"form":"popup_query_form","method":"get_user_array","field_list":["user_name","id"],"populate_list":["modified_by_name_advanced","modified_user_id_advanced"],"required_list":["modified_user_id"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};sqs_objects['popup_query_form_created_by_name_advanced']={"form":"popup_query_form","method":"get_user_array","field_list":["user_name","id"],"populate_list":["created_by_name_advanced","created_by_advanced"],"required_list":["created_by"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};sqs_objects['popup_query_form_assigned_user_name_advanced']={"form":"popup_query_form","method":"get_user_array","field_list":["user_name","id"],"populate_list":["assigned_user_name_advanced","assigned_user_id_advanced"],"required_list":["assigned_user_id"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};sqs_objects['popup_query_form_account_name_advanced']={"form":"popup_query_form","method":"query","modules":["Accounts"],"group":"or","field_list":["name","id"],"populate_list":["popup_query_form_account_name_advanced","account_id_advanced"],"conditions":[{"name":"name","op":"like_custom","end":"%","value":""}],"required_list":["account_id"],"order":"name","limit":"30","no_match_text":"No Match"};sqs_objects['popup_query_form_campaign_name_advanced']={"form":"popup_query_form","method":"query","modules":["Campaigns"],"group":"or","field_list":["name","id"],"populate_list":["campaign_id_advanced","campaign_id_advanced"],"conditions":[{"name":"name","op":"like_custom","end":"%","value":""}],"required_list":["campaign_id"],"order":"name","limit":"30","no_match_text":"No Match"};sqs_objects['popup_query_form_currency_name_advanced']={"form":"popup_query_form","method":"query","modules":["Currencies"],"group":"or","field_list":["name","id"],"populate_list":["currency_name_advanced","currency_id_advanced"],"required_list":["parent_id"],"conditions":[{"name":"name","op":"like_custom","end":"%","value":""}],"order":"name","limit":"30","no_match_text":"No Match"};sqs_objects['popup_query_form_influencersl1_c_advanced']={"form":"popup_query_form","method":"get_user_array","field_list":["user_name","id"],"populate_list":["influencersl1_c_advanced","user_id_c_advanced"],"required_list":["user_id_c"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};sqs_objects['popup_query_form_select_approver_c_advanced']={"form":"popup_query_form","method":"get_user_array","field_list":["user_name","id"],"populate_list":["select_approver_c_advanced","user_id2_c_advanced"],"required_list":["user_id2_c"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};sqs_objects['popup_query_form_influencersl2_c_advanced']={"form":"popup_query_form","method":"get_user_array","field_list":["user_name","id"],"populate_list":["influencersl2_c_advanced","user_id1_c_advanced"],"required_list":["user_id1_c"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};</script>{/literal}
+</script>{literal}<script language="javascript">if(typeof sqs_objects == 'undefined'){var sqs_objects = new Array;}sqs_objects['popup_query_form_modified_by_name_advanced']={"form":"popup_query_form","method":"get_user_array","field_list":["user_name","id"],"populate_list":["modified_by_name_advanced","modified_user_id_advanced"],"required_list":["modified_user_id"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};sqs_objects['popup_query_form_created_by_name_advanced']={"form":"popup_query_form","method":"get_user_array","field_list":["user_name","id"],"populate_list":["created_by_name_advanced","created_by_advanced"],"required_list":["created_by"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};sqs_objects['popup_query_form_assigned_user_name_advanced']={"form":"popup_query_form","method":"get_user_array","field_list":["user_name","id"],"populate_list":["assigned_user_name_advanced","assigned_user_id_advanced"],"required_list":["assigned_user_id"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};sqs_objects['popup_query_form_am_projecttemplates_project_1_name_advanced']={"form":"popup_query_form","method":"query","modules":["AM_ProjectTemplates"],"group":"or","field_list":["name","id"],"populate_list":["am_projecttemplates_project_1_name_advanced","am_projecttemplates_project_1am_projecttemplates_ida_advanced"],"required_list":["parent_id"],"conditions":[{"name":"name","op":"like_custom","end":"%","value":""}],"order":"name","limit":"30","no_match_text":"No Match"};</script>{/literal}

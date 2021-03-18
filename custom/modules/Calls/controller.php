@@ -61,30 +61,7 @@ class CallsController extends SugarController
     	}
     }
     
-//      function action_hide_user_subpanel_for_view_only_user(){
-//         try{
-//             global $current_user;
-//     		$log_in_user_id = $current_user->id;
-//             $db = \DBManagerFactory::getInstance();
-//         	$GLOBALS['db'];
-//             $view_only_user = array();
-// 			$sql = 'SELECT role_id, user_id FROM acl_roles_users where role_id="af3c481e-708f-64e1-f795-5f896b40d41c" AND deleted="0"';
-// 			$result = $GLOBALS['db']->query($sql);
-			
-// 			while($row = $GLOBALS['db']->fetchByAssoc($result) )
-// 			{
-// 			    array_push($view_only_user,$row['user_id']);
-// 			}
-// 			if(in_array($log_in_user_id, $view_only_user)) {
-// 			    echo json_encode(array("status"=>true, "access" => 'no'));
-// 			}else{
-// 			    echo json_encode(array("status"=>true, "access" => 'yes'));
-// 			}
-//     	}catch(Exception $e){
-//     		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-//     	}
-//     	die();
-//      }
+
 
 
 //---------------------------------Editview untagged users ----------------------------------------------
@@ -850,7 +827,19 @@ public function action_approval_buttons(){
                   $assigned_id = $_POST['assigned_id'];
                   $acc_id = $_POST['acc_id'];
                  $approver_id=$_POST['approver_id'];
-                 $status=$_POST['status']; 	    
+                 $status=$_POST['status']; 	
+                 
+                 
+                 $sql_delegate="SELECT * FROM `calls_cstm` WHERE `id_c`='".$acc_id."';";
+                  $result_delegate = $GLOBALS['db']->query($sql_delegate);
+                    while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)) 
+                    {
+                        $delegate_id=$row_delegate['delegate_id'];
+                        
+                    }
+                    
+                  
+                 
       $sql_logged_user = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
         $result_logged_user = $GLOBALS['db']->query($sql_logged_user);
         while($row_logged_user = $GLOBALS['db']->fetchByAssoc($result_logged_user)) 
@@ -896,6 +885,11 @@ public function action_approval_buttons(){
             
                 }
                  if($log_in_user_id==$approver_rejector){
+                
+               echo json_encode(array("message"=>"Pending_approve" )); 
+            
+                }
+                 if($log_in_user_id==$delegate_id){
                 
                echo json_encode(array("message"=>"Pending_approve" )); 
             
@@ -1152,22 +1146,40 @@ public function action_approve(){
                   $acc_id = $_POST['acc_id'];
                  $comments=$_POST['comments'];
                  $status='Completed';
+                 
+                 
+                   $sql_delegate="SELECT * FROM `calls_cstm` WHERE `id_c`='".$acc_id."';";
+                  $result_delegate = $GLOBALS['db']->query($sql_delegate);
+                    while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)) 
+                    {
+                        $delegate_id=$row_delegate['delegate_id'];
+                        
+                    }
+                    
+                    if($log_in_user_id==$delegate_id){
+                        
+                          $update_query="UPDATE `activity_approval_table` SET `approval_status`='1',delegate_approve_reject_date='".$date."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
+                   if($GLOBALS['db']->query($update_query)==TRUE){
+                       
+                    
+                       
+                          echo json_encode(array("button"=>"hide"));
+                    }
+                        }
+                        
+                    else{
                   
               $update_query="UPDATE `activity_approval_table` SET `approval_status`='1',`approve_reject_date`='".$date."',`approver_comment`='".$comments."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
                    if($GLOBALS['db']->query($update_query)==TRUE){
                        
-                    //      $update_calls_cstm = "UPDATE `calls_cstm` SET `status_new_c`='".$status."' WHERE `id_c`='".$acc_id."'";
-                      
                     
-                    // if($GLOBALS['db']->query($update_calls_cstm)==TRUE){
-                        
-                    //      echo json_encode(array("button"=>"hide"));
-                    // }
                        
                           echo json_encode(array("button"=>"hide"));
                     }
            
-        	    
+                    }
+                    
+                    
      }catch(Exception $e){
     		echo json_encode(array("status"=>false, "message" => "Some error occured"));
     	}
@@ -1194,14 +1206,47 @@ public function action_reject(){
                   $acc_id = $_POST['acc_id'];
                  $comments=$_POST['comment_reject'];
                  
-                // echo $sender.'--/--'.$approver.'--/--'.$comments.'--/--'.$acc_id;
-                  
-              $update_query="UPDATE `activity_approval_table` SET `approval_status`='2',`approve_reject_date`='".$date."',`approver_comment`='".$comments."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
-              
+                 
+                    $sql_delegate="SELECT * FROM `calls_cstm` WHERE `id_c`='".$acc_id."';";
+                  $result_delegate = $GLOBALS['db']->query($sql_delegate);
+                    while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)) 
+                    {
+                        $delegate_id=$row_delegate['delegate_id'];
+                        
+                    }
+                    
+                    if($log_in_user_id==$delegate_id){
+                       
+                        
+                          $update_query="UPDATE `activity_approval_table` SET `approval_status`='2',delegate_approve_reject_date='".$date."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
                    if($GLOBALS['db']->query($update_query)==TRUE){
                        
-                         echo json_encode(array("button"=>"hide"));
+                    
+                       
+                          echo json_encode(array("button"=>"hide"));
                     }
+                        }
+                        
+                    else{
+                  
+              $update_query="UPDATE `activity_approval_table` SET `approval_status`='2',`approve_reject_date`='".$date."',`approver_comment`='".$comments."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
+                   if($GLOBALS['db']->query($update_query)==TRUE){
+                       
+                    
+                       
+                          echo json_encode(array("button"=>"hide"));
+                    }
+           
+                    }
+                
+               
+                  
+            //   $update_query="UPDATE `activity_approval_table` SET `approval_status`='2',`approve_reject_date`='".$date."',`approver_comment`='".$comments."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
+              
+            //       if($GLOBALS['db']->query($update_query)==TRUE){
+                       
+            //              echo json_encode(array("button"=>"hide"));
+            //         }
            
         	    
      }catch(Exception $e){
@@ -1247,7 +1292,12 @@ public function action_reject(){
 
 
 
-   function action_insert(){
+   
+
+//--------------------------------------Completed-------END-------------------------------------------
+
+
+function action_insert(){
         try{
             require_once 'data/BeanFactory.php';
             require_once 'include/utils.php';
@@ -1261,9 +1311,31 @@ public function action_reject(){
     		echo json_encode(array("status"=>false, "message" => "Some error occured"));
     	}
     }
-
-//--------------------------------------Completed-------END-------------------------------------------
-
+    
+//      function action_hide_user_subpanel_for_view_only_user(){
+//         try{
+//             global $current_user;
+//     		$log_in_user_id = $current_user->id;
+//             $db = \DBManagerFactory::getInstance();
+//         	$GLOBALS['db'];
+//             $view_only_user = array();
+// 			$sql = 'SELECT role_id, user_id FROM acl_roles_users where role_id="af3c481e-708f-64e1-f795-5f896b40d41c" AND deleted="0"';
+// 			$result = $GLOBALS['db']->query($sql);
+			
+// 			while($row = $GLOBALS['db']->fetchByAssoc($result) )
+// 			{
+// 			    array_push($view_only_user,$row['user_id']);
+// 			}
+// 			if(in_array($log_in_user_id, $view_only_user)) {
+// 			    echo json_encode(array("status"=>true, "access" => 'no'));
+// 			}else{
+// 			    echo json_encode(array("status"=>true, "access" => 'yes'));
+// 			}
+//     	}catch(Exception $e){
+//     		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+//     	}
+//     	die();
+//      }
 // public function action_activityDate(){
 //         try{
 //             $db = \DBManagerFactory::getInstance();
