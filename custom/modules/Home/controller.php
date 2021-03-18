@@ -7390,7 +7390,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
         $query = "SELECT count(*) as count FROM documents_cstm dc LEFT JOIN documents d ON d.id = dc.id_c WHERE d.deleted != 1 AND d.date_entered >= now() - interval '".$day."' day";
         if($status)
-            $query .= " AND dc.status_c = '".$status."' ";
+            $query .= " AND d.template_type = '".$status."' ";
 
         $count = $GLOBALS['db']->query($query);
         $count = $GLOBALS['db']->fetchByAssoc($count);
@@ -7661,7 +7661,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                                 <td class="approvaltable-data-popup">'.getDocumentRelatedTo($row['parent_type'], $row['parent_id']).'<br><span class="document-related-type">'. $row['parent_type'] .'</span></td>
                                 <td class="approvaltable-data-boolean-popup">'.$row['status_c'].'</td>
                                 <td class="approvaltable-data-popup">'.$row['template_type'].'</td>
-                                <td class="approvaltable-data-popup">'. getUsername($row['created_by']) .'<br><span class="document-related-uploaded_date">'. date( 'd/m/Y', strtotime($row['follow_up_date_c']) ) .'</span></td>;
+                                <td class="approvaltable-data-popup">'. getUsername($row['created_by']) .'<br><span class="document-related-uploaded_date">'. date( 'd/m/Y', strtotime($row['follow_up_date_c']) ) .'</span></td>
                                 <td class="approvaltable-data-popup">'.date( 'd/m/Y', strtotime($row['date_modified']) ).'</td>
                             </tr>';
                     $data .= '
@@ -7792,7 +7792,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
 
-            $data = $this->getDbData('document_approval_table', '*', "id = '$id' ");
+            $data = $this->getDbData('document_approval_table', '*', "doc_id = '$id' ");
             
             $data = $data[0];
             $doc_id = $data['doc_id'];
@@ -7813,8 +7813,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
             if($db->query($updateQuery)==TRUE){
                 if($ApprovalStatus == 1){
-                    $updateOpportunity = "UPDATE documents_cstm SET status_c = 'Completed' WHERE id_c = '$id'";
-                    $db->query($updateOpportunity);
+                    $updateDocument = "UPDATE documents_cstm SET status_c = 'Completed' WHERE id_c = '$id'";
+                    $db->query($updateDocument);
                     require_once 'data/BeanFactory.php';
                     require_once 'include/utils.php';
                     $u_id = create_guid();
@@ -7822,7 +7822,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             		$sql_insert_audit = 'INSERT INTO `documents_audit`(`id`, `parent_id`, `date_created`, `created_by`, `field_name`, `data_type`, `before_value_string`, `after_value_string`, `before_value_text`, `after_value_text`) VALUES ("'.$u_id.'","'.$id.'","'.$created_date.'","'.$log_in_user_id.'","status_new_c","varchar","Apply for Completed","Completed"," "," ")';
             		$result_audit = $GLOBALS['db']->query($sql_insert_audit);
                 }
-                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "query" => $updateQuery, "update_opportunity"=>$updateOpportunity));
+               echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "query" => $updateQuery, "update_document"=>$updateDocument));
             }else{
                 echo json_encode(array("status"=>false, "message" => "Some error occured"));
             }
