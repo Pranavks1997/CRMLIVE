@@ -569,6 +569,13 @@ function fetchNoteDialog(id) {
             var parsed_data = JSON.parse(data);
             $('#document_note_info').html(parsed_data.document_info);
             $('#document_note_history').html(parsed_data.notes_history);
+            var sendNoteToText = parsed_data.doc_creator;
+            console.log(sendNoteToText);
+            	
+            $( "#send_note_to" ).html( sendNoteToText );
+
+            // $('#send_not_to').html(sendNoteToText);
+
             $('#doc_id').val(parsed_data.doc_id);
             // $('#activity_member_info').html(parsed_data.optionList);
             // document.getElementById('activity_tag_id').value = parsed_data.activity_id;
@@ -583,6 +590,59 @@ function fetchNoteDialog(id) {
         }
     })
 
+}
+
+function fetchDocumentTagDialog(id) {
+    var dialog = document.getElementById('tag-document-modal');
+
+    $.ajax({
+         url: 'index.php?module=Home&action=document_tag_dialog_info',
+        type: 'GET',
+        data: {
+            id: id
+        },
+        success: function (data) {
+            var parsed_data = JSON.parse(data);
+            $('#document_tag_info').html(parsed_data.document_info);
+            $('#document_member_info').html(parsed_data.optionList);
+            document.getElementById('document_tag_id').value = parsed_data.document_id;
+            dialog.style.display = "block";
+            initSelect2();
+            // $('#hidden_user').val(parsed_data.msuname);
+            // var temp = parsed_data.msuid.split(',');
+            // $('#deselect_members').val(temp);
+        },
+        error: function(data, errorThrown){
+            alert(errorThrown)
+        }
+    })
+
+}
+
+function handleTagDialog(event) {
+
+    var dialog = document.getElementById('tag-document-modal');
+    // var select_dialogue = document.getElementById('activity_member_info');
+    if (event === "discard") {
+        dialog.style.display = "none";
+        // select_dialogue.style.display = "none";
+    } else if (event === "close") {
+        dialog.style.display = "none";
+        // select_dialogue.style.display = "none";
+    } else if (event === "submit") {
+        console.log($('.document_tag_func').serialize());
+        $.ajax({
+            url: 'index.php?module=Home&action=set_document_for_tag',
+            type: 'POST',
+            data: $('.document_tag_func').serialize(),
+            success: function (data) {
+                dialog.style.display = "none";
+                select_dialogue.style.display = "none";
+            }
+        });
+    } else {
+        dialog.style.display = "block"
+    }
 }
 
 

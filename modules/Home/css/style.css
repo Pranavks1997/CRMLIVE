@@ -2211,3 +2211,53 @@ padding: 15px 5px;
 .margin-top-adjust {
     margin-top: 55px !important;
 }
+
+/* Jyotirmoy code */
+
+.field-area h2{
+    font-size: 16px;
+    color: #000;
+    margin-bottom: 10px;
+}
+.input-group {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+.input-group input{
+    border: 1px solid #ddd;
+    border-radius: 4px 0px 0px 4px;
+    padding: 0 10px;
+    height: 42px;
+    position: relative;
+    display: block;
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    width: 1%;
+    border-right: none;
+    min-width: auto !important;
+    max-width: auto !important;
+}
+.input-group input:focus{outline: none;}
+.input-group .input-group-append{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+.input-group .input-group-append button {
+    background: #000;
+    color: #fff;
+    text-align: center;
+    height: 42px;
+    padding: 0 28px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 0;
+}

@@ -32,8 +32,8 @@
             <td class="table-data">
                 <div style="display: flex; width: 80%; align-items: center; padding: 10px; justify-content: space-between; margin-left: 20px;">
                 
-                  
-                    <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="fetchTagDialog('<?php echo $row['id']; ?>')">
+
+                    <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="fetchDocumentTagDialog('<?php echo $row['id']; ?>')">
                         <?php if ($this->is_document_tagging_applicable($row['id'])) { ?>
                             <i id="search-icon" class="fa fa-tag" aria-hidden="true"> </i>
                         <?php } ?>
