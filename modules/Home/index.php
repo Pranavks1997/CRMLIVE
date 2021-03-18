@@ -809,6 +809,37 @@
     </div>
 
 
+    <!-- Modal content Document Note pop-up -->
+    <div id="document-note-modal" class="desModal">
+        <!-- Modal content -->
+        <div class="deselect-modal-content">
+            <span class="deselectclose" onclick="handleNoteDialog('close')">&times;</span>
+            <form class="activity_tag_func">
+                <div id="document_note_info">
+
+                </div>
+                <div id="document_note_history">
+
+                </div>
+                <br><div style="height: 20px;"></div>
+                <input type="hidden" id="doc_id" name= "doc_id" value="" />
+                <div id="document_info">
+<!--                    <span>Send note to <b id="doc_creator"></b></span>-->
+                    <input type="text" name="note" id="note">
+                </div>
+
+                <br><div style="height: 20px;"></div>
+                <div>
+                    <button class="saveBtnDeselect" type="button" onclick="handleNoteDialog('submit')">Post</button>
+                </div>
+                </section>
+            </form>
+        </div>
+
+    </div>
+
+
+
 
 
     <script src="modules/Home/js/script.js"></script>

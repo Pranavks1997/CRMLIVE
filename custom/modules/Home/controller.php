@@ -6986,6 +6986,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 'columnFilter'              => $columnFilterHtml,
                 'filters'                   => $filters
             ));
+
             die;
         }
         catch(Exception $e){
@@ -7389,9 +7390,10 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         try {
             $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
+            global $current_user;
             $doc_id = $_POST['doc_id'];
             $note = $_POST['note'];
-            $user_id = $_POST['user_id'];
+            $user_id = $current_user->id;
 
             $query = "INSERT INTO document_note (doc_id, created_by, notes) VALUES ('$doc_id', '$user_id', '$note')";
             $GLOBALS['db']->query($query);
@@ -7494,6 +7496,92 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         }
         die();
     }
+
+
+    public function action_document_note_dialog_info() {
+        try {
+
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $doc_id = $_REQUEST['id'];
+
+            $fetch_document_info = "SELECT documents.document_name, documents.created_by, documents.doc_type, documents.id as doc_id, documents_cstm.category_c as category_name, documents_cstm.sub_category_c as sub_category_name, documents_cstm.parent_type, documents_cstm.parent_id FROM documents
+            LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c WHERE documents.id = '$doc_id'";
+
+            $fetch_document_info_result = $GLOBALS['db']->query($fetch_document_info);
+            $row = $GLOBALS['db']->fetchByAssoc($fetch_document_info_result);
+            $created_user_id = $row['created_by'];
+            $user_full_name = getUsername($created_user_id);
+            $sub_head = 'Write a note';
+
+            $fetch_notes_history = "SELECT * FROM document_note WHERE doc_id = '$doc_id'";
+            $fetch_notes_history_result = $GLOBALS['db']->query($fetch_notes_history);
+
+            $data = '
+                <h2 class="deselectheading">' . $row['document_name'] . '</h2><br>
+                <p class="deselectsubhead">'.$sub_head.'</p>
+                <hr class="deselectsolid">
+                <section class="deselectsection">
+                <table align="centered" width="100%">
+                    <thead>
+                    <tr class="tabname">
+                        <th>Document Type</th>
+                        <th>Category</th>
+                        <th>Sub Category</th>
+                        <th>Related To</th>
+                        <th>Uploaded By</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="tabvalue">
+                        <td>' . ucfirst($row['doc_type']) . '</td>
+                        <td>' . ucfirst($row['category_name']) . '</td>
+                        <td>' . ucfirst($row['sub_category_name']) . '</td>
+                        <td> <h2 class="document-related-name">' . getDocumentRelatedTo($row['parent_type'] , $row['parent_id']) . '</h2> <span class="document-related-type">'. $row['parent_type'] .'</span></td>
+                        <td>' . ucwords($user_full_name). '</td>
+                        </tr>';
+            $data .= '</tbody></table>';
+
+            $notes_history = '
+                
+                <hr class="deselectsolid">
+                <section class="deselectsection">
+                <table align="centered" width="100%">
+                    <thead>
+                    <tr class="tabname">
+                        <th>Previous Notes</th>
+                        <th>By</th>
+                        <th>Posted On</th>
+                    </tr>
+                    </thead>
+                    <tbody>';
+
+            while($row1 = $GLOBALS['db']->fetchByAssoc($fetch_notes_history_result))
+            {
+                $note_creator_id = $row1['created_by'];
+                $note_creator = getUsername($note_creator_id);
+                $notes_history .= '<tr class="tabvalue">
+                        <td>' . ucfirst($row1['notes']) . '</td>
+                        <td>' . ucwords($note_creator). '</td>
+                        <td>' . $row1['posted_date'] . '</td>
+                       
+                        </tr>';
+            }
+
+            $notes_history .= '</tbody></table>';
+
+
+
+            echo json_encode(array('document_info'=>$data,'doc_id'=>$doc_id, 'notes_history'=>$notes_history));
+
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+
+
 
     ///  ::::::::::::::::::::::::::::::::::::::::::::::::::::::  Joytrimoy Code ::::::::::::::::::::::::::::::::::::::::::::::::::
     
