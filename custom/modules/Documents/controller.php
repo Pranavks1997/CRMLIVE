@@ -362,14 +362,33 @@ public function action_approve(){
         $doc_id = $_POST['doc_id'];
         $comments=$_POST['comments'];
         $status='Approved';
-              
-        $update_query="UPDATE `document_approval_table` SET `approval_status`='1',`approve_reject_date`='".$date."',`approver_comment`='".$comments."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
 
-        $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
-
-        if($GLOBALS['db']->query($update_query) && $GLOBALS['db']->query($update_documents_cstm)){               
-              echo json_encode(array("button"=>"hide"));
+        $sql_delegate="SELECT * FROM `documents_cstm` WHERE `id_c`='".$doc_id."';";
+        $result_delegate = $GLOBALS['db']->query($sql_delegate);
+        
+        while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)){
+			$delegate_id=$row_delegate['delegate_id'];            
         }
+
+        if($log_in_user_id==$delegate_id){
+        	$update_query="UPDATE `document_approval_table` SET `approval_status`='1',delegate_approve_reject_date='".date('Y-m-d H:i:s')."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
+
+        	$update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+
+        	if($GLOBALS['db']->query($update_query) && $GLOBALS['db']->query($update_documents_cstm)){
+        		echo json_encode(array("button"=>"hide"));
+        	}
+        }
+        else{
+	        $update_query="UPDATE `document_approval_table` SET `approval_status`='1',`approve_reject_date`='".date('Y-m-d H:i:s')."',`approver_comment`='".$comments."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
+
+	        $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+
+	        if($GLOBALS['db']->query($update_query) && $GLOBALS['db']->query($update_documents_cstm)){               
+	              echo json_encode(array("button"=>"hide"));
+	        }
+        }
+              
        
     	    
  	}catch(Exception $e){
@@ -381,7 +400,7 @@ public function action_approve(){
 
 //----------------------------Reject------------------------------------------------
 public function action_reject(){
-     try{
+    try{
     	$db = \DBManagerFactory::getInstance();
     	$GLOBALS['db'];
     	  
@@ -397,14 +416,31 @@ public function action_reject(){
     	$status = 'Pending Approval';
              
     	// echo $sender.'--/--'.$approver.'--/--'.$comments.'--/--'.$doc_id;
-              
-    	$update_query="UPDATE `document_approval_table` SET `approval_status`='2',`approve_reject_date`='".$date."',`approver_comment`='".$comments."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
 
-    	$update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
-    
-    	if($GLOBALS['db']->query($update_query) && $GLOBALS['db']->query($update_documents_cstm)){
-        	echo json_encode(array("button"=>"hide"));
-    	}	    
+    	$sql_delegate="SELECT * FROM `documents_cstm` WHERE `id_c`='".$doc_id."';";
+    	$result_delegate = $GLOBALS['db']->query($sql_delegate);
+    	
+    	while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)) {
+            $delegate_id=$row_delegate['delegate_id'];
+		}
+		if($log_in_user_id==$delegate_id){
+			$update_query="UPDATE `document_approval_table` SET `approval_status`='2',delegate_approve_reject_date='".date('Y-m-d H:i:s')."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
+
+			$update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+
+			if($GLOBALS['db']->query($update_query) && $GLOBALS['db']->query($update_documents_cstm)){
+				echo json_encode(array("button"=>"hide"));
+			}
+		}
+		else{
+	    	$update_query="UPDATE `document_approval_table` SET `approval_status`='2',`approve_reject_date`='".date('Y-m-d H:i:s')."',`approver_comment`='".$comments."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
+
+	    	$update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+	    
+	    	if($GLOBALS['db']->query($update_query) && $GLOBALS['db']->query($update_documents_cstm)){
+	        	echo json_encode(array("button"=>"hide"));
+	    	}	    
+		}     
     }
     catch(Exception $e){
     	echo json_encode(array("status"=>false, "message" => "Some error occured"));
@@ -426,6 +462,12 @@ public function action_approval_buttons(){
 		$doc_id = $_POST['doc_id'];
 		$approver_id=$_POST['approver_id'];
 		$status=$_POST['status'];
+
+		$sql_delegate="SELECT * FROM `documents_cstm` WHERE `id_c`='".$doc_id."';";
+		$result_delegate = $GLOBALS['db']->query($sql_delegate);
+		while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)){
+			$delegate_id=$row_delegate['delegate_id'];            
+		}
 
       	$sql_logged_user = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
         
@@ -464,8 +506,11 @@ public function action_approval_buttons(){
             if($log_in_user_id==$sender){
            		echo json_encode(array("message"=>"Pending" ));
             }
-             if($log_in_user_id==$approver_rejector){
+            if($log_in_user_id==$approver_rejector){
            		echo json_encode(array("message"=>"Pending_approve" )); 
+            }
+            if($log_in_user_id==$delegate_id){
+            	echo json_encode(array("message"=>"Pending_approve" ));
             }
         }
 

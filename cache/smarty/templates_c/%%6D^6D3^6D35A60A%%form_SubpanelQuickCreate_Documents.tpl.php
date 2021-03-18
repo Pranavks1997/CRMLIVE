@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-03-18 10:45:19
+<?php /* Smarty version 2.6.31, created on 2021-03-18 11:53:42
          compiled from cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 65, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 86, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 110, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 118, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 146, false),array('function', 'sugar_getimage', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 440, false),array('function', 'sugar_image', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 455, false),array('block', 'minify', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 102, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 104, false),array('modifier', 'lookup', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 143, false),array('modifier', 'count', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 245, false),array('modifier', 'default', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 1179, false),)), $this); ?>
@@ -596,8 +596,8 @@ value='<?php echo $this->_tpl_vars['value']; ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
 
-<script type="text/javascript" src='cache/include/externalAPI.cache.js?v=HFwr14oImqEXeVIj6Ls6Aw'></script>
-<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=HFwr14oImqEXeVIj6Ls6Aw'></script>
+<script type="text/javascript" src='cache/include/externalAPI.cache.js?v=KuwDb_C82Ri9W_gefVV1WA'></script>
+<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=KuwDb_C82Ri9W_gefVV1WA'></script>
 <?php if (! empty ( $this->_tpl_vars['fields']['filename']['value'] )): ?>
 <?php $this->assign('showRemove', true); ?>
 <?php else: ?>
@@ -1599,7 +1599,7 @@ value='<?php echo $this->_tpl_vars['value']; ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
 
-<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=HFwr14oImqEXeVIj6Ls6Aw'></script>
+<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=KuwDb_C82Ri9W_gefVV1WA'></script>
 <?php if (! empty ( $this->_tpl_vars['fields']['followup']['value'] )): ?>
 <?php $this->assign('showRemove', true); ?>
 <?php else: ?>
