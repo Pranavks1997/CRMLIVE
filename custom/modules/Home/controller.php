@@ -7467,7 +7467,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
     }
 
     // Function for checking DB if the specific document note is applicable
-    public function is_document_note_applicable($note_id) {
+    public function is_document_note_applicable($doc_id) {
         try {
 
             global $current_user;
@@ -7477,7 +7477,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
             $team_func_array = $team_func_array1 = $others_id_array = array();
 
-            $sql ="SELECT created_by FROM document_note where id ='$note_id' ";
+            $sql ="SELECT assigned_user_id FROM documents where id ='$doc_id' ";
             $result = $GLOBALS['db']->query($sql);
             $row = $result->fetch_assoc();
             $user_id = $row['assigned_user_id'];
@@ -7695,7 +7695,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $GLOBALS['db'];
             $doc_id = $_REQUEST['id'];
 
-            $fetch_document_info = "SELECT documents.document_name, documents.created_by, documents.doc_type, documents.id as doc_id, documents_cstm.category_c as category_name, documents_cstm.sub_category_c as sub_category_name, documents_cstm.parent_type, documents_cstm.parent_id FROM documents
+            $fetch_document_info = "SELECT documents.document_name, documents.date_entered, documents.created_by, documents.doc_type, documents.id as doc_id, documents_cstm.category_c as category_name, documents_cstm.sub_category_c as sub_category_name, documents_cstm.parent_type, documents_cstm.parent_id FROM documents
             LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c WHERE documents.id = '$doc_id'";
 
             $fetch_document_info_result = $GLOBALS['db']->query($fetch_document_info);
@@ -7710,12 +7710,12 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $data = '
                 <h2 class="deselectheading">' . $row['document_name'] . '</h2><br>
                 <p class="deselectsubhead">'.$sub_head.'</p>
-                <hr class="deselectsolid">
+                <hr class="deselectsolid" style="border-bottom: 1px solid black;">
                 <section class="deselectsection">
                 <table align="centered" width="100%">
                     <thead>
-                    <tr class="tabname">
-                        <th>Document Type</th>
+                    <tr class="tabname" style="font-size: 15px;">
+                        <th><strong>Document Type</strong></th>
                         <th>Category</th>
                         <th>Sub Category</th>
                         <th>Related To</th>
@@ -7728,13 +7728,15 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                         <td>' . ucfirst($row['category_name']) . '</td>
                         <td>' . ucfirst($row['sub_category_name']) . '</td>
                         <td> <h2 class="document-related-name">' . getDocumentRelatedTo($row['parent_type'] , $row['parent_id']) . '</h2> <span class="document-related-type">'. $row['parent_type'] .'</span></td>
-                        <td>' . ucwords($user_full_name). '</td>
+                        <td> <h2 class="document-related-name">' . ucwords($user_full_name) . '</h2> <span class="document-related-type">'. $row['date_entered'] .'</span></td>
+
+                      
                         </tr>';
             $data .= '</tbody></table>';
 
             $notes_history = '
                 
-                <hr class="deselectsolid">
+                <hr class="deselectsolid" style="border-bottom: 1px solid black;">
                 <section class="deselectsection">
                 <table align="centered" width="100%">
                     <thead>
@@ -7762,7 +7764,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
 
 
-            echo json_encode(array('document_info'=>$data,'doc_id'=>$doc_id, 'notes_history'=>$notes_history));
+            echo json_encode(array('document_info'=>$data, 'doc_id'=>$doc_id, 'notes_history'=>$notes_history, 'doc_creator'=>ucwords($user_full_name)));
 
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
@@ -7833,6 +7835,117 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             echo json_encode(array("status"=>false, "message" => "Some error occured", "query" => $updateQuery));
         }
         die();
+    }
+
+    public function action_document_tag_dialog_info()
+    {
+        try {
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $doc_id = $_REQUEST['id'];
+            $fetch_document_info = "SELECT * FROM documents
+                LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c WHERE id = '$doc_id'";
+            $fetch_document_info_result = $GLOBALS['db']->query($fetch_document_info);
+            $row = $GLOBALS['db']->fetchByAssoc($fetch_document_info_result);
+            $assigned_user_id = $row['assigned_user_id'];
+            $created_by = $row['created_by'];
+            $user_full_name = getUsername($assigned_user_id);
+            $creator_full_name = getUsername($created_by);
+            $sub_head = 'Selected members will be able to view details or take action';
+            $change_font = "Select Member";
+
+
+            $data = '
+                <h2 class="deselectheading">' . $row['document_name'] . '</h2><br>
+                <p class="deselectsubhead">'.$sub_head.'</p>
+                <hr class="deselectsolid">
+                <section class="deselectsection">
+                <table align="centered" width="100%">
+                    <thead>
+                    <tr class="tabname">
+                        <th>Last Update</th>
+                        <th>Document Type</th>
+                        <th>Assigned to</th>
+                        <th>Uploaded By</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="tabvalue">
+                        <td>' . date_format(date_create($row['date_modified']), 'd/m/Y') . '</td>
+                        <td>' . ucfirst($row['template_type']) . '</td>
+                        <td>' . ucwords($user_full_name). '</td>
+                        <td>' . ucwords($creator_full_name). '</td>
+                        </tr>';
+            $data .= '</tbody></table>';
+            $optionList = $this->document_tag_dialog_dropdown_info($doc_id);
+
+
+          echo json_encode(array('document_info'=>$data,'document_id'=>$doc_id, 'optionList'=> $optionList));
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+
+    public function document_tag_dialog_dropdown_info($doc_id) {
+        try {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $fetch_query = "SELECT * FROM users WHERE deleted = 0 AND `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC";
+            $result = $GLOBALS['db']->query($fetch_query);
+            $data = '<select class="select2" name="tag_document[]" id="" multiple>';
+            $tagged_user_query = "SELECT * from documents_cstm where id_c = '$doc_id'";
+            $result1 = $GLOBALS['db']->query($tagged_user_query);
+            $tagged_user_row = $result1->fetch_assoc();
+
+
+            $tagged_user_array = explode(',', $tagged_user_row['tagged_hidden_c']);
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    $full_name = $row['first_name'] . ' ' . $row['last_name'];
+                    if (in_array($row['id'],$tagged_user_array)){
+                        $data .= '<option value="'.$row['id'].'" selected>'.$full_name.'</option>';
+                    }
+                    else{
+                        $data .= '<option value="'.$row['id'].'" >'.$full_name.'</option>';
+                    }
+                }
+            }
+            $data .= "</select>";
+            return $data;
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+    public function action_set_document_for_tag(){
+        try {
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            // $document_id = $_POST['document_id'];
+            $document_id = $_POST['document_tag_id'];
+            $user_id_list = '';
+            if ($_POST['userIdList'] != "undefined") {
+                $user_id_list = $_POST['userIdList'];
+            }
+            if ($_POST['tag_document']) {
+                $user_id_list = $_POST['tag_document'];
+                $user_id_list = implode(',',$user_id_list);
+            }
+            $count_query = "SELECT * FROM documents_cstm WHERE id_c='$document_id'";
+            $result = $GLOBALS['db']->query($count_query);
+
+            $sub_query = "UPDATE documents_cstm SET tagged_hidden_c = '$user_id_list' WHERE id_c='$document_id'";
+            $GLOBALS['db']->query($sub_query);
+
+            echo json_encode(array("status"=> true, "message" => "Value Updated"));
+        } catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+
     }
 
 

@@ -23,6 +23,7 @@ $( document ).ready(function() {
    
           $('#approver_c').attr('readonly',true);
           $('#assigned_user_name').attr('readonly',true);
+          $('#status_c').attr('readonly',true);
           
            $('#parent_name').on('click', function(e) {
         
@@ -37,7 +38,7 @@ $( document ).ready(function() {
            
            
            
-           
+ 
   
           
    //------------------------for global----------------------
@@ -45,9 +46,7 @@ $( document ).ready(function() {
     var doc_id=$('input[name=record]').val();
     var doc_type=$('#activity_type_c').val();
     var assigned_id=$('#assigned_user_id').val();
-    var approver_id=$('#user_id_c').val();
     var assigned_name=$('#assigned_user_name').val();
-    var status=$('#status_c').val();
     
    //------------------------for global----------------------
    
@@ -72,14 +71,38 @@ $( document ).ready(function() {
              });
  
    //---------------Approver----------------------------------
+  
    
    
-  if(doc_id == ""){
+   
+     //------------------------for global----------------------
+
+    var approver_id=$('#user_id_c').val();
+    var approver_name=$('#approver_c').val();
+    
+   //------------------------for global----------------------
+   
+   if(doc_id == ""){
         
       $(".panel-heading:contains('Tag Users') ,#detailpanel_0").hide(); 
       
       
+      if(approver_name==assigned_name){
+       $('#status_c').val('Approved');
+      }
+      else{
+       $('#status_c').val('Upload');
+      }
+   
   }
+  
+    //------------------------for global----------------------
+   
+   
+    var status=$('#status_c').val();
+  
+   //------------------------for global----------------------
+  
   
    if(doc_id != ""){
         
@@ -163,7 +186,41 @@ $( document ).ready(function() {
                  status
                 },
                 success : function(data){
-                 
+                 if(data.message=="show_completed"){
+                      $('#complete_document').show();
+                  }
+                  
+                 else if(data.message=="show_send_approval"){
+                    $('#apply_for_complete').show();
+                       $('#status_c').val('Uploaded');
+                   }
+                   
+                 else if(data.message=="Pending"){
+                     // $('#activity_date_c').attr("disabled",true);
+                       $('#apply_for_complete').replaceWith('<h3 id="apply_for_complete" style="color: red; display: inline;">Approval Pending</h3>');
+                   }
+                   
+                   else if(data.message=="Rejected"){
+                       $('#apply_for_complete').show();
+                       $("#reject_document").replaceWith('<h3 id="reject_document" style="color: red; display: inline;">Rejected (Edit Document and resend for approval)</h3>')
+                   }
+                   
+                   else if(data.message=="Pending_approve"){  
+                       $('#approve_document').show();
+                       $('#reject_document').show();
+                       // $('#activity_date_c').attr("disabled",true);
+                   }
+                   
+                   else if(data.message=="Approved"){
+                     // $('#activity_date_c').attr("disabled",true);
+                   }
+                   
+                   else{
+                       $('#approve_document').hide();
+                       $('#reject_document').hide();
+                       $('#apply_for_complete').hide();
+                       $('#complete_document').hide();
+                   }
                     
                 }
                  
@@ -177,7 +234,7 @@ $( document ).ready(function() {
   
   
   
-     //-----------------------tag  users id----------------------------------------------- 
+     //-----------------------tag hidden users id----------------------------------------------- 
 
 $(document).on('click', function () {
 
@@ -196,7 +253,7 @@ $(document).on('click', function () {
             $('#tag_hidden_c').val('');
        }
 });
-//-----------------------tag  users id--------------END---------------------------------  
+//-----------------------tag  hidden users id--------------END---------------------------------  
 
 //----------------------send approval/apply for complete ---------------------------------------------------
      
@@ -222,7 +279,7 @@ $(document).on('click', function () {
                  },
                 success : function(data){
                 if(data.button == 'hide'){
-                    $("#status_c").val("Apply for Completed");
+                    $("#status_c").val("Approval Pending");
                     $("#apply_for_complete").hide();
                    $("#SAVE_HEADER").trigger("click");
                 }
@@ -290,8 +347,9 @@ $(document).on('click', function () {
                 if(data.button == 'hide'){
                     $("#approve_document").hide();
                     $("#reject_document").hide();
-                    $('#status_c').val('Completed');
-                    $("#SAVE").trigger("click");
+                    $('#status_c').val('Approved');
+                    $("#SAVE_HEADER").trigger("click");
+                    $('#approve_comments').css("display","none");
                 }
             
             }
@@ -333,9 +391,11 @@ $(document).on('click', function () {
                 success : function(data){
                 
                 if(data.button == 'hide'){
-                    $("#approve_activity").hide();
-                    $("#reject_activity").hide();
-                   $("#SAVE").trigger("click");
+                    $("#approve_document").hide();
+                    $("#reject_document").hide();
+                   $("#SAVE_HEADER").trigger("click");
+                   $('#status_c').val('Pending Approval');
+                   $('#reject_comments').css("display","none");
                 }
             
             }
@@ -476,7 +536,7 @@ $(document).on('click', function () {
   //-----------------------------------------------Astericks------END--------------------------------
   
   //------------------------------------Custom Validation--------------------------------------------
-    check_form = function(view){
+    custom_check_form = function(view){
         var validate = true;
          var alert_validation = [];
          
