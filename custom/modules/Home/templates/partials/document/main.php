@@ -36,11 +36,11 @@
                             <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
                         </button>
 
-                        <?php if ($check_mc == 'yes'): ?>
+                        <!-- <?php if ($check_mc == 'yes'): ?>
                             <button class="cog download" id="document_download_btn" class="download-btn" data-type="document" data-action="status" data-value="<?php echo $status; ?>" data-dropped="<?php echo $dropped; ?>" style="padding:10; border: none !important;">
                                 <i class="fa fa-download" aria-hidden="true"> </i>
                             </button>
-                        <?php endif ?>
+                        <?php endif ?> -->
                     </div>
                 </div>
             </div>

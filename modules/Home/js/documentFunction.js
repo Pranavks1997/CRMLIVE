@@ -24,10 +24,10 @@ function documentFilterHelper(ref) {
         var filterDay = $('.document-pending-filter .filter-day').val();
         var filterStatus = $('.document-pending-filter .filter-status').val();
     }
-    console.log("ref --",ref);
+    console.log("ref --", ref);
 
     if (ref == 'document-filter') {
-        console.log("filter status , filter Type", filterStatus,filterType);
+        console.log("filter status , filter Type", filterStatus, filterType);
 
         documentdateBetween(day, '', '', 1, filterStatus, filterType, '', 0);
     } else {
@@ -328,7 +328,7 @@ function documentdateBetween(dateBetween, searchTerm = null, page = null, filter
 
 function documentpaginate(page, method, day, searchTerm = null, filter = 0) {
     if (method == 'document') {
-        console.log("documentpaginate" , searchTerm);
+        console.log("documentpaginate", searchTerm);
         documentdateBetween(day, searchTerm, page, filter, 0);
     } else if (method == 'pending') {
         fetchDocumentByStatus(status, filter, page, 0);
@@ -359,12 +359,15 @@ function updateDocumentStatus() {
         type: 'POST',
         data: $('.document-approval-form').serialize(),
         success: function (data) {
+            console.log("test", data);
             data = JSON.parse(data);
+            debugger
             if (data.status) {
                 fetchDocumentByStatus();
                 getPendingDocumentRequestCount();
+
                 openDocumentApprovalDialog('close');
-                activitydateBetween('30')
+                documentdateBetween('30')
             } else {
                 alert(data.message);
             }
@@ -585,7 +588,7 @@ function fetchNoteDialog(id) {
             // var temp = parsed_data.msuid.split(',');
             // $('#deselect_members').val(temp);
         },
-        error: function(data, errorThrown){
+        error: function (data, errorThrown) {
             alert(errorThrown)
         }
     })
