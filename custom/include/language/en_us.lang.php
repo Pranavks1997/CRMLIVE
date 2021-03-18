@@ -159,10 +159,16 @@ $GLOBALS['app_list_strings']['Interaction_type']=array (
   'Preparation' => 'Preparation',
   'Phone_Email' => 'Phone & Email',
 );
+$GLOBALS['app_list_strings']['document_template_type_dom']=array (
+  '' => '',
+  'research_intelligence' => 'Research and Intelligence',
+  'sales' => 'Sales',
+  'entity_documents' => 'Entity Documents',
+);
 $GLOBALS['app_list_strings']['parent_type_display']=array (
   'Calls' => 'Activity',
   'Accounts' => 'Department',
+  'Documents' => 'Documents',
   'Opportunities' => 'Opportunity',
   'Project' => 'Project',
-  'Documents' => 'Documents',
 );
