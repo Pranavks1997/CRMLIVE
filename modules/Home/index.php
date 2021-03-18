@@ -10,6 +10,8 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300&display=swap" rel="stylesheet">
+    <!-- <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;500;700;900&display=swap" rel="stylesheet"> -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="modules/Home/css/style.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
@@ -861,7 +863,7 @@
         <!-- Modal content -->
         <div class="deselect-modal-content">
             <span class="deselectclose" onclick="handleNoteDialog('close')">&times;</span>
-            <form class="activity_tag_func">
+            <form class="document_note_func">
                 <div id="document_note_info">
 
                 </div>
@@ -870,22 +872,61 @@
                 </div>
                 <br><div style="height: 20px;"></div>
                 <input type="hidden" id="doc_id" name= "doc_id" value="" />
-                <div id="document_info">
-<!--                    <span>Send note to <b id="doc_creator"></b></span>-->
+
+                <div class="field-area" id="document_info">
+                    <!-- <h2>Send note to <b id="send_note_to" style="float: left;"></b> </h2> -->
+                    <p>Send note to <strong id="send_note_to"></strong></p>
+
+                    <div class="input-group">
+                        <input type="text" name="note" id="note"/>
+                        <div class="input-group-append">
+                            <button type="submit" class="saveBtnDeselect" onclick="handleNoteDialog('submit')">Post</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- <div id="document_info">
+                   <span>Send note to <b id="doc_creator"></b></span>
                     <input type="text" name="note" id="note">
                 </div>
 
                 <br><div style="height: 20px;"></div>
                 <div>
                     <button class="saveBtnDeselect" type="button" onclick="handleNoteDialog('submit')">Post</button>
-                </div>
+                </div> -->
+
+
                 </section>
             </form>
         </div>
 
     </div>
 
+    <!-- Modal content of Document Tag pop-up -->
+    <div id="tag-document-modal" class="desModal">
+        <!-- Modal content -->
+        <div class="deselect-modal-content">
+            <span class="deselectclose" onclick="handleTagDialog('close')">&times;</span>
+            <form class="document_tag_func">
+                    <div id="document_tag_info">
+                        
+                    </div>
+                    <br><div style="height: 20px;"></div>
+                    <input type="hidden" id="document_tag_id" name="document_tag_id" value="" />
+                    <div id="document_member_info">
 
+                    </div>
+                    
+                    <br><div style="height: 20px;"></div>
+                    <div>
+                        <button class="saveBtnDeselect" type="button" onclick="handleTagDialog('submit')">Save</button>
+                        <button class="submitBtnDeselect" type="button" onclick="handleTagDialog('discard')">Close</button>
+                    </div>
+                </section>
+            </form>
+        </div>
+
+    </div>
 
 
 

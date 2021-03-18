@@ -24,10 +24,10 @@ function documentFilterHelper(ref) {
         var filterDay = $('.document-pending-filter .filter-day').val();
         var filterStatus = $('.document-pending-filter .filter-status').val();
     }
-    console.log("ref --",ref);
+    console.log("ref --", ref);
 
     if (ref == 'document-filter') {
-        console.log("filter status , filter Type", filterStatus,filterType);
+        console.log("filter status , filter Type", filterStatus, filterType);
 
         documentdateBetween(day, '', '', 1, filterStatus, filterType, '', 0);
     } else {
@@ -111,6 +111,18 @@ function documentSearchColumns(text) {
     }
 }
 
+function changeAddLabel(evnt) {
+    $('.add-opportunity-title').html(evnt);
+    var redirectLink = "'./index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3DEditView%26return_module%3DOpportunities%26return_action%3DDetailView'";
+    if (evnt == 'Create Activity') {
+        redirectLink = "'index.php?module=Calls&action=EditView'";
+    }
+    else if (evnt == 'Create Document') {
+        redirectLink = "'index.php?module=Documents&action=EditView'";
+    }
+    $("#add_opportunity").attr("onclick", "location.href = " + redirectLink);
+}
+
 function openDocumentSettingDialog(event) {
 
     var dialog = document.getElementById('document-settings-modal');
@@ -156,7 +168,7 @@ function openDocumentSettingDialog(event) {
 
     var dialog = document.getElementById('document-settings-modal');
     $('#search-column1').val('');
-    activitySearchColumns('');
+    documentSearchColumns('');
     if (event === "discard") {
         dialog.style.display = "none";
     } else if (event === "close") {
@@ -167,7 +179,7 @@ function openDocumentSettingDialog(event) {
         dialog.style.display = "block"
     }
 
-    if (event == 'activity') {
+    if (event == 'document') {
         $('.document-settings-section').val('document');
     } else if (event == 'pendings') {
         $('.document-settings-section').val('document-pendings');
@@ -297,7 +309,14 @@ function documentdateBetween(dateBetween, searchTerm = null, page = null, filter
             $('#documenttableContent').html(data.data);
             $('#orgDocumentCount').html(data.total);
             $('#selfDocumentCount').html(data.self_count);
-            $('#myTeamDocumentCount').html(data.team_count);
+            var teamCount;
+            if (data.user_id == 1) {
+                teamCount = 0
+            }
+            else {
+                teamCount = data.team_count;
+            }
+            $('#myTeamDocumentCount').html(teamCount);
             // $('#delegateName').html(data.delegate_name);
             $('#delegateDocumentName').html('0 (No Delegations)');
             if (data.delegateDetails != '') {
@@ -328,7 +347,7 @@ function documentdateBetween(dateBetween, searchTerm = null, page = null, filter
 
 function documentpaginate(page, method, day, searchTerm = null, filter = 0) {
     if (method == 'document') {
-        console.log("documentpaginate" , searchTerm);
+        console.log("documentpaginate", searchTerm);
         documentdateBetween(day, searchTerm, page, filter, 0);
     } else if (method == 'pending') {
         fetchDocumentByStatus(status, filter, page, 0);
@@ -359,12 +378,15 @@ function updateDocumentStatus() {
         type: 'POST',
         data: $('.document-approval-form').serialize(),
         success: function (data) {
+            console.log("test", data);
             data = JSON.parse(data);
+            debugger
             if (data.status) {
                 fetchDocumentByStatus();
                 getPendingDocumentRequestCount();
+
                 openDocumentApprovalDialog('close');
-                activitydateBetween('30')
+                documentdateBetween('30')
             } else {
                 alert(data.message);
             }
@@ -569,6 +591,13 @@ function fetchNoteDialog(id) {
             var parsed_data = JSON.parse(data);
             $('#document_note_info').html(parsed_data.document_info);
             $('#document_note_history').html(parsed_data.notes_history);
+            var sendNoteToText = parsed_data.doc_creator;
+            console.log(sendNoteToText);
+
+            $("#send_note_to").html(sendNoteToText);
+
+            // $('#send_not_to').html(sendNoteToText);
+
             $('#doc_id').val(parsed_data.doc_id);
             // $('#activity_member_info').html(parsed_data.optionList);
             // document.getElementById('activity_tag_id').value = parsed_data.activity_id;
@@ -578,11 +607,64 @@ function fetchNoteDialog(id) {
             // var temp = parsed_data.msuid.split(',');
             // $('#deselect_members').val(temp);
         },
-        error: function(data, errorThrown){
+        error: function (data, errorThrown) {
             alert(errorThrown)
         }
     })
 
+}
+
+function fetchDocumentTagDialog(id) {
+    var dialog = document.getElementById('tag-document-modal');
+
+    $.ajax({
+        url: 'index.php?module=Home&action=document_tag_dialog_info',
+        type: 'GET',
+        data: {
+            id: id
+        },
+        success: function (data) {
+            var parsed_data = JSON.parse(data);
+            $('#document_tag_info').html(parsed_data.document_info);
+            $('#document_member_info').html(parsed_data.optionList);
+            document.getElementById('document_tag_id').value = parsed_data.document_id;
+            dialog.style.display = "block";
+            initSelect2();
+            // $('#hidden_user').val(parsed_data.msuname);
+            // var temp = parsed_data.msuid.split(',');
+            // $('#deselect_members').val(temp);
+        },
+        error: function (data, errorThrown) {
+            alert(errorThrown)
+        }
+    })
+
+}
+
+function handleTagDialog(event) {
+
+    var dialog = document.getElementById('tag-document-modal');
+    // var select_dialogue = document.getElementById('activity_member_info');
+    if (event === "discard") {
+        dialog.style.display = "none";
+        // select_dialogue.style.display = "none";
+    } else if (event === "close") {
+        dialog.style.display = "none";
+        // select_dialogue.style.display = "none";
+    } else if (event === "submit") {
+        console.log($('.document_tag_func').serialize());
+        $.ajax({
+            url: 'index.php?module=Home&action=set_document_for_tag',
+            type: 'POST',
+            data: $('.document_tag_func').serialize(),
+            success: function (data) {
+                dialog.style.display = "none";
+                select_dialogue.style.display = "none";
+            }
+        });
+    } else {
+        dialog.style.display = "block"
+    }
 }
 
 
