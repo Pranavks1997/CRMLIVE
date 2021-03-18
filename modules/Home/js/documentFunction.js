@@ -347,13 +347,13 @@ function getDocumentGraph(dateBetween) {
 
 // Todo : Change the function...
 // Look at the functions
-
+//Done
 function updateDocumentStatus() {
     var Status = $('.changed-status').val();
     $.ajax({
-        url: 'index.php?module=Home&action=activity_status_update',
+        url: 'index.php?module=Home&action=document_status_update',
         type: 'POST',
-        data: $('.activity-approval-form').serialize(),
+        data: $('.document-approval-form').serialize(),
         success: function (data) {
             data = JSON.parse(data);
             if (data.status) {

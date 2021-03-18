@@ -7633,29 +7633,31 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             {
                 $temp = ($event == 'Approve') ? 'Approval' : 'Rejection';
                 $data = '
-                <input type="hidden" name="acc_id" value="'.$row['id'].'" />
+                <input type="hidden" name="doc_id" value="'.$row['id'].'" />
                 <input type="hidden" name="event" value="'.$event.'" />
                 <input type="hidden" name="approval_id" value="'.$id.'" />
-                <h2 class="approvalheading">'.$row['name'].'</h2><br>
-                <p class="approvalsubhead">'. $temp .' of Activity
+                <h2 class="approvalheading">'.$row['document_name'].'</h2><br>
+                <p class="approvalsubhead">'. $temp .' of Document
                 </p>
                 <section>
                     <div style="padding: 10px 15px;">
                         <table class="approvaltable" width="100%">
                             <tr class="tapprovalable-header-row-popup">
-                                <th class="approvaltable-header-popup">Activity</th>
+                                <th class="approvaltable-header-popup">Document</th>
                                 <th class="approvaltable-header-popup">Related To</th>
                                 <th class="approvaltable-header-popup">Status</th>
-                                <th class="approvaltable-header-popup">Activity Date</th>
+                                <th class="approvaltable-header-popup">Document Type</th>
+                                <th class="approvaltable-header-popup">Uploaded By</th>
                                 <th class="approvaltable-header-popup">Last Updated</th>
                             </tr>';
 
                         $data .='
                             <tr>
-                                <td class="approvaltable-data-popup">'.$row['name'].'<br><span class="document-type d-block">'. beautify_label($row['type_of_interaction_c']) .'</span></td>
+                                <td class="approvaltable-data-popup">'.$row['document_name'].'</td>
                                 <td class="approvaltable-data-popup">'.getDocumentRelatedTo($row['parent_type'], $row['parent_id']).'<br><span class="document-related-type">'. $row['parent_type'] .'</span></td>
-                                <td class="approvaltable-data-boolean-popup">'.$row['status_new_c'].'</td>
-                                <td class="approvaltable-data-popup">'.date( 'd/m/Y', strtotime($row['activity_date_c']) ).'</td>
+                                <td class="approvaltable-data-boolean-popup">'.$row['status_c'].'</td>
+                                <td class="approvaltable-data-popup">'.$row['template_type'].'</td>
+                                <td class="approvaltable-data-popup">'. getUsername($row['created_by']) .'<br><span class="document-related-uploaded_date">'. date( 'd/m/Y', strtotime($row['follow_up_date_c']) ) .'</span></td>;
                                 <td class="approvaltable-data-popup">'.date( 'd/m/Y', strtotime($row['date_modified']) ).'</td>
                             </tr>';
                     $data .= '
@@ -7724,7 +7726,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
             if($db->query($updateQuery)==TRUE){
                 if($ApprovalStatus == 1){
-                    $updateOpportunity = "UPDATE documents_cstm SET status_new_c = 'Completed' WHERE id_c = '$id'";
+                    $updateOpportunity = "UPDATE documents_cstm SET status_c = 'Completed' WHERE id_c = '$id'";
                     $db->query($updateOpportunity);
                     require_once 'data/BeanFactory.php';
                     require_once 'include/utils.php';
