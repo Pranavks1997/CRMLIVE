@@ -111,6 +111,18 @@ function documentSearchColumns(text) {
     }
 }
 
+function changeAddLabel(evnt) {
+    $('.add-opportunity-title').html(evnt);
+    var redirectLink = "'./index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26action%3DEditView%26return_module%3DOpportunities%26return_action%3DDetailView'";
+    if (evnt == 'Create Activity') {
+        redirectLink = "'index.php?module=Calls&action=EditView'";
+    }
+    else if(evnt == 'Create Document'){
+        redirectLink = "'index.php?module=Documents&action=EditView'";   
+    }
+    $("#add_opportunity").attr("onclick", "location.href = " + redirectLink);
+}
+
 function openDocumentSettingDialog(event) {
 
     var dialog = document.getElementById('document-settings-modal');
@@ -156,7 +168,7 @@ function openDocumentSettingDialog(event) {
 
     var dialog = document.getElementById('document-settings-modal');
     $('#search-column1').val('');
-    activitySearchColumns('');
+    documentSearchColumns('');
     if (event === "discard") {
         dialog.style.display = "none";
     } else if (event === "close") {
@@ -167,7 +179,7 @@ function openDocumentSettingDialog(event) {
         dialog.style.display = "block"
     }
 
-    if (event == 'activity') {
+    if (event == 'document') {
         $('.document-settings-section').val('document');
     } else if (event == 'pendings') {
         $('.document-settings-section').val('document-pendings');
@@ -364,7 +376,7 @@ function updateDocumentStatus() {
                 fetchDocumentByStatus();
                 getPendingDocumentRequestCount();
                 openDocumentApprovalDialog('close');
-                activitydateBetween('30')
+                documentdateBetween('30')
             } else {
                 alert(data.message);
             }
