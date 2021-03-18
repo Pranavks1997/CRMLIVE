@@ -1479,6 +1479,9 @@ span {
 .pending-button-class .pending-activity-request-count #bootstrap-container{
     display: none;
 }
+.pending-button-class .pending-document-request-count #bootstrap-container{
+    display: none;
+}
 .btn2 {
     height: 35px;
     width: 90px;
@@ -1757,6 +1760,11 @@ input[type=radio] {
     padding: 50px;
     background: #fafafa;
 }
+.pending-document-request-table-container {
+    display: none;
+    padding: 50px;
+    background: #fafafa;
+}
 #status-card-container:focus {
     background: black;
 }
@@ -1790,6 +1798,9 @@ input[type=radio] {
     display: none !important;
 }
 .pending-activity-request-count #ajaxHeader {
+    display: none !important;
+}
+.pending-document-request-count #ajaxHeader {
     display: none !important;
 }
 #moduleTab_2_Home {
@@ -1969,6 +1980,8 @@ input {
 .tab_header_btn.disabled{cursor: no-drop;color: #c2c2c2;}
 .pending-request-count{ background-color: #efefef;width: 50px;height: 30px;border: 1px solid #efefef;border-radius: 10px;display: flex;justify-content: space-evenly;align-items: center; }
 .pending-activity-request-count{ background-color: #efefef;width: 50px;height: 30px;border: 1px solid #efefef;border-radius: 10px;display: flex;justify-content: space-evenly;align-items: center; }
+.pending-document-request-count{ background-color: #efefef;width: 50px;height: 30px;border: 1px solid #efefef;border-radius: 10px;display: flex;justify-content: space-evenly;align-items: center; }
+
 /* Pagination */
 .pagination{ padding: 10px; background: #efefef;}
 .pagination p{ margin-right: 10px; }
@@ -2080,7 +2093,7 @@ padding: 15px 5px;
     align-items: center;
     padding-right: 50px;
 }
-#search-column1, #search-column2,.activity-search-column1, .activity-search-column2 {
+#search-column1, #search-column2,.activity-search-column1, .activity-search-column2, .document-search-column1,.document-search-column2{
     padding: 12px 5px !important;
     background-color: #FCAFA8 !important;
     border-color: #FCAFA8 !important;
@@ -2169,10 +2182,15 @@ padding: 15px 5px;
   }
 
 /* Activity Fixes*/
-.activity-title{ font-size: 13px; color: #F08377; margin: 5px 0; }
+.activity-title , 
+.document-title{ font-size: 13px; color: #F08377; margin: 5px 0; }
 .activity-type,
-.activity-related-type{ color: #9e9e9e; }
-.activity-related-name{ font-size: 13px; color: #000000; margin: 5px 0; }
+.activity-related-type,
+.document-related-type,
+.document-related-uploaded_date{ color: #9e9e9e; }
+.activity-related-name,
+.document-related-name,
+.document-related-uploaded_by{ font-size: 13px; color: #000000; margin: 5px 0; }
 
 #criticalBtn{
     background-color: transparent;

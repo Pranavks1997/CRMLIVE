@@ -8,7 +8,7 @@
             $status = $_GET['status'] ?? '';
         ?>   
         <li class="tableHeader-Content">
-            <h2 style="margin: 10px; color: white; font-size: 2.4rem; font-weight: bold; ">Activities </h2>
+            <h2 style="margin: 10px; color: white; font-size: 2.4rem; font-weight: bold; ">Documents </h2>
         </li>
         <!-- <li class="tableHeader-Content">
             <div id="global-opportunities" class="global-opportunities <?php echo $type == 'global' ? 'active': ''; ?>" onclick="dateBetween('<?php echo $day; ?>', '', '' ,'', '', 'global', 1)">Global Opportunities (<?php echo $global_organization_count; ?>) </div>
@@ -25,17 +25,22 @@
                 <!-- ----------- -->
                 <div style="display: flex;">
                     <div style="display: flex; justify-content: center; align-items: center;">
-                        <input type="search" placeholder="Search by name" class="activity-search" id="activity-search" data-method="activity" data-day="<?php echo $day; ?>" value="<?php echo $searchTerm; ?>" name="search" />
-                        <button class="searchhh activity-search-btn" id="search-btn">
+                        <input type="search" placeholder="Search by name" class="document-search" id="document-search" data-method="document" data-day="<?php echo $day; ?>" value="<?php echo $searchTerm; ?>" name="search" />
+                        <button class="searchhh  document-search-btn" id="search-btn">
                             <i id="search-icon" class="fa fa-search" aria-hidden="true"> </i>
                         </button>
                     </div>
                     <div style="display: flex; margin-left: auto;">
 
-                        <button class="filter" id="filter_myBtn" onclick="openActivityFilterDialog()" style="padding:10; border: none !important;">
+                        <button class="filter" id="filter_myBtn" onclick="openDocumentFilterDialog()" style="padding:10; border: none !important;">
                             <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
                         </button>
 
+                        <?php if ($check_mc == 'yes'): ?>
+                            <button class="cog download" id="document_download_btn" class="download-btn" data-type="document" data-action="status" data-value="<?php echo $status; ?>" data-dropped="<?php echo $dropped; ?>" style="padding:10; border: none !important;">
+                                <i class="fa fa-download" aria-hidden="true"> </i>
+                            </button>
+                        <?php endif ?>
                     </div>
                 </div>
             </div>
@@ -74,6 +79,6 @@
                 <?php } ?>
 
                 <?php endif; */ ?>
-                <?php echo $this->getActivityColumnFiltersHeader($_GET); ?>
+                <?php echo $this->getDocumentColumnFiltersHeader($_GET); ?>
                 <th class="table-header text-center">Actions</th>
             </tr>
