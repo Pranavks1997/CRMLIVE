@@ -7350,34 +7350,34 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         $totalCount = $this->getDocumentStatusCountGraph(null , $day);
         // $leadCount = round($this->getDocumentStatusCountGraph('Lead') / $totalCount * 100, 0);
         if ($totalCount > 0) {
-            $LeadCount = round($this->getDocumentStatusCountGraph('Lead', $day) / $totalCount * 100, 0);
-            $QualifiedLeadCount = round($this->getDocumentStatusCountGraph('QualifiedLead', $day) / $totalCount * 100, 0);
-            $QualifiedOpporunityCount = round($this->getDocumentStatusCountGraph('Qualified', $day) / $totalCount * 100, 0);
+            $Sales = round($this->getDocumentStatusCountGraph('sales', $day) / $totalCount * 100, 0);
+            $EntityDocuments = round($this->getDocumentStatusCountGraph('entity_documents', $day) / $totalCount * 100, 0);
+            $ResearchandIntelligence = round($this->getDocumentStatusCountGraph('research_intelligence', $day) / $totalCount * 100, 0);
         }
-        $LeadCount = $LeadCount ? $LeadCount : 0;
-        $QualifiedLeadCount = $QualifiedLeadCount ? $QualifiedLeadCount : 0;
-        $QualifiedOpporunityCount = $QualifiedOpporunityCount ? $QualifiedOpporunityCount : 0;
+        $Sales = $Sales ? $Sales : 0;
+        $EntityDocuments = $EntityDocuments ? $EntityDocuments : 0;
+        $ResearchandIntelligence = $ResearchandIntelligence ? $ResearchandIntelligence : 0;
         
         $data = '';
 
-        if($LeadCount):
-            $data .= '<div style="width: '.$LeadCount.'%" class="graph-bar-each">
+        if($Sales):
+            $data .= '<div style="width: '.$Sales.'%" class="graph-bar-each">
                     <div style="width: 100%;height: 70px;background-color: #DDA0DD;"></div>
-                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$LeadCount.'%</p>
+                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$Sales.'%</p>
                 </div>';
         endif;
 
-        if($QualifiedLeadCount):
-            $data .= '<div style="width: '.$QualifiedLeadCount.'%" class="graph-bar-each">
+        if($EntityDocuments):
+            $data .= '<div style="width: '.$EntityDocuments.'%" class="graph-bar-each">
                     <div style="width: 100%;height: 70px;background-color: #4B0082;"></div>
-                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedLeadCount.'%</p>
+                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$EntityDocuments.'%</p>
                 </div>';
         endif;
         
-        if($QualifiedOpporunityCount):
-            $data .= '<div style="width: '.$QualifiedOpporunityCount.'%" class="graph-bar-each">
+        if($ResearchandIntelligence):
+            $data .= '<div style="width: '.$ResearchandIntelligence.'%" class="graph-bar-each">
                     <div style="width: 100%; height: 70px; background-color: #0000FF;"></div>
-                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$QualifiedOpporunityCount.'%</p>
+                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$ResearchandIntelligence.'%</p>
                 </div>';
         endif;
         echo json_encode(array("data"=>$data, "message" => "Success"));
@@ -7387,13 +7387,11 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
     function getDocumentStatusCountGraph($status = null, $day, $closure_status = null){
         $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
+
+        $query = "SELECT count(*) as count FROM documents_cstm dc LEFT JOIN documents d ON d.id = dc.id_c WHERE d.deleted != 1 AND d.date_entered >= now() - interval '".$day."' day";
         if($status)
-            $query = "SELECT count(*) as count FROM opportunities_cstm oc LEFT JOIN opportunities o ON o.id = oc.id_c WHERE oc.status_c = '".$status."' AND o.deleted != 1 AND o.date_entered >= now() - interval '".$day."' day";
-        else
-            $query = "SELECT count(*) as count FROM opportunities_cstm oc LEFT JOIN opportunities o ON o.id = oc.id_c WHERE o.deleted != 1 AND date_entered >= now() - interval '".$day."' day";
-        
-        if ($status == 'Closed' && $closure_status)
-            $query .= " AND oc.closure_status_c = '$closure_status'"; 
+            $query .= " AND dc.status_c = '".$status."' ";
+
         $count = $GLOBALS['db']->query($query);
         $count = $GLOBALS['db']->fetchByAssoc($count);
         return $count['count'];
@@ -7989,7 +7987,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             )
         );
 
-        echo $response; die;
+        die;
     }
 
     function action_document_downloadCSV(){
