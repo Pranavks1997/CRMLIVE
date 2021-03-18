@@ -6,7 +6,7 @@ require_once('include/MVC/Controller/SugarController.php');
 class DocumentsController extends SugarController
 {
    
-//-------------------------------Fetch Reporting manager------------------------------------------------
+//-------------------------------Fetch Reporting manager----------------------------
 public function action_fetch_reporting_manager(){
   $assigned_id=$_POST['assigned_id'];
   $assigned_name=$_POST['assigned_name'];
@@ -89,9 +89,9 @@ public function action_fetch_reporting_manager(){
   }
   die();
 }
-//-------------------------------Fetch Reporting manager--------------END--------------------------------
+//-------------------------------Fetch Reporting manager--------------END-----------
 
-//---------------------------------Editview tagged users ------------------------------------------------
+//---------------------------------Editview tagged users ---------------------------
 public function action_tagged_users_list(){
   try{  
     global $current_user;
@@ -150,9 +150,9 @@ public function action_tagged_users_list(){
   }
   die();
 }
-//---------------------------------Editview tagged users --------END--------------------------------------
+//---------------------------------Editview tagged users --------END----------------
 
-//------------------------------------------Category---------------------------------------
+//------------------------------------------Category--------------------------------
 public function action_category(){
   try{
     $db = \DBManagerFactory::getInstance();
@@ -169,9 +169,9 @@ public function action_category(){
   }
 	die();
 }
-//------------------------------------------Category-------------END-----------------------
+//------------------------------------------Category-------------END----------------
 
-//------------------------------------------Sub-category-----------------------------------------   
+//------------------------------------------Sub-category----------------------------
 public function action_subCategory(){
   if(isset($_POST['category_name'])){
     $category = $_POST['category_name'];           
@@ -192,10 +192,10 @@ public function action_subCategory(){
   }
 	die();      
 }
-//------------------------------------------Sub-category----------END-----------------------------
+//------------------------------------------Sub-category----------END---------------
 
 
-//------------------------------Send Approval----------------------------------------
+//------------------------------Send Approval---------------------------------------
 public function action_send_approval(){
   try{
     $db = \DBManagerFactory::getInstance();   	  
@@ -251,7 +251,7 @@ public function action_send_approval(){
   }
 	die();
 }
-//------------------------------Send Approval------------------END-------------------
+//------------------------------Send Approval------------------END------------------
 
 
 //-----------------------------Approve----------------------------------------------
@@ -349,7 +349,7 @@ public function action_reject(){
 }
 //----------------------------Reject---------------------------END------------------
 
-//-----------------------Approval Buttons----------------------------------------------------------------------
+//-----------------------Approval Buttons-------------------------------------------
 public function action_approval_buttons(){
   try{
     $db = \DBManagerFactory::getInstance();
@@ -438,11 +438,11 @@ public function action_approval_buttons(){
   }
 	die();
 }
-//-----------------------Approval Buttons----------END------------------------------------------------------------
+//-----------------------Approval Buttons----------END------------------------------
 
 
 
-//--------------------------------Assigned user list according to login user-------------------
+//--------------------------------Assigned user list according to login user--------
 
 
            
