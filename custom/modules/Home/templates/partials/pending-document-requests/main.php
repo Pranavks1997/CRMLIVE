@@ -13,9 +13,9 @@
                             <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
                         </button>
 
-                        <button class="cog" id="setting_myBtn" onclick="openDocumentPendingSettingsDialog('pendings')" style="padding:10; border: none !important;">
+                        <!-- <button class="cog" id="setting_myBtn" onclick="openDocumentPendingSettingsDialog('pendings')" style="padding:10; border: none !important;">
                             <i id="setting_myBtn" class="fa fa-list" aria-hidden="true"> </i>
-                        </button>
+                        </button> -->
                     </div>
                 </div>
             </div>

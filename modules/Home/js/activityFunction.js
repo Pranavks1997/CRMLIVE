@@ -5,7 +5,7 @@ function getPendingActivityRequestCount() {
         data: $('.approval-form').serialize(),
         success: function (res) {
             res = JSON.parse(res)
-            $('.pending-activity-request-count').html(res.count+" <i class='fa fa-angle-double-down' aria-hidden='true'></i>");
+            $('.pending-activity-request-count').html(res.count + " <i class='fa fa-angle-double-down' aria-hidden='true'></i>");
             if (res && res.count == 0) {
                 $('#click-here-text-activity').html('');
                 $('#approve-pending-text-activity').html('No Requests Pending For Approval');
@@ -38,7 +38,7 @@ function fetchActivityByStatus(filter = 0, page = null, changeColumns = 1) {
                 $('.activity-pending-filter .filter-body').html(data.filters);
                 initSelect2();
             }
-            if(document.getElementById(status)) {
+            if (document.getElementById(status)) {
                 document.getElementById(status).style.background = "black";
                 document.getElementById(status).style.borderRadius = "4px";
             }
@@ -55,7 +55,7 @@ function activitydateBetween(dateBetween, searchTerm = null, page = null, filter
         getDefaultActivityColumns('activity');
 
     var tabContent = document.getElementById('tab_30days_content');
-    
+
     $.ajax({
         url: 'index.php?module=Home&action=getActivity&' + $('.activity-settings-form').serialize() + '&' + $('.activity-filter').serialize() + '&filter=' + filter,
         type: 'GET',
@@ -99,11 +99,11 @@ function activitydateBetween(dateBetween, searchTerm = null, page = null, filter
             $('#activitytableContent').html(data.data);
             $('#orgActivityCount').html(data.total);
             $('#selfActivityCount').html(data.self_count);
-            var teamCount ;
-            if (data.user_id == 1){
-                teamCount = 0 
+            var teamCount;
+            if (data.user_id == 1) {
+                teamCount = 0
             }
-            else{
+            else {
                 teamCount = data.team_count;
             }
             $('#myTeamActivityCount').html(teamCount);
@@ -112,12 +112,12 @@ function activitydateBetween(dateBetween, searchTerm = null, page = null, filter
             if (data.delegateDetails != '') {
                 $('#delegateActivityName').html(data.delegateDetails);
             }
-            if(tabContent) {
+            if (tabContent) {
                 tabContent.style.display = 'block';
             }
 
             // if (dateBetween === '30') {
-                
+
             // } else if (dateBetween === '60') {
             //     document.getElementsByClassName('btn-30-days').style.color = "#c2c2c2";
             // } else {
@@ -125,12 +125,12 @@ function activitydateBetween(dateBetween, searchTerm = null, page = null, filter
             // }
             // document.getElementById('search-icon').style.color = "green";
         },
-        complete: function(){
-    	    $('.spinner').fadeOut();
+        complete: function () {
+            $('.spinner').fadeOut();
             console.log('Data Loaded');
         }
     });
-    
+
     var i, tabcontent, tablinks;
 
 }
@@ -144,7 +144,6 @@ function activitypaginate(page, method, day, searchTerm = null, filter = 0) {
 }
 
 function getActivityGraph(dateBetween) {
-    debugger
     $.ajax({
         url: 'index.php?module=Home&action=get_activity_graph&dateBetween=' + dateBetween,
         type: 'GET',
@@ -152,7 +151,6 @@ function getActivityGraph(dateBetween) {
             dateBetween: '30'
         },
         success: function (data) {
-            debugger
             data = JSON.parse(data)
             console.log(data)
             $('#activitygraph').html(data.data);
@@ -191,7 +189,7 @@ function fetchTagDialog(id) {
     var dialog = document.getElementById('tag-activity-modal');
 
     $.ajax({
-         url: 'index.php?module=Home&action=activity_tag_dialog_info',
+        url: 'index.php?module=Home&action=activity_tag_dialog_info',
         type: 'GET',
         data: {
             id: id
@@ -207,7 +205,7 @@ function fetchTagDialog(id) {
             // var temp = parsed_data.msuid.split(',');
             // $('#deselect_members').val(temp);
         },
-        error: function(data, errorThrown){
+        error: function (data, errorThrown) {
             alert(errorThrown)
         }
     })
@@ -335,9 +333,9 @@ function openActivitySettingDialog(event) {
         dialog.style.display = "block"
     }
 
-    if(event == 'activity'){
+    if (event == 'activity') {
         $('.activity-settings-section').val('activity');
-    }else if(event == 'pendings'){
+    } else if (event == 'pendings') {
         $('.acitivity-settings-section').val('activity-pendings');
     }
 
@@ -462,7 +460,7 @@ function changeAddLabel(evnt) {
     if (evnt == 'Create Activity') {
         redirectLink = "'index.php?module=Calls&action=EditView'";
     }
-    $("#add_opportunity").attr("onclick","location.href = "+ redirectLink);
+    $("#add_opportunity").attr("onclick", "location.href = " + redirectLink);
 }
 
 function activityFilterHelper(ref) {
@@ -526,7 +524,7 @@ function getActivitySequenceFlow(accID) {
         }
     });
 }
-$(document).on('click', '.close-sequence-flow-activity', function(){
+$(document).on('click', '.close-sequence-flow-activity', function () {
     $('.backdrop').fadeOut();
     $('.sequence-flow-activity').slideUp();
     $('.sequence-flow-activity').html('');
@@ -542,7 +540,6 @@ function updateActivityStatus() {
         data: $('.activity-approval-form').serialize(),
         success: function (data) {
             data = JSON.parse(data);
-            debugger;
             if (data.status) {
                 fetchActivityByStatus();
                 getPendingActivityRequestCount();
@@ -628,9 +625,9 @@ function activityhandleReassignmentDialog(event) {
             dialog.style.display = "none";
             break;
         case "submit":
-            
-                var assigned_opportunity_id = document.getElementById('assigned_activity_id').value;
-                var assigned_name = document.getElementById('activity_assigned_to_new_c').value;
+
+            var assigned_opportunity_id = document.getElementById('assigned_activity_id').value;
+            var assigned_name = document.getElementById('activity_assigned_to_new_c').value;
 
             $.ajax({
                 url: 'index.php?module=Home&action=activity_update_assigned',
@@ -646,8 +643,8 @@ function activityhandleReassignmentDialog(event) {
                     }
 
                     else {
-                        
-                        
+
+
 
                         $.ajax({
                             url: 'index.php?module=Home&action=activity_assigned_history',
@@ -662,19 +659,19 @@ function activityhandleReassignmentDialog(event) {
 
                         dialog.style.display = "none";
 
-                      
-                     $('#two-tab').trigger('click');
-                      
-                    //  location.reload();
-                       
-                      
+
+                        $('#two-tab').trigger('click');
+
+                        //  location.reload();
+
+
                     }
                 },
-                complete: function(){
+                complete: function () {
                     activitydateBetween(Cookies.get("day"));
                 }
             });
-            
+
             break;
         default:
             dialog.style.display = "block";
@@ -705,7 +702,7 @@ function fetchActivityDelegateDialog() {
         type: 'GET',
         data: {},
         success: function (data) {
-            
+
             var parsed_data = JSON.parse(data);
             $('#activity_delegated_info').html(parsed_data.delegated_info);
             // dialog.style.display = "block";
@@ -784,10 +781,10 @@ $(document).on('click', '.remove-activity-delegate', function () {
     $('.clear-filter').on('click', function (event) {
         event.preventDefault();
         var type = $(this).data('type');
-        if(type == 'activity'){
+        if (type == 'activity') {
             $('.activity-filter input:not([type=hidden]').val('');
             $('.activity-filter select').val('');
-        }else{
+        } else {
             $('.activity-pending-filter input:not([type=hidden]').val('');
             $('.activity-pending-filter select').val('');
         }
@@ -795,7 +792,7 @@ $(document).on('click', '.remove-activity-delegate', function () {
         $('.responsibility').val('');
         $('.filterdatebox').val('');
     });
-    
-    
+
+
 
 })(jQuery);

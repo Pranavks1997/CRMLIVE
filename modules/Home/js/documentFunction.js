@@ -69,6 +69,7 @@ function getPendingDocumentRequestCount() {
         data: $('.approval-form').serialize(),
         success: function (res) {
             res = JSON.parse(res)
+            console.log(res)
             $('.pending-document-request-count').html(res.count + " <i class='fa fa-angle-double-down' aria-hidden='true'></i>");
             if (res && res.count == 0) {
                 $('#click-here-text-document').html('');
@@ -122,9 +123,9 @@ function openDocumentSettingDialog(event) {
         dialog.style.display = "block"
     }
 
-    if(event == 'document'){
+    if (event == 'document') {
         $('.document-settings-section').val('document');
-    }else if(event == 'pendings'){
+    } else if (event == 'pendings') {
         $('.document-settings-section').val('document-pendings');
     }
 
@@ -163,9 +164,9 @@ function openDocumentSettingDialog(event) {
         dialog.style.display = "block"
     }
 
-    if(event == 'activity'){
+    if (event == 'activity') {
         $('.document-settings-section').val('document');
-    }else if(event == 'pendings'){
+    } else if (event == 'pendings') {
         $('.document-settings-section').val('document-pendings');
     }
 
@@ -182,8 +183,8 @@ function getDelegateMembersDocument() {
         success: function (data) {
             var parsed_data = JSON.parse(data);
             // console.log(parsed_data);
-            $('#activity_Select_Proxy').html(parsed_data.members);
-            $('#activity_Select_Proxy').val('');
+            $('#document_Select_Proxy').html(parsed_data.members);
+            $('#document_Select_Proxy').val('');
             $('.responsibility').html(parsed_data.members);
             document.getElementById('responsibility1').value = null;
             document.getElementById('responsibility').value = null;
@@ -240,113 +241,13 @@ function fetchDocumentByStatus(filter = 0, page = null, changeColumns = 1) {
     });
 }
 
-// function documentdateBetween(dateBetween, searchTerm = null, page = null, filter = 0, status = null, type = null, dropped = null, changeColumns = 1) {
-//     Cookies.set('day', dateBetween, { expires: 1 });
-//     if (changeColumns) // reset columns
-//         getDefaultDocumentColumns('document');
-
-//     var tabContent = document.getElementById('tab_30days_content');
-//     $.ajax({
-//         url: 'index.php?module=Home&action=getDocument&' + $('.settings-form').serialize() + '&' + $('.document-filter').serialize() + '&filter=' + filter,
-//         type: 'GET',
-//         data: {
-//             days: dateBetween,
-//             searchTerm: searchTerm,
-//             page: page,
-//             status: status,
-//             type: type,
-//             dropped: dropped,
-//         },
-//         success: function (check) {
-//             console.log("getDocument" ,check);
-//             if (dateBetween == '1200') {
-//                 $('#daysFilterAllLabelDoc').html('All Documents');
-//                 $('#daysFilterDoc').html('');
-//                 $('#doc-daysFilter').html('');
-//                 $('#daysFilterDays').html('');
-//             } else {
-//                 $('#daysFilterAllLabelDoc').html('');
-//                 $('#daysFilterDoc').html('Documents Over Last');
-//                 $('#daysFilterDays').html('Days');
-//                 $('#doc-daysFilter').html(dateBetween);
-//             }
-//             var data = JSON.parse(check);
-
-//             if (!data.delegate) {
-//                 $('#delegateBtn').remove();
-//             }
-
-//             if (changeColumns) {
-//                 $('#document-settings').html(data.columnFilter);
-//                 initSortable();
-//             }
-
-//             if (!filter) {
-//                 $('.opportunity-filter .filter-body').html(data.filters);
-//                 initSelect2();
-//             }
-
-
-//             // /* Filter Values */
-//             $('.document-filter .filter-method').val('opportunities');
-//             $('.document-filter .filter-day').val(dateBetween);
-//             // $('.opportunity-filter .filter-status').val(status);
-//             // $('.opportunity-filter .filter-type').val(type);
-
-//             if (dateBetween === '30') {
-//                 // $('#documenttableContent').html(data.data);
-//                 $('#orgDocumentCount').html(data.total);
-//                 $('#selfDocumentCount').html(data.self_count);
-//                 $('#myTeamDocumentCount').html(data.team_count);
-//                 $('#delegateDocumentName').html("<p>Bharat Karnani- 35</p><p>Pranav- 20</p><p>Webknot- 25</p>");
-//                 // if (data.delegateDetails)
-//                 //     $('#delegateDocumentCount').html(data.delegateDetails);
-
-//                 // $('#fetchedByStatus').html(data.fetched_by_status);
-//                 tabContent.style.display = 'block';
-//             } else if (dateBetween === '60') {
-//                 $('#documenttableContent').html(data.data);
-//                 $('#orgDocumentCount').html(data.total);
-//                 $('#selfDocumentCount').html(data.self_count);
-//                 $('#myTeamDocumentCount').html(data.team_count);
-//                 $('#delegateDocumentName').html("<p>Bharat- 15</p><p>Pranav- 20</p><p>Webknot- 25</p>");
-//                 // if (data.delegate_name != '') {
-//                 //     $('#delegateDocumentCount').html("5");
-//                 // }
-//                 // $('#fetchedByStatus').html(data.fetched_by_status)
-//                 tabContent.style.display = 'block';
-
-//                 document.getElementsByClassName('btn-30-days').style.color = "#c2c2c2";
-//             } else {
-//                 $('#documenttableContent').html(data.data);
-//                 $('#orgDocumentCount').html(data.total);
-//                 $('#selfDocumentCount').html(data.self_count);
-//                 $('#myTeamDocumentCount').html(data.team_count);
-//                 // $('#delegateName').html(data.delegate_name);
-//                 // $('#delegateDocumentName').html("<p>Bharat- 15</p><p>Pranav- 20</p><p>Webknot- 25</p>");
-//                 // if (data.delegate_name != '') {
-//                 //     $('#delegateCount').html(data.delegated_count);
-//                 // }
-//                 // $('#fetchedByStatus').html(data.fetched_by_status)
-//                 tabContent.style.display = 'block';
-
-//                 document.getElementsByClassName('btn-30-days').style.color = "#c2c2c2";
-
-//             }
-//             document.getElementById('search-icon').style.color = "green";
-//         }
-//     });
-//     var i, tabcontent, tablinks;
-
-// }
-
 function documentdateBetween(dateBetween, searchTerm = null, page = null, filter = 0, changeColumns = 1) {
     Cookies.set('day', dateBetween, { expires: 1 });
     if (changeColumns) // reset columns
         getDefaultDocumentColumns('document');
 
     var tabContent = document.getElementById('tab_30days_content');
-    
+
     $.ajax({
         url: 'index.php?module=Home&action=getDocument&' + $('.document-settings-form').serialize() + '&' + $('.document-filter').serialize() + '&filter=' + filter,
         type: 'GET',
@@ -390,7 +291,6 @@ function documentdateBetween(dateBetween, searchTerm = null, page = null, filter
             /* Filter Values */
             $('.document-filter .filter-method').val('document');
             $('.document-filter .filter-day').val(dateBetween);
-            // debugger
             $('#documenttableContent').html(data.data);
             $('#orgDocumentCount').html(data.total);
             $('#selfDocumentCount').html(data.self_count);
@@ -400,12 +300,12 @@ function documentdateBetween(dateBetween, searchTerm = null, page = null, filter
             if (data.delegateDetails != '') {
                 $('#delegateDocumentName').html(data.delegateDetails);
             }
-            if(tabContent) {
+            if (tabContent) {
                 tabContent.style.display = 'block';
             }
 
             // if (dateBetween === '30') {
-                
+
             // } else if (dateBetween === '60') {
             //     document.getElementsByClassName('btn-30-days').style.color = "#c2c2c2";
             // } else {
@@ -413,12 +313,12 @@ function documentdateBetween(dateBetween, searchTerm = null, page = null, filter
             // }
             // document.getElementById('search-icon').style.color = "green";
         },
-        complete: function(){
-    	    $('.spinner').fadeOut();
+        complete: function () {
+            $('.spinner').fadeOut();
             console.log('Data Loaded');
         }
     });
-    
+
     var i, tabcontent, tablinks;
 
 }
@@ -448,7 +348,7 @@ function getDocumentGraph(dateBetween) {
 // Todo : Change the function...
 // Look at the functions
 
-function updateActivityStatus() {
+function updateDocumentStatus() {
     var Status = $('.changed-status').val();
     $.ajax({
         url: 'index.php?module=Home&action=activity_status_update',
@@ -456,17 +356,41 @@ function updateActivityStatus() {
         data: $('.activity-approval-form').serialize(),
         success: function (data) {
             data = JSON.parse(data);
-            debugger;
             if (data.status) {
                 fetchDocumentByStatus();
                 getPendingDocumentRequestCount();
-                openActivityApprovalDialog('close');
+                openDocumentApprovalDialog('close');
                 activitydateBetween('30')
             } else {
                 alert(data.message);
             }
         }
     });
+}
+
+function openDocumentApprovalDialog(event, id = null) {
+    var dialog = document.getElementById('documentApprovalModal');
+    if (event === "discard") {
+        dialog.style.display = "none";
+    } else if (event === "close") {
+        dialog.style.display = "none";
+    } else {
+        dialog.style.display = "block"
+    }
+
+    if (id) {
+        $.ajax({
+            url: 'index.php?module=Home&action=get_document_approval_item',
+            type: 'POST',
+            data: {
+                id: id,
+                event: event
+            },
+            success: function (data) {
+                $('#document-approval-data').html(data);
+            }
+        });
+    }
 }
 
 function openDocumentPendingSettingsDialog(event, type = null, value = null) {
@@ -494,7 +418,6 @@ function openDocumentPendingSettingsDialog(event, type = null, value = null) {
 
 
 function commitDocumentPendingFilter() {
-    debugger
     var settingsSection = $('.document-pending-settings-section').val();
     var settingsType = $('.document-pending-settings-type').val();
     var settingsValue = $('.document-pending-settings-type-value').val();
@@ -509,7 +432,7 @@ function commitDocumentPendingFilter() {
 
 function handleNoteDialog(event) {
 
-    
+
     var dialog = document.getElementById('document-note-modal');
     if (event === "discard") {
         dialog.style.display = "none";
@@ -538,6 +461,56 @@ function handleNoteDialog(event) {
     }
 }
 
+function fetchDocumentDelegateDialog() {
+    var dialog = document.getElementById('documentDelegatemyModel');
+    dialog.style.display = "block";
+    $.ajax({
+        url: 'index.php?module=Home&action=document_delegated_dialog_info',
+        type: 'GET',
+        data: {},
+        success: function (data) {
+
+            var parsed_data = JSON.parse(data);
+            $('#document_delegated_info').html(parsed_data.delegated_info);
+            // dialog.style.display = "block";
+        }
+    });
+}
+$('#document_delegate_submit').click(function () {
+    var Select_Proxy = $('#document_Select_Proxy').val();
+    var delegate_Edit = $('#document_delegate_Edit').val();
+    console.log("Select_Proxy", Select_Proxy, "delegate_Edit", delegate_Edit)
+    if (Select_Proxy == '' && delegate_Edit == '') {
+        alert('All Fields are required');
+    } else {
+        $.ajax({
+            url: 'index.php?module=Home&action=document_store_delegate_result',
+            method: 'POST',
+            data: {
+                Select_Proxy: Select_Proxy,
+                // delegate_Edit: delegate_Edit,
+            },
+            success: function (data) {
+                console.log(data);
+                var delegateModel = document.getElementById("documentDelegatemyModel");
+                delegateModel.style.display = "none";
+            }
+        });
+    }
+});
+var delegateModel = document.getElementById("documentDelegatemyModel");
+$(document).on('click', '#documentDelegateclose', function () {
+    delegateModel.style.display = "none";
+});
+$(document).on('click', '.remove-document-delegate', function () {
+    $.ajax({
+        url: 'index.php?module=Home&action=document_remove_delegate_user',
+        method: 'POST',
+        success: function (data) {
+            fetchDocumentDelegateDialog();
+        }
+    });
+});
 
 // :::::::::::::::::::::::::::::::::::::::::::: Joytirmoy Code :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -546,7 +519,6 @@ function handleNoteDialog(event) {
     $(document).on('click', '#three-tab', function () {
         var day = Cookies.get('day') ? Cookies.get('day') : 30;
         $('.spinner').fadeIn();
-        debugger
         fetchDocumentByStatus();
         getPendingDocumentRequestCount();
         documentdateBetween(day);

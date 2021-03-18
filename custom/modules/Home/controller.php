@@ -4798,7 +4798,7 @@ public function is_activity_reassignment_applicable($activity_id) {
             echo json_encode(
                 array(
                     'data' => "$PRC <i class=\"fa fa-angle-double-down\" aria-hidden=\"true\"></i>",
-                    'count' => $PRC
+                    'count' => $PRC,
                 )
             );
         }
@@ -5760,6 +5760,16 @@ public function is_activity_reassignment_applicable($activity_id) {
         $GLOBALS['db'];
 
         $delegateQuery = "SELECT count(*) as count FROM activity_approval_table WHERE delegate_id = '$userID' AND id = '$id'";
+        $count = $GLOBALS['db']->query($delegateQuery);
+        $count = $GLOBALS['db']->fetchByAssoc($count);
+        return $count['count'];
+    }
+
+    function isDocumentDelegate($userID, $id){
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+
+        $delegateQuery = "SELECT count(*) as count FROM document_approval_table WHERE delegate_id = '$userID' AND id = '$id'";
         $count = $GLOBALS['db']->query($delegateQuery);
         $count = $GLOBALS['db']->fetchByAssoc($count);
         return $count['count'];
@@ -6747,7 +6757,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         try {
             global $current_user;
             $log_in_user_id = $current_user->id;
-
+    
             $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
 
@@ -6764,10 +6774,12 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 if($count && $count['approval_status'] == '0')
                     $PRC += 1;
             }
+
             echo json_encode(
                 array(
                     'data' => "$PRC <i class=\"fa fa-angle-double-down\" aria-hidden=\"true\"></i>",
-                    'count' => $PRC
+                    'count' => $PRC,
+                    'response'=>$response
                 )
             );
         }
@@ -6967,6 +6979,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 // 'columnFilter'              => $columnFilterHtml,
                 'filters'                   => $filters
             ));
+            die();
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
@@ -7244,7 +7257,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             case 'related_to':
                 $parent_type = '';
                 $data .= '<td class="table-data">';
-                $data .= '<h2 class="document-related-name">'. getActivityRelatedTo($row['parent_type'], $row['parent_id']) .'</h2>';
+                $data .= '<h2 class="document-related-name">'. getDocumentRelatedTo($row['parent_type'], $row['parent_id']) .'</h2>';
                 $data .= '<span class="document-related-type">'. $row['parent_type'] .'</span></td>';
                 break;
             case 'document_type':
@@ -7258,7 +7271,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 break;
             case 'uploaded_by':
                 $data .= '<td class="table-data">';
-                $data .= '<h2 class="document-related-uploaded_by">'. $row['created_by'] .'</h2>';
+                $data .= '<h2 class="document-related-uploaded_by">'. getUsername($row['created_by']) .'</h2>';
                 $data .= '<span class="document-related-uploaded_date">'. date( 'd/m/Y', strtotime($row['follow_up_date_c']) ) .'</span></td>';
                 break;
             // case 'date_modified':
@@ -7490,6 +7503,243 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
         }catch (Exception $e) {
             echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+
+    // delegate document functions 
+    public function action_document_delegated_dialog_info(){
+        try {
+            $db = \DBManagerFactory::getInstance();
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $GLOBALS['db'];
+
+            $delegated_user_id = $this->get_document_delegated_user($log_in_user_id);
+            
+            if ($delegated_user_id) {
+                $delegated_user = $this->get_user_details_by_id($delegated_user_id);
+            }
+            
+            if (!empty(@$delegated_user) && (@$delegated_user['first_name'] || @$delegated_user['last_name'])) {
+                $delegated_user_name = $delegated_user['first_name'] . $delegated_user['last_name'];
+            }
+            $data = $delegated_user_id;
+            if(@$delegated_user_name):
+                $data = ' <table class="delegatetable">
+                            <thead>
+                                <tr class="delegatetable-header-row-popup">
+                                    <th class="delegatetable-header-popup">Current Delegate</th>
+                                    <th class="delegatetable-header-popup">Action Completed</th>
+                                    <th class="delegatetable-header-popup">Permissions</th>
+                                    <th></th>
+                                </tr></thead>';
+                $data .= '
+                    <tbody>
+                    <tr>
+                    <td class="delegatetable-data-popup">'.$delegated_user_name.'</td>
+                    <td class="delegatetable-data-popup" style="color: #00f;">'.$this->document_delegateActionCompleted($delegated_user_id).'</td>
+                    <td class="delegatetable-data-popup">Edit</td>
+                    <td>
+                        <button type="button" style="margin-left: 100px; margin-bottom: 10px; margin-top: 20px;" class="btn2 remove-document-delegate">Remove</button>
+                    </td>
+                </tr>';
+                $data .= '</tbody></table>';
+            endif; 
+        
+        
+            echo json_encode(array('delegated_info' => $data, 'delegated_id' => $log_in_user_id));
+        } catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+    }
+    public function action_document_store_delegate_result(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $GLOBALS['db'];
+            $proxy = $_POST['Select_Proxy'];
+
+            $save_delegate_query = "UPDATE documents_cstm as d2 
+                LEFT JOIN documents ON documents.id = d2.id_c
+                SET d2.delegate_id = '$proxy' , delegate_date = now()
+                WHERE documents.deleted != 1 AND d2.user_id_c = '$log_in_user_id'";
+            
+            $save_delegate_query_result = $GLOBALS['db']->query($save_delegate_query);
+
+            $approvalDelegateUpdate = "UPDATE document_approval_table SET delegate_id = '$proxy' WHERE approver = '$log_in_user_id' AND approval_status = 1";
+            $approvalDelegateUpdateQuery = $GLOBALS['db']->query($approvalDelegateUpdate);
+
+            //$fetch_organization_count = $GLOBALS['db']->fetchByAssoc($save_delegate_query_result);
+        echo json_encode(array("status"=>true, "message"=>"Data Succesfully updated", "proxy"=> $proxy));
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+
+    }
+    public function action_document_remove_delegate_user(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $GLOBALS['db'];
+            $save_delegate_query = "UPDATE documents_cstm as d2 
+                LEFT JOIN documents ON documents.id = d2.id_c
+                SET d2.delegate_id = '', delegate_date = NULL
+                WHERE documents.deleted != 1 AND d2.user_id_c = '$log_in_user_id' ";
+            
+            $save_delegate_query_result = $GLOBALS['db']->query($save_delegate_query);
+
+            $save_delegate_query = "UPDATE document_approval_table  
+                SET delegate_id = ''
+                WHERE approver = '$log_in_user_id'";
+            
+            $save_delegate_query_result = $GLOBALS['db']->query($save_delegate_query);
+
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+    }
+    function document_delegateActionCompleted($userID){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+        $query = "SELECT count(*) as count FROM document_approval_table aap";
+        $query .= " JOIN documents d ON d.id = aap.acc_id";
+        $query .= " WHERE approval_status = '1' AND d.deleted != 1 AND aap.approver = '$log_in_user_id' AND aap.delegate_id = '$userID' ";
+
+        $result = $GLOBALS['db']->query($query);
+        $count = $GLOBALS['db']->fetchByAssoc($result);
+        return $count['count'];
+    }
+
+    function action_get_document_approval_item(){
+        try
+        {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            
+            $id = $_POST['id'];
+            $event = $_POST['event'];
+
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $data= '';
+            $fetch_query = "SELECT d.*, ds.* FROM documents d JOIN document_approval_table ap ON ap.doc_id = d.id LEFT JOIN documents_cstm ds ON d.id = ds.id_c WHERE d.deleted != 1 AND d.date_entered >= now() - interval '1200' day AND ap.id = '$id'";
+            $result = $GLOBALS['db']->query($fetch_query);
+            while($row = $GLOBALS['db']->fetchByAssoc($result))
+            {
+                $temp = ($event == 'Approve') ? 'Approval' : 'Rejection';
+                $data = '
+                <input type="hidden" name="acc_id" value="'.$row['id'].'" />
+                <input type="hidden" name="event" value="'.$event.'" />
+                <input type="hidden" name="approval_id" value="'.$id.'" />
+                <h2 class="approvalheading">'.$row['name'].'</h2><br>
+                <p class="approvalsubhead">'. $temp .' of Activity
+                </p>
+                <section>
+                    <div style="padding: 10px 15px;">
+                        <table class="approvaltable" width="100%">
+                            <tr class="tapprovalable-header-row-popup">
+                                <th class="approvaltable-header-popup">Activity</th>
+                                <th class="approvaltable-header-popup">Related To</th>
+                                <th class="approvaltable-header-popup">Status</th>
+                                <th class="approvaltable-header-popup">Activity Date</th>
+                                <th class="approvaltable-header-popup">Last Updated</th>
+                            </tr>';
+
+                        $data .='
+                            <tr>
+                                <td class="approvaltable-data-popup">'.$row['name'].'<br><span class="document-type d-block">'. beautify_label($row['type_of_interaction_c']) .'</span></td>
+                                <td class="approvaltable-data-popup">'.getDocumentRelatedTo($row['parent_type'], $row['parent_id']).'<br><span class="document-related-type">'. $row['parent_type'] .'</span></td>
+                                <td class="approvaltable-data-boolean-popup">'.$row['status_new_c'].'</td>
+                                <td class="approvaltable-data-popup">'.date( 'd/m/Y', strtotime($row['activity_date_c']) ).'</td>
+                                <td class="approvaltable-data-popup">'.date( 'd/m/Y', strtotime($row['date_modified']) ).'</td>
+                            </tr>';
+                    $data .= '
+                        </table> <!-- /.col-md-12 -->
+                    </div>
+                    <div style="padding: 30px 15px 0;">
+                        <label style="font-family: "Noto Sans JP", sans-serif; padding-left: 15px; font-size: 15px;" for="approvaltype-comment">Write a comment</label>
+                        <!-- <textarea class="approvaltextarea" placeholder="Type here" style="border-color: #C0C0C0; font-family: "Noto Sans JP", sans-serif; border-radius: 3px; margin-top: 3px;" id="approvaltype-comment" rows="3"></textarea> -->
+                    </div>
+        
+                    <textarea class="approvaltextarea" name="comment" placeholder="Type Subject here" style="border-color: #C0C0C0; font-family: \'Noto Sans JP\', sans-serif; border-radius: 3px; margin-top: 10px; width: 94%; height: 100px;" id="approvalSubject" rows="1"></textarea>
+                    <div style=" padding-top: 20px;padding-bottom: 20px;padding-left: 20px;">
+                        <button class="btn1" type="button" onClick=updateDocumentStatus();>'.$event.'</button>
+                        <button type="button" style="margin-left: 10px;" class="btn2" id="approvalclose" onClick="openDocumentApprovalDialog(\'close\');">Cancel</button>
+                    </div>
+                </section>';
+            }
+            echo $data;
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+    /* approve / reject pending document */
+    function action_document_status_update(){
+        try
+        {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            
+            $id = $_POST['doc_id'];
+            $approval_id = $_POST['approval_id'];
+            $event = $_POST['event'];
+            $comment = $_POST['comment'];
+
+            if($event == 'Approve')
+                $ApprovalStatus = '1';
+            else
+                $ApprovalStatus = '2';
+            
+            date_default_timezone_set('Asia/Kolkata');
+            $date = date('Y-m-d');
+        
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            $data = $this->getDbData('document_approval_table', '*', "id = '$id' ");
+            
+            $data = $data[0];
+            $doc_id = $data['doc_id'];
+            $doc_type = $data['doc_type'];
+            $status = $data['status'];
+            $sender = $data['sender'];
+            $sent_time = $data['sent_time'];
+            $approver = $data['approver'];
+            $delegateID = $data['delegate_id'];
+            
+
+            $updateQuery = "UPDATE document_approval_table SET approval_status = '$ApprovalStatus' ";
+            if($this->isDocumentDelegate($log_in_user_id, $id))
+                $updateQuery .= ", delegate_comment = '$comment' , delegate_approve_reject_date = '$date' ";
+            else
+                $updateQuery .= " , approver_comment = '$comment' , approve_reject_date= '$date' ";
+            $updateQuery .= " WHERE doc_id = '$id' ";
+
+            if($db->query($updateQuery)==TRUE){
+                if($ApprovalStatus == 1){
+                    $updateOpportunity = "UPDATE documents_cstm SET status_new_c = 'Completed' WHERE id_c = '$id'";
+                    $db->query($updateOpportunity);
+                    require_once 'data/BeanFactory.php';
+                    require_once 'include/utils.php';
+                    $u_id = create_guid();
+                    $created_date= date("Y-m-d H:i:s", time());
+            		$sql_insert_audit = 'INSERT INTO `documents_audit`(`id`, `parent_id`, `date_created`, `created_by`, `field_name`, `data_type`, `before_value_string`, `after_value_string`, `before_value_text`, `after_value_text`) VALUES ("'.$u_id.'","'.$id.'","'.$created_date.'","'.$log_in_user_id.'","status_new_c","varchar","Apply for Completed","Completed"," "," ")';
+            		$result_audit = $GLOBALS['db']->query($sql_insert_audit);
+                }
+                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "query" => $updateQuery, "update_opportunity"=>$updateOpportunity));
+            }else{
+                echo json_encode(array("status"=>false, "message" => "Some error occured"));
+            }
+            
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured", "query" => $updateQuery));
         }
         die();
     }
