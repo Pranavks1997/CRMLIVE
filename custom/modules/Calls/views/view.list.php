@@ -47,8 +47,6 @@ class CallsViewList extends ViewList
 {
     public function listViewProcess()
     {
-        $this->lv->quickViewLinks = false;
-        $this->lv->multiSelect = false;
         echo '<script type="text/javascript" src="custom/modules/Calls/view_list.js"></script>';
         
         
@@ -71,7 +69,7 @@ class CallsViewList extends ViewList
        
        
      
-     $sql_opp="SELECT calls.id,calls.assigned_user_id,calls_cstm.activity_type_c,calls_cstm.user_id_c AS approvers,calls_cstm.tag_hidden_c AS tagged_users_id, users_cstm.user_lineage as lineage FROM calls INNER JOIN calls_cstm ON calls_cstm.id_c=calls.id LEFT JOIN users_cstm ON users_cstm.id_c = calls.assigned_user_id WHERE calls.deleted=0";
+     $sql_opp="SELECT calls.id,calls.assigned_user_id,calls_cstm.activity_type_c,calls_cstm.user_id_c AS approvers,calls_cstm.tag_hidden_c AS tagged_users_id,calls_cstm.delegate_id AS delegate_id,users_cstm.user_lineage as lineage FROM calls INNER JOIN calls_cstm ON calls_cstm.id_c=calls.id LEFT JOIN users_cstm ON users_cstm.id_c = calls.assigned_user_id WHERE calls.deleted=0";
 			$result_opp = $GLOBALS['db']->query($sql_opp);
 			
 			while($row_opp = $GLOBALS['db']->fetchByAssoc($result_opp) )
@@ -82,7 +80,7 @@ class CallsViewList extends ViewList
 				   $lineage[]=$row_opp['lineage'];
 				   $tagged_users[]=$row_opp['tagged_users_id'];
 				   $acc_type[]=$row_opp['activity_type_c'];
-				   
+				   $delegte_id[]=$row_opp['delegate_id'];
 				}
 				
 			//	echo json_encode($tagged_users);
@@ -126,7 +124,7 @@ class CallsViewList extends ViewList
 				        	
 				        
 
-				            if( in_array($login_user_id,explode(',',$tagged_users[$i])) || in_array($login_user_id,explode(',',$lineage[$i])) || in_array($login_user_id,explode(',',$multiple_approver_id[$i])) || in_array($login_user_id,explode(',',$assigned_user_id[$i]))  ) {
+				            if( in_array($login_user_id,explode(',',$tagged_users[$i])) || in_array($login_user_id,explode(',',$lineage[$i])) || in_array($login_user_id,explode(',',$multiple_approver_id[$i])) || in_array($login_user_id,explode(',',$assigned_user_id[$i])) || $login_user_id== $delegte_id[$i] ) {
 				            
 				        
 				            
@@ -158,9 +156,7 @@ class CallsViewList extends ViewList
             $filterFields = array('recurring_source' => 1);
             $this->lv->setup($this->seed, 'include/ListView/ListViewGeneric.tpl', $this->where, $this->params, 0, -1, $filterFields);
             $savedSearchName = empty($_REQUEST['saved_search_select_name']) ? '' : (' - ' . $_REQUEST['saved_search_select_name']);
-             
             echo $this->lv->display();
-            
         }
         
         

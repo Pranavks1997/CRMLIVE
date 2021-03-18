@@ -1,0 +1,94 @@
+<?php
+// created: 2021-03-18 10:48:02
+$layout_defs = array (
+  'object_image' => 
+  array (
+    'vname' => 'LBL_OBJECT_IMAGE',
+    'widget_class' => 'SubPanelIcon',
+    'width' => '1%',
+    'image2' => 'attachment',
+    'image2_url_field' => 
+    array (
+      'id_field' => 'id',
+      'filename_field' => 'filename',
+    ),
+    'attachment_image_only' => true,
+    'default' => true,
+  ),
+  'document_name' => 
+  array (
+    'name' => 'document_name',
+    'vname' => 'LBL_LIST_DOCUMENT_NAME',
+    'widget_class' => 'SubPanelDetailViewLink',
+    'width' => '20%',
+    'default' => true,
+  ),
+  'filename' => 
+  array (
+    'name' => 'filename',
+    'vname' => 'LBL_LIST_FILENAME',
+    'width' => '20%',
+    'module' => 'Documents',
+    'sortable' => false,
+    'displayParams' => 
+    array (
+      'module' => 'Documents',
+    ),
+    'default' => true,
+  ),
+  'parent_name' => 
+  array (
+    'type' => 'parent',
+    'default' => true,
+    'studio' => 'visible',
+    'vname' => 'RELATED TO',
+    'link' => true,
+    'sortable' => false,
+    'ACLTag' => 'PARENT',
+    'dynamic_module' => 'PARENT_TYPE',
+    'id' => 'PARENT_ID',
+    'related_fields' => 
+    array (
+      0 => 'parent_id',
+      1 => 'parent_type',
+    ),
+    'width' => '10%',
+    'widget_class' => 'SubPanelDetailViewLink',
+    'target_module' => NULL,
+    'target_record_key' => 'parent_id',
+  ),
+  'status_c' => 
+  array (
+    'type' => 'varchar',
+    'default' => true,
+    'vname' => 'LBL_STATUS',
+    'width' => '10%',
+  ),
+  'category_c' => 
+  array (
+    'type' => 'varchar',
+    'default' => true,
+    'vname' => 'LBL_CATEGORY',
+    'width' => '10%',
+  ),
+  'sub_category_c' => 
+  array (
+    'type' => 'varchar',
+    'default' => true,
+    'vname' => 'LBL_SUB_CATEGORY',
+    'width' => '10%',
+  ),
+  'edit_button' => 
+  array (
+    'vname' => 'LBL_EDIT_BUTTON',
+    'widget_class' => 'SubPanelEditButton',
+    'module' => 'Documents',
+    'width' => '5%',
+    'default' => true,
+  ),
+  'document_revision_id' => 
+  array (
+    'name' => 'document_revision_id',
+    'usage' => 'query_only',
+  ),
+);

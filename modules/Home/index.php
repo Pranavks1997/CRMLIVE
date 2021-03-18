@@ -810,6 +810,53 @@
         </div>
     </div>
 
+<!-- Document Delegate Modal -->
+<div id="documentDelegatemyModel" class="delegatemodal">
+        <!-- Modal content -->
+        <div class="delegatemodal-content">
+            <span class="delegateclose" id="documentDelegateclose">&times;</span>
+            <form>
+                <input type="hidden" id="hidden_value" name="hidden_value" />
+                <h2 class="delegateheading">Delegate</h2>
+                <p class="delegatesubhead">Delegated member will be able to perform action on your behalf</p>
+                <section style="margin-top: 15px;">
+                    <div class="delegatetable-container">
+                        <div class="delegetable-item-table">
+                            <div id="document_delegated_info"></div>
+                        </div>
+                        <!-- <div class="delegate-item-button">
+                            <button style="margin-left: 100px; margin-bottom: 10px; margin-top: 20px;" class="btn2" type="submit" href="/">Remove</button>
+                        </div> -->
+                    </div>
+                    <div style="margin-top: 30px; margin-left: 20px;">
+                        <div style="width: 36%;float: left;">
+                            <label for="Select_Proxy">Select Proxy</label><br>
+                            <select class="delegateselect Select_Proxy" id="document_Select_Proxy">
+
+                            </select>
+
+                            <div style="margin-top: -1px;">
+                                <!-- <a style="color: black;font-size: 10px;" href="#">Delegated Prevlously - <span style="font-size: 10px;font-weight: bold;">No</span></a> -->
+                            </div>
+                        </div>
+                        <div style="width: 50%;float: left; margin-left: 20px;">
+                            <label>Permissions to</label><br>
+                            <input style="width: 15px;" type="checkbox" id="document_delegate_Edit" name="document_delegate_Edit" value="Edit" checked>
+                            <label for="Edit" style="margin: 0;"> Edit(Approve/Reject)</label>
+                        </div>
+                    </div>
+                    <div style="margin-top: 130px; margin-left: 20px;">
+                        <!-- <a style="color: #3090C7;" href="#">+ Add another proxy</a> -->
+                    </div>
+
+                    <div style="margin-top: 15px;padding-bottom: 20px;margin-left: 20px;">
+                        <a class="btn1" id="document_delegate_submit" style="padding: 5px 20px;">Save</a>
+                    </div>
+                </section>
+            </form>
+        </div>
+
+    </div>
 
     <!-- Modal content Document Note pop-up -->
     <div id="document-note-modal" class="desModal">
@@ -882,6 +929,17 @@
     </div>
 
 
+
+ <!-- Document Approval Modal -->
+ <div id="documentApprovalModal" class="approvalmodal">
+        <!-- Modal content -->
+        <div class="approvalmodal-content">
+            <span class="approvalclose" onClick="openDocumentApprovalDialog('close');">&times;</span>
+            <form class="document-approval-form" name="approval-form">
+                <div id="document-approval-data"></div>
+            </form>
+        </div>
+    </div>
 
     <script src="modules/Home/js/script.js"></script>
     <script src="modules/Home/js/functions.js"></script>

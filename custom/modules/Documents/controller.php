@@ -286,7 +286,241 @@ class DocumentsController extends SugarController
 //------------------------------------------Category and Sub-category----------END-----------------------------
 
 
+//------------------------------Send Approval----------------------------------------
+    public function action_send_approval(){
+     try{
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        	  
+       	global $current_user; 
+       	$log_in_user_id = $current_user->id;
 
+       	$status = $_POST['status'];
+        $sender = $_POST['sender'];
+        $date = $_POST['date'];
+        $approver = $_POST['approver'];
+        $doc_id = $_POST['doc_id'];
+        $doc_type = $_POST['doc_type'];
+                  
+		/*if($status == "Upcoming"){
+		   $status = 'Apply For Completed';
+		}*/
+		$status = "Pending Approval";
+                  
+        $sql_approval_status = "SELECT * FROM document_approval_table WHERE id=(SELECT MAX(id) FROM document_approval_table WHERE doc_id ='".$doc_id."' ) ";
+        
+        $result_approval_status = $GLOBALS['db']->query($sql_approval_status);
+        while($row_approval_status=$GLOBALS['db']->fetchByAssoc($result_approval_status)){
+            $approval_status = $row_approval_status['approval_status'];      
+        }
+
+        if($approval_status == '0'){
+           echo json_encode(array("status"=>"Pending" )); 
+        }else if($approval_status == '1'){
+            echo json_encode(array("status"=>"approved" ));
+        }else if($approval_status == '2'){
+            $sql_insert_activity = "INSERT INTO `document_approval_table`( `doc_id`, `doc_type`, `status`, `sender`, `sent_time`, `approval_status`,`approver`) VALUES ('".$doc_id."','".$doc_type."','".$status."','".$sender."','".$date."','0','".$approver."')";
+            if($GLOBALS['db']->query($sql_insert_activity)==TRUE){
+                $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+                if($GLOBALS['db']->query($update_documents_cstm)==TRUE){
+                     echo json_encode(array("button"=>"hide"));
+                }
+                  
+              }
+        }else{
+            $sql_insert_activity = "INSERT INTO `document_approval_table`( `doc_id`, `doc_type`, `status`, `sender`, `sent_time`, `approval_status`,`approver`) VALUES ('".$doc_id."','".$doc_type."','".$status."','".$sender."','".$date."','0','".$approver."')";
+
+            $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+
+            // die($update_documents_cstm);
+
+            if($GLOBALS['db']->query($sql_insert_activity) && $GLOBALS['db']->query($update_documents_cstm)){
+                echo json_encode(array("button"=>"hide"));
+            }
+        }
+        	    
+     }catch(Exception $e){
+    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    	}
+		die();
+	}
+//------------------------------Send Approval------------------END-------------------
+
+
+//-----------------------------Approve----------------------------------------------
+public function action_approve(){
+ 	try{
+    	$db = \DBManagerFactory::getInstance();
+    	$GLOBALS['db'];
+    	  
+    	global $current_user; 
+    	$log_in_user_id = $current_user->id;
+    	      
+        $sender = $_POST['assigned_id'];
+        $date = $_POST['date'];
+        $approver = $_POST['approver_id'];
+        $doc_id = $_POST['doc_id'];
+        $comments=$_POST['comments'];
+        $status='Approved';
+              
+        $update_query="UPDATE `document_approval_table` SET `approval_status`='1',`approve_reject_date`='".$date."',`approver_comment`='".$comments."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
+
+        $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+
+        if($GLOBALS['db']->query($update_query) && $GLOBALS['db']->query($update_documents_cstm)){               
+              echo json_encode(array("button"=>"hide"));
+        }
+       
+    	    
+ 	}catch(Exception $e){
+		echo json_encode(array("status"=>false, "message" => "Some error occured"));
+	}
+	die();
+}
+//-----------------------------Approve-------------------------END------------------
+
+//----------------------------Reject------------------------------------------------
+public function action_reject(){
+     try{
+    	$db = \DBManagerFactory::getInstance();
+    	$GLOBALS['db'];
+    	  
+    	global $current_user; 
+    	$log_in_user_id = $current_user->id;
+    	      
+    	$sender = $_POST['assigned_id'];
+    	$date = $_POST['date'];
+    	$approver = $_POST['approver_id'];
+    	$doc_id = $_POST['doc_id'];
+    	$comments=$_POST['comment_reject'];
+
+    	$status = 'Pending Approval';
+             
+    	// echo $sender.'--/--'.$approver.'--/--'.$comments.'--/--'.$doc_id;
+              
+    	$update_query="UPDATE `document_approval_table` SET `approval_status`='2',`approve_reject_date`='".$date."',`approver_comment`='".$comments."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
+
+    	$update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+    
+    	if($GLOBALS['db']->query($update_query) && $GLOBALS['db']->query($update_documents_cstm)){
+        	echo json_encode(array("button"=>"hide"));
+    	}	    
+    }
+    catch(Exception $e){
+    	echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    }
+	die();
+}
+//----------------------------Reject---------------------------END------------------
+
+//-----------------------Approval Buttons----------------------------------------------------------------------
+public function action_approval_buttons(){
+    try{
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        	  
+       	global $current_user; 
+       	$log_in_user_id = $current_user->id;
+
+		$assigned_id = $_POST['assigned_id'];
+		$doc_id = $_POST['doc_id'];
+		$approver_id=$_POST['approver_id'];
+		$status=$_POST['status'];
+
+      	$sql_logged_user = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+        
+        $result_logged_user = $GLOBALS['db']->query($sql_logged_user);
+        
+        while($row_logged_user = $GLOBALS['db']->fetchByAssoc($result_logged_user)) {
+            $check_sales = $row_logged_user['teamfunction_c'];
+            $check_mc = $row_logged_user['mc_c'];
+            $check_team_lead = $row_logged_user['teamheirarchy_c'];
+        }
+
+    	$sql_assigned_user = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c,users.reports_to_id,users_cstm.user_lineage FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$assigned_id."' AND users.deleted = 0";
+        
+        $result_assigned_user = $GLOBALS['db']->query($sql_assigned_user);
+
+        while($row_assigned_user = $GLOBALS['db']->fetchByAssoc($result_assigned_user)){
+           $reports_to=$row_assigned_user['reports_to_id'];
+           $lineage=$row_assigned_user['user_lineage'];    
+        }
+
+        $lineage_array=explode(',',$lineage);
+                  
+		$sql_approval_status = "SELECT * FROM document_approval_table WHERE id=(SELECT MAX(id) FROM document_approval_table WHERE doc_id ='".$doc_id."' ) ";
+        
+		$result_approval_status = $GLOBALS['db']->query($sql_approval_status);
+
+        while($row_approval_status=$GLOBALS['db']->fetchByAssoc($result_approval_status)){                
+            $approval_status = $row_approval_status['approval_status'];
+            $sender=$row_approval_status['sender'];
+            $approver_rejector=$row_approval_status['approver'];
+            $status_approval_table=$row_approval_status['status'];  
+        }
+            
+            
+        if($approval_status == '0'){    
+            if($log_in_user_id==$sender){
+           		echo json_encode(array("message"=>"Pending" ));
+            }
+             if($log_in_user_id==$approver_rejector){
+           		echo json_encode(array("message"=>"Pending_approve" )); 
+            }
+        }
+
+        else if($approval_status == '1'){        
+           	echo json_encode(array("message"=>"Approved" ));
+        }
+            
+        else if($approval_status == '2'){
+            if($log_in_user_id==$sender){    
+               echo json_encode(array("message"=>"Rejected" )); 
+            
+            }
+        }
+        else {       
+        	if($log_in_user_id==$assigned_id && $log_in_user_id==$approver_id){    
+                echo json_encode(array("message"=>"show_completed"));
+            }
+            else if($log_in_user_id==$assigned_id){
+            	echo json_encode(array("message"=>"show_send_approval"));
+            }
+            else{
+                echo json_encode(array("message"=>"no" )); 
+            }
+
+            /*if($status=='Upcoming'){
+
+               	if($log_in_user_id==$assigned_id && $log_in_user_id==$approver_id){    
+                    echo json_encode(array("message"=>"show_completed"));
+                }
+                else if($log_in_user_id==$assigned_id){
+                	echo json_encode(array("message"=>"show_send_approval"));
+                }
+                else{
+                    echo json_encode(array("message"=>"no" )); 
+                }
+            }
+            else if($status=='Apply For Completed'){
+                if($log_in_user_id==$assigned_id){
+                	echo json_encode(array("message"=>"show_send_approval"));
+                }
+                else{
+                    echo json_encode(array("message"=>"no" )); 
+                }
+                     
+            }
+            else{
+                echo json_encode(array("message"=>"no" )); 
+            }*/
+        }    	    
+	}catch(Exception $e){
+    	echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    }
+	die();
+}
+//-----------------------Approval Buttons----------END------------------------------------------------------------
 
 
 

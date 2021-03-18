@@ -77,6 +77,7 @@ class DocumentsViewEdit extends ViewEdit
      */
     public function display()
     {
+          echo '<link rel="stylesheet" type="text/css" href="custom/modules/Calls/quick_create_custom.css">';
          echo file_get_contents("custom/modules/Documents/other_multi_select_user/m-select.html");
           echo file_get_contents("custom/modules/Opportunities/form.html");
          echo '<script type="text/javascript" src="custom/modules/Documents/view_edit.js"></script>';
