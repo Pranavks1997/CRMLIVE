@@ -24,8 +24,11 @@ function documentFilterHelper(ref) {
         var filterDay = $('.document-pending-filter .filter-day').val();
         var filterStatus = $('.document-pending-filter .filter-status').val();
     }
+    console.log("ref --",ref);
 
     if (ref == 'document-filter') {
+        console.log("filter status , filter Type", filterStatus,filterType);
+
         documentdateBetween(day, '', '', 1, filterStatus, filterType, '', 0);
     } else {
         fetchDocumentByStatus(1, '', 0);
@@ -202,8 +205,7 @@ function getDefaultDocumentColumns(type) {
         var html = $('#document-pending-settings');
         var DefaultColumns = '<form class="document-pending-settings-form sort-column">';
     }
-    DefaultColumns += '<input type="hidden" name="document-settings-section" class="document-settings-section" value="" /><input type="hidden" name="document-settings-type" class="document-settings-type" value="" /><input type="hidden" name="document-settings-type-value" class="document-settings-type-value" value="" /><ul id="sortable1" class="sortable1 connectedSortable ui-sortable"> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="name" value="name" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="name" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name"> Documents</label> </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="related_to" value="related_to" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="related_to" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name"> Related To</label> </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="document_type" value="document_type" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="document_type" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name"> Document type</label> </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="category" value="category" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="category" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name"> Category</label> </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="sub_category" value="sub_category" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="sub_category" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name"> Sub Category</label> </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="uploaded_by" value="uploaded_by" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="uploaded_by" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name"> Uploaded by</label> </li></ul>';
-
+    DefaultColumns += '<input type="hidden" name="document-settings-section" class="document-settings-section" value=""/><input type="hidden" name="document-settings-type" class="document-settings-type" value=""/><input type="hidden" name="document-settings-type-value" class="document-settings-type-value" value=""/><ul id="sortable1" class="sortable1 connectedSortable ui-sortable"> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="name" value="name" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="name" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name" > Documents</label > </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="document_type" value="document_type" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="document_type" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name" > Document type</label > </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="category" value="category" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="category" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name" > Category</label > </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="sub_category" value="sub_category" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="sub_category" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name" > Sub Category</label > </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="related_to" value="related_to" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="related_to" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name" > Related To</label > </li> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="uploaded_by" value="uploaded_by" checked="True" style="display: none" /> <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="uploaded_by" checked="True" style="display: none" /> <label style="color: #837e7c; font-family: Arial; font-size: 13px" for="name" > Uploaded by</label > </li></ul>';
     html.html(DefaultColumns);
     initSortable();
 }
@@ -240,6 +242,7 @@ function fetchDocumentByStatus(filter = 0, page = null, changeColumns = 1) {
         }
     });
 }
+
 
 function documentdateBetween(dateBetween, searchTerm = null, page = null, filter = 0, changeColumns = 1) {
     Cookies.set('day', dateBetween, { expires: 1 });
@@ -323,9 +326,10 @@ function documentdateBetween(dateBetween, searchTerm = null, page = null, filter
 
 }
 
-function documentpaginate(page, method, day, searchTerm = null, filter = 0, status = null, type = null) {
+function documentpaginate(page, method, day, searchTerm = null, filter = 0) {
     if (method == 'document') {
-        documentdateBetween(day, searchTerm, page, filter, status, type, 0);
+        console.log("documentpaginate" , searchTerm);
+        documentdateBetween(day, searchTerm, page, filter, 0);
     } else if (method == 'pending') {
         fetchDocumentByStatus(status, filter, page, 0);
     }
@@ -417,6 +421,7 @@ function openDocumentPendingSettingsDialog(event, type = null, value = null) {
 }
 
 
+
 function commitDocumentPendingFilter() {
     var settingsSection = $('.document-pending-settings-section').val();
     var settingsType = $('.document-pending-settings-type').val();
@@ -426,6 +431,45 @@ function commitDocumentPendingFilter() {
     fetchDocumentByStatus('', '', 0);
     openDocumentPendingSettingsDialog('close');
 }
+
+/* Download Button Click */
+$(document).on('click', '#document_download_btn', function () {
+    var type = $(this).data('type');
+    var value = $(this).data('value');
+    var action = $(this).data('action');
+    var formData = '';
+    var dropped = '';
+    if (action == 'dayFilter') {
+        formData = { day: value, filter: 1 };
+    } else if (action == 'type') {
+        formData = { csvtype: value, filter: 1 }
+    } else {
+        dropped = $(this).data('dropped') ? $(this).data('dropped') : '';
+        formData = { status_c: value, dropped: dropped, filter: 1 }
+    }
+
+    if (type == 'document')
+        var url = "index.php?module=Home&action=document_export&" + $('.document-filter').serialize();
+    else
+        var url = "index.php?module=Home&action=document_export&" + $('.pending-filter').serialize();
+    console.log("url", url);
+
+    $.ajax({
+        url: url,
+        method: "GET",
+        data: formData,
+        success: function (data) {
+            console.log(data);
+            // data = JSON.parse(data);
+            // console.log(data);
+            // if (data.status == 'success') {
+            //     window.location.href = 'index.php?module=Home&action=downloadCSV';
+            // } else {
+            //     alert('Somthing went wrong. Please try again');
+            // }
+        }
+    });
+});
 
 // :::::::::::::::::::::::::::::::::::::::::::: Joytirmoy Code :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -440,15 +484,13 @@ function handleNoteDialog(event) {
         dialog.style.display = "none";
     } else if (event === "submit") {
         // var hidden_note_id = document.getElementById('hidden_note_value').value;
-        var doc_id = document.getElementById('hidden_doc_id').value;
+        var doc_id = document.getElementById('doc_id').value;
         var note = document.getElementById('note').value;
-        var user_id = document.getElementById('user_id').value;
         $.ajax({
             url: 'index.php?module=Home&action=set_note_for_document',
             type: 'POST',
             data: {
                 // note_id: hidden_note_id,
-                user_id: user_id,
                 doc_id: doc_id,
                 note: note
             },
@@ -460,6 +502,7 @@ function handleNoteDialog(event) {
         dialog.style.display = "block"
     }
 }
+
 
 function fetchDocumentDelegateDialog() {
     var dialog = document.getElementById('documentDelegatemyModel');
@@ -512,7 +555,50 @@ $(document).on('click', '.remove-document-delegate', function () {
     });
 });
 
+function fetchNoteDialog(id) {
+    var dialog = document.getElementById('document-note-modal');
+    // dialog.style.display = "block";
+    // console.log(id);
+    $.ajax({
+        url: 'index.php?module=Home&action=document_note_dialog_info',
+        type: 'GET',
+        data: {
+            id: id
+        },
+        success: function (data) {
+            var parsed_data = JSON.parse(data);
+            $('#document_note_info').html(parsed_data.document_info);
+            $('#document_note_history').html(parsed_data.notes_history);
+            $('#doc_id').val(parsed_data.doc_id);
+            // $('#activity_member_info').html(parsed_data.optionList);
+            // document.getElementById('activity_tag_id').value = parsed_data.activity_id;
+            dialog.style.display = "block";
+            initSelect2();
+
+            // var temp = parsed_data.msuid.split(',');
+            // $('#deselect_members').val(temp);
+        },
+        error: function(data, errorThrown){
+            alert(errorThrown)
+        }
+    })
+
+}
+
+
+
 // :::::::::::::::::::::::::::::::::::::::::::: Joytirmoy Code :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+function documentSearchHelper() {
+    var $this = $('#document-search');
+    var searchTerm = $this.val();
+    console.log("Serach Term ", searchTerm);
+    var method = $this.data('method');
+    var day = $this.data('day');
+    var type = $this.data('type');
+    var status = $this.data('status');
+    documentdateBetween(day, searchTerm, '', '', 0);
+}
 
 
 (function ($) {
@@ -534,12 +620,12 @@ $(document).on('click', '.remove-document-delegate', function () {
 
     // TODO  
     // Check with serach of the activity.
-    $(document).on('click', '.activity-search-btn', function () {
+    $(document).on('click', '.document-search-btn', function () {
         documentSearchHelper();
     });
     // TODO  
     // Check with serach of the activity.
-    $(document).on('keyup', '#activity-search', function (event) {
+    $(document).on('keyup', '#document-search', function (event) {
         if (event.keyCode === 13) {
             documentSearchHelper();
         }
@@ -562,12 +648,12 @@ $(document).on('click', '.remove-document-delegate', function () {
     $('.clear-filter').on('click', function (event) {
         event.preventDefault();
         var type = $(this).data('type');
-        if (type == 'activity') {
-            $('.activity-filter input:not([type=hidden]').val('');
-            $('.activity-filter select').val('');
+        if (type == 'document') {
+            $('.document-filter input:not([type=hidden]').val('');
+            $('.document-filter select').val('');
         } else {
-            $('.activity-pending-filter input:not([type=hidden]').val('');
-            $('.activity-pending-filter select').val('');
+            $('.document-pending-filter input:not([type=hidden]').val('');
+            $('.document-pending-filter select').val('');
         }
         $('.select2-selection__rendered').html('');
         $('.responsibility').val('');

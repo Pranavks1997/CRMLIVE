@@ -137,17 +137,17 @@
         $fetch_query .= " AND (documents.id IN ('".implode("','",$doc_id_show)."')) ";
 
         if($searchTerm) /* Check if SearchTerm is there or not */
-            $fetch_query .= " AND documents.name LIKE '%$searchTerm%' ";
+            $fetch_query .= " AND documents.document_name LIKE '%$searchTerm%' ";
 
         /* Checking if any filters are set or not */
         
         /* End filter check */
         if($_GET['filter'])
-            $fetch_query .= getActivityFilterQuery();
+            $fetch_query .= getDocumentFilterQuery();
 
         $fetch_query .= " AND DATEDIFF(CURDATE(), DATE(documents.date_entered)) <= '$day' "; // getting records with respect to number of days
         $fetch_query .= " ORDER BY `documents`.`date_modified` DESC"; 
-        // echo $fetch_query; die;
+        // echo $fetch_query;
         return $fetch_query;
     }
 

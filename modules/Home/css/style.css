@@ -2093,7 +2093,7 @@ padding: 15px 5px;
     align-items: center;
     padding-right: 50px;
 }
-#search-column1, #search-column2,.activity-search-column1, .activity-search-column2 {
+#search-column1, #search-column2,.activity-search-column1, .activity-search-column2, .document-search-column1,.document-search-column2{
     padding: 12px 5px !important;
     background-color: #FCAFA8 !important;
     border-color: #FCAFA8 !important;

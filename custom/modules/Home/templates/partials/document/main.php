@@ -26,7 +26,7 @@
                 <div style="display: flex;">
                     <div style="display: flex; justify-content: center; align-items: center;">
                         <input type="search" placeholder="Search by name" class="document-search" id="document-search" data-method="document" data-day="<?php echo $day; ?>" value="<?php echo $searchTerm; ?>" name="search" />
-                        <button class="searchhh document-search-btn" id="search-btn">
+                        <button class="searchhh  document-search-btn" id="search-btn">
                             <i id="search-icon" class="fa fa-search" aria-hidden="true"> </i>
                         </button>
                     </div>
@@ -35,10 +35,12 @@
                         <button class="filter" id="filter_myBtn" onclick="openDocumentFilterDialog()" style="padding:10; border: none !important;">
                             <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
                         </button>
-                
-                        <button class="cog" id="setting_myBtn" onclick="openDocumentSettingDialog('document');" style="padding:10; border: none !important;">
-                            <i id="setting_myBtn" class="fa fa-list" aria-hidden="true"> </i>
-                        </button>
+
+                        <?php if ($check_mc == 'yes'): ?>
+                            <button class="cog download" id="document_download_btn" class="download-btn" data-type="document" data-action="status" data-value="<?php echo $status; ?>" data-dropped="<?php echo $dropped; ?>" style="padding:10; border: none !important;">
+                                <i class="fa fa-download" aria-hidden="true"> </i>
+                            </button>
+                        <?php endif ?>
                     </div>
                 </div>
             </div>
