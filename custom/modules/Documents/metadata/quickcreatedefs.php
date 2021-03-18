@@ -43,16 +43,16 @@ array (
         array (
           'file' => 'modules/Documents/documents.js',
         ),
+        3 => 
+        array (
+          'file' => 'custom/modules/Documents/quick_create.js',
+        ),
+        
       ),
       'useTabs' => false,
       'tabDefs' => 
       array (
         'LBL_DOCUMENT_INFORMATION' => 
-        array (
-          'newTab' => false,
-          'panelDefault' => 'expanded',
-        ),
-        'LBL_EDITVIEW_PANEL1' => 
         array (
           'newTab' => false,
           'panelDefault' => 'expanded',
@@ -155,31 +155,6 @@ array (
               'rows' => 10,
               'cols' => 120,
             ),
-          ),
-        ),
-      ),
-      'lbl_editview_panel1' => 
-      array (
-        0 => 
-        array (
-          0 => 
-          array (
-            'name' => 'tagged_users_c',
-            'label' => 'LBL_TAGGED_USERS',
-          ),
-          1 => 
-          array (
-            'name' => 'tagged_hidden_c',
-            'label' => 'LBL_TAGGED_HIDDEN',
-          ),
-        ),
-        1 => 
-        array (
-          0 => 
-          array (
-            'name' => 'tag_comments_c',
-            'studio' => 'visible',
-            'label' => 'LBL_TAG_COMMENTS',
           ),
         ),
       ),
