@@ -944,24 +944,3 @@
         return implode(' ',$a);;
     }
 
-    function getDocumentRelatedTo($type, $id){
-        $data = '' ;
-        switch($type){
-            case 'Accounts':
-                $data = getQueryData('name', 'accounts', 'id = "'.$id.'"');
-                break;
-            case 'Opportunities':
-                $data = getQueryData('name', 'opportunities', 'id = "'.$id.'"');
-                break;
-            case 'Calls':
-                $data = getQueryData('name', 'calls', 'id = "'.$id.'"');
-                break;
-            case 'Documents':
-                $data = getQueryData('document_name AS name', 'documents', 'id = "'.$id.'"');
-                break;
-            default:
-                $data = '';
-                break;
-        }
-        return $data;
-    }
