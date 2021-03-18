@@ -117,8 +117,8 @@ function changeAddLabel(evnt) {
     if (evnt == 'Create Activity') {
         redirectLink = "'index.php?module=Calls&action=EditView'";
     }
-    else if(evnt == 'Create Document'){
-        redirectLink = "'index.php?module=Documents&action=EditView'";   
+    else if (evnt == 'Create Document') {
+        redirectLink = "'index.php?module=Documents&action=EditView'";
     }
     $("#add_opportunity").attr("onclick", "location.href = " + redirectLink);
 }
@@ -309,7 +309,14 @@ function documentdateBetween(dateBetween, searchTerm = null, page = null, filter
             $('#documenttableContent').html(data.data);
             $('#orgDocumentCount').html(data.total);
             $('#selfDocumentCount').html(data.self_count);
-            $('#myTeamDocumentCount').html(data.team_count);
+            var teamCount;
+            if (data.user_id == 1) {
+                teamCount = 0
+            }
+            else {
+                teamCount = data.team_count;
+            }
+            $('#myTeamDocumentCount').html(teamCount);
             // $('#delegateName').html(data.delegate_name);
             $('#delegateDocumentName').html('0 (No Delegations)');
             if (data.delegateDetails != '') {
@@ -586,8 +593,8 @@ function fetchNoteDialog(id) {
             $('#document_note_history').html(parsed_data.notes_history);
             var sendNoteToText = parsed_data.doc_creator;
             console.log(sendNoteToText);
-            	
-            $( "#send_note_to" ).html( sendNoteToText );
+
+            $("#send_note_to").html(sendNoteToText);
 
             // $('#send_not_to').html(sendNoteToText);
 
@@ -611,7 +618,7 @@ function fetchDocumentTagDialog(id) {
     var dialog = document.getElementById('tag-document-modal');
 
     $.ajax({
-         url: 'index.php?module=Home&action=document_tag_dialog_info',
+        url: 'index.php?module=Home&action=document_tag_dialog_info',
         type: 'GET',
         data: {
             id: id
@@ -627,7 +634,7 @@ function fetchDocumentTagDialog(id) {
             // var temp = parsed_data.msuid.split(',');
             // $('#deselect_members').val(temp);
         },
-        error: function(data, errorThrown){
+        error: function (data, errorThrown) {
             alert(errorThrown)
         }
     })

@@ -30,7 +30,7 @@
             <?php echo $this->getDocumentColumnFiltersBody($_GET, $row); ?>
 
             <td class="table-data">
-                <div style="display: flex; width: 80%; align-items: center; padding: 10px; justify-content: space-between; margin-left: 20px;">
+                <div style="display: flex; width: 65%; align-items: center; padding: 0px; justify-content: space-between; margin-left: 20px;">
                 
 
                     <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="fetchDocumentTagDialog('<?php echo $row['id']; ?>')">
