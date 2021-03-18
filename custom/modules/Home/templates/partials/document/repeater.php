@@ -32,11 +32,11 @@
             <td class="table-data">
                 <div style="display: flex; width: 80%; align-items: center; padding: 10px; justify-content: space-between; margin-left: 20px;">
                 
-                    <button class="tag1" id="reassignmentBtn" style="margin-right: 7px;width: 15px;" onclick="activityfetchReassignmentDialog('<?php echo $row['id']; ?>')">
+                    <!-- <button class="tag1" id="reassignmentBtn" style="margin-right: 7px;width: 15px;" onclick="activityfetchReassignmentDialog('<?php echo $row['id']; ?>')">
                         <?php //if ($this->is_activity_reassignment_applicable($row['id'])): ?>
                             <i id="reassignment-icon" title="Re-assign User" class="fa fa-user" aria-hidden="true" style="color:black; font-size: 1.8rem;"> </i>
                         <?php// endif; ?>
-                    </button>
+                    </button> -->
                     <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="getActivitySequenceFlow('<?php echo $row['id']; ?>')">
                         <?php // if($this->checkRecentActivityForActivity($row['id'])): ?>
                             <img id="search-icon" src="modules/Home/assets/Frame-12.svg" alt="svg" style="color: #333333;"/>
@@ -56,11 +56,11 @@
                     <a style="width: 15px;" href="index.php?module=Calls&action=DetailView&record=<?php echo $row['id']; ?>" class="eye" id="search-btn">
                         <i id="search-icon" class="fa fa-eye" aria-hidden="true"> </i>
                     </a>
-                    <button class="" id="reminderBtn" style="width: 15px;" onclick="fetchReminderDialog('<?php echo $row['id']; ?>')">
+                    <!-- <button class="" id="reminderBtn" style="width: 15px;" onclick="fetchReminderDialog('<?php echo $row['id']; ?>')">
                         <?php //if ($this->is_activity_reminder_applicable($row['id'])) { ?>
                             <i id="reminder-icon" class="fa fa-bell" aria-hidden="true"> </i>
                         <?php// } ?>
-                    </button>
+                    </button> -->
                 </div>
             </td>
         </tr>
