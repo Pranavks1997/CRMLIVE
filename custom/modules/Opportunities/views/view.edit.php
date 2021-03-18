@@ -87,7 +87,8 @@ class OpportunitiesViewEdit extends ViewEdit
 		$this->ss->assign('FILEUPLOAD','custom/include/tpls/editview.tpl');
 		parent::display();
 	}
-function getAttachments($module_id,$module_name){
+	
+    function getAttachments($module_id,$module_name){
     
 	global $db;
 // 	$db = \DBManagerFactory::getInstance();
