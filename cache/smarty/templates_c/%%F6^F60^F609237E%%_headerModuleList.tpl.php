@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-03-16 14:28:39
+<?php /* Smarty version 2.6.31, created on 2021-03-19 12:14:28
          compiled from themes/SuiteP/tpls/_headerModuleList.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_link', 'themes/SuiteP/tpls/_headerModuleList.tpl', 59, false),array('function', 'sugar_translate', 'themes/SuiteP/tpls/_headerModuleList.tpl', 115, false),array('function', 'suite_check_access', 'themes/SuiteP/tpls/_headerModuleList.tpl', 121, false),array('function', 'counter', 'themes/SuiteP/tpls/_headerModuleList.tpl', 214, false),array('function', 'search_controller', 'themes/SuiteP/tpls/_headerModuleList.tpl', 579, false),array('modifier', 'lower', 'themes/SuiteP/tpls/_headerModuleList.tpl', 118, false),array('modifier', 'replace', 'themes/SuiteP/tpls/_headerModuleList.tpl', 118, false),array('modifier', 'default', 'themes/SuiteP/tpls/_headerModuleList.tpl', 809, false),)), $this); ?>
@@ -461,7 +461,7 @@ if ($this->_foreach['groupList']['total'] > 0):
                                        <a href="index.php?module=Documents&action=index">View Documents</a>
                                     </li>
                                     <li>
-                                       <a  href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DDocuments%26action%3DEditView%26return_module%3DDocuments%26return_action%3DDetailView">Create Document</a>
+                                       <a  href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DDocuments%26action%3DEditView%26return_module%3DDocuments%26return_action%3DDetailView">Upload Document</a>
                                     </li>
                               
                                 <?php $_from = $this->_tpl_vars['modules']['extra']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }if (count($_from)):

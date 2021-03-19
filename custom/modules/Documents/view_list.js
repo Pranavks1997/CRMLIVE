@@ -6,5 +6,6 @@ $( document ).ready(function() {
       //console.log('sad');
  }, 10);
     
-    
+     $('.listViewEmpty').text('No Records available');
+     $('.columnsFilterLink').hide();
 });

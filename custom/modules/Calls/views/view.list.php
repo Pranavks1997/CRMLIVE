@@ -47,6 +47,8 @@ class CallsViewList extends ViewList
 {
     public function listViewProcess()
     {
+         $this->lv->quickViewLinks = false;
+        $this->lv->multiSelect = false;
         echo '<script type="text/javascript" src="custom/modules/Calls/view_list.js"></script>';
         
         

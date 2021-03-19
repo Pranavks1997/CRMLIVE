@@ -366,7 +366,7 @@
                                        <a href="index.php?module=Documents&action=index">View Documents</a>
                                     </li>
                                     <li>
-                                       <a  href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DDocuments%26action%3DEditView%26return_module%3DDocuments%26return_action%3DDetailView">Create Document</a>
+                                       <a  href="index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DDocuments%26action%3DEditView%26return_module%3DDocuments%26return_action%3DDetailView">Upload Document</a>
                                     </li>
                               
                                 {foreach from=$modules.extra item=submodulename key=submodule}

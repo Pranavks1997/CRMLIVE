@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-03-18 12:06:46
+<?php /* Smarty version 2.6.31, created on 2021-03-19 12:38:21
          compiled from cache/themes/SuiteP/modules/Documents/SearchForm_popup_query_form.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', 'cache/themes/SuiteP/modules/Documents/SearchForm_popup_query_form.tpl', 27, false),array('function', 'math', 'cache/themes/SuiteP/modules/Documents/SearchForm_popup_query_form.tpl', 28, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Documents/SearchForm_popup_query_form.tpl', 34, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Documents/SearchForm_popup_query_form.tpl', 94, false),array('function', 'sugar_getimage', 'cache/themes/SuiteP/modules/Documents/SearchForm_popup_query_form.tpl', 251, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Documents/SearchForm_popup_query_form.tpl', 332, false),array('modifier', 'default', 'cache/themes/SuiteP/modules/Documents/SearchForm_popup_query_form.tpl', 188, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', 'cache/themes/SuiteP/modules/Documents/SearchForm_popup_query_form.tpl', 27, false),array('function', 'math', 'cache/themes/SuiteP/modules/Documents/SearchForm_popup_query_form.tpl', 28, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Documents/SearchForm_popup_query_form.tpl', 34, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Documents/SearchForm_popup_query_form.tpl', 66, false),array('function', 'sugar_getimage', 'cache/themes/SuiteP/modules/Documents/SearchForm_popup_query_form.tpl', 268, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Documents/SearchForm_popup_query_form.tpl', 349, false),)), $this); ?>
 
 <script>
     <?php echo '
@@ -66,37 +66,6 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', '
 
 
             <div class="col-xs-12">
-                                <label for='status_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_DOC_STATUS','module' => 'Documents'), $this);?>
-</label>
-                            </div>
-            <div class="form-item">
-                                
-<?php if (strlen ( $this->_tpl_vars['fields']['status_advanced']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['status_advanced']['default_value']); ?>
-<?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['status_advanced']['value']); ?>
-<?php endif; ?>  
-<input type='text' name='<?php echo $this->_tpl_vars['fields']['status_advanced']['name']; ?>
-' 
-    id='<?php echo $this->_tpl_vars['fields']['status_advanced']['name']; ?>
-' size='30' 
-     
-    value='<?php echo $this->_tpl_vars['value']; ?>
-' title=''      >
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
-
-            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
-
-
-            <div class="col-xs-12">
                                 <label for='template_type_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_TEMPLATE_TYPE','module' => 'Documents'), $this);?>
 </label>
                             </div>
@@ -118,12 +87,94 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', '
 
 
             <div class="col-xs-12">
-                                <label for='category_id_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_SF_CATEGORY','module' => 'Documents'), $this);?>
+                                <label for='parent_name_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'RELATED TO','module' => 'Documents'), $this);?>
 </label>
                             </div>
             <div class="form-item">
                                 
-<?php echo smarty_function_html_options(array('id' => 'category_id_advanced','name' => 'category_id_advanced[]','options' => $this->_tpl_vars['fields']['category_id_advanced']['options'],'size' => '6','class' => 'templateGroupChooser','multiple' => '1','selected' => $this->_tpl_vars['fields']['category_id_advanced']['value']), $this);?>
+<select name='parent_type_advanced'   id='parent_type_advanced' title=''
+onchange='document.popup_query_form.<?php echo $this->_tpl_vars['fields']['parent_name_advanced']['name']; ?>
+.value="";document.popup_query_form.parent_id.value=""; 
+        changeParentQSSearchView("<?php echo $this->_tpl_vars['fields']['parent_name_advanced']['name']; ?>
+"); checkParentType(document.popup_query_form.parent_type_advanced.value, document.popup_query_form.btn_<?php echo $this->_tpl_vars['fields']['parent_name_advanced']['name']; ?>
+);'>
+<?php echo smarty_function_html_options(array('options' => $this->_tpl_vars['fields']['parent_name_advanced']['options'],'selected' => $this->_tpl_vars['fields']['parent_type_advanced']['value']), $this);?>
+
+</select>
+<br>
+<?php if (empty ( $this->_tpl_vars['fields']['parent_name_advanced']['options'][$this->_tpl_vars['fields']['parent_type_advanced']['value']] )): ?>
+	<?php $this->assign('keepParent', 0); ?>
+<?php else: ?>
+	<?php $this->assign('keepParent', 1); ?>
+<?php endif; ?>
+<input type="text" name="<?php echo $this->_tpl_vars['fields']['parent_name_advanced']['name']; ?>
+" id="<?php echo $this->_tpl_vars['fields']['parent_name_advanced']['name']; ?>
+" class="sqsEnabled"   size="" value="<?php echo $this->_tpl_vars['fields']['parent_name_advanced']['value']; ?>
+" autocomplete="off"><input type="hidden" name="parent_id" id="parent_id"  <?php if ($this->_tpl_vars['keepParent']): ?>value="<?php echo $this->_tpl_vars['fields']['parent_id']['value']; ?>
+"<?php endif; ?>>
+<span class="id-ff multiple">
+<button type="button" name="btn_<?php echo $this->_tpl_vars['fields']['parent_name_advanced']['name']; ?>
+"   title="<?php echo $this->_tpl_vars['APP']['LBL_SELECT_BUTTON_TITLE']; ?>
+"
+	   class="button firstChild" value="<?php echo $this->_tpl_vars['APP']['LBL_SELECT_BUTTON_LABEL']; ?>
+"
+	   onclick='if(document.popup_query_form.parent_type_advanced.value != "") open_popup(document.popup_query_form.parent_type_advanced.value, 600, 400, "", true, false, <?php echo '{"call_back_function":"set_return","form_name":"popup_query_form","field_to_name_array":{"id":"parent_id","name":"parent_name_advanced"}}'; ?>
+, "single", true);'><span class="suitepicon suitepicon-action-select"></span></button>
+<button type="button" name="btn_clr_<?php echo $this->_tpl_vars['fields']['parent_name_advanced']['name']; ?>
+"   title="<?php echo $this->_tpl_vars['APP']['LBL_CLEAR_BUTTON_TITLE']; ?>
+"  class="button lastChild" onclick="this.form.<?php echo $this->_tpl_vars['fields']['parent_name_advanced']['name']; ?>
+.value = ''; this.form.<?php echo $this->_tpl_vars['fields']['parent_name_advanced']['id_name']; ?>
+.value = '';" value="<?php echo $this->_tpl_vars['APP']['LBL_CLEAR_BUTTON_LABEL']; ?>
+">
+<span class="suitepicon suitepicon-action-clear"></span>
+</button>
+</span>
+<?php echo '
+<script type="text/javascript">
+if (typeof(changeParentQSSearchView) == \'undefined\'){
+function changeParentQSSearchView(field) {
+	field = YAHOO.util.Dom.get(field);
+    var form = field.form;
+    var sqsId = form.id + "_" + field.id;
+    var typeField =  form.elements["parent_type_advanced"];
+    var new_module = typeField.value;
+    if(typeof(disabledModules[new_module]) != \'undefined\') {
+		sqs_objects[sqsId]["disable"] = true;
+		field.readOnly = true;
+	} else {
+		sqs_objects[sqsId]["disable"] = false;
+		field.readOnly = false;
+    }
+	//Update the SQS globals to reflect the new module choice
+    sqs_objects[sqsId]["modules"] = new Array(new_module);
+    if (typeof(QSFieldsArray[sqsId]) != \'undefined\')
+    {
+        QSFieldsArray[sqsId].sqs.modules = new Array(new_module);
+    }
+	if(typeof QSProcessedFieldsArray != \'undefined\')
+    {
+	   QSProcessedFieldsArray[sqsId] = false;
+    }
+    enableQS(false);
+}}
+YAHOO.util.Event.onContentReady(
+'; ?>
+
+"<?php echo $this->_tpl_vars['fields']['parent_name_advanced']['name']; ?>
+"
+<?php echo '
+, function() {
+    changeParentQSSearchView(
+'; ?>
+
+"<?php echo $this->_tpl_vars['fields']['parent_name_advanced']['name']; ?>
+"
+<?php echo '
+    );
+});
+</script>
+<script>var disabledModules=[];</script>
+'; ?>
 
                             </div>
         </div>
@@ -139,13 +190,85 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', '
 
 
             <div class="col-xs-12">
-                                <label for='subcategory_id_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_SF_SUBCATEGORY','module' => 'Documents'), $this);?>
+                                <label for='category_c_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_CATEGORY','module' => 'Documents'), $this);?>
 </label>
                             </div>
             <div class="form-item">
                                 
-<?php echo smarty_function_html_options(array('id' => 'subcategory_id_advanced','name' => 'subcategory_id_advanced[]','options' => $this->_tpl_vars['fields']['subcategory_id_advanced']['options'],'size' => '6','class' => 'templateGroupChooser','multiple' => '1','selected' => $this->_tpl_vars['fields']['subcategory_id_advanced']['value']), $this);?>
+<?php if (strlen ( $this->_tpl_vars['fields']['category_c_advanced']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['category_c_advanced']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['category_c_advanced']['value']); ?>
+<?php endif; ?>  
+<input type='text' name='<?php echo $this->_tpl_vars['fields']['category_c_advanced']['name']; ?>
+' 
+    id='<?php echo $this->_tpl_vars['fields']['category_c_advanced']['name']; ?>
+' size='30' 
+    maxlength='255' 
+    value='<?php echo $this->_tpl_vars['value']; ?>
+' title=''      >
+                            </div>
+        </div>
+    </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
+        <div class="">
+            
+              
 
+            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
+
+            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
+
+
+            <div class="col-xs-12">
+                                <label for='sub_category_c_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_SUB_CATEGORY','module' => 'Documents'), $this);?>
+</label>
+                            </div>
+            <div class="form-item">
+                                
+<?php if (strlen ( $this->_tpl_vars['fields']['sub_category_c_advanced']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['sub_category_c_advanced']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['sub_category_c_advanced']['value']); ?>
+<?php endif; ?>  
+<input type='text' name='<?php echo $this->_tpl_vars['fields']['sub_category_c_advanced']['name']; ?>
+' 
+    id='<?php echo $this->_tpl_vars['fields']['sub_category_c_advanced']['name']; ?>
+' size='30' 
+    maxlength='255' 
+    value='<?php echo $this->_tpl_vars['value']; ?>
+' title=''      >
+                            </div>
+        </div>
+    </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
+        <div class="">
+            
+              
+
+            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
+
+            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
+
+
+            <div class="col-xs-12">
+                                <label for='status_c_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_STATUS','module' => 'Documents'), $this);?>
+</label>
+                            </div>
+            <div class="form-item">
+                                
+<?php if (strlen ( $this->_tpl_vars['fields']['status_c_advanced']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['status_c_advanced']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['status_c_advanced']['value']); ?>
+<?php endif; ?>  
+<input type='text' name='<?php echo $this->_tpl_vars['fields']['status_c_advanced']['name']; ?>
+' 
+    id='<?php echo $this->_tpl_vars['fields']['status_c_advanced']['name']; ?>
+' size='30' 
+    maxlength='255' 
+    value='<?php echo $this->_tpl_vars['value']; ?>
+' title=''      >
                             </div>
         </div>
     </div>
@@ -166,108 +289,6 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'counter', '
             <div class="form-item">
                                 
 <?php echo smarty_function_html_options(array('id' => 'assigned_user_id_advanced','name' => 'assigned_user_id_advanced[]','options' => $this->_tpl_vars['fields']['assigned_user_id_advanced']['options'],'size' => '6','class' => 'templateGroupChooser','multiple' => '1','selected' => $this->_tpl_vars['fields']['assigned_user_id_advanced']['value']), $this);?>
-
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
-
-            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
-
-
-            <div class="col-xs-12">
-                                <label for='active_date_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_DOC_ACTIVE_DATE','module' => 'Documents'), $this);?>
-</label>
-                            </div>
-            <div class="form-item">
-                                
-<span class="dateTime">
-<?php $this->assign('date_value', $this->_tpl_vars['fields']['active_date_advanced']['value']); ?>
-<input class="date_input" autocomplete="off" type="text" name="<?php echo $this->_tpl_vars['fields']['active_date_advanced']['name']; ?>
-" id="<?php echo $this->_tpl_vars['fields']['active_date_advanced']['name']; ?>
-" value="<?php echo $this->_tpl_vars['date_value']; ?>
-" title=''  tabindex='0'    size="11" maxlength="10" >
-    <button type="button" id="<?php echo $this->_tpl_vars['fields']['active_date_advanced']['name']; ?>
-_trigger" class="btn btn-danger" onclick="return false;"><span class="suitepicon suitepicon-module-calendar" alt="<?php echo $this->_tpl_vars['APP']['LBL_ENTER_DATE']; ?>
-"></span></button>
-</span>
-<script type="text/javascript">
-Calendar.setup ({
-inputField : "<?php echo $this->_tpl_vars['fields']['active_date_advanced']['name']; ?>
-",
-form : "popup_query_form",
-ifFormat : "<?php echo $this->_tpl_vars['CALENDAR_FORMAT']; ?>
-",
-daFormat : "<?php echo $this->_tpl_vars['CALENDAR_FORMAT']; ?>
-",
-button : "<?php echo $this->_tpl_vars['fields']['active_date_advanced']['name']; ?>
-_trigger",
-singleClick : true,
-dateStr : "<?php echo $this->_tpl_vars['date_value']; ?>
-",
-startWeekday: <?php echo ((is_array($_tmp=@$this->_tpl_vars['CALENDAR_FDOW'])) ? $this->_run_mod_handler('default', true, $_tmp, '0') : smarty_modifier_default($_tmp, '0')); ?>
-,
-step : 1,
-weekNumbers:false
-}
-);
-</script>
-
-                            </div>
-        </div>
-    </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-advanced-search">
-        <div class="">
-            
-              
-
-            <?php echo smarty_function_counter(array('assign' => 'index'), $this);?>
-
-            <?php echo smarty_function_math(array('equation' => "left % right",'left' => $this->_tpl_vars['index'],'right' => $this->_tpl_vars['templateMeta']['maxColumns'],'assign' => 'modVal'), $this);?>
-
-
-            <div class="col-xs-12">
-                                <label for='exp_date_advanced'><?php echo smarty_function_sugar_translate(array('label' => 'LBL_DOC_EXP_DATE','module' => 'Documents'), $this);?>
-</label>
-                            </div>
-            <div class="form-item">
-                                
-<span class="dateTime">
-<?php $this->assign('date_value', $this->_tpl_vars['fields']['exp_date_advanced']['value']); ?>
-<input class="date_input" autocomplete="off" type="text" name="<?php echo $this->_tpl_vars['fields']['exp_date_advanced']['name']; ?>
-" id="<?php echo $this->_tpl_vars['fields']['exp_date_advanced']['name']; ?>
-" value="<?php echo $this->_tpl_vars['date_value']; ?>
-" title=''  tabindex='0'    size="11" maxlength="10" >
-    <button type="button" id="<?php echo $this->_tpl_vars['fields']['exp_date_advanced']['name']; ?>
-_trigger" class="btn btn-danger" onclick="return false;"><span class="suitepicon suitepicon-module-calendar" alt="<?php echo $this->_tpl_vars['APP']['LBL_ENTER_DATE']; ?>
-"></span></button>
-</span>
-<script type="text/javascript">
-Calendar.setup ({
-inputField : "<?php echo $this->_tpl_vars['fields']['exp_date_advanced']['name']; ?>
-",
-form : "popup_query_form",
-ifFormat : "<?php echo $this->_tpl_vars['CALENDAR_FORMAT']; ?>
-",
-daFormat : "<?php echo $this->_tpl_vars['CALENDAR_FORMAT']; ?>
-",
-button : "<?php echo $this->_tpl_vars['fields']['exp_date_advanced']['name']; ?>
-_trigger",
-singleClick : true,
-dateStr : "<?php echo $this->_tpl_vars['date_value']; ?>
-",
-startWeekday: <?php echo ((is_array($_tmp=@$this->_tpl_vars['CALENDAR_FDOW'])) ? $this->_run_mod_handler('default', true, $_tmp, '0') : smarty_modifier_default($_tmp, '0')); ?>
-,
-step : 1,
-weekNumbers:false
-}
-);
-</script>
 
                             </div>
         </div>
