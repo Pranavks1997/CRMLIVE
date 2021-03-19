@@ -355,8 +355,8 @@ class HomeController extends SugarController{
     //     return $delegated_user;
     // }
     public function get_document_delegated_user($log_in_user_id) {
-        $fetch_query = "SELECT Count(*) as count,documents.assigned_user_id, documents_cstm.delegate_id as delegate FROM documents
-        LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c WHERE deleted != 1 AND date_entered >= now() - interval '1200' day AND documents_cstm.user_id_c = '$log_in_user_id' GROUP BY documents_cstm.delegate_id ORDER BY count DESC";
+        $fetch_query = "SELECT Count(*) as count, documents.assigned_user_id, documents_cstm.delegate_id as delegate FROM documents
+        LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c WHERE deleted != 1  AND documents_cstm.user_id_c = '$log_in_user_id' GROUP BY documents_cstm.delegate_id ORDER BY count DESC";
         $fetch_delegated_user = $GLOBALS['db']->query($fetch_query);
         $fetch_delegated_user_result = $GLOBALS['db']->fetchByAssoc($fetch_delegated_user);
         
@@ -7519,6 +7519,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             global $current_user;
             $log_in_user_id = $current_user->id;
             $GLOBALS['db'];
+            // $data = '';
 
             $delegated_user_id = $this->get_document_delegated_user($log_in_user_id);
             
@@ -7529,6 +7530,11 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             if (!empty(@$delegated_user) && (@$delegated_user['first_name'] || @$delegated_user['last_name'])) {
                 $delegated_user_name = $delegated_user['first_name'] . $delegated_user['last_name'];
             }
+            // if($delegated_user_id==0){
+            //     $data = '<p>There are no documents to delegate </p>';
+            // }else{
+            //     $data = $delegated_user_id;
+            // }
             $data = $delegated_user_id;
             if(@$delegated_user_name):
                 $data = ' <table class="delegatetable">
@@ -7553,7 +7559,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             endif; 
         
         
-            echo json_encode(array('delegated_info' => $data, 'delegated_id' => $log_in_user_id));
+            echo json_encode(array('delegated_info' => $data, 'delegated_id' => $log_in_user_id, 'delegated_user_id' =>$delegated_user_id));
         } catch (Exception $e) {
             echo json_encode(array("status" => false, "message" => "Some error occured"));
         }
@@ -7582,7 +7588,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
-
+        die();
     }
     public function action_document_remove_delegate_user(){
         try{
@@ -7611,7 +7617,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         global $current_user;
         $log_in_user_id = $current_user->id;
         $query = "SELECT count(*) as count FROM document_approval_table aap";
-        $query .= " JOIN documents d ON d.id = aap.acc_id";
+        $query .= " JOIN documents d ON d.id = aap.doc_id";
         $query .= " WHERE approval_status = '1' AND d.deleted != 1 AND aap.approver = '$log_in_user_id' AND aap.delegate_id = '$userID' ";
 
         $result = $GLOBALS['db']->query($query);
