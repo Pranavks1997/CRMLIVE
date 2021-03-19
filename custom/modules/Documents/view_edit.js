@@ -14,15 +14,15 @@ $( document ).ready(function() {
        $('#btn_approver_c,#btn_clr_approver_c').hide();
        $('#btn_assigned_user_name,#btn_clr_assigned_user_name').hide();
        $('#btn_parent_name,#follow_up_date_c_trigger').hide();
-       $('#tagged_hidden_c,[data-label="LBL_TAGGED_HIDDEN"]').hide();  
+      $('#tagged_hidden_c,[data-label="LBL_TAGGED_HIDDEN"]').hide();  
        
         $('input[name="send_for_approval"]').hide();
         $('input[name="approve_button"]').hide();
         $('input[name="reject_button"]').hide();
    //-----------------------------------------------Hide onload--------------------------------------
    
-          $('#approver_c').attr('readonly',true);
-          $('#assigned_user_name').attr('readonly',true);
+         $('#approver_c').attr('readonly',true);
+         $('#assigned_user_name').attr('readonly',true);
           $('#status_c').attr('readonly',true);
           
            $('#parent_name').on('click', function(e) {
@@ -89,9 +89,11 @@ $( document ).ready(function() {
       
       if(approver_name==assigned_name){
        $('#status_c').val('Approved');
+       
       }
       else{
        $('#status_c').val('Upload');
+      
       }
    
   }

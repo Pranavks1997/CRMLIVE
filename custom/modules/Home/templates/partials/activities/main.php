@@ -35,10 +35,7 @@
                         <button class="filter" id="filter_myBtn" onclick="openActivityFilterDialog()" style="padding:10; border: none !important;">
                             <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
                         </button>
-                
-                        <!-- <button class="cog" id="setting_myBtn" onclick="openActivitySettingDialog('activity');" style="padding:10; border: none !important;">
-                            <i id="setting_myBtn" class="fa fa-list" aria-hidden="true"> </i>
-                        </button> -->
+
                     </div>
                 </div>
             </div>

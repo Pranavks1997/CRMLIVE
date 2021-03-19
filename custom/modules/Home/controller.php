@@ -3,6 +3,7 @@
 
 use Robo\Task\File\Concat;
 
+
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 require_once('include/MVC/Controller/SugarController.php');
@@ -185,6 +186,7 @@ class HomeController extends SugarController{
                 'query_test'                 =>$fetch_query ,
                 'user_id'                   =>$log_in_user_id,
             ));
+            die();
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
@@ -330,6 +332,31 @@ class HomeController extends SugarController{
     public function get_delegated_user($log_in_user_id) {
         $fetch_query = "SELECT Count(*) as count,opportunities.assigned_user_id, opportunities_cstm.delegate as delegate FROM opportunities
         LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE deleted != 1 AND date_entered >= now() - interval '1200' day AND opportunities_cstm.user_id2_c = '$log_in_user_id' GROUP BY opportunities_cstm.delegate ORDER BY count DESC";
+        $fetch_delegated_user = $GLOBALS['db']->query($fetch_query);
+        $fetch_delegated_user_result = $GLOBALS['db']->fetchByAssoc($fetch_delegated_user);
+        
+        if(!empty($fetch_delegated_user_result))
+            $delegated_user = $fetch_delegated_user_result['delegate'];
+        else
+            $delegated_user = 0;
+        return $delegated_user;
+    }
+
+    // public function get_document_delegated_user($log_in_user_id) {
+    //     $fetch_query = "SELECT Count(*) as count,calls.assigned_user_id, calls_cstm.delegate_id as delegate FROM calls
+    //     LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c WHERE deleted != 1 AND date_entered >= now() - interval '1200' day AND calls_cstm.user_id_c = '$log_in_user_id' GROUP BY calls_cstm.delegate_id ORDER BY count DESC";
+    //     $fetch_delegated_user = $GLOBALS['db']->query($fetch_query);
+    //     $fetch_delegated_user_result = $GLOBALS['db']->fetchByAssoc($fetch_delegated_user);
+        
+    //     if(!empty($fetch_delegated_user_result))
+    //         $delegated_user = $fetch_delegated_user_result['delegate'];
+    //     else
+    //         $delegated_user = 0;
+    //     return $delegated_user;
+    // }
+    public function get_document_delegated_user($log_in_user_id) {
+        $fetch_query = "SELECT Count(*) as count,documents.assigned_user_id, documents_cstm.delegate_id as delegate FROM documents
+        LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c WHERE deleted != 1 AND date_entered >= now() - interval '1200' day AND documents_cstm.user_id_c = '$log_in_user_id' GROUP BY documents_cstm.delegate_id ORDER BY count DESC";
         $fetch_delegated_user = $GLOBALS['db']->query($fetch_query);
         $fetch_delegated_user_result = $GLOBALS['db']->fetchByAssoc($fetch_delegated_user);
         
@@ -514,7 +541,7 @@ class HomeController extends SugarController{
                 'data'                      => $content,
                 'columnFilter'              => $columnFilterHtml,
                 'filters'                   => $filters
-            )); die;
+            )); die();
 
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
@@ -3094,7 +3121,22 @@ class HomeController extends SugarController{
     public function beautify_amount($amount) {
         return preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $amount);
     }
-
+    function get_all_users_option(){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+        $fetch_query = "SELECT users.id, users.first_name, users.last_name, users_cstm.teamheirarchy_c
+        FROM users LEFT JOIN users_cstm ON users.id = users_cstm.id_c
+        WHERE users.`deleted` != '1' AND users.`id` != '1' ORDER BY users.`first_name` ASC";
+        $result = $GLOBALS['db']->query($fetch_query);
+        $data = '';
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                $full_name = $row['first_name'] . ' ' . $row['last_name'];
+                $data .= '<option value="'.$row['id'].'">'.$full_name.'</option>';
+            }
+        }
+        return $data;
+    }
     function get_users_with_team_options() {
         global $current_user;
         $log_in_user_id = $current_user->id;
@@ -3872,204 +3914,205 @@ public function action_new_assigned_list(){
     }
 
 
-public function action_update_home_assigned_id(){
-    try{
-        $db = \DBManagerFactory::getInstance();
-           $GLOBALS['db'];
-             
-              global $current_user; 
-               $log_in_user_id = $current_user->id;
-               $assigned_name=$_POST['assigned_name'];
-               $opportunity_id=$_POST['opp_id'];
-                $sql="SELECT id,reports_to_id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
-               
-                $result = $GLOBALS['db']->query($sql);
-                
-       while($row = $GLOBALS['db']->fetchByAssoc($result)) 
-       {
-           
-           
-         $assigned_id=$row['id'];
-          
-         $reports_to_id = $row['reports_to_id'];
-   
-           
-       }
-       
-           $sql_tl="SELECT case when teamheirarchy_c='team_member_l1' then 'l1' when teamheirarchy_c ='team_member_l2' then 'l2' when teamheirarchy_c ='team_member_l3' then 'l3' when teamheirarchy_c='team_lead' then 'tl' end AS 'heirarchy' FROM users_cstm WHERE id_c='".$assigned_id."'";
-       
-       $result_tl = $GLOBALS['db']->query($sql_tl);
-       
-    while ($row_tl = mysqli_fetch_assoc($result_tl)){
-           
-          $team_h=$row_tl['heirarchy'];
-       }
-      
-        if($team_h=="tl"){
-            
-           $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
-           $result_tlr = $GLOBALS['db']->query($sql_tlr);
-           while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
-           
-          $team_lead_name=$row_tlr['name'];
-          $team_lead_id=$row_tlr['id'];
-       }
-       
-       
-           
-       }
-      
-      else if($team_h=="l1"){
-           
-           $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
-           $result_tlr = $GLOBALS['db']->query($sql_tlr);
-           while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
-           
-          $team_lead_name=$row_tlr['name'];
-          $team_lead_id=$row_tlr['id'];
-       }
-           
-       }
-       else if($team_h=="l2"){
-           
-             $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'"))';
-           $result_tlr = $GLOBALS['db']->query($sql_tlr);
-           while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
-           
-          $team_lead_name=$row_tlr['name'];
-          $team_lead_id=$row_tlr['id'];
-       }
-           
-       }
-       else if($team_h=="l3"){
-           
-            $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")))';
-           $result_tlr = $GLOBALS['db']->query($sql_tlr);
-           while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
-           
-          $team_lead_name=$row_tlr['name'];
-          $team_lead_id=$row_tlr['id'];
-       }
-           
-           
-           
-       }
-       
-       if($assigned_id==''){
-           
-           echo json_encode(array("message"=>'false'));
-           
-       }
-       else{
-       
-       $sql1='SELECT * FROM opportunities_cstm WHERE id_c="'.$opportunity_id.'"';
-              
-              $result1 = $GLOBALS['db']->query($sql1);
-            
-               if($result1->num_rows>0){
-                   
-                   while($row1= $GLOBALS['db']->fetchByAssoc($result1)) 
-       {
-                     $multiple=$row1['multiple_approver_c'];
-                     $status_new=$row1['status_c'];
-                     $rfp_new=$row1['rfporeoipublished_c'];
-       }
-               $sql23='UPDATE `opportunities_cstm` SET `assigned_to_new_c`="'.$assigned_name.'" WHERE id_c="'.$opportunity_id.'"';
-                
-                $result23 = $GLOBALS['db']->query($sql23);
-                  
-                $sql2='UPDATE `opportunities` SET `assigned_user_id`="'.$assigned_id.'" WHERE id="'.$opportunity_id.'"';
-                
-                $result2 = $GLOBALS['db']->query($sql2);
-                
-                if($rfp_new=='no'){
-                    if($status_new=='Qualified' || $status_new=='QualifiedDpr' || $status_new=='QualifiedBid' || $status_new=='Closed'){
-                       $reports_to_id=$team_lead_id;
-                        
-                    }
-                    
-                }
-               else if($rfp_new=='yes'){
-                   if($status_new=='QualifiedLead' || $status_new=='QualifiedBid' || $status_new=='Closed'){
-                        $reports_to_id=$team_lead_id;
-                    }
-                    
-                }
-               else if($rfp_new=='not_required'){
-                    
-               
-                   if($status_new=='Qualified' || $status_new=='QualifiedDpr' || $status_new=='QualifiedBid' || $status_new=='Closed'){
-                       
-                       
-                         $reports_to_id=$team_lead_id;
-                         
-                         
-                    }
-                    
-                }
-              
-                
-                 if($db->query($sql2)==TRUE){
-                     
-                        $multiple_array=explode(',',$multiple);
-                        
-                        if(count($multiple_array)>1){
-                            
-                            $key=0;
-                             unset($multiple_array[$key]);
-                             array_unshift($multiple_array,$reports_to_id);
-                             
-                             $reports=implode(',',$multiple_array);
-                             
-                              $sql3='UPDATE `opportunities_cstm` SET `multiple_approver_c`="'.$reports.'" WHERE id_c="'.$opportunity_id.'"';
-                      $result3 = $GLOBALS['db']->query($sql3);
-                      
-                     $sql31='UPDATE `opportunities_cstm` SET `user_id2_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
-                      $result31 = $GLOBALS['db']->query($sql31);
-                      
-                      if($db->query($sql3)==TRUE){
-                          echo json_encode(array("status"=>true, "message" => "Success"));
-                          
-                      }
-                             
-                        }
-                        else{
-                             $sql31='UPDATE `opportunities_cstm` SET `user_id2_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
-                      $result31 = $GLOBALS['db']->query($sql31);
-                             $sql3='UPDATE `opportunities_cstm` SET `multiple_approver_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
-                      $result3 = $GLOBALS['db']->query($sql3);
-                      
-                      if($db->query($sql3)==TRUE){
-                          echo json_encode(array("status"=>true, "message" => "Success"));
-                      }
-                        }
+    public function action_update_home_assigned_id(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+               $GLOBALS['db'];
                  
-                     
-                  
-             
+                  global $current_user; 
+                   $log_in_user_id = $current_user->id;
+                   $assigned_name=$_POST['assigned_name'];
+                   $opportunity_id=$_POST['opp_id'];
+                    $sql="SELECT id,reports_to_id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
+                   
+                    $result = $GLOBALS['db']->query($sql);
+                    
+           while($row = $GLOBALS['db']->fetchByAssoc($result)) 
+           {
+               
+               
+             $assigned_id=$row['id'];
+              
+             $reports_to_id = $row['reports_to_id'];
+       
+               
+           }
+           
+               $sql_tl="SELECT case when teamheirarchy_c='team_member_l1' then 'l1' when teamheirarchy_c ='team_member_l2' then 'l2' when teamheirarchy_c ='team_member_l3' then 'l3' when teamheirarchy_c='team_lead' then 'tl' end AS 'heirarchy' FROM users_cstm WHERE id_c='".$assigned_id."'";
+           
+           $result_tl = $GLOBALS['db']->query($sql_tl);
+           
+        while ($row_tl = mysqli_fetch_assoc($result_tl)){
+               
+              $team_h=$row_tl['heirarchy'];
+           }
+          
+            if($team_h=="tl"){
                 
-         }
-               }
-               else{
-                   echo json_encode(array("status"=>true, "message" => "Failed"));
-               }
-       }
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-    }catch(Exception $e){
-           echo json_encode(array("status"=>false, "message" => "Some error occured"));
-       }
-       die();
-}
+               $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
+               $result_tlr = $GLOBALS['db']->query($sql_tlr);
+               while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+               
+              $team_lead_name=$row_tlr['name'];
+              $team_lead_id=$row_tlr['id'];
+           }
+           
+           
+               
+           }
+          
+          else if($team_h=="l1"){
+               
+               $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")';
+               $result_tlr = $GLOBALS['db']->query($sql_tlr);
+               while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+               
+              $team_lead_name=$row_tlr['name'];
+              $team_lead_id=$row_tlr['id'];
+           }
+               
+           }
+           else if($team_h=="l2"){
+               
+                 $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'"))';
+               $result_tlr = $GLOBALS['db']->query($sql_tlr);
+               while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+               
+              $team_lead_name=$row_tlr['name'];
+              $team_lead_id=$row_tlr['id'];
+           }
+               
+           }
+           else if($team_h=="l3"){
+               
+                $sql_tlr='SELECT CONCAT(first_name," ",last_name) as name,id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id=(SELECT reports_to_id FROM users WHERE id="'.$assigned_id.'")))';
+               $result_tlr = $GLOBALS['db']->query($sql_tlr);
+               while ($row_tlr = mysqli_fetch_assoc($result_tlr)){
+               
+              $team_lead_name=$row_tlr['name'];
+              $team_lead_id=$row_tlr['id'];
+           }
+               
+               
+               
+           }
+           
+           if($assigned_id==''){
+               
+               echo json_encode(array("message"=>'false'));
+               
+           }
+           else{
+           
+           $sql1='SELECT * FROM opportunities_cstm WHERE id_c="'.$opportunity_id.'"';
+                  
+                  $result1 = $GLOBALS['db']->query($sql1);
+                
+                   if($result1->num_rows>0){
+                       
+                       while($row1= $GLOBALS['db']->fetchByAssoc($result1)) 
+           {
+                         $multiple=$row1['multiple_approver_c'];
+                         $status_new=$row1['status_c'];
+                         $rfp_new=$row1['rfporeoipublished_c'];
+           }
+                   $sql23='UPDATE `opportunities_cstm` SET `assigned_to_new_c`="'.$assigned_name.'" WHERE id_c="'.$opportunity_id.'"';
+                    
+                    $result23 = $GLOBALS['db']->query($sql23);
+                      
+                    $sql2='UPDATE `opportunities` SET `assigned_user_id`="'.$assigned_id.'" WHERE id="'.$opportunity_id.'"';
+                    
+                    $result2 = $GLOBALS['db']->query($sql2);
+                    
+                    if($rfp_new=='no'){
+                        if($status_new=='Qualified' || $status_new=='QualifiedDpr' || $status_new=='QualifiedBid' || $status_new=='Closed'){
+                           $reports_to_id=$team_lead_id;
+                            
+                        }
+                        
+                    }
+                   else if($rfp_new=='yes'){
+                       if($status_new=='QualifiedLead' || $status_new=='QualifiedBid' || $status_new=='Closed'){
+                            $reports_to_id=$team_lead_id;
+                        }
+                        
+                    }
+                   else if($rfp_new=='not_required'){
+                        
+                   
+                       if($status_new=='Qualified' || $status_new=='QualifiedDpr' || $status_new=='QualifiedBid' || $status_new=='Closed'){
+                           
+                           
+                             $reports_to_id=$team_lead_id;
+                             
+                             
+                        }
+                        
+                    }
+                  
+                    
+                     if($db->query($sql2)==TRUE){
+                         
+                            $multiple_array=explode(',',$multiple);
+                            
+                            if(count($multiple_array)>1){
+                                
+                                $key=0;
+                                 unset($multiple_array[$key]);
+                                 array_unshift($multiple_array,$reports_to_id);
+                                 
+                                 $reports=implode(',',$multiple_array);
+                                 
+                                  $sql3='UPDATE `opportunities_cstm` SET `multiple_approver_c`="'.$reports.'" WHERE id_c="'.$opportunity_id.'"';
+                          $result3 = $GLOBALS['db']->query($sql3);
+                          
+                         $sql31='UPDATE `opportunities_cstm` SET `user_id2_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
+                          $result31 = $GLOBALS['db']->query($sql31);
+                          
+                          if($db->query($sql3)==TRUE){
+                              echo json_encode(array("status"=>true, "message" => "Success"));
+                              
+                          }
+                                 
+                            }
+                            else{
+                                 $sql31='UPDATE `opportunities_cstm` SET `user_id2_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
+                          $result31 = $GLOBALS['db']->query($sql31);
+                                 $sql3='UPDATE `opportunities_cstm` SET `multiple_approver_c`="'.$reports_to_id.'" WHERE id_c="'.$opportunity_id.'"';
+                          $result3 = $GLOBALS['db']->query($sql3);
+                          
+                          if($db->query($sql3)==TRUE){
+                              echo json_encode(array("status"=>true, "message" => "Success"));
+                          }
+                            }
+                     
+                         
+                      
+                 
+                    
+             }
+                   }
+                   else{
+                       echo json_encode(array("status"=>true, "message" => "Failed"));
+                   }
+           }
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+        }catch(Exception $e){
+               echo json_encode(array("status"=>false, "message" => "Some error occured"));
+           }
+           die();
+    }
+    
 
 public function action_assigned_history(){
         try{
@@ -4591,6 +4634,7 @@ public function is_activity_reassignment_applicable($activity_id) {
                 'user_id'                   => $log_in_user_id,
             
             ));
+            die();
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
@@ -4771,7 +4815,7 @@ public function is_activity_reassignment_applicable($activity_id) {
             echo json_encode(
                 array(
                     'data' => "$PRC <i class=\"fa fa-angle-double-down\" aria-hidden=\"true\"></i>",
-                    'count' => $PRC
+                    'count' => $PRC,
                 )
             );
         }
@@ -5030,6 +5074,31 @@ public function is_activity_reassignment_applicable($activity_id) {
 
         $default2 = array(
             'new_current_status_c'          => 'Comments',
+            // 'description'                   => 'Summary of Interaction',
+            // 'new_key_action_c'              => 'Key Actionable / Next Steps identified from the Interaction',
+            
+
+        );
+
+        $fields['default'] = $default;
+        $fields['addons'] = $default2;
+
+        return $fields;
+    }
+    function DocumentColumns(){
+        $fields = array();
+
+        $default = array(
+            'name'                  => 'Document Name',
+            'document_type'         => 'Document Type',
+            'related_to'            => 'Related To',
+            'category'              => 'Category',
+            'sub_category'          => 'Sub Category',
+            'uploaded_by'           => 'Uploaded by'
+        );
+
+        $default2 = array(
+            // 'new_current_status_c'          => 'Comments',
             // 'description'                   => 'Summary of Interaction',
             // 'new_key_action_c'              => 'Key Actionable / Next Steps identified from the Interaction',
             
@@ -5708,6 +5777,16 @@ public function is_activity_reassignment_applicable($activity_id) {
         $GLOBALS['db'];
 
         $delegateQuery = "SELECT count(*) as count FROM activity_approval_table WHERE delegate_id = '$userID' AND id = '$id'";
+        $count = $GLOBALS['db']->query($delegateQuery);
+        $count = $GLOBALS['db']->fetchByAssoc($count);
+        return $count['count'];
+    }
+
+    function isDocumentDelegate($userID, $id){
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+
+        $delegateQuery = "SELECT count(*) as count FROM document_approval_table WHERE delegate_id = '$userID' AND id = '$id'";
         $count = $GLOBALS['db']->query($delegateQuery);
         $count = $GLOBALS['db']->fetchByAssoc($count);
         return $count['count'];
@@ -6616,8 +6695,1435 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         }
         die();
     }
+
+
     
+    
+        /**
+     * Document Functions////////////////////////////////////////////////////////////////////////////////
+     * 
+     * 
+     * 
+     * 
+     *-----------------------------------------------------------------------------------------------------------
+
+    */
+
+    function action_getPendingDocumentList(){
+        try
+        {
+            $content = '';
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+
+            ob_start();
+            include_once 'templates/partials/pending-document-requests/main.php';
+            $content = ob_get_contents();
+            ob_end_clean();
+
+            $fetch_query    = getDocumentQuery(); // getActivity Query
+            $result         = $GLOBALS['db']->query($fetch_query);
+            $response       = $this->mysql_fetch_assoc_all($result); //get all result in an array
+
+            /* Pending Activity repeater HTML (Table ROW) */
+            ob_start();
+            include_once 'templates/partials/pending-document-requests/repeater.php';
+            $content .= ob_get_contents();
+            ob_end_clean();
+
+
+            //Pagination 
+            /*$page = $_GET['page'] ? $_GET['page'] : 1;
+            if ($totalCount > ( $page * $limit)){
+                $currentPost = ($page * $limit);
+            } else {
+                $currentPost = $totalCount;
+            }
+            $content .= '<div class="pagination text-right">';
+            $content .= '<p class="d-inline-block">Showing '.$currentPost.' of '.$totalCount.'</p>';
+
+            $type = array(
+                'method' => 'pending',
+                'status' => $status,
+                'type'   => '',
+            );
+            
+            $content .= $this->activitypagination($page, $numberOfPages, $type, '30', '', $_GET['filter']);
+            $content .= '</div>';*/
+
+            // echo $content;
+            $columnFilterHtml   = $this->getDocumentColumnFilters('pendings');
+            $filters            = $this->getDocumentFilterHtml('document', $_GET);
+
+            echo json_encode(array(
+                'data'                      => $content,
+                'columnFilter'              => $columnFilterHtml,
+                'filters'                   => $filters
+            )); die;
+
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+    public function action_document_pending_count(){
+        try {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+    
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            $PRC = 0;
+
+            $query = "SELECT id FROM documents WHERE deleted != 1 AND date_entered >= now() - interval '1200' day";
+            $result = $GLOBALS['db']->query($query);
+            $response = $this->mysql_fetch_assoc_all($result); //get all result in an array
+            foreach($response as $r){
+                $id = $r['id'];
+                $query = "SELECT approval_status FROM document_approval_table WHERE doc_id = '$id' AND ( approver = '$log_in_user_id' OR delegate_id = '$log_in_user_id' ) ORDER BY `id` DESC LIMIT 1";
+                $result = $GLOBALS['db']->query($query);
+                $count = $GLOBALS['db']->fetchByAssoc($result);
+                if($count && $count['approval_status'] == '0')
+                    $PRC += 1;
+            }
+
+            echo json_encode(
+                array(
+                    'data' => "$PRC <i class=\"fa fa-angle-double-down\" aria-hidden=\"true\"></i>",
+                    'count' => $PRC,
+                    'response'=>$response
+                )
+            );
+        }
+        catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+
+
+    public function get_document_history(){
+        try {
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $day = $_COOKIE['day'];
+
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+
+            $self_count = "SELECT count(*) as totalCount FROM documents  
+                WHERE assigned_user_id = '$log_in_user_id' AND deleted != 1 AND date_entered >= now() - interval '".$day."' day";
+            $response['self_count'] = executeCountQuery($self_count);
+
+            $user_manager = get_user_manager();
+
+            $team_count = "SELECT count(*) as totalCount from documents
+                WHERE  deleted != 1 AND date_entered >= now() - interval '".$day."' day AND assigned_user_id 
+                    IN (
+                        SELECT id_c FROM users_cstm 
+                        WHERE user_lineage LIKE '%$user_manager%' OR id_c='$user_manager'
+                        )";
+            $response['team'] = executeCountQuery($team_count);
+
+            $sql4 = "SELECT count(DISTINCT(id)) as totalCount FROM documents WHERE deleted != 1 AND date_entered >= now() - interval '$day' day ";
+            
+            $response['organisation'] = executeCountQuery($sql4);
+            
+            return $response;
+            //echo json_encode(array("status"=>true, "data" => json_encode($response),"message" => "Successful"));
+
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+        
+    }
+    function getDocumentColumnFilters($type = null){
+        /* Default Columns */
+        if($type){
+            $columnFilterHtml = '<form class="document-pending-settings-form sort-column">';
+            $columnFilterHtml .= '<input type="hidden" name="document-settings-section" class="document-pending-settings-section" value="" />
+            <input type="hidden" name="document-settings-type" class="document-pending-settings-type" value="" />
+            <input type="hidden" name="document-settings-type-value" class="document-pending-settings-type-value" value="" />';
+        }else{
+            $columnFilterHtml = '<form class="document-settings-form sort-column">';
+            $columnFilterHtml .= '<input type="hidden" name="document-settings-section" class="document-settings-section" value="" />
+            <input type="hidden" name="document-settings-type" class="document-settings-type" value="" />
+            <input type="hidden" name="document-settings-type-value" class="document-settings-type-value" value="" />';
+        }
+        $columnFields = $this->DocumentColumns();
+        $i = 0;
+        foreach($columnFields['default'] as $key => $field){
+            $style = '';
+            if($i <= 1)
+                $style = 'class="nondrag" style="pointer-events:none; background: #eeeeef;"';
+
+            if($i == 2){
+                $columnFilterHtml .= '<ul id="sortable1" class="sortable1 connectedSortable">';
+            }
+
+            $columnFilterHtml .= 
+                '<li '.$style.'>
+                    <input class="settingInputs" type="checkbox" id="name-select" name="'.$key.'" value="'.$key.'" checked="True" style="display: none">
+                    <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="'.$key.'" checked="True" style="display: none">
+                    <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> '.$field.'</label>
+                </li>';
+            $i++;
+        }
+        $columnFilterHtml .= '</ul></form>';
+
+        /* Addon Columns */
+        $columnFilterHtml .= '<div class="divider"></div><ul id="sortable2" class="sortable2 sort-column connectedSortable" style="padding-right: 0; float: right;">';
+        foreach($columnFields['addons'] as $key => $field){
+            $columnFilterHtml .= 
+                '<li>
+                    <input class="settingInputs" type="checkbox" id="name-select" name="'.$key.'" value="'.$key.'" checked="True" style="display: none">
+                    <input class="settingInputs" type="checkbox" id="name-select" name="customDocumentColumns[]" value="'.$key.'" checked="True" style="display: none">
+                    <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> '.$field.'</label>
+                </li>';
+        }
+        $columnFilterHtml .= '</ul>';
+
+        return $columnFilterHtml;
+    }
+
+    public function action_getDocument(){
+        try
+        {
+            $GLOBALS['db'];
+            global $current_user;
+            $db      = \DBManagerFactory::getInstance();
+            
+            $content = '';
+            $log_in_user_id = $current_user->id;
+            
+            $day        = $_GET['days'];
+            $searchTerm = isset($_GET['searchTerm']) ? $_GET['searchTerm'] : '';
+          
+            $user_for_delegates             = '';
+            $self_count                     = 0;
+            $team_count                     = 0;
+            $lead_data                      = "";
+            $global_organization_count      = 0;
+            $non_global_organization_count  = 0;
+            $fetch_by_status_c              = '';
+
+            $user_team                      = userTeam($log_in_user_id);
+            
+            $counts = $this->get_document_history();
+            if( !empty($counts) ){
+                $self_count = $counts['self_count'];
+                $team_count = $counts['team'];
+                $total      = $counts['organisation'];
+            }
+
+            $fetch_by_status    = "";
+            $result             = array();
+
+            $check_mc = $this->is_mc($log_in_user_id);
+
+            /* Document main HTML */
+            ob_start();
+            include_once 'templates/partials/document/main.php';
+            $content = ob_get_contents();
+            ob_end_clean();
+
+            $fetch_query = getDocumentQuery(); // getDocument Query.
+            // TODO : Need to change the functions and helper function ... check crm .txt file.
+            
+            //Pagination Query
+            $limit = 5;
+            $paginationQuery = $GLOBALS['db']->query($fetch_query);
+            $totalCount = mysqli_num_rows($paginationQuery);
+            $numberOfPages = ceil( $totalCount / $limit );
+            
+            $offset = $_GET['page'] ? ($_GET['page'] - 1)  * $limit : 0;
+
+            $fetch_query .= " LIMIT $offset, $limit";
+
+            $result = $GLOBALS['db']->query($fetch_query);
+            $response = $this->mysql_fetch_assoc_all($result); //get all result in an array
+
+            // /* Opportunities repeater HTML (Table ROW) */
+            ob_start();
+            include_once 'templates/partials/document/repeater.php';
+            $content .= ob_get_contents();
+            ob_end_clean();
+
+            $delegated_user_name = '';
+            $delegated_user_id = $this->get_document_delegated_user($log_in_user_id);
+            if ($delegated_user_id != null) {
+                $delegated_user = $this->get_user_details_by_id($delegated_user_id);
+                $delegated_user_name = $delegated_user['first_name'] . $delegated_user['last_name'];
+            }
+
+            // /* Pagination HTML */
+            $page = $_GET['page'] ? $_GET['page'] : 1;
+            if ($totalCount > ( $page * $limit)){
+                $currentPost = ($page * $limit);
+            } else {
+                $currentPost = $totalCount;
+            }
+            $content .= '<div class="pagination text-right">';
+            $content .= '<p class="d-inline-block">Showing '.$currentPost.' of '.$totalCount.'</p>';
+
+            $type = array(
+                'method' => 'document',
+                'status' => '',
+                'type' => ''
+            );
+
+            $content .= $this->documentpagination($page, $numberOfPages, $type, $day, $searchTerm, $_GET['filter']);
+            $content .= '</div>';
+            // /* End Pagination HTML */
+            $columnFilterHtml   = $this->getDocumentColumnFilters();
+            $filters            = $this->getDocumentFilterHtml('document', $_GET);
+
+            echo json_encode(array(
+                'data'                      => $content,
+                'total'                     => $total,
+                'self_count'                => $self_count,
+                'team_count'                => $team_count,
+                'delegate'                  => $this->checkDelegate(),
+                'delegateDetails'           => $this->getDocumentDelegateDetails(),
+                'global_organization_count' => $global_organization_count,
+                'non_global_organization'   =>  $non_global_organization_count,
+                'fetched_by_status'         =>  $fetch_by_status,
+                'columnFilter'              => $columnFilterHtml,
+                'filters'                   => $filters
+            ));
+
+
+            die;
+        }
+        catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+    function getDocumentDelegateDetails(){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        $query = "SELECT u.first_name, u.last_name, ds.user_id_c FROM documents d JOIN documents_cstm ds ON ds.id_c = d.id JOIN users u ON u.id = ds.user_id_c WHERE d.deleted != 1 AND d.date_entered >= now() - interval '1200' day AND ds.delegate_id = '$log_in_user_id' GROUP BY ds.user_id_c ";
+        $result = $GLOBALS['db']->query($query);
+        $delegateData = array();
+        while($row = $GLOBALS['db']->fetchByAssoc($result)){
+            $dData = array(
+                'name' => $row['first_name'].' '.$row['last_name'],
+                'count' => $this->getDocumentDelegateCount($row['user_id_c'])
+            );
+            array_push($delegateData, $dData);
+        }
+        $output = '';
+        foreach($delegateData as $d){
+            $output .= $d['name'].' - '.$d['count'].'<br>';
+        }
+        return $output;
+    }
+
+    function getDocumentDelegateCount($userID){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        $query = "SELECT count(*) as count FROM document_approval_table dp";
+        $query .= " JOIN documents d ON d.id = dp.doc_id";
+        $query .= " WHERE dp.approval_status = '0' AND d.deleted != 1 AND d.date_entered >= now() - interval '1200' day AND dp.approver = '$userID' AND dp.delegate_id = '$log_in_user_id' ";
+        $result = $GLOBALS['db']->query($query);
+        $count = $GLOBALS['db']->fetchByAssoc($result);
+        return $count['count'];
+    }
     
 
+    
+    function getDocumentFilterHtml($type, $columnFilter){
+
+        $query = getQuery('DISTINCT(template_type)', 'documents');
+        $interactions = $this->mysql_fetch_assoc_all($query);
+        $html = '';
+        /* default fields */
+        // $html = '<div class="form-group">
+        //     <span class="primary-responsibilty-filter-head">Document Name</span>
+        //     <input type="text" class="form-control filter-document_name" name="filter-name" />
+        //     </div>';
+
+        // $html = '<div class="form-group">
+        //         <span class="primary-responsibilty-filter-head">Document Type</span>
+        //         <select class="" name="filter-document_type">
+        //             <option value="">Select Type</option>';
+        
+        // foreach($interactions as $i){
+        //     if( ! is_null( $i['template_type'])&& $i['template_type']!== ''){
+
+        //        $html .= '<option value="'.$i['template_type'].'">'.beautify_label($i['template_type']).'</option>';
+        //     }
+        // }   
+        // $html .= '</select></div>';
+
+        $columns = $this->DocumentColumns();
+        foreach($columns['default'] as $key => $c){
+            if(isset($columnFilter[$key])){
+                $html .= $this->DocumentfilterFields($type, $columnFilter[$key]);
+            }
+        }
+
+        foreach($columns['addons'] as $key => $c){
+            if(isset($columnFilter[$key])){
+                $html .= $this->DocumentfilterFields($type, $columnFilter[$key]);
+            }
+        }
+        
+        return $html;
+    }
+
+    function get_all_option($column){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+        $fetch_query = 'SELECT DISTINCT('.$column.') as category FROM documents LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c WHERE deleted != 1';
+        $result = $GLOBALS['db']->query($fetch_query);
+        $data = '<option value="">Select Type</option>';
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                if( ! is_null( $row['category'])&& $row['category']!== ''){
+                    $data .= '<option value="'.$row['category'].'">'.$row['category'].'</option>';
+                }
+            }
+        }
+        return $data;
+    }
+
+
+    function DocumentfilterFields($type, $columnFilter){
+        $data = '';
+        switch($columnFilter){
+            case 'related_to':
+                $option = $this->get_all_option('parent_type');
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Related to</span>
+                    <select class="" name="filter-related_to" id="">
+                        '.$option.'
+                    </select>
+                    </div>';
+                break;
+
+            case 'document_type':
+                $option = $this->get_all_option('template_type');
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Document Type</span>
+                    <select class="" name="filter-document_type" id="">
+                        '.$option.'
+                    </select>
+                    </div>';
+                break;
+            
+            case 'category':
+                $option = $this->get_all_option('category_c');
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Category</span>
+                    <select class="" name="filter-category" id="">
+                        '.$option.'
+                    </select>
+                    </div>';
+                break;
+            case 'sub_category':
+                $option = $this->get_all_option('sub_category_c');
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Sub Category</span>
+                    <select class="" name="filter-sub_category" id="">
+                        '.$option.'
+                    </select>
+                    
+                    </div>';
+                break;
+            case 'uploaded_by':
+                $users = $this->get_all_users_option();
+                $data = '<div class="form-group">
+                    <span class="primary-responsibilty-filter-head">Uploaded by</span>
+                    <select class="select2" name="filter-uploaded-by[]" id="" multiple>
+                        '.$users.'
+                    </select>
+                    </div>';
+                break;            
+            default:
+                $data = '';
+                break;
+        }
+        return $data;
+    }
+
+    function getDocumentColumnFiltersHeader($columnFilter){
+
+        $data = '';
+        $customColumns = $_GET['customDocumentColumns'];
+        // echo $_GET['customDocumentColumns'];
+        if($customColumns):
+        foreach($customColumns as $key => $column){
+            $data .= $this->getDocumentColumnHtml($column);
+        }
+        endif;
+
+        return $data;
+    }
+
+    function getDocumentColumnHtml($column){
+        $data = '';
+        switch($column){
+            case 'name':
+                $data .= '<th class="table-header">Document Name</th>';
+                break; 
+            case 'document_type':
+                $data .= '<th class="table-header">Document Type</th>';
+                break; 
+            case 'related_to':
+                $data .= '<th class="table-header">Related To</th>';
+                break;
+            case 'category':
+                $data .= '<th class="table-header">Category</th>';
+                break;
+            case 'sub_category':
+                $data .= '<th class="table-header">Sub Category</th>';
+                break;
+            case 'uploaded_by':
+                $data .= '<th class="table-header">Uploaded by</th>';
+                break;
+            // case 'new_current_status_c':
+            //     $data .= '<th class="table-header">Comments</th>';
+            //     break;
+            // case 'description':
+            //     $data .= '<th class="table-header">Summary of Interaction</th>';
+            //     break;
+            // case 'new_key_action_c':
+            //     $data .= '<th class="table-header">Key Actionable / Next Steps identified from the Interaction</th>';
+            //     break;
+            // case 'next_date_c':
+            //     $data .= '<th class="table-header">Next Follow-Up / Interaction Date</th>';
+            //     break;
+            // case 'name_of_person_c':
+            //     $data .= '<th class="table-header">Name of Person Contacted</th>';
+            //     break;
+        }
+        return $data;
+    }
+
+    function getDocumentColumnFiltersBody($columnFilter, $row){
+
+        $data = '';
+        $customColumns = @$_GET['customDocumentColumns'];
+
+        if($customColumns):
+        foreach($customColumns as $column){
+            $data .= $this->getDocumentColumnDataHtml($column, $row);
+        }
+        endif;
+
+        return $data;
+
+    }
+
+    function getDocumentColumnDataHtml($column, $row){
+        $data = '';
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+
+        switch($column){
+            case 'name':
+                $data .= '<td class="table-data">';
+                    $data .= '<a href="index.php?module=Documents&action=DetailView&record='.$row['id'].'">';
+
+                    $tag_icon_query = 'SELECT * FROM documents_cstm where id_c = "' .$row['id'].'"';
+                    $result = $GLOBALS['db']->query($tag_icon_query);
+                    $tagged_user = $result->fetch_assoc();
+                    $tagged_user_array = explode(',',$tagged_user['tagged_hidden_c']); 
+
+                    $data .= '<h2 class="document-title">'. $row['document_name'];
+                    if (in_array($log_in_user_id,$tagged_user_array)){
+                        $data .= '   <i class="fa fa-tag" style="font-size: 12px; color:green"></i></h2></a>';
+                    }
+                    else {
+                        $data .= '</h2></a>';
+                    }
+                    $data .= '</td>';
+
+                    break; 
+            case 'related_to':
+                $parent_type = '';
+                $data .= '<td class="table-data">';
+
+                $data .= '<h2 class="document-related-name">'. getDocumentRelatedTo($row['parent_type'], $row['parent_id']) .'</h2>';
+
+                $data .= '<span class="document-related-type">'. $row['parent_type'] .'</span></td>';
+                break;
+            case 'document_type':
+                $data .= '<td class="table-data">'. $row['template_type'] .'</td>';
+                break;
+            case 'category':
+                $data .= '<td class="table-data">'. $row['category_c'] .'</td>';
+                break;
+            case 'sub_category':
+                $data .= '<td class="table-data">'. $row['sub_category_c'] .'</td>';
+                break;
+            case 'uploaded_by':
+                $data .= '<td class="table-data">';
+                $data .= '<h2 class="document-related-uploaded_by">'. getUsername($row['created_by']) .'</h2>';
+                $data .= '<span class="document-related-uploaded_date">'. date( 'd/m/Y', strtotime($row['follow_up_date_c']) ) .'</span></td>';
+                break;
+            // case 'date_modified':
+            //     $data .= '<td class="table-data">'. date( 'd/m/Y', strtotime($row['date_modified']) ) .'</td>';
+            //     break;
+            // case 'assigned_to_c':
+            //     $data .= '<td class="table-data">'. $row['assigned_to_c'] .'</td>';
+            //     break;
+            // case 'new_current_status_c':
+            //     $data .= '<td class="table-data">'. $row['new_current_status_c'] .'</td>';
+            //     break;
+            // case 'description':
+            //     $data .= '<td class="table-data">'. $row['description'] .'</td>';
+            //     break;
+            // case 'new_key_action_c':
+            //     $data .= '<td class="table-data">'. $row['new_key_action_c'] .'</td>';
+            //     break;
+            // case 'next_date_c':
+            //     $data .= '<td class="table-data">'. date( 'd/m/Y', strtotime($row['next_date_c'] ) ) .'</td>';
+            //     break;
+            // case 'name_of_person_c':
+            //     $data .= '<td class="table-data">'. $row['name_of_person_c'] .'</td>';
+            //     break;
+        }
+        return $data;
+    }
+
+    function documentpagination($page, $numberOfPages, $type, $day, $searchTerm, $filter){
+
+        $ends_count = 1;  //how many items at the ends (before and after [...])
+        $middle_count = 2;  //how many items before and after current page
+        $dots = false;
+
+        $data = '<ul class="d-inline-block">';
+        
+        if($page > 1)
+            $data .= '<li class="" onClick=documentpaginate("'.($page - 1).'","'.$type['method'].'","'.$day.'","'.$searchTerm.'","'.$filter.'","'.$type['status'].'","'.$type['type'].'")><strong>&laquo;</strong> Prev</li>';
+
+        for ($i = 1; $i <= $numberOfPages; $i++) {
+            $currentPage = $page ? $page : 1;
+            $class = $currentPage == $i ? 'active paginate-class' : 'paginate-class';
+
+            
+            $onClick = 'onClick=documentpaginate("'.$i.'","'.$type['method'].'","'.$day.'","'.$searchTerm.'","'.$filter.'","'.$type['status'].'","'.$type['type'].'")';
+
+            if ($i == $page) {
+                $data .= '<li class="'.$class.'" '.$onClick.'>'.$i.'</li>';
+                $dots = true;
+            } else {
+                if ($i <= $ends_count || ($page && $i >= $page - $middle_count && $i <= $page + $middle_count) || $i > $numberOfPages - $ends_count) { 
+                    $data .= '<li class="'.$class.'" '.$onClick.'>'.$i.'</li>';
+                    $dots = true;
+                } elseif ($dots){
+                    $data .= '<li class="paginate-class">&hellip;</li>';
+                    $dots = false;
+                }
+            }
+        }
+        if ($page < $numberOfPages || -1 == $numberOfPages) { 
+        $data .= '<li class="" onClick=documentpaginate("'.($page + 1).'","'.$type['method'].'","'.$day.'","'.$searchTerm.'","'.$filter.'","'.$type['status'].'","'.$type['type'].'")>Next <strong>&raquo;</strong></li>';
+        }
+            
+        $data .= '</ul>';
+        return $data;
+    }
+
+    //TODO : 
+    // Chanage the name of the variable 
+    // look at this function again =.
+    public function action_get_document_graph(){
+        $day = $_GET['dateBetween'];
+        $totalCount = 0;
+        $totalCount = $this->getDocumentStatusCountGraph(null , $day);
+        // $leadCount = round($this->getDocumentStatusCountGraph('Lead') / $totalCount * 100, 0);
+        if ($totalCount > 0) {
+            $Sales = round($this->getDocumentStatusCountGraph('sales', $day) / $totalCount * 100, 0);
+            $EntityDocuments = round($this->getDocumentStatusCountGraph('entity_documents', $day) / $totalCount * 100, 0);
+            $ResearchandIntelligence = round($this->getDocumentStatusCountGraph('research_intelligence', $day) / $totalCount * 100, 0);
+        }
+        $Sales = $Sales ? $Sales : 0;
+        $EntityDocuments = $EntityDocuments ? $EntityDocuments : 0;
+        $ResearchandIntelligence = $ResearchandIntelligence ? $ResearchandIntelligence : 0;
+        
+        $data = '';
+
+        if($Sales):
+            $data .= '<div style="width: '.$Sales.'%" class="graph-bar-each">
+                    <div style="width: 100%;height: 70px;background-color: #DDA0DD;"></div>
+                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$Sales.'%</p>
+                </div>';
+        endif;
+
+        if($EntityDocuments):
+            $data .= '<div style="width: '.$EntityDocuments.'%" class="graph-bar-each">
+                    <div style="width: 100%;height: 70px;background-color: #4B0082;"></div>
+                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$EntityDocuments.'%</p>
+                </div>';
+        endif;
+        
+        if($ResearchandIntelligence):
+            $data .= '<div style="width: '.$ResearchandIntelligence.'%" class="graph-bar-each">
+                    <div style="width: 100%; height: 70px; background-color: #0000FF;"></div>
+                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$ResearchandIntelligence.'%</p>
+                </div>';
+        endif;
+        echo json_encode(array("data"=>$data, "message" => "Success"));
+        // echo $data;
+        die;
+    }
+    function getDocumentStatusCountGraph($status = null, $day, $closure_status = null){
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+
+        $query = "SELECT count(*) as count FROM documents_cstm dc LEFT JOIN documents d ON d.id = dc.id_c WHERE d.deleted != 1 AND d.date_entered >= now() - interval '".$day."' day";
+        if($status)
+            $query .= " AND d.template_type = '".$status."' ";
+
+        $count = $GLOBALS['db']->query($query);
+        $count = $GLOBALS['db']->fetchByAssoc($count);
+        return $count['count'];
+    }
+    
+    ///  ::::::::::::::::::::::::::::::::::::::::::::::::::::::  Joytrimoy Code ::::::::::::::::::::::::::::::::::::::::::::::::::
+
+    public function action_set_note_for_document() {
+        try {
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            global $current_user;
+            $doc_id = $_POST['doc_id'];
+            $note = $_POST['note'];
+            $user_id = $current_user->id;
+
+            $query = "INSERT INTO document_note (doc_id, created_by, notes) VALUES ('$doc_id', '$user_id', '$note')";
+            $GLOBALS['db']->query($query);
+
+            echo json_encode(array("status"=> true, "message" => "Note Added"));
+            die();
+        } catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+    public function is_document_tagging_applicable($document_id) {
+        try {
+
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            $team_func_array = $team_func_array1 = $others_id_array = array();
+
+            $sql ="SELECT assigned_user_id FROM documents where id ='$document_id' ";
+            $result = $GLOBALS['db']->query($sql);
+            $row = $result->fetch_assoc();
+            $user_id = $row['assigned_user_id'];
+
+            $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
+            $result1 = $GLOBALS['db']->query($sql1);
+            $row = $result1->fetch_assoc();
+            if (strpos($row['user_lineage'], ',') !== false) {
+                $team_func_array = explode(',',  $row['user_lineage']);
+            }
+            $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+            $result3 = $GLOBALS['db']->query($sql3);
+            while($row3 = $GLOBALS['db']->fetchByAssoc($result3))
+            {
+                $check_sales = $row3['teamfunction_c'];
+                $check_mc = $row3['mc_c'];
+                $check_team_lead = $row3['teamheirarchy_c'];
+
+            }
+
+            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) ){
+                return true;
+            }
+            else {
+                return false;
+            }
+
+
+        }catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+    // Function for checking DB if the specific document note is applicable
+    public function is_document_note_applicable($doc_id) {
+        try {
+
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            $team_func_array = $team_func_array1 = $others_id_array = array();
+
+            $sql ="SELECT assigned_user_id FROM documents where id ='$doc_id' ";
+            $result = $GLOBALS['db']->query($sql);
+            $row = $result->fetch_assoc();
+            $user_id = $row['assigned_user_id'];
+
+            $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
+            $result1 = $GLOBALS['db']->query($sql1);
+            $row = $result1->fetch_assoc();
+            if (strpos($row['user_lineage'], ',') !== false) {
+                $team_func_array = explode(',',  $row['user_lineage']);
+            }
+            $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+            $result3 = $GLOBALS['db']->query($sql3);
+            while($row3 = $GLOBALS['db']->fetchByAssoc($result3))
+            {
+                $check_sales = $row3['teamfunction_c'];
+                $check_mc = $row3['mc_c'];
+                $check_team_lead = $row3['teamheirarchy_c'];
+
+            }
+
+            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) ){
+                return true;
+            }
+            else {
+                return false;
+            }
+
+
+        }catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+
+
+    // delegate document functions 
+    public function action_document_delegated_dialog_info(){
+        try {
+            $db = \DBManagerFactory::getInstance();
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $GLOBALS['db'];
+
+            $delegated_user_id = $this->get_document_delegated_user($log_in_user_id);
+            
+            if ($delegated_user_id) {
+                $delegated_user = $this->get_user_details_by_id($delegated_user_id);
+            }
+            
+            if (!empty(@$delegated_user) && (@$delegated_user['first_name'] || @$delegated_user['last_name'])) {
+                $delegated_user_name = $delegated_user['first_name'] . $delegated_user['last_name'];
+            }
+            $data = $delegated_user_id;
+            if(@$delegated_user_name):
+                $data = ' <table class="delegatetable">
+                            <thead>
+                                <tr class="delegatetable-header-row-popup">
+                                    <th class="delegatetable-header-popup">Current Delegate</th>
+                                    <th class="delegatetable-header-popup">Action Completed</th>
+                                    <th class="delegatetable-header-popup">Permissions</th>
+                                    <th></th>
+                                </tr></thead>';
+                $data .= '
+                    <tbody>
+                    <tr>
+                    <td class="delegatetable-data-popup">'.$delegated_user_name.'</td>
+                    <td class="delegatetable-data-popup" style="color: #00f;">'.$this->document_delegateActionCompleted($delegated_user_id).'</td>
+                    <td class="delegatetable-data-popup">Edit</td>
+                    <td>
+                        <button type="button" style="margin-left: 100px; margin-bottom: 10px; margin-top: 20px;" class="btn2 remove-document-delegate">Remove</button>
+                    </td>
+                </tr>';
+                $data .= '</tbody></table>';
+            endif; 
+        
+        
+            echo json_encode(array('delegated_info' => $data, 'delegated_id' => $log_in_user_id));
+        } catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+    }
+    public function action_document_store_delegate_result(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $GLOBALS['db'];
+            $proxy = $_POST['Select_Proxy'];
+
+            $save_delegate_query = "UPDATE documents_cstm as d2 
+                LEFT JOIN documents ON documents.id = d2.id_c
+                SET d2.delegate_id = '$proxy' , delegate_date = now()
+                WHERE documents.deleted != 1 AND d2.user_id_c = '$log_in_user_id'";
+            
+            $save_delegate_query_result = $GLOBALS['db']->query($save_delegate_query);
+
+            $approvalDelegateUpdate = "UPDATE document_approval_table SET delegate_id = '$proxy' WHERE approver = '$log_in_user_id' AND approval_status = 1";
+            $approvalDelegateUpdateQuery = $GLOBALS['db']->query($approvalDelegateUpdate);
+
+            //$fetch_organization_count = $GLOBALS['db']->fetchByAssoc($save_delegate_query_result);
+        echo json_encode(array("status"=>true, "message"=>"Data Succesfully updated", "proxy"=> $proxy));
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+
+    }
+    public function action_document_remove_delegate_user(){
+        try{
+            $db = \DBManagerFactory::getInstance();
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $GLOBALS['db'];
+            $save_delegate_query = "UPDATE documents_cstm as d2 
+                LEFT JOIN documents ON documents.id = d2.id_c
+                SET d2.delegate_id = '', delegate_date = NULL
+                WHERE documents.deleted != 1 AND d2.user_id_c = '$log_in_user_id' ";
+            
+            $save_delegate_query_result = $GLOBALS['db']->query($save_delegate_query);
+
+            $save_delegate_query = "UPDATE document_approval_table  
+                SET delegate_id = ''
+                WHERE approver = '$log_in_user_id'";
+            
+            $save_delegate_query_result = $GLOBALS['db']->query($save_delegate_query);
+
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+    }
+    function document_delegateActionCompleted($userID){
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+        $query = "SELECT count(*) as count FROM document_approval_table aap";
+        $query .= " JOIN documents d ON d.id = aap.acc_id";
+        $query .= " WHERE approval_status = '1' AND d.deleted != 1 AND aap.approver = '$log_in_user_id' AND aap.delegate_id = '$userID' ";
+
+        $result = $GLOBALS['db']->query($query);
+        $count = $GLOBALS['db']->fetchByAssoc($result);
+        return $count['count'];
+    }
+
+    function action_get_document_approval_item(){
+        try
+        {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            
+            $id = $_POST['id'];
+            $event = $_POST['event'];
+
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $data= '';
+            $fetch_query = "SELECT d.*, ds.* FROM documents d JOIN document_approval_table ap ON ap.doc_id = d.id LEFT JOIN documents_cstm ds ON d.id = ds.id_c WHERE d.deleted != 1 AND d.date_entered >= now() - interval '1200' day AND ap.id = '$id'";
+            $result = $GLOBALS['db']->query($fetch_query);
+            while($row = $GLOBALS['db']->fetchByAssoc($result))
+            {
+                $temp = ($event == 'Approve') ? 'Approval' : 'Rejection';
+                $data = '
+                <input type="hidden" name="doc_id" value="'.$row['id'].'" />
+                <input type="hidden" name="event" value="'.$event.'" />
+                <input type="hidden" name="approval_id" value="'.$id.'" />
+                <h2 class="approvalheading">'.$row['document_name'].'</h2><br>
+                <p class="approvalsubhead">'. $temp .' of Document
+                </p>
+                <section>
+                    <div style="padding: 10px 15px;">
+                        <table class="approvaltable" width="100%">
+                            <tr class="tapprovalable-header-row-popup">
+                                <th class="approvaltable-header-popup">Document</th>
+                                <th class="approvaltable-header-popup">Related To</th>
+                                <th class="approvaltable-header-popup">Status</th>
+                                <th class="approvaltable-header-popup">Document Type</th>
+                                <th class="approvaltable-header-popup">Uploaded By</th>
+                                <th class="approvaltable-header-popup">Last Updated</th>
+                            </tr>';
+
+                        $data .='
+                            <tr>
+                                <td class="approvaltable-data-popup">'.$row['document_name'].'</td>
+                                <td class="approvaltable-data-popup">'.getDocumentRelatedTo($row['parent_type'], $row['parent_id']).'<br><span class="document-related-type">'. $row['parent_type'] .'</span></td>
+                                <td class="approvaltable-data-boolean-popup">'.$row['status_c'].'</td>
+                                <td class="approvaltable-data-popup">'.$row['template_type'].'</td>
+                                <td class="approvaltable-data-popup">'. getUsername($row['created_by']) .'<br><span class="document-related-uploaded_date">'. date( 'd/m/Y', strtotime($row['follow_up_date_c']) ) .'</span></td>
+                                <td class="approvaltable-data-popup">'.date( 'd/m/Y', strtotime($row['date_modified']) ).'</td>
+                            </tr>';
+                    $data .= '
+                        </table> <!-- /.col-md-12 -->
+                    </div>
+                    <div style="padding: 30px 15px 0;">
+                        <label style="font-family: "Noto Sans JP", sans-serif; padding-left: 15px; font-size: 15px;" for="approvaltype-comment">Write a comment</label>
+                        <!-- <textarea class="approvaltextarea" placeholder="Type here" style="border-color: #C0C0C0; font-family: "Noto Sans JP", sans-serif; border-radius: 3px; margin-top: 3px;" id="approvaltype-comment" rows="3"></textarea> -->
+                    </div>
+        
+                    <textarea class="approvaltextarea" name="comment" placeholder="Type Subject here" style="border-color: #C0C0C0; font-family: \'Noto Sans JP\', sans-serif; border-radius: 3px; margin-top: 10px; width: 94%; height: 100px;" id="approvalSubject" rows="1"></textarea>
+                    <div style=" padding-top: 20px;padding-bottom: 20px;padding-left: 20px;">
+                        <button class="btn1" type="button" onClick=updateDocumentStatus();>'.$event.'</button>
+                        <button type="button" style="margin-left: 10px;" class="btn2" id="approvalclose" onClick="openDocumentApprovalDialog(\'close\');">Cancel</button>
+                    </div>
+                </section>';
+            }
+            echo $data;
+                  }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+    public function action_document_note_dialog_info() {
+        try {
+
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $doc_id = $_REQUEST['id'];
+
+            $fetch_document_info = "SELECT documents.document_name, documents.date_entered, documents.created_by, documents.doc_type, documents.id as doc_id, documents_cstm.category_c as category_name, documents_cstm.sub_category_c as sub_category_name, documents_cstm.parent_type, documents_cstm.parent_id FROM documents
+            LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c WHERE documents.id = '$doc_id'";
+
+            $fetch_document_info_result = $GLOBALS['db']->query($fetch_document_info);
+            $row = $GLOBALS['db']->fetchByAssoc($fetch_document_info_result);
+            $created_user_id = $row['created_by'];
+            $user_full_name = getUsername($created_user_id);
+            $sub_head = 'Write a note';
+
+            $fetch_notes_history = "SELECT * FROM document_note WHERE doc_id = '$doc_id'";
+            $fetch_notes_history_result = $GLOBALS['db']->query($fetch_notes_history);
+
+            $data = '
+                <h2 class="deselectheading">' . $row['document_name'] . '</h2><br>
+                <p class="deselectsubhead">'.$sub_head.'</p>
+                <hr class="deselectsolid" style="border-bottom: 1px solid black;">
+                <section class="deselectsection">
+                <table align="centered" width="100%">
+                    <thead>
+                    <tr class="tabname" style="font-size: 15px;">
+                        <th><strong>Document Type</strong></th>
+                        <th>Category</th>
+                        <th>Sub Category</th>
+                        <th>Related To</th>
+                        <th>Uploaded By</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="tabvalue">
+                        <td>' . ucfirst($row['doc_type']) . '</td>
+                        <td>' . ucfirst($row['category_name']) . '</td>
+                        <td>' . ucfirst($row['sub_category_name']) . '</td>
+                        <td> <h2 class="document-related-name">' . getDocumentRelatedTo($row['parent_type'] , $row['parent_id']) . '</h2> <span class="document-related-type">'. $row['parent_type'] .'</span></td>
+                        <td> <h2 class="document-related-name">' . ucwords($user_full_name) . '</h2> <span class="document-related-type">'. $row['date_entered'] .'</span></td>
+
+                      
+                        </tr>';
+            $data .= '</tbody></table>';
+
+            $notes_history = '
+                
+                <hr class="deselectsolid" style="border-bottom: 1px solid black;">
+                <section class="deselectsection">
+                <table align="centered" width="100%">
+                    <thead>
+                    <tr class="tabname">
+                        <th>Previous Notes</th>
+                        <th>By</th>
+                        <th>Posted On</th>
+                    </tr>
+                    </thead>
+                    <tbody>';
+
+            while($row1 = $GLOBALS['db']->fetchByAssoc($fetch_notes_history_result))
+            {
+                $note_creator_id = $row1['created_by'];
+                $note_creator = getUsername($note_creator_id);
+                $notes_history .= '<tr class="tabvalue">
+                        <td>' . ucfirst($row1['notes']) . '</td>
+                        <td>' . ucwords($note_creator). '</td>
+                        <td>' . $row1['posted_date'] . '</td>
+                       
+                        </tr>';
+            }
+
+            $notes_history .= '</tbody></table>';
+
+
+
+            echo json_encode(array('document_info'=>$data, 'doc_id'=>$doc_id, 'notes_history'=>$notes_history, 'doc_creator'=>ucwords($user_full_name)));
+
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+
+    /* approve / reject pending document */
+    function action_document_status_update(){
+        try
+        {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            
+            $id = $_POST['doc_id'];
+            $approval_id = $_POST['approval_id'];
+            $event = $_POST['event'];
+            $comment = $_POST['comment'];
+
+            if($event == 'Approve')
+                $ApprovalStatus = '1';
+            else
+                $ApprovalStatus = '2';
+            
+            date_default_timezone_set('Asia/Kolkata');
+            $date = date('Y-m-d');
+        
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+
+            $data = $this->getDbData('document_approval_table', '*', "doc_id = '$id' ");
+            
+            $data = $data[0];
+            $doc_id = $data['doc_id'];
+            $doc_type = $data['doc_type'];
+            $status = $data['status'];
+            $sender = $data['sender'];
+            $sent_time = $data['sent_time'];
+            $approver = $data['approver'];
+            $delegateID = $data['delegate_id'];
+            
+
+            $updateQuery = "UPDATE document_approval_table SET approval_status = '$ApprovalStatus' ";
+            if($this->isDocumentDelegate($log_in_user_id, $id))
+                $updateQuery .= ", delegate_comment = '$comment' , delegate_approve_reject_date = '$date' ";
+            else
+                $updateQuery .= " , approver_comment = '$comment' , approve_reject_date= '$date' ";
+            $updateQuery .= " WHERE doc_id = '$id' ";
+
+            if($db->query($updateQuery)==TRUE){
+                if($ApprovalStatus == 1){
+                    $updateDocument = "UPDATE documents_cstm SET status_c = 'Completed' WHERE id_c = '$id'";
+                    $db->query($updateDocument);
+                    require_once 'data/BeanFactory.php';
+                    require_once 'include/utils.php';
+                    $u_id = create_guid();
+                    $created_date= date("Y-m-d H:i:s", time());
+            		$sql_insert_audit = 'INSERT INTO `documents_audit`(`id`, `parent_id`, `date_created`, `created_by`, `field_name`, `data_type`, `before_value_string`, `after_value_string`, `before_value_text`, `after_value_text`) VALUES ("'.$u_id.'","'.$id.'","'.$created_date.'","'.$log_in_user_id.'","status_new_c","varchar","Apply for Completed","Completed"," "," ")';
+            		$result_audit = $GLOBALS['db']->query($sql_insert_audit);
+                }
+               echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "query" => $updateQuery, "update_document"=>$updateDocument));
+            }else{
+                echo json_encode(array("status"=>false, "message" => "Some error occured"));
+            }
+            
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured", "query" => $updateQuery));
+        }
+        die();
+    }
+
+    public function action_document_tag_dialog_info()
+    {
+        try {
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $doc_id = $_REQUEST['id'];
+            $fetch_document_info = "SELECT * FROM documents
+                LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c WHERE id = '$doc_id'";
+            $fetch_document_info_result = $GLOBALS['db']->query($fetch_document_info);
+            $row = $GLOBALS['db']->fetchByAssoc($fetch_document_info_result);
+            $assigned_user_id = $row['assigned_user_id'];
+            $created_by = $row['created_by'];
+            $user_full_name = getUsername($assigned_user_id);
+            $creator_full_name = getUsername($created_by);
+            $sub_head = 'Selected members will be able to view details or take action';
+            $change_font = "Select Member";
+
+
+            $data = '
+                <h2 class="deselectheading">' . $row['document_name'] . '</h2><br>
+                <p class="deselectsubhead">'.$sub_head.'</p>
+                <hr class="deselectsolid">
+                <section class="deselectsection">
+                <table align="centered" width="100%">
+                    <thead>
+                    <tr class="tabname">
+                        <th>Last Update</th>
+                        <th>Document Type</th>
+                        <th>Assigned to</th>
+                        <th>Uploaded By</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="tabvalue">
+                        <td>' . date_format(date_create($row['date_modified']), 'd/m/Y') . '</td>
+                        <td>' . ucfirst($row['template_type']) . '</td>
+                        <td>' . ucwords($user_full_name). '</td>
+                        <td>' . ucwords($creator_full_name). '</td>
+                        </tr>';
+            $data .= '</tbody></table>';
+            $optionList = $this->document_tag_dialog_dropdown_info($doc_id);
+
+
+          echo json_encode(array('document_info'=>$data,'document_id'=>$doc_id, 'optionList'=> $optionList));
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+
+    public function document_tag_dialog_dropdown_info($doc_id) {
+        try {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $fetch_query = "SELECT * FROM users WHERE deleted = 0 AND `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC";
+            $result = $GLOBALS['db']->query($fetch_query);
+            $data = '<select class="select2" name="tag_document[]" id="" multiple>';
+            $tagged_user_query = "SELECT * from documents_cstm where id_c = '$doc_id'";
+            $result1 = $GLOBALS['db']->query($tagged_user_query);
+            $tagged_user_row = $result1->fetch_assoc();
+
+
+            $tagged_user_array = explode(',', $tagged_user_row['tagged_hidden_c']);
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    $full_name = $row['first_name'] . ' ' . $row['last_name'];
+                    if (in_array($row['id'],$tagged_user_array)){
+                        $data .= '<option value="'.$row['id'].'" selected>'.$full_name.'</option>';
+                    }
+                    else{
+                        $data .= '<option value="'.$row['id'].'" >'.$full_name.'</option>';
+                    }
+                }
+            }
+            $data .= "</select>";
+            return $data;
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+    }
+
+    public function action_set_document_for_tag(){
+        try {
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            // $document_id = $_POST['document_id'];
+            $document_id = $_POST['document_tag_id'];
+            $user_id_list = '';
+            if ($_POST['userIdList'] != "undefined") {
+                $user_id_list = $_POST['userIdList'];
+            }
+            if ($_POST['tag_document']) {
+                $user_id_list = $_POST['tag_document'];
+                $user_id_list = implode(',',$user_id_list);
+            }
+            $count_query = "SELECT * FROM documents_cstm WHERE id_c='$document_id'";
+            $result = $GLOBALS['db']->query($count_query);
+
+            $sub_query = "UPDATE documents_cstm SET tagged_hidden_c = '$user_id_list' WHERE id_c='$document_id'";
+            $GLOBALS['db']->query($sub_query);
+
+            echo json_encode(array("status"=> true, "message" => "Value Updated"));
+        } catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+
+    }
+
+
+    ///  ::::::::::::::::::::::::::::::::::::::::::::::::::::::  Joytrimoy Code ::::::::::::::::::::::::::::::::::::::::::::::::::
+    
+    
+    
+    //--------------------------------------for download----------------------//
+
+     function action_document_export(){
+
+        global $current_user;
+
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        $log_in_user_id = $current_user->id;
+
+        $day        = isset( $_GET['day'] ) ? $_GET['day'] : $_COOKIE['day'];
+        $status_c   = isset( $_GET['status_c'] ) ? $_GET['status_c'] : '';
+        $dropped    = isset( $_GET['dropped'] ) ? $_GET['dropped'] : '';
+        $type       = isset( $_GET['csvtype'] ) ? $_GET['csvtype'] : '';
+
+
+        //  LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
+        
+        $query = "SELECT documents.*, documents_cstm.*,
+            FROM documents 
+            LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c 
+            WHERE documents.deleted != 1 AND documents.date_entered >= now() - interval '$day' day ";
+
+        // if($status_c){
+        //     $query .= " AND documents.status_c='$status_c'";
+        // }
+
+        // if($type){
+        //     $opp_id_show = private_opps();
+        //     if($type == 'non_global') {
+        //         $query .= " opportunities.id  IN ('".implode("','",$opp_id_show)."'))";
+        //     }
+        //     else {
+        //         $query .= " AND opportunities.opportunity_type='$type' ";
+        //     }
+        // }
+        
+
+        // if($status_c == 'Closed'){
+        //     $query .= ' AND opportunities_cstm.closure_status_c = "won" ';
+        // }else if($status_c == 'Dropped' ){
+        //     $query = "SELECT opportunities.*, opportunities_cstm.*,
+        //         CAST(REPLACE(year_quarters.total_input_value, ',', '')as SIGNED) as total_input_value FROM opportunities 
+        //         LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c 
+        //         LEFT JOIN year_quarters ON year_quarters.opp_id = opportunities.id
+        //         WHERE opportunities.deleted != 1 AND opportunities.date_entered >= now() - interval '$day' day ";
+        //     if ($dropped) {
+        //         if ($dropped == 'Dropped') {
+        //             $query .= "AND opportunities_cstm.status_c='Dropped'";
+        //         } else {
+        //             $query .= "AND (opportunities_cstm.status_c='Closed' AND opportunities_cstm.closure_status_c = 'lost')";
+        //         }
+        //     } else {
+        //         $query .= "AND (opportunities_cstm.status_c='Dropped' OR (opportunities_cstm.status_c='Closed' AND opportunities_cstm.closure_status_c = 'lost'))";
+        //     }
+        // }
+
+
+        $query .= $this->getDocumentFilterQuery();  //get filter query if any;
+
+        // echo $query;
+
+        $columnFields = $this->DocumentColumns();
+        foreach($columnFields['default'] as $key => $field){
+            $headers[] = $field;
+        }
+        foreach($columnFields['addons'] as $key => $field){
+            $headers[] = $field;
+        }
+
+
+        $result = $GLOBALS['db']->query($query);
+        while($row = $GLOBALS['db']->fetchByAssoc($result)){
+            $created_by_id = $row['created_by'];
+
+            $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
+            $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
+            $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
+
+            $user_name = $user_name_fetch_row['user_name'];
+            $first_name = $user_name_fetch_row['first_name'];
+            $last_name = $user_name_fetch_row['last_name'];
+
+            if ($user_name_fetch_row['reports_to_id']) {
+                $reports_to = $this->get_user_details_by_id($user_name_fetch_row['reports_to_id']);
+                $reports_to_full_name = ' <i class="fa fa-arrow-right"></i> ' . $reports_to['first_name'] .' '. $reports_to['last_name'];
+            } else {
+                $reports_to_full_name = "";
+            }
+
+            $full_name = "$first_name  $last_name $reports_to_full_name";
+            $closed_by = '';
+
+            if (!empty($row['date_modified'])) {
+                $modified_user_id = $row['modified_user_id'];
+                $modified_user_query = "SELECT * FROM users WHERE id='$modified_user_id'";
+                $modified_user_query_fetch = $GLOBALS['db']->query($modified_user_query);
+                $modified_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($modified_user_query_fetch);
+                $closed_by_first_name = $modified_user_query_fetch_row['first_name'];
+                $closed_by_last_name = $modified_user_query_fetch_row['last_name'];
+                $closed_by = "$closed_by_first_name $closed_by_last_name";
+                // To Do: Find actual closed by
+            }
+            $docID = $row['id'];
+
+            /*$tagged_user_query = "SELECT user_id, count(*) FROM `tagged_user` WHERE `opp_id`='$oppID' GROUP BY user_id";
+            $tagged_user_query_fetch = $GLOBALS['db']->query($tagged_user_query);
+            $tagged_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($tagged_user_query_fetch);
+            $tagged_users = $tagged_user_query_fetch_row['user_id'];*/
+
+            // if($row['date_closed'])
+            //     $closedDate = date_format(date_create($row['date_closed']),'d/m/Y');
+            // else
+            //     $closedDate = '';
+
+
+
+            $closed_by = '';
+            if (!empty($row['date_modified'])) {
+                $modified_user_id = $row['modified_user_id'];
+                $modified_user_query = "SELECT * FROM users WHERE id='$modified_user_id'";
+                $modified_user_query_fetch = $GLOBALS['db']->query($modified_user_query);
+                $modified_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($modified_user_query_fetch);
+                $closed_by_first_name = $modified_user_query_fetch_row['first_name'];
+                $closed_by_last_name = $modified_user_query_fetch_row['last_name'];
+                $closed_by = "$closed_by_first_name $closed_by_last_name";
+            }
+
+            $data[] = array(
+                $row['document_name'],
+                str_replace( '<i class="fa fa-arrow-right"></i>', '-', $full_name),
+                // $this->beautify_amount( $row['budget_allocated_oppertunity_c'] ),
+                $row['date_modified'] ? date_format(date_create($row['date_modified']),'dS F Y') : '',
+                $closed_by,
+                $row['date_entered'] ? date_format(date_create($row['date_entered']), 'dS F Y') : '',
+                //$row['date_closed'] ? date_format(date_create($row['date_closed']),'d/m/Y') : '',
+            );
+
+        }
+
+        $_SESSION['csvHeaders'] = serialize($headers);
+        $_SESSION['csvData']    = serialize($data);
+
+        $response = json_encode(
+            array(
+                'status' => 'success',
+            )
+        );
+
+        die;
+    }
+
+    function action_document_downloadCSV(){
+        $data    = unserialize($_SESSION['csvData']);
+        $headers = unserialize($_SESSION['csvHeaders']);
+
+        $filename = date('Ymdhis');
+        ob_clean();
+        $fp = fopen("php://output", 'w');
+        if($fp){
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="'.$filename.'".csv"');
+            fputcsv($fp, array_values($headers));
+            foreach($data as $d){
+                fputcsv($fp, array_values($d));
+            }
+            fpassthru($fp);
+            fclose($fp);
+            unset($_SESSION['csvHeaders']);
+            unset($_SESSION['csvData']);
+            exit;
+        }
+    }
+            
 }
 ?>
