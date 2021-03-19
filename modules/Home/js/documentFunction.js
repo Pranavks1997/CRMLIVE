@@ -117,7 +117,7 @@ function changeAddLabel(evnt) {
     if (evnt == 'Create Activity') {
         redirectLink = "'index.php?module=Calls&action=EditView'";
     }
-    else if (evnt == 'Create Document') {
+    else if (evnt == 'Upload Document') {
         redirectLink = "'index.php?module=Documents&action=EditView'";
     }
     $("#add_opportunity").attr("onclick", "location.href = " + redirectLink);
