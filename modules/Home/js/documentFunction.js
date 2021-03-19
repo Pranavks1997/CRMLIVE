@@ -496,6 +496,10 @@ $(document).on('click', '#document_download_btn', function () {
 // :::::::::::::::::::::::::::::::::::::::::::: Joytirmoy Code :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 
+function isEmptyOrSpaces(str){
+    return str === null || str.match(/^ *$/) !== null;
+}
+
 function handleNoteDialog(event) {
 
 
@@ -508,16 +512,23 @@ function handleNoteDialog(event) {
         // var hidden_note_id = document.getElementById('hidden_note_value').value;
         var doc_id = document.getElementById('doc_id').value;
         var note = document.getElementById('note').value;
+        if(isEmptyOrSpaces(note)){
+            return false;
+            exit();
+        }
         $.ajax({
             url: 'index.php?module=Home&action=set_note_for_document',
             type: 'POST',
             data: {
-                // note_id: hidden_note_id,
                 doc_id: doc_id,
                 note: note
             },
             success: function (data) {
                 dialog.style.display = "none";
+                document.getElementById('note').value = "";
+            },
+            error  : function(data,errorThrown){
+                alert(errorThrown);
             }
         });
     } else {
@@ -595,17 +606,9 @@ function fetchNoteDialog(id) {
             console.log(sendNoteToText);
 
             $("#send_note_to").html(sendNoteToText);
-
-            // $('#send_not_to').html(sendNoteToText);
-
             $('#doc_id').val(parsed_data.doc_id);
-            // $('#activity_member_info').html(parsed_data.optionList);
-            // document.getElementById('activity_tag_id').value = parsed_data.activity_id;
-            dialog.style.display = "block";
-            initSelect2();
 
-            // var temp = parsed_data.msuid.split(',');
-            // $('#deselect_members').val(temp);
+            dialog.style.display = "block";
         },
         error: function (data, errorThrown) {
             alert(errorThrown)
@@ -657,11 +660,17 @@ function handleTagDialog(event) {
             url: 'index.php?module=Home&action=set_document_for_tag',
             type: 'POST',
             data: $('.document_tag_func').serialize(),
+            
             success: function (data) {
+                debugger;
                 dialog.style.display = "none";
-                select_dialogue.style.display = "none";
+                // select_dialogue.style.display = "none";
+            },
+            error: function (data, errorThrown) {
+                alert(errorThrown)
             }
-        });
+        })
+
     } else {
         dialog.style.display = "block"
     }

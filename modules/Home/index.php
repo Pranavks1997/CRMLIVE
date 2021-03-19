@@ -863,7 +863,7 @@
         <!-- Modal content -->
         <div class="deselect-modal-content">
             <span class="deselectclose" onclick="handleNoteDialog('close')">&times;</span>
-            <form class="document_note_func">
+            <form >
                 <div id="document_note_info">
 
                 </div>
@@ -880,22 +880,10 @@
                     <div class="input-group">
                         <input type="text" name="note" id="note"/>
                         <div class="input-group-append">
-                            <button type="submit" class="saveBtnDeselect" onclick="handleNoteDialog('submit')">Post</button>
+                            <button type ="button" class="saveBtnDeselect" onclick="handleNoteDialog('submit')">Post</button>
                         </div>
                     </div>
                 </div>
-                
-                <!-- <div id="document_info">
-                   <span>Send note to <b id="doc_creator"></b></span>
-                    <input type="text" name="note" id="note">
-                </div>
-
-                <br><div style="height: 20px;"></div>
-                <div>
-                    <button class="saveBtnDeselect" type="button" onclick="handleNoteDialog('submit')">Post</button>
-                </div> -->
-
-
                 </section>
             </form>
         </div>
