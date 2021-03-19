@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-03-18 15:05:45
+<?php /* Smarty version 2.6.31, created on 2021-03-19 11:14:33
          compiled from cache/themes/SuiteP/modules/Documents/EditView.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('modifier', 'escape', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 51, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 109, false),array('modifier', 'lookup', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 148, false),array('modifier', 'count', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 250, false),array('modifier', 'default', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 1184, false),array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 70, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 91, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 115, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 123, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 151, false),array('function', 'sugar_getimage', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 445, false),array('function', 'sugar_image', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 460, false),array('function', 'sugar_getscript', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 1380, false),array('block', 'minify', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 107, false),)), $this); ?>
@@ -626,8 +626,8 @@ value='<?php echo $this->_tpl_vars['value']; ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
 
-<script type="text/javascript" src='cache/include/externalAPI.cache.js?v=3N5nqSCx_wgA_HPLlsqPMg'></script>
-<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=3N5nqSCx_wgA_HPLlsqPMg'></script>
+<script type="text/javascript" src='cache/include/externalAPI.cache.js?v=ZktQQoPiBJxxLZCMwv8tWw'></script>
+<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=ZktQQoPiBJxxLZCMwv8tWw'></script>
 <?php if (! empty ( $this->_tpl_vars['fields']['filename']['value'] )): ?>
 <?php $this->assign('showRemove', true); ?>
 <?php else: ?>
@@ -1629,7 +1629,7 @@ value='<?php echo $this->_tpl_vars['value']; ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
 
-<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=3N5nqSCx_wgA_HPLlsqPMg'></script>
+<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=ZktQQoPiBJxxLZCMwv8tWw'></script>
 <?php if (! empty ( $this->_tpl_vars['fields']['followup']['value'] )): ?>
 <?php $this->assign('showRemove', true); ?>
 <?php else: ?>
