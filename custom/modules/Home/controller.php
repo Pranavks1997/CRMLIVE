@@ -7264,7 +7264,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 $data .= '<span class="document-related-type">'. $row['parent_type'] .'</span></td>';
                 break;
             case 'document_type':
-                $data .= '<td class="table-data">'. $row['template_type'] .'</td>';
+                $data .= '<td class="table-data">'. beautify_label($row['template_type']) .'</td>';
                 break;
             case 'category':
                 $data .= '<td class="table-data">'. $row['category_c'] .'</td>';
@@ -7699,7 +7699,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $GLOBALS['db'];
             $doc_id = $_REQUEST['id'];
 
-            $fetch_document_info = "SELECT documents.document_name, documents.date_entered, documents.created_by, documents.doc_type, documents.id as doc_id, documents_cstm.category_c as category_name, documents_cstm.sub_category_c as sub_category_name, documents_cstm.parent_type, documents_cstm.parent_id FROM documents
+            $fetch_document_info = "SELECT documents.document_name, documents.date_entered, documents.created_by, documents.template_type, documents.id as doc_id, documents_cstm.category_c as category_name, documents_cstm.sub_category_c as sub_category_name, documents_cstm.parent_type, documents_cstm.parent_id FROM documents
             LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c WHERE documents.id = '$doc_id'";
 
             $fetch_document_info_result = $GLOBALS['db']->query($fetch_document_info);
@@ -7728,11 +7728,11 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                     </thead>
                     <tbody>
                         <tr class="tabvalue">
-                        <td>' . ucfirst($row['doc_type']) . '</td>
+                        <td>' . beautify_label($row['template_type']) . '</td>
                         <td>' . ucfirst($row['category_name']) . '</td>
                         <td>' . ucfirst($row['sub_category_name']) . '</td>
                         <td> <h2 class="document-related-name">' . getDocumentRelatedTo($row['parent_type'] , $row['parent_id']) . '</h2> <span class="document-related-type">'. $row['parent_type'] .'</span></td>
-                        <td> <h2 class="document-related-name">' . ucwords($user_full_name) . '</h2> <span class="document-related-type">'. $row['date_entered'] .'</span></td>
+                        <td> <h2 class="document-related-name">' . ucwords($user_full_name) . '</h2> <span class="document-related-type">'.date( 'd/m/Y', strtotime($row['date_entered']) ).'</span></td>
 
                       
                         </tr>';
@@ -7759,7 +7759,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 $notes_history .= '<tr class="tabvalue">
                         <td>' . ucfirst($row1['notes']) . '</td>
                         <td>' . ucwords($note_creator). '</td>
-                        <td>' . $row1['posted_date'] . '</td>
+                        <td>'.date( 'd/m/Y', strtotime($row1['posted_date']) ). '</td>
                        
                         </tr>';
             }

@@ -15,7 +15,7 @@
                 <div style="font-size: 20px;">
                     <i class="fa fa-check-circle" onClick="openDocumentApprovalDialog('Approve','<?php echo $result['id']; ?>')"></i>
                     <i class="fa fa-times-circle" onClick="openDocumentApprovalDialog('Reject','<?php echo $result['id']; ?>')"></i>
-                    <a style="color: #534d64; font-size: 20px;" href="index.php?module=Calls&action=DetailView&record=<?php echo $row['id']; ?>">
+                    <a style="color: #534d64; font-size: 20px;" href="index.php?module=Documents&action=DetailView&record=<?php echo $row['id']; ?>">
                         <i class="fa fa-info-circle"></i>
                     </a>
                 </div>
