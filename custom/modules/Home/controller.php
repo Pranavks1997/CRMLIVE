@@ -7259,7 +7259,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 $parent_type = '';
                 $data .= '<td class="table-data">';
 
-                $data .= '<h2 class="document-related-name">'. getDocumentRelatedTo($row['parent_type'], $row['parent_id']) .'</h2>';
+                $data .= '<h2 class="document-related-name">'. beautify_label(getDocumentRelatedTo($row['parent_type'], $row['parent_id'])) .'</h2>';
 
                 $data .= '<span class="document-related-type">'. $row['parent_type'] .'</span></td>';
                 break;
@@ -7275,7 +7275,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             case 'uploaded_by':
                 $data .= '<td class="table-data">';
                 $data .= '<h2 class="document-related-uploaded_by">'. getUsername($row['created_by']) .'</h2>';
-                $data .= '<span class="document-related-uploaded_date">'. date( 'd/m/Y', strtotime($row['follow_up_date_c']) ) .'</span></td>';
+                $data .= '<span class="document-related-uploaded_date">'. date( 'd/m/Y', strtotime($row['date_entered']) ) .'</span></td>';
                 break;
             // case 'date_modified':
             //     $data .= '<td class="table-data">'. date( 'd/m/Y', strtotime($row['date_modified']) ) .'</td>';
@@ -7665,9 +7665,9 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                             <tr>
                                 <td class="approvaltable-data-popup">'.$row['document_name'].'</td>
                                 <td class="approvaltable-data-popup">'.getDocumentRelatedTo($row['parent_type'], $row['parent_id']).'<br><span class="document-related-type">'. $row['parent_type'] .'</span></td>
-                                <td class="approvaltable-data-boolean-popup">'.$row['status_c'].'</td>
-                                <td class="approvaltable-data-popup">'.$row['template_type'].'</td>
-                                <td class="approvaltable-data-popup">'. getUsername($row['created_by']) .'<br><span class="document-related-uploaded_date">'. date( 'd/m/Y', strtotime($row['follow_up_date_c']) ) .'</span></td>
+                                <td class="approvaltable-data-popup">'.beautify_label($row['status_c']).'</td>
+                                <td class="approvaltable-data-popup">'.beautify_label($row['template_type']).'</td>
+                                <td class="approvaltable-data-popup">'. getUsername($row['created_by']) .'<br><span class="document-related-uploaded_date">'. date( 'd/m/Y', strtotime($row['date_entered']) ) .'</span></td>
                                 <td class="approvaltable-data-popup">'.date( 'd/m/Y', strtotime($row['date_modified']) ).'</td>
                             </tr>';
                     $data .= '
@@ -7731,7 +7731,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                         <td>' . beautify_label($row['template_type']) . '</td>
                         <td>' . ucfirst($row['category_name']) . '</td>
                         <td>' . ucfirst($row['sub_category_name']) . '</td>
-                        <td> <h2 class="document-related-name">' . getDocumentRelatedTo($row['parent_type'] , $row['parent_id']) . '</h2> <span class="document-related-type">'. $row['parent_type'] .'</span></td>
+                        <td> <h2 class="document-related-name">' . beautify_label(getDocumentRelatedTo($row['parent_type'] , $row['parent_id'])) . '</h2> <span class="document-related-type">'. $row['parent_type'] .'</span></td>
                         <td> <h2 class="document-related-name">' . ucwords($user_full_name) . '</h2> <span class="document-related-type">'.date( 'd/m/Y', strtotime($row['date_entered']) ).'</span></td>
 
                       
@@ -7876,7 +7876,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                     <tbody>
                         <tr class="tabvalue">
                         <td>' . date_format(date_create($row['date_modified']), 'd/m/Y') . '</td>
-                        <td>' . ucfirst($row['template_type']) . '</td>
+                        <td>' . beautify_label($row['template_type']) . '</td>
                         <td>' . ucwords($user_full_name). '</td>
                         <td>' . ucwords($creator_full_name). '</td>
                         </tr>';

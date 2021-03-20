@@ -900,6 +900,7 @@
                         
                     </div>
                     <br><div style="height: 20px;"></div>
+                    <label for="Deselect-Members">Tag Members</label><br>
                     <input type="hidden" id="document_tag_id" name="document_tag_id" value="" />
                     <div id="document_member_info">
 
