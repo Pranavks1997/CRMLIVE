@@ -77,16 +77,16 @@
                     </button>
                     <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="getSequenceFlow('<?php echo $row['id']; ?>')">
                         <?php if($this->checkRecentActivity($row['id'])): ?>
-                            <img id="search-icon" src="modules/Home/assets/Frame-12.svg" alt="svg" style="color: #333333;"/>
+                            <img id="search-icon" title="Audit Trails" src="modules/Home/assets/Frame-12.svg" alt="svg" style="color: #333333;"/>
                         <?php endif; ?>
                     </button>
                     <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="fetchDeselectDialog('<?php echo $row['id']; ?>')">
                         <?php if ($this->is_tagging_applicable($row['id'])) { ?>
-                            <i id="search-icon" class="fa fa-tag" aria-hidden="true"> </i>
+                            <i id="search-icon" title="Tagged Users" class="fa fa-tag" aria-hidden="true"> </i>
                         <?php } ?>
                     </button>
                     <a style="width: 15px;" href="index.php?action=DetailView&module=Opportunities&record=<?php echo $row['id']; ?>" class="eye" id="search-btn">
-                        <i id="search-icon" class="fa fa-eye" aria-hidden="true"> </i>
+                        <i id="search-icon" title="View Details" class="fa fa-eye" aria-hidden="true"> </i>
                     </a>
                     <?php if (($this->is_critical_applicable($log_in_user_id, $row['id'], 'no')) && ($check_mc=='yes')): ?>    
                         <button class="tag1 deselectBtn" id="criticalBtn<?php echo $row['id'];?>" style="margin-right: 1px;width: 15px;" onclick="criticalStatus('<?php echo $row['id']; ?>')">
