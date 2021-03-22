@@ -77,12 +77,16 @@
                     </button>
                     <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="getSequenceFlow('<?php echo $row['id']; ?>')">
                         <?php if($this->checkRecentActivity($row['id'])): ?>
-                            <img id="search-icon" title="Audit Trails" src="modules/Home/assets/Frame-12.svg" alt="svg" style="color: #333333;"/>
+
+                            <img id="search-icon" title="Audit Trail" src="modules/Home/assets/Frame-12.svg" alt="svg" style="color: #333333;"/>
+
                         <?php endif; ?>
                     </button>
                     <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="fetchDeselectDialog('<?php echo $row['id']; ?>')">
                         <?php if ($this->is_tagging_applicable($row['id'])) { ?>
-                            <i id="search-icon" title="Tagged Users" class="fa fa-tag" aria-hidden="true"> </i>
+
+                            <i id="search-icon" title="Tag Users" class="fa fa-tag" aria-hidden="true"> </i>
+
                         <?php } ?>
                     </button>
                     <a style="width: 15px;" href="index.php?action=DetailView&module=Opportunities&record=<?php echo $row['id']; ?>" class="eye" id="search-btn">
@@ -90,12 +94,12 @@
                     </a>
                     <?php if (($this->is_critical_applicable($log_in_user_id, $row['id'], 'no')) && ($check_mc=='yes')): ?>    
                         <button class="tag1 deselectBtn" id="criticalBtn<?php echo $row['id'];?>" style="margin-right: 1px;width: 15px;" onclick="criticalStatus('<?php echo $row['id']; ?>')">
-                            <i id="<?php echo $row['id'];?>" class="fa fa-exclamation-triangle search-icon" aria-hidden="true"> </i>
+                            <i id="<?php echo $row['id'];?>" title="Critical" class="fa fa-exclamation-triangle search-icon" aria-hidden="true"> </i>
                         </button>
                     <?php endif ?>
                     <?php if (($this->is_critical_applicable($log_in_user_id, $row['id'], 'yes'))&& ($check_mc=='yes')) : ?>
-                        <button class="tag1 deselectBtn" id="criticalBtn<?php echo $row['id'];?>"  style="margin-right: 1px;width: 15px;" onclick="criticalStatusChanged('<?php echo $row['id']; ?>')">
-                            <i id="<?php echo $row['id'];?>" style="color: red; cursor: pointer;" class="fa fa-exclamation-triangle search-icon" aria-hidden="true"> </i>
+                        <button class="tag1 deselectBtn"  id="criticalBtn<?php echo $row['id'];?>"  style="margin-right: 1px;width: 15px;" onclick="criticalStatusChanged('<?php echo $row['id']; ?>')">
+                            <i id="<?php echo $row['id'];?>" title="Critical" style="color: red; cursor: pointer;" class="fa fa-exclamation-triangle search-icon" aria-hidden="true"> </i>
                         </button>
                     <?php endif ?>
                 </div>

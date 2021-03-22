@@ -9,14 +9,14 @@
                 if($result && isset($result['approval_status']) && $result['approval_status'] == '0'):
         ?>
         <tr>
-            <?php echo $this->getDocumentColumnFiltersBody($_GET, $row); ?>
+            <?php echo $this->getPendingDocumentColumnFiltersBody($_GET, $row); ?>
             
             <td class="table-data">
                 <div style="font-size: 20px;">
-                    <i class="fa fa-check-circle" onClick="openDocumentApprovalDialog('Approve','<?php echo $result['id']; ?>')"></i>
-                    <i class="fa fa-times-circle" onClick="openDocumentApprovalDialog('Reject','<?php echo $result['id']; ?>')"></i>
+                    <i title="Approve" class="fa fa-check-circle" onClick="openDocumentApprovalDialog('Approve','<?php echo $result['id']; ?>')"></i>
+                    <i title="Reject" class="fa fa-times-circle" onClick="openDocumentApprovalDialog('Reject','<?php echo $result['id']; ?>')"></i>
                     <a style="color: #534d64; font-size: 20px;" href="index.php?module=Documents&action=DetailView&record=<?php echo $row['id']; ?>">
-                        <i class="fa fa-info-circle"></i>
+                        <i title="View Details" class="fa fa-info-circle"></i>
                     </a>
                 </div>
             </td>
