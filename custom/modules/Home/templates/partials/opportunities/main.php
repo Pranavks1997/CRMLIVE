@@ -45,7 +45,7 @@
                         </button>
                         <?php if ($check_mc == 'yes'): ?>
                             <button class="cog download" id="download_btn" class="download-btn" data-type="opportunity" data-action="status" data-value="<?php echo $status; ?>" data-dropped="<?php echo $dropped; ?>" style="padding:10; border: none !important;">
-                                <i class="fa fa-download" aria-hidden="true"> </i>
+                                <i class="fa fa-download" title="Download" aria-hidden="true"> </i>
                             </button>
                         <?php endif ?>
                         <?php if ($log_in_user_id == '1'): ?>
