@@ -10,12 +10,12 @@ class OpportunitiesViewList extends ViewList {
     {
         parent::preDisplay();
 
-        $this->lv->quickViewLinks = false;
-        // $this->lv->multiSelect = false;
     }
     
 
     function listViewProcess() {
+    	 $this->lv->quickViewLinks = false;
+        $this->lv->multiSelect = false;
         
         echo '<link rel="stylesheet" href="custom/modules/Opportunities/table.css" type="text/css">';
          echo '<script src="custom/modules/Opportunities/list_view.js"></script>';

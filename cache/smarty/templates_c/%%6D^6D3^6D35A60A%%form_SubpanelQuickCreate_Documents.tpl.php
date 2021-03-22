@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-03-18 11:53:42
+<?php /* Smarty version 2.6.31, created on 2021-03-19 13:36:36
          compiled from cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 65, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 86, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 110, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 118, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 146, false),array('function', 'sugar_getimage', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 440, false),array('function', 'sugar_image', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 455, false),array('block', 'minify', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 102, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 104, false),array('modifier', 'lookup', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 143, false),array('modifier', 'count', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 245, false),array('modifier', 'default', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 1179, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 65, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 86, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 110, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 118, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 146, false),array('function', 'sugar_getimage', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 440, false),array('function', 'sugar_image', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 455, false),array('block', 'minify', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 102, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 104, false),array('modifier', 'lookup', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 143, false),array('modifier', 'count', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 245, false),array('modifier', 'default', 'cache/themes/SuiteP/modules/Documents/form_SubpanelQuickCreate_Documents.tpl', 1153, false),)), $this); ?>
 
 
 <script>
@@ -596,8 +596,8 @@ value='<?php echo $this->_tpl_vars['value']; ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
 
-<script type="text/javascript" src='cache/include/externalAPI.cache.js?v=KuwDb_C82Ri9W_gefVV1WA'></script>
-<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=KuwDb_C82Ri9W_gefVV1WA'></script>
+<script type="text/javascript" src='cache/include/externalAPI.cache.js?v=wB6s9EH31OKzOvD0-Eez1Q'></script>
+<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=wB6s9EH31OKzOvD0-Eez1Q'></script>
 <?php if (! empty ( $this->_tpl_vars['fields']['filename']['value'] )): ?>
 <?php $this->assign('showRemove', true); ?>
 <?php else: ?>
@@ -1584,10 +1584,10 @@ value='<?php echo $this->_tpl_vars['value']; ?>
 <div class="col-xs-12 col-sm-6 edit-view-row-item">
 
 
-<div class="col-xs-12 col-sm-4 label" data-label="LBL_FOLLOWUP">
+<div class="col-xs-12 col-sm-4 label" data-label="">
 
 <?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_FOLLOWUP','module' => 'Documents'), $this);?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'Follow-up File','module' => 'Documents'), $this);?>
 <?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
 <?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
 :
@@ -1595,49 +1595,14 @@ value='<?php echo $this->_tpl_vars['value']; ?>
 <?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
 </div>
 
-<div class="col-xs-12 col-sm-8 edit-view-field " type="file" field="followup"  >
+<div class="col-xs-12 col-sm-8 edit-view-field " type="" field=""  >
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
-
-<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=KuwDb_C82Ri9W_gefVV1WA'></script>
-<?php if (! empty ( $this->_tpl_vars['fields']['followup']['value'] )): ?>
-<?php $this->assign('showRemove', true); ?>
-<?php else: ?>
-<?php $this->assign('showRemove', false); ?>
-<?php endif; ?>
-<?php $this->assign('noChange', false); ?>
-<input type="hidden" name="deleteAttachment" value="0">
-<input type="hidden" name="<?php echo $this->_tpl_vars['fields']['followup']['name']; ?>
-" id="<?php echo $this->_tpl_vars['fields']['followup']['name']; ?>
-" value="<?php echo $this->_tpl_vars['fields']['followup']['value']; ?>
-">
-<span id="<?php echo $this->_tpl_vars['fields']['followup']['name']; ?>
-_old" style="display:<?php if (! $this->_tpl_vars['showRemove']): ?>none;<?php endif; ?>">
-<a href="index.php?entryPoint=download&id=<?php echo $this->_tpl_vars['fields']['id']['value']; ?>
-&type=<?php echo $this->_tpl_vars['module']; ?>
-" class="tabDetailViewDFLink"><?php echo $this->_tpl_vars['fields']['followup']['value']; ?>
-</a>
-<?php if (! $this->_tpl_vars['noChange']): ?>
-<input type='button' class='button' id='remove_button' value='<?php echo $this->_tpl_vars['APP']['LBL_REMOVE']; ?>
-' onclick='SUGAR.field.file.deleteAttachment("<?php echo $this->_tpl_vars['fields']['followup']['name']; ?>
-","",this);'>
-<?php endif; ?>
-</span>
-<?php if (! $this->_tpl_vars['noChange']): ?>
-<span id="<?php echo $this->_tpl_vars['fields']['followup']['name']; ?>
-_new" style="display:<?php if ($this->_tpl_vars['showRemove']): ?>none;<?php endif; ?>">
-<input type="hidden" name="<?php echo $this->_tpl_vars['fields']['followup']['name']; ?>
-_escaped">
-<input id="<?php echo $this->_tpl_vars['fields']['followup']['name']; ?>
-_file" name="<?php echo $this->_tpl_vars['fields']['followup']['name']; ?>
-_file" 
-type="file" title='' size="30"
-maxlength='255'
->
-<?php else: ?>
-
-<?php endif; ?>
-</span>
+<?php $_smarty_tpl_vars = $this->_tpl_vars;
+$this->_smarty_include(array('smarty_include_tpl_file' => $this->_tpl_vars['FILEUPLOAD'], 'smarty_include_vars' => array('filename' => $this->_tpl_vars['ATTACHMENTS'])));
+$this->_tpl_vars = $_smarty_tpl_vars;
+unset($_smarty_tpl_vars);
+ ?>
 </div>
 
 <!-- [/hide] -->
@@ -1974,15 +1939,6 @@ addToValidate(\'form_SubpanelQuickCreate_Documents\', \'latest_revision_id\', \'
 <?php echo '\' );
 addToValidate(\'form_SubpanelQuickCreate_Documents\', \'selected_revision_filename\', \'varchar\', false,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_SELECTED_REVISION_FILENAME','module' => 'Documents','for_js' => true), $this);?>
-<?php echo '\' );
-addToValidate(\'form_SubpanelQuickCreate_Documents\', \'followup\', \'file\', false,\''; ?>
-<?php echo smarty_function_sugar_translate(array('label' => 'LBL_FOLLOWUP','module' => 'Documents','for_js' => true), $this);?>
-<?php echo '\' );
-addToValidate(\'form_SubpanelQuickCreate_Documents\', \'file_mime_type\', \'varchar\', false,\''; ?>
-<?php echo smarty_function_sugar_translate(array('label' => 'LBL_FILE_MIME_TYPE','module' => 'Documents','for_js' => true), $this);?>
-<?php echo '\' );
-addToValidate(\'form_SubpanelQuickCreate_Documents\', \'file_url\', \'varchar\', false,\''; ?>
-<?php echo smarty_function_sugar_translate(array('label' => 'LBL_FILE_URL','module' => 'Documents','for_js' => true), $this);?>
 <?php echo '\' );
 addToValidate(\'form_SubpanelQuickCreate_Documents\', \'tagged_users_c\', \'varchar\', false,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_TAGGED_USERS','module' => 'Documents','for_js' => true), $this);?>

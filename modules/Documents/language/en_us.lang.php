@@ -46,7 +46,7 @@ $mod_strings = array(
     //module
     'LBL_MODULE_NAME' => 'Documents',
     'LBL_MODULE_TITLE' => 'Documents: Home',
-    'LNK_NEW_DOCUMENT' => 'Create Document',
+    'LNK_NEW_DOCUMENT' => 'Upload Document',
     'LNK_DOCUMENT_LIST' => 'View Documents',
     'LBL_DOC_REV_HEADER' => 'Document Revisions',
     'LBL_SEARCH_FORM_TITLE' => 'Document Search',
