@@ -10,11 +10,11 @@
                 <div style="display: flex;">
                     <div style="display: flex; margin-left: auto;">
                         <button class="filter" id="filter_myBtn" onclick="openActivityPendingFilterDialog()" style="padding:10; border: none !important;">
-                            <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
+                            <img src="modules/Home/assets/Filter-icon.svg" title="Filter" style="width:30px" alt="filter-icon" />
                         </button>
 
                         <button class="cog" id="setting_myBtn" onclick="openActivityPendingSettingsDialog('pendings')" style="padding:10; border: none !important;">
-                            <i id="setting_myBtn" class="fa fa-list" aria-hidden="true"> </i>
+                            <i id="setting_myBtn" class="fa fa-list" title="Columns" aria-hidden="true"> </i>
                         </button>
                     </div>
                 </div>

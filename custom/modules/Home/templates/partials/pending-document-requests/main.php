@@ -10,7 +10,7 @@
                 <div style="display: flex;">
                     <div style="display: flex; margin-left: auto;">
                         <button class="filter" id="filter_myBtn" onclick="openDocumentPendingFilterDialog()" style="padding:10; border: none !important;">
-                            <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
+                            <img src="modules/Home/assets/Filter-icon.svg" title="Filter" style="width:30px" alt="filter-icon" />
                         </button>
 
                         <!-- <button class="cog" id="setting_myBtn" onclick="openDocumentPendingSettingsDialog('pendings')" style="padding:10; border: none !important;">

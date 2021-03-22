@@ -9,7 +9,7 @@
                 if($result && isset($result['approval_status']) && $result['approval_status'] == '0'):
         ?>
         <tr>
-            <?php echo $this->getDocumentColumnFiltersBody($_GET, $row); ?>
+            <?php echo $this->getPendingDocumentColumnFiltersBody($_GET, $row); ?>
             
             <td class="table-data">
                 <div style="font-size: 20px;">

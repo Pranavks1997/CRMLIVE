@@ -33,7 +33,7 @@
                     <div style="display: flex; margin-left: auto;">
 
                         <button class="filter" id="filter_myBtn" onclick="openActivityFilterDialog()" style="padding:10; border: none !important;">
-                            <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
+                            <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" title="Filter" />
                         </button>
 
                     </div>
