@@ -33,7 +33,7 @@
                     <div style="display: flex; margin-left: auto;">
 
                         <button class="filter" id="filter_myBtn" onclick="openDocumentFilterDialog()" style="padding:10; border: none !important;">
-                            <img src="modules/Home/assets/Filter-icon.svg" style="width:30px" alt="filter-icon" />
+                            <img src="modules/Home/assets/Filter-icon.svg" title="Filter" style="width:30px" alt="filter-icon" />
                         </button>
 
                         <!-- <?php if ($check_mc == 'yes'): ?>

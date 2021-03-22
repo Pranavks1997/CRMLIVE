@@ -6636,10 +6636,23 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $GLOBALS['db'];
 
             $team_func_array = $team_func_array1 = $others_id_array = array();
+            $is_creator = false;
+            // $sql ="SELECT assigned_user_id FROM calls where id ='$activity_id' "; 
+            $sql ="SELECT calls.assigned_user_id, calls.created_by, calls_cstm.tag_hidden_c
+            FROM calls 
+            LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c
+            WHERE id ='$activity_id' ";
 
-            $sql ="SELECT assigned_user_id FROM calls where id ='$activity_id' "; 
             $result = $GLOBALS['db']->query($sql);
             $row = $result->fetch_assoc();
+            if(strpos($row['tag_hidden_c'], ',') !== false) {
+                $tagged_user_array = explode(',',  $row['tag_hidden_c']);
+            } else {
+                $tagged_user_array = [$row['tag_hidden_c']];
+            }
+            if($row['created_by'] == $log_in_user_id) {
+                $is_creator = true;
+            }
             $user_id = $row['assigned_user_id'];
 
             $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
@@ -6658,7 +6671,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
             }
 
-            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) ){
+            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) || in_array($log_in_user_id, $tagged_user_array) || $is_creator == true ){
                 return true;
             }
             else {
@@ -7217,6 +7230,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
     function getDocumentColumnFiltersBody($columnFilter, $row){
 
+        
+
         $data = '';
         $customColumns = @$_GET['customDocumentColumns'];
 
@@ -7259,12 +7274,12 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 $parent_type = '';
                 $data .= '<td class="table-data">';
 
-                $data .= '<h2 class="document-related-name">'. getDocumentRelatedTo($row['parent_type'], $row['parent_id']) .'</h2>';
+                $data .= '<h2 class="document-related-name">'. beautify_label(getDocumentRelatedTo($row['parent_type'], $row['parent_id'])) .'</h2>';
 
                 $data .= '<span class="document-related-type">'. $row['parent_type'] .'</span></td>';
                 break;
             case 'document_type':
-                $data .= '<td class="table-data">'. $row['template_type'] .'</td>';
+                $data .= '<td class="table-data">'. beautify_label($row['template_type']) .'</td>';
                 break;
             case 'category':
                 $data .= '<td class="table-data">'. $row['category_c'] .'</td>';
@@ -7275,7 +7290,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             case 'uploaded_by':
                 $data .= '<td class="table-data">';
                 $data .= '<h2 class="document-related-uploaded_by">'. getUsername($row['created_by']) .'</h2>';
-                $data .= '<span class="document-related-uploaded_date">'. date( 'd/m/Y', strtotime($row['follow_up_date_c']) ) .'</span></td>';
+                $data .= '<span class="document-related-uploaded_date">'. date( 'd/m/Y', strtotime($row['date_entered']) ) .'</span></td>';
                 break;
             // case 'date_modified':
             //     $data .= '<td class="table-data">'. date( 'd/m/Y', strtotime($row['date_modified']) ) .'</td>';
@@ -7301,6 +7316,99 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         }
         return $data;
     }
+
+    function getPendingDocumentColumnFiltersBody($columnFilter, $row){
+
+        
+
+        $data = '';
+        $customColumns = @$_GET['customDocumentColumns'];
+
+        if($customColumns):
+        foreach($customColumns as $column){
+            $data .= $this->getPendingDocumentColumnDataHtml($column, $row);
+        }
+        endif;
+
+        return $data;
+
+    }
+
+    function getPendingDocumentColumnDataHtml($column, $row){
+        $data = '';
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+
+        switch($column){
+            case 'name':
+                $data .= '<td class="table-data">';
+                    $data .= '<a href="index.php?module=Documents&action=DetailView&record='.$row['id'].'">';
+
+                    $tag_icon_query = 'SELECT * FROM documents_cstm where id_c = "' .$row['id'].'"';
+                    $result = $GLOBALS['db']->query($tag_icon_query);
+                    $delegate_user = $result->fetch_assoc();
+                    $delegated_id_array = explode(',',$delegate_user['delegate_id']); 
+
+                    $data .= '<h2 class="document-title">'. $row['document_name'];
+                    if (in_array($log_in_user_id,$delegated_id_array)){
+                        $data .= ' <img src="modules/Home/assets/Delegate-icon.svg" style="width: 25px; color:green" />';
+                    
+                    }
+                    else {
+                        $data .= '</h2></a>';
+                    }
+                    $data .= '</td>';
+
+                    break; 
+            case 'related_to':
+                $parent_type = '';
+                $data .= '<td class="table-data">';
+
+                $data .= '<h2 class="document-related-name">'. beautify_label(getDocumentRelatedTo($row['parent_type'], $row['parent_id'])) .'</h2>';
+
+                $data .= '<span class="document-related-type">'. $row['parent_type'] .'</span></td>';
+                break;
+            case 'document_type':
+                $data .= '<td class="table-data">'. beautify_label($row['template_type']) .'</td>';
+                break;
+            case 'category':
+                $data .= '<td class="table-data">'. $row['category_c'] .'</td>';
+                break;
+            case 'sub_category':
+                $data .= '<td class="table-data">'. $row['sub_category_c'] .'</td>';
+                break;
+            case 'uploaded_by':
+                $data .= '<td class="table-data">';
+                $data .= '<h2 class="document-related-uploaded_by">'. getUsername($row['created_by']) .'</h2>';
+                $data .= '<span class="document-related-uploaded_date">'. date( 'd/m/Y', strtotime($row['date_entered']) ) .'</span></td>';
+                break;
+            // case 'date_modified':
+            //     $data .= '<td class="table-data">'. date( 'd/m/Y', strtotime($row['date_modified']) ) .'</td>';
+            //     break;
+            // case 'assigned_to_c':
+            //     $data .= '<td class="table-data">'. $row['assigned_to_c'] .'</td>';
+            //     break;
+            // case 'new_current_status_c':
+            //     $data .= '<td class="table-data">'. $row['new_current_status_c'] .'</td>';
+            //     break;
+            // case 'description':
+            //     $data .= '<td class="table-data">'. $row['description'] .'</td>';
+            //     break;
+            // case 'new_key_action_c':
+            //     $data .= '<td class="table-data">'. $row['new_key_action_c'] .'</td>';
+            //     break;
+            // case 'next_date_c':
+            //     $data .= '<td class="table-data">'. date( 'd/m/Y', strtotime($row['next_date_c'] ) ) .'</td>';
+            //     break;
+            // case 'name_of_person_c':
+            //     $data .= '<td class="table-data">'. $row['name_of_person_c'] .'</td>';
+            //     break;
+        }
+        return $data;
+    }
+    
+   
+
 
     function documentpagination($page, $numberOfPages, $type, $day, $searchTerm, $filter){
 
@@ -7427,11 +7535,25 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
 
-            $team_func_array = $team_func_array1 = $others_id_array = array();
-
-            $sql ="SELECT assigned_user_id FROM documents where id ='$document_id' ";
+            $team_func_array = $team_func_array1 = $others_id_array = $tagged_user_array = array();
+            $is_creator = false;
+            // $sql ="SELECT assigned_user_id FROM documents where id ='$document_id' ";
+            
+            $sql ="SELECT documents.assigned_user_id, documents.created_by, documents_cstm.tagged_hidden_c
+            FROM documents 
+            LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c
+            WHERE documents.id ='$document_id' ";
+            
             $result = $GLOBALS['db']->query($sql);
             $row = $result->fetch_assoc();
+            if(strpos($row['tagged_hidden_c'], ',') !== false) {
+                $tagged_user_array = explode(',',  $row['tagged_hidden_c']);
+            } else {
+                $tagged_user_array = [$row['tagged_hidden_c']];
+            }
+            if($row['created_by'] == $log_in_user_id) {
+                $is_creator = true;
+            }
             $user_id = $row['assigned_user_id'];
 
             $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
@@ -7450,7 +7572,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
             }
 
-            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) ){
+            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) || in_array($log_in_user_id, $tagged_user_array) || $is_creator == true){
                 return true;
             }
             else {
@@ -7473,11 +7595,24 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
 
-            $team_func_array = $team_func_array1 = $others_id_array = array();
+            $team_func_array = $team_func_array1 = $others_id_array = $tagged_user_array = array();
+            $is_creator = false;
+            // $sql ="SELECT assigned_user_id FROM documents where id ='$doc_id' ";
+            $sql ="SELECT documents.assigned_user_id, documents.created_by, documents_cstm.tagged_hidden_c
+            FROM documents 
+            LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c
+            WHERE id ='$doc_id' ";
 
-            $sql ="SELECT assigned_user_id FROM documents where id ='$doc_id' ";
             $result = $GLOBALS['db']->query($sql);
             $row = $result->fetch_assoc();
+            if(strpos($row['tagged_hidden_c'], ',') !== false) {
+                $tagged_user_array = explode(',',  $row['tagged_hidden_c']);
+            } else {
+                $tagged_user_array = [$row['tagged_hidden_c']];
+            }
+            if($row['created_by'] == $log_in_user_id) {
+                $is_creator = true;
+            }
             $user_id = $row['assigned_user_id'];
 
             $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
@@ -7496,7 +7631,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
             }
 
-            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) ){
+            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) || in_array($log_in_user_id, $tagged_user_array) || $is_creator == true){
                 return true;
             }
             else {
@@ -7664,10 +7799,10 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                         $data .='
                             <tr>
                                 <td class="approvaltable-data-popup">'.$row['document_name'].'</td>
-                                <td class="approvaltable-data-popup">'.getDocumentRelatedTo($row['parent_type'], $row['parent_id']).'<br><span class="document-related-type">'. $row['parent_type'] .'</span></td>
-                                <td class="approvaltable-data-boolean-popup">'.$row['status_c'].'</td>
-                                <td class="approvaltable-data-popup">'.$row['template_type'].'</td>
-                                <td class="approvaltable-data-popup">'. getUsername($row['created_by']) .'<br><span class="document-related-uploaded_date">'. date( 'd/m/Y', strtotime($row['follow_up_date_c']) ) .'</span></td>
+                                <td class="approvaltable-data-popup">'.beautify_label(getDocumentRelatedTo($row['parent_type'], $row['parent_id'])).'<br><span class="document-related-type">'. $row['parent_type'] .'</span></td>
+                                <td class="approvaltable-data-popup">'.beautify_label($row['status_c']).'</td>
+                                <td class="approvaltable-data-popup">'.beautify_label($row['template_type']).'</td>
+                                <td class="approvaltable-data-popup">'. getUsername($row['created_by']) .'<br><span class="document-related-uploaded_date">'. date( 'd/m/Y', strtotime($row['date_entered']) ) .'</span></td>
                                 <td class="approvaltable-data-popup">'.date( 'd/m/Y', strtotime($row['date_modified']) ).'</td>
                             </tr>';
                     $data .= '
@@ -7699,7 +7834,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $GLOBALS['db'];
             $doc_id = $_REQUEST['id'];
 
-            $fetch_document_info = "SELECT documents.document_name, documents.date_entered, documents.created_by, documents.doc_type, documents.id as doc_id, documents_cstm.category_c as category_name, documents_cstm.sub_category_c as sub_category_name, documents_cstm.parent_type, documents_cstm.parent_id FROM documents
+            $fetch_document_info = "SELECT documents.document_name, documents.date_entered, documents.created_by, documents.template_type, documents.id as doc_id, documents_cstm.category_c as category_name, documents_cstm.sub_category_c as sub_category_name, documents_cstm.parent_type, documents_cstm.parent_id FROM documents
             LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c WHERE documents.id = '$doc_id'";
 
             $fetch_document_info_result = $GLOBALS['db']->query($fetch_document_info);
@@ -7728,11 +7863,11 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                     </thead>
                     <tbody>
                         <tr class="tabvalue">
-                        <td>' . ucfirst($row['doc_type']) . '</td>
+                        <td>' . beautify_label($row['template_type']) . '</td>
                         <td>' . ucfirst($row['category_name']) . '</td>
                         <td>' . ucfirst($row['sub_category_name']) . '</td>
-                        <td> <h2 class="document-related-name">' . getDocumentRelatedTo($row['parent_type'] , $row['parent_id']) . '</h2> <span class="document-related-type">'. $row['parent_type'] .'</span></td>
-                        <td> <h2 class="document-related-name">' . ucwords($user_full_name) . '</h2> <span class="document-related-type">'. $row['date_entered'] .'</span></td>
+                        <td> <h2 class="document-related-name">' . beautify_label(getDocumentRelatedTo($row['parent_type'] , $row['parent_id'])) . '</h2> <span class="document-related-type">'. $row['parent_type'] .'</span></td>
+                        <td> <h2 class="document-related-name">' . ucwords($user_full_name) . '</h2> <span class="document-related-type">'.date( 'd/m/Y', strtotime($row['date_entered']) ).'</span></td>
 
                       
                         </tr>';
@@ -7759,7 +7894,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 $notes_history .= '<tr class="tabvalue">
                         <td>' . ucfirst($row1['notes']) . '</td>
                         <td>' . ucwords($note_creator). '</td>
-                        <td>' . $row1['posted_date'] . '</td>
+                        <td>'.date( 'd/m/Y', strtotime($row1['posted_date']) ). '</td>
                        
                         </tr>';
             }
@@ -7876,7 +8011,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                     <tbody>
                         <tr class="tabvalue">
                         <td>' . date_format(date_create($row['date_modified']), 'd/m/Y') . '</td>
-                        <td>' . ucfirst($row['template_type']) . '</td>
+                        <td>' . beautify_label($row['template_type']) . '</td>
                         <td>' . ucwords($user_full_name). '</td>
                         <td>' . ucwords($creator_full_name). '</td>
                         </tr>';

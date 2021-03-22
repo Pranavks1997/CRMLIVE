@@ -496,7 +496,7 @@ $(document).on('click', '#document_download_btn', function () {
 // :::::::::::::::::::::::::::::::::::::::::::: Joytirmoy Code :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 
-function isEmptyOrSpaces(str){
+function isEmptyOrSpaces(str) {
     return str === null || str.match(/^ *$/) !== null;
 }
 
@@ -512,7 +512,7 @@ function handleNoteDialog(event) {
         // var hidden_note_id = document.getElementById('hidden_note_value').value;
         var doc_id = document.getElementById('doc_id').value;
         var note = document.getElementById('note').value;
-        if(isEmptyOrSpaces(note)){
+        if (isEmptyOrSpaces(note)) {
             return false;
             exit();
         }
@@ -527,7 +527,7 @@ function handleNoteDialog(event) {
                 dialog.style.display = "none";
                 document.getElementById('note').value = "";
             },
-            error  : function(data,errorThrown){
+            error: function (data, errorThrown) {
                 alert(errorThrown);
             }
         });
@@ -538,8 +538,19 @@ function handleNoteDialog(event) {
 
 
 function fetchDocumentDelegateDialog() {
+    var temp = document.getElementsByClassName('pending-document-request-count');
+    var pendingReqCount = temp[0].innerText;
     var dialog = document.getElementById('documentDelegatemyModel');
-    dialog.style.display = "block";
+    if (pendingReqCount != '0') {
+        if (dialog.style.display === "block") {
+            dialog.style.display = "none";
+        } else {
+            dialog.style.display = "block"
+        }
+    } else {
+        dialog.style.display = "none";
+    }
+
     $.ajax({
         url: 'index.php?module=Home&action=document_delegated_dialog_info',
         type: 'GET',
@@ -574,9 +585,9 @@ $('#document_delegate_submit').click(function () {
         });
     }
 });
-var delegateModel = document.getElementById("documentDelegatemyModel");
+var delegateModelForClose = document.getElementById("documentDelegatemyModel");
 $(document).on('click', '#documentDelegateclose', function () {
-    delegateModel.style.display = "none";
+    delegateModelForClose.style.display = "none";
 });
 $(document).on('click', '.remove-document-delegate', function () {
     $.ajax({
@@ -660,7 +671,7 @@ function handleTagDialog(event) {
             url: 'index.php?module=Home&action=set_document_for_tag',
             type: 'POST',
             data: $('.document_tag_func').serialize(),
-            
+
             success: function (data) {
                 debugger;
                 dialog.style.display = "none";

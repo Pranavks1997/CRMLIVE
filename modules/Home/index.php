@@ -850,7 +850,7 @@
                     </div>
 
                     <div style="margin-top: 15px;padding-bottom: 20px;margin-left: 20px;">
-                        <a class="btn1" id="document_delegate_submit" style="padding: 5px 20px;">Save</a>
+                        <a class="btn1" id="document_delegate_submit" style="padding: 5px 20px; cursor:pointer">Save</a>
                     </div>
                 </section>
             </form>
@@ -900,6 +900,7 @@
                         
                     </div>
                     <br><div style="height: 20px;"></div>
+                    <label for="Deselect-Members">Tag Members</label><br>
                     <input type="hidden" id="document_tag_id" name="document_tag_id" value="" />
                     <div id="document_member_info">
 
