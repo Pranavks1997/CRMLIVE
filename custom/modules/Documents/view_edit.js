@@ -651,6 +651,86 @@ $(document).on('click', function () {
           }
     });
    
+ //---------------------------multiple file upload -------------------------------------------------     
+ 
+ 
+	var record_id = $('input[name="record"]').val();
+	$('#EditView').attr('enctype','multipart/form-data');
+	var x = 1; //initlal text box count
+	
+		
+    $(".input_fields_wrap").on("click",".remove_field", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parent('div').remove(); x--;
+    });
+	
+	$(".downloadAttachment").click(function(e) {
+        var fileName = $(this).attr("name");
+        var name = $(this).text();
+        
+        var data = [
+            {
+                "id": fileName,
+                "type": name.substr((name.lastIndexOf('.') + 1)),
+                "module": "Document",
+                "folder": "Document",
+                
+            }
+        ];
+        downloadAttachment(data);
+        
+        
+    });
+	
+	$(".remove_attachment").click(function(e) {
+        var fileName = $(this).attr("name");
+        var name = $(this).prev().text();
+        var extension = name.substr((name.lastIndexOf('.') + 1));
+        var flag = confirm("Are you want to delete " + name + " attachment");
+        if (flag) {
+            removeAttachment(fileName, extension)
+        }
+    });	
+
+
+function downloadAttachment(data) {
+    var $form = $('<form></form>')
+        .attr('action', 'index.php?entryPoint=multiple_file&action_type=download')
+        .attr('method', 'post')
+        .attr('target', '_blank')
+        .appendTo('body');
+    for (var i in data) {
+        if (!data.hasOwnProperty(i)) continue;
+        $('<input type="hidden"/>')
+            .attr('name', i)
+            .val(JSON.stringify(data[i]))
+            .appendTo($form);
+    }
+    $form.submit();
+}
+
+function removeAttachment(fileName, extension) {
+    $.ajax({
+        url: 'index.php?entryPoint=multiple_file',
+        type: 'POST',
+        async: false,
+        data: {
+            id: fileName,
+            extension: extension,
+            module: 'Document',
+         			folder: 'Document',
+         			action_type: "remove"
+        },
+        success: function(result) {
+            var data = $.parseJSON(result);
+            $('[name=' + data.attachment_id + ']').prev().hide();
+            $('[name=' + data.attachment_id + ']').hide();
+        }
+    });
+}
+ 
+ //------------------------------multiple file upload ---------END------------------------------------  
+ 
+ 
   
 //***************************************Write code above this line***************************************  
 });

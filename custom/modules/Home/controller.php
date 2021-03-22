@@ -7217,6 +7217,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
     function getDocumentColumnFiltersBody($columnFilter, $row){
 
+        
+
         $data = '';
         $customColumns = @$_GET['customDocumentColumns'];
 
@@ -7301,6 +7303,99 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         }
         return $data;
     }
+
+    function getPendingDocumentColumnFiltersBody($columnFilter, $row){
+
+        
+
+        $data = '';
+        $customColumns = @$_GET['customDocumentColumns'];
+
+        if($customColumns):
+        foreach($customColumns as $column){
+            $data .= $this->getPendingDocumentColumnDataHtml($column, $row);
+        }
+        endif;
+
+        return $data;
+
+    }
+
+    function getPendingDocumentColumnDataHtml($column, $row){
+        $data = '';
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+
+        switch($column){
+            case 'name':
+                $data .= '<td class="table-data">';
+                    $data .= '<a href="index.php?module=Documents&action=DetailView&record='.$row['id'].'">';
+
+                    $tag_icon_query = 'SELECT * FROM documents_cstm where id_c = "' .$row['id'].'"';
+                    $result = $GLOBALS['db']->query($tag_icon_query);
+                    $delegate_user = $result->fetch_assoc();
+                    $delegated_id_array = explode(',',$delegate_user['delegate_id']); 
+
+                    $data .= '<h2 class="document-title">'. $row['document_name'];
+                    if (in_array($log_in_user_id,$delegated_id_array)){
+                        $data .= ' <img src="modules/Home/assets/Delegate-icon.svg" style="width: 25px; color:green" />';
+                    
+                    }
+                    else {
+                        $data .= '</h2></a>';
+                    }
+                    $data .= '</td>';
+
+                    break; 
+            case 'related_to':
+                $parent_type = '';
+                $data .= '<td class="table-data">';
+
+                $data .= '<h2 class="document-related-name">'. beautify_label(getDocumentRelatedTo($row['parent_type'], $row['parent_id'])) .'</h2>';
+
+                $data .= '<span class="document-related-type">'. $row['parent_type'] .'</span></td>';
+                break;
+            case 'document_type':
+                $data .= '<td class="table-data">'. beautify_label($row['template_type']) .'</td>';
+                break;
+            case 'category':
+                $data .= '<td class="table-data">'. $row['category_c'] .'</td>';
+                break;
+            case 'sub_category':
+                $data .= '<td class="table-data">'. $row['sub_category_c'] .'</td>';
+                break;
+            case 'uploaded_by':
+                $data .= '<td class="table-data">';
+                $data .= '<h2 class="document-related-uploaded_by">'. getUsername($row['created_by']) .'</h2>';
+                $data .= '<span class="document-related-uploaded_date">'. date( 'd/m/Y', strtotime($row['date_entered']) ) .'</span></td>';
+                break;
+            // case 'date_modified':
+            //     $data .= '<td class="table-data">'. date( 'd/m/Y', strtotime($row['date_modified']) ) .'</td>';
+            //     break;
+            // case 'assigned_to_c':
+            //     $data .= '<td class="table-data">'. $row['assigned_to_c'] .'</td>';
+            //     break;
+            // case 'new_current_status_c':
+            //     $data .= '<td class="table-data">'. $row['new_current_status_c'] .'</td>';
+            //     break;
+            // case 'description':
+            //     $data .= '<td class="table-data">'. $row['description'] .'</td>';
+            //     break;
+            // case 'new_key_action_c':
+            //     $data .= '<td class="table-data">'. $row['new_key_action_c'] .'</td>';
+            //     break;
+            // case 'next_date_c':
+            //     $data .= '<td class="table-data">'. date( 'd/m/Y', strtotime($row['next_date_c'] ) ) .'</td>';
+            //     break;
+            // case 'name_of_person_c':
+            //     $data .= '<td class="table-data">'. $row['name_of_person_c'] .'</td>';
+            //     break;
+        }
+        return $data;
+    }
+    
+   
+
 
     function documentpagination($page, $numberOfPages, $type, $day, $searchTerm, $filter){
 
@@ -7664,7 +7759,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                         $data .='
                             <tr>
                                 <td class="approvaltable-data-popup">'.$row['document_name'].'</td>
-                                <td class="approvaltable-data-popup">'.getDocumentRelatedTo($row['parent_type'], $row['parent_id']).'<br><span class="document-related-type">'. $row['parent_type'] .'</span></td>
+                                <td class="approvaltable-data-popup">'.beautify_label(getDocumentRelatedTo($row['parent_type'], $row['parent_id'])).'<br><span class="document-related-type">'. $row['parent_type'] .'</span></td>
                                 <td class="approvaltable-data-popup">'.beautify_label($row['status_c']).'</td>
                                 <td class="approvaltable-data-popup">'.beautify_label($row['template_type']).'</td>
                                 <td class="approvaltable-data-popup">'. getUsername($row['created_by']) .'<br><span class="document-related-uploaded_date">'. date( 'd/m/Y', strtotime($row['date_entered']) ) .'</span></td>

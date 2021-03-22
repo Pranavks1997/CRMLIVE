@@ -24,20 +24,17 @@ array (
           ),
           1 => 'CANCEL',
           2 => 
-        
           array (
             'customCode' => '<input type="button"  name="send_for_approval" value="send for approval" id="apply_for_complete"  class="button"  />',
           ),
-          3 =>
+          3 => 
           array (
             'customCode' => '<input type="button"  name="approve_button" value="approve" id="approve_document"  class="button"  />',
           ),
-          
-          4=>
+          4 => 
           array (
             'customCode' => '<input type="button"  name="reject_button" value="reject" id="reject_document"  class="button"  />',
           ),
-         
         ),
       ),
       'maxColumns' => '2',
@@ -148,9 +145,10 @@ array (
         array (
           0 => 
           array (
-            'name' => 'followup',
-            'comment' => 'File name associated with the note (attachment)',
-            'label' => 'LBL_FOLLOWUP',
+            'name' => 'multiple_file',
+            'studio' => 'visible',
+            'label' => 'Follow-up Documents',
+            'customCode' => '{include file=$FILEUPLOAD filename=$ATTACHMENTS}',
           ),
           1 => 
           array (

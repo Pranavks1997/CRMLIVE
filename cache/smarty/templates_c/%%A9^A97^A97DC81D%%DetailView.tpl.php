@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-03-18 15:05:54
+<?php /* Smarty version 2.6.31, created on 2021-03-19 13:41:27
          compiled from cache/themes/SuiteP/modules/Documents/DetailView.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 44, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 53, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 111, false),array('function', 'sugar_getimage', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 194, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 104, false),array('modifier', 'escape', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 525, false),array('modifier', 'url2html', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 525, false),array('modifier', 'nl2br', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 525, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 44, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 53, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 111, false),array('function', 'sugar_getimage', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 194, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 104, false),array('modifier', 'escape', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 518, false),array('modifier', 'url2html', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 518, false),array('modifier', 'nl2br', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 518, false),)), $this); ?>
 
 
 <?php if ($this->_tpl_vars['fields']['recurring_source']['value'] != '' && $this->_tpl_vars['fields']['recurring_source']['value'] != 'Sugar'): ?>
@@ -552,32 +552,23 @@ _image_inline.png
 <div class="col-xs-12 col-sm-4 label col-1-label">
 
 
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_FOLLOWUP','module' => 'Documents'), $this);?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'Follow-up Documents','module' => 'Documents'), $this);?>
 <?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
 <?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
 :
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="file" field="followup" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="" field="" >
 
-<?php if (! $this->_tpl_vars['fields']['followup']['hidden']): ?>
+<?php if (! $this->_tpl_vars['fields']['multiple_file']['hidden']): ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
-
-<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['followup']['name']; ?>
-">
-<a href="index.php?entryPoint=download&id=<?php echo $this->_tpl_vars['fields']['id']['value']; ?>
-&type=<?php echo $this->_tpl_vars['module']; ?>
-" class="tabDetailViewDFLink" target='_blank'><?php echo $this->_tpl_vars['fields']['followup']['value']; ?>
-</a>
-&nbsp;
-<a href="index.php?preview=yes&entryPoint=download&id=<?php echo $this->_tpl_vars['fields']['id']['value']; ?>
-&type=<?php echo $this->_tpl_vars['module']; ?>
-" class="tabDetailViewDFLink" target='_blank' style="border-bottom: 0px;">
-<i class="glyphicon glyphicon-eye-open"></i>
-</a>
-</span>
+<span id="multiple_file" class="sugar_field"><?php $_smarty_tpl_vars = $this->_tpl_vars;
+$this->_smarty_include(array('smarty_include_tpl_file' => $this->_tpl_vars['FILEUPLOAD'], 'smarty_include_vars' => array('filename' => $this->_tpl_vars['ATTACHMENTS'])));
+$this->_tpl_vars = $_smarty_tpl_vars;
+unset($_smarty_tpl_vars);
+ ?></span>
 <?php endif; ?>
 
 </div>
@@ -1116,32 +1107,23 @@ _image_inline.png
 <div class="col-xs-12 col-sm-4 label col-1-label">
 
 
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_FOLLOWUP','module' => 'Documents'), $this);?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'Follow-up Documents','module' => 'Documents'), $this);?>
 <?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
 <?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
 :
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="file" field="followup" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="" field="" >
 
-<?php if (! $this->_tpl_vars['fields']['followup']['hidden']): ?>
+<?php if (! $this->_tpl_vars['fields']['multiple_file']['hidden']): ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
-
-<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['followup']['name']; ?>
-">
-<a href="index.php?entryPoint=download&id=<?php echo $this->_tpl_vars['fields']['id']['value']; ?>
-&type=<?php echo $this->_tpl_vars['module']; ?>
-" class="tabDetailViewDFLink" target='_blank'><?php echo $this->_tpl_vars['fields']['followup']['value']; ?>
-</a>
-&nbsp;
-<a href="index.php?preview=yes&entryPoint=download&id=<?php echo $this->_tpl_vars['fields']['id']['value']; ?>
-&type=<?php echo $this->_tpl_vars['module']; ?>
-" class="tabDetailViewDFLink" target='_blank' style="border-bottom: 0px;">
-<i class="glyphicon glyphicon-eye-open"></i>
-</a>
-</span>
+<span id="multiple_file" class="sugar_field"><?php $_smarty_tpl_vars = $this->_tpl_vars;
+$this->_smarty_include(array('smarty_include_tpl_file' => $this->_tpl_vars['FILEUPLOAD'], 'smarty_include_vars' => array('filename' => $this->_tpl_vars['ATTACHMENTS'])));
+$this->_tpl_vars = $_smarty_tpl_vars;
+unset($_smarty_tpl_vars);
+ ?></span>
 <?php endif; ?>
 
 </div>

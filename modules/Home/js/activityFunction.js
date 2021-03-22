@@ -731,9 +731,9 @@ $('#activity_delegate_submit').click(function () {
         });
     }
 });
-var delegateModel = document.getElementById("activityDelegatemyModel");
+var delegateModelForClose = document.getElementById("activityDelegatemyModel");
 $(document).on('click', '#activityDelegateclose', function () {
-    delegateModel.style.display = "none";
+    delegateModelForClose.style.display = "none";
 });
 $(document).on('click', '.remove-activity-delegate', function () {
     $.ajax({

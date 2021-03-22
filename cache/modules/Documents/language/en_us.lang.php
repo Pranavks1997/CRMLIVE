@@ -1,5 +1,5 @@
 <?php
-// created: 2021-03-18 16:03:37
+// created: 2021-03-19 15:56:54
 $mod_strings = array (
   'LBL_ID' => 'ID',
   'LBL_DATE_ENTERED' => 'Date Created',
@@ -27,7 +27,7 @@ $mod_strings = array (
   'LBL_SECURITYGROUPS_SUBPANEL_TITLE' => 'Security Groups',
   'LBL_MODULE_NAME' => 'Documents',
   'LBL_MODULE_TITLE' => 'Documents: Home',
-  'LNK_NEW_DOCUMENT' => 'Create Document',
+  'LNK_NEW_DOCUMENT' => 'Upload Document',
   'LNK_DOCUMENT_LIST' => 'View Documents',
   'LBL_DOC_REV_HEADER' => 'Document Revisions',
   'LBL_SEARCH_FORM_TITLE' => 'Document Search',
@@ -88,7 +88,7 @@ $mod_strings = array (
   'LBL_SELECTED_REVISION_ID' => 'Selected revision id',
   'LBL_LATEST_REVISION_ID' => 'Latest revision id',
   'LBL_SELECTED_REVISION_FILENAME' => 'Selected revision filename',
-  'LBL_FILE_URL' => 'File URL',
+  'LBL_FILE_URL' => 'File url',
   'LBL_SF_CATEGORY' => 'Category_old',
   'LBL_SF_SUBCATEGORY' => 'Sub Category_old',
   'DEF_CREATE_LOG' => 'Document Created',
@@ -134,6 +134,4 @@ $mod_strings = array (
   'LBL_FILENAME_FOLLOW_UP' => 'File name',
   'LBL_DOCUMENT_VISIBILITY' => 'Document Visibility',
   'LBL_OPPORTUNITIES_DOCUMENTS_1_FROM_OPPORTUNITIES_TITLE' => 'Opportunities',
-  'LBL_FILE_MIME_TYPE' => 'File Mime Type',
-  'LBL_FOLLOWUP' => 'Follow Up',
 );

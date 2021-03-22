@@ -97,10 +97,10 @@
             
             <td class="table-data">
                 <div style="font-size: 20px;">
-                    <i class="fa fa-check-circle" onClick="openApprovalDialog('Approve','<?php echo $status_c; ?>','<?php echo $approvalID; ?>')"></i>
-                    <i class="fa fa-times-circle" onClick="openApprovalDialog('Reject','<?php echo $status_c; ?>','<?php echo $approvalID; ?>')"></i>
+                    <i title="Approve" class="fa fa-check-circle" onClick="openApprovalDialog('Approve','<?php echo $status_c; ?>','<?php echo $approvalID; ?>')"></i>
+                    <i title="Reject"class="fa fa-times-circle" onClick="openApprovalDialog('Reject','<?php echo $status_c; ?>','<?php echo $approvalID; ?>')"></i>
                     <a style="color: #534d64; font-size: 20px;" href="index.php?action=DetailView&module=Opportunities&record=<?php echo $oppID; ?>">
-                        <i class="fa fa-info-circle"></i>
+                        <i class="fa fa-info-circle" title="View Details"></i>
                     </a>
                 </div>
             </td>
