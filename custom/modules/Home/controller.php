@@ -6636,10 +6636,23 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $GLOBALS['db'];
 
             $team_func_array = $team_func_array1 = $others_id_array = array();
+            $is_creator = false;
+            // $sql ="SELECT assigned_user_id FROM calls where id ='$activity_id' "; 
+            $sql ="SELECT calls.assigned_user_id, calls.created_by, calls_cstm.tag_hidden_c
+            FROM calls 
+            LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c
+            WHERE id ='$activity_id' ";
 
-            $sql ="SELECT assigned_user_id FROM calls where id ='$activity_id' "; 
             $result = $GLOBALS['db']->query($sql);
             $row = $result->fetch_assoc();
+            if(strpos($row['tag_hidden_c'], ',') !== false) {
+                $tagged_user_array = explode(',',  $row['tag_hidden_c']);
+            } else {
+                $tagged_user_array = [$row['tag_hidden_c']];
+            }
+            if($row['created_by'] == $log_in_user_id) {
+                $is_creator = true;
+            }
             $user_id = $row['assigned_user_id'];
 
             $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
@@ -6658,7 +6671,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
             }
 
-            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) ){
+            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) || in_array($log_in_user_id, $tagged_user_array) || $is_creator == true ){
                 return true;
             }
             else {
@@ -7522,11 +7535,25 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
 
-            $team_func_array = $team_func_array1 = $others_id_array = array();
-
-            $sql ="SELECT assigned_user_id FROM documents where id ='$document_id' ";
+            $team_func_array = $team_func_array1 = $others_id_array = $tagged_user_array = array();
+            $is_creator = false;
+            // $sql ="SELECT assigned_user_id FROM documents where id ='$document_id' ";
+            
+            $sql ="SELECT documents.assigned_user_id, documents.created_by, documents_cstm.tagged_hidden_c
+            FROM documents 
+            LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c
+            WHERE documents.id ='$document_id' ";
+            
             $result = $GLOBALS['db']->query($sql);
             $row = $result->fetch_assoc();
+            if(strpos($row['tagged_hidden_c'], ',') !== false) {
+                $tagged_user_array = explode(',',  $row['tagged_hidden_c']);
+            } else {
+                $tagged_user_array = [$row['tagged_hidden_c']];
+            }
+            if($row['created_by'] == $log_in_user_id) {
+                $is_creator = true;
+            }
             $user_id = $row['assigned_user_id'];
 
             $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
@@ -7545,7 +7572,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
             }
 
-            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) ){
+            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) || in_array($log_in_user_id, $tagged_user_array) || $is_creator == true){
                 return true;
             }
             else {
@@ -7568,11 +7595,24 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
 
-            $team_func_array = $team_func_array1 = $others_id_array = array();
+            $team_func_array = $team_func_array1 = $others_id_array = $tagged_user_array = array();
+            $is_creator = false;
+            // $sql ="SELECT assigned_user_id FROM documents where id ='$doc_id' ";
+            $sql ="SELECT documents.assigned_user_id, documents.created_by, documents_cstm.tagged_hidden_c
+            FROM documents 
+            LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c
+            WHERE id ='$doc_id' ";
 
-            $sql ="SELECT assigned_user_id FROM documents where id ='$doc_id' ";
             $result = $GLOBALS['db']->query($sql);
             $row = $result->fetch_assoc();
+            if(strpos($row['tagged_hidden_c'], ',') !== false) {
+                $tagged_user_array = explode(',',  $row['tagged_hidden_c']);
+            } else {
+                $tagged_user_array = [$row['tagged_hidden_c']];
+            }
+            if($row['created_by'] == $log_in_user_id) {
+                $is_creator = true;
+            }
             $user_id = $row['assigned_user_id'];
 
             $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
@@ -7591,7 +7631,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
             }
 
-            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) ){
+            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) || in_array($log_in_user_id, $tagged_user_array) || $is_creator == true){
                 return true;
             }
             else {

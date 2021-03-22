@@ -35,13 +35,17 @@
 
                     <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="fetchDocumentTagDialog('<?php echo $row['id']; ?>')">
                         <?php if ($this->is_document_tagging_applicable($row['id'])) { ?>
+
                             <i id="search-icon" title="Tag User" class="fa fa-tag" aria-hidden="true"> </i>
+
                         <?php } ?>
                     </button>
 
                     <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="fetchNoteDialog('<?php echo $row['id']; ?>')">
                         <?php if ($this->is_document_note_applicable($row['id'])) { ?>
+
                             <i id="search-icon" title="Note" class="fa fa-pencil-square-o" aria-hidden="true" style="background-color: transparent; color: black;"> </i>
+
                         <?php } ?>
                     </button>
                     <a style="width: 15px;" href="index.php?module=Documents&action=DetailView&record=<?php echo $row['id']; ?>" class="eye" id="search-btn">
