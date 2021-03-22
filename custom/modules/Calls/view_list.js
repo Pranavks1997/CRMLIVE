@@ -9,6 +9,6 @@ $( document ).ready(function() {
   $('.suitepicon-action-info').hide();
   $('.columnsFilterLink').hide();
   
- //$('.listViewEmpty').text('No Records available');
+ $('.listViewEmpty').text('No Records available');
   
  });
