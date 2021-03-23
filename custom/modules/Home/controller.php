@@ -4799,6 +4799,7 @@ public function is_activity_reassignment_applicable($activity_id) {
             $GLOBALS['db'];
 
             $PRC = 0;
+            $DELE_COUNT = 0 ;
 
             $query = "SELECT id FROM calls WHERE deleted != 1 AND date_entered >= now() - interval '1200' day";
             $result = $GLOBALS['db']->query($query);
@@ -4810,12 +4811,19 @@ public function is_activity_reassignment_applicable($activity_id) {
                 $count = $GLOBALS['db']->fetchByAssoc($result);
                 if($count && $count['approval_status'] == '0')
                     $PRC += 1;
+                
+                $dele_count_query = "SELECT approval_status FROM activity_approval_table WHERE acc_id = '$id' AND approver = '$log_in_user_id' ORDER BY `id` DESC LIMIT 1";
+                $dele_count_res = $GLOBALS['db']->query($dele_count_query);
+                $count_del_count = $GLOBALS['db']->fetchByAssoc($dele_count_res);
+                if($count_del_count && $count_del_count['approval_status'] == '0')
+                    $DELE_COUNT += 1;
             }
 
             echo json_encode(
                 array(
                     'data' => "$PRC <i class=\"fa fa-angle-double-down\" aria-hidden=\"true\"></i>",
                     'count' => $PRC,
+                    'delegate_count' => $DELE_COUNT,
                 )
             );
         }
@@ -6792,12 +6800,18 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $GLOBALS['db'];
 
             $PRC = 0;
+            $DELE_COUNT = 0 ;
 
             $query = "SELECT id FROM documents WHERE deleted != 1 AND date_entered >= now() - interval '1200' day";
             $result = $GLOBALS['db']->query($query);
             $response = $this->mysql_fetch_assoc_all($result); //get all result in an array
             foreach($response as $r){
                 $id = $r['id'];
+                $query_count_for_delegate_button = "SELECT approval_status FROM document_approval_table WHERE doc_id = '$id' AND ( approver = '$log_in_user_id' ORDER BY `id` DESC LIMIT 1";
+                $result_self_delegate = $GLOBALS['db']->query($query_count_for_delegate_button);
+                $count_delegate = $GLOBALS['db']->fetchByAssoc($result_self_delegate);
+                if($count_delegate && $count_delegate['approval_status'] == '0')
+                    $DELE_COUNT += 1;
                 $query = "SELECT approval_status FROM document_approval_table WHERE doc_id = '$id' AND ( approver = '$log_in_user_id' OR delegate_id = '$log_in_user_id' ) ORDER BY `id` DESC LIMIT 1";
                 $result = $GLOBALS['db']->query($query);
                 $count = $GLOBALS['db']->fetchByAssoc($result);
@@ -6809,6 +6823,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 array(
                     'data' => "$PRC <i class=\"fa fa-angle-double-down\" aria-hidden=\"true\"></i>",
                     'count' => $PRC,
+                    'delegate_count' => $DELE_COUNT,
                     'response'=>$response
                 )
             );
@@ -7275,8 +7290,18 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 $data .= '<td class="table-data">';
 
                 $data .= '<h2 class="document-related-name">'. beautify_label(getDocumentRelatedTo($row['parent_type'], $row['parent_id'])) .'</h2>';
+                
+                if( strtolower($row['parent_type']) == 'calls'){
+                    $parent_type = 'Activity';
+                }
+                elseif( strtolower($row['parent_type']) == 'accounts'){
+                    $parent_type = 'Department';
+                }
+                else{
+                    $parent_type = $row['parent_type'];
+                }
 
-                $data .= '<span class="document-related-type">'. $row['parent_type'] .'</span></td>';
+                $data .= '<span class="document-related-type">'. $parent_type .'</span></td>';
                 break;
             case 'document_type':
                 $data .= '<td class="table-data">'. beautify_label($row['template_type']) .'</td>';

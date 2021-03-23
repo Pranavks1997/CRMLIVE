@@ -72,8 +72,11 @@ function getPendingDocumentRequestCount() {
         data: $('.approval-form').serialize(),
         success: function (res) {
             res = JSON.parse(res)
-            console.log(res)
+            console.log("Pending Count Number ::: ", res);
             $('.pending-document-request-count').html(res.count + " <i class='fa fa-angle-double-down' aria-hidden='true'></i>");
+            if (res && res.delegate_count == 0){
+                $(".doc_dele_count").css('display','none');
+            }
             if (res && res.count == 0) {
                 $('#click-here-text-document').html('');
                 $('#approve-pending-text-document').html('No Requests Pending For Approval');
@@ -540,6 +543,7 @@ function handleNoteDialog(event) {
 function fetchDocumentDelegateDialog() {
     var temp = document.getElementsByClassName('pending-document-request-count');
     var pendingReqCount = temp[0].innerText;
+    console.log("Ineer Delegate Value ::: ", pendingReqCount)
     var dialog = document.getElementById('documentDelegatemyModel');
     if (pendingReqCount != '0') {
         if (dialog.style.display === "block") {

@@ -6,6 +6,9 @@ function getPendingActivityRequestCount() {
         success: function (res) {
             res = JSON.parse(res)
             $('.pending-activity-request-count').html(res.count + " <i class='fa fa-angle-double-down' aria-hidden='true'></i>");
+            if (res && res.delegate_count == 0){
+                $(".activity_dele_count").css('display','none');
+            }
             if (res && res.count == 0) {
                 $('#click-here-text-activity').html('');
                 $('#approve-pending-text-activity').html('No Requests Pending For Approval');
@@ -731,8 +734,10 @@ $('#activity_delegate_submit').click(function () {
         });
     }
 });
-var delegateModelForClose = document.getElementById("activityDelegatemyModel");
+
+
 $(document).on('click', '#activityDelegateclose', function () {
+    var delegateModelForClose = document.getElementById("activityDelegatemyModel");
     delegateModelForClose.style.display = "none";
 });
 $(document).on('click', '.remove-activity-delegate', function () {

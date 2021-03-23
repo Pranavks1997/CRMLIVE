@@ -9,7 +9,7 @@
     <div style="display: flex;margin-top: 10px;justify-content: space-around;" class="pending-button-class">
         <button onclick="openPendingActivityRequestTable()" class="pending-activity-request-count">
         0 <i class="fa fa-angle-double-down" aria-hidden="true"></i></button>
-        <button id="delegateBtn" onclick="fetchActivityDelegateDialog()" style=" background-color: #242422; color: white; height: 30px; width: 90px; border-radius: 5px; padding: 5px; font-size: 14px; box-shadow: 0px 2px 2px rgba(0,0,0,0.4);">
+        <button id="delegateBtn"  class = "activity_dele_count" onclick="fetchActivityDelegateDialog()" style=" background-color: #242422; color: white; height: 30px; width: 90px; border-radius: 5px; padding: 5px; font-size: 14px; box-shadow: 0px 2px 2px rgba(0,0,0,0.4);">
             Delegate
         </button>
     </div>
