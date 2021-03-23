@@ -401,8 +401,8 @@
 
         $fetch_query = '';
         
-        if( isset( $_GET['filter'] ) && isset( $_GET['filter-document_name'] ) && $_GET['filter-name'] ){
-            $name           = $_GET['filter-document_name'] ?? '';
+        if( isset( $_GET['filter'] ) && isset( $_GET['filter-name'] ) && $_GET['filter-name'] ){
+            $name           = $_GET['filter-name'] ?? '';
             $fetch_query    .= " AND documents.document_name LIKE '%$name%' ";
         }
         if( isset( $_GET['filter'] ) && isset( $_GET['filter-related_to'] ) && $_GET['filter-related_to'] ){

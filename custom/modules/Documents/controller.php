@@ -567,6 +567,113 @@ public function action_approval_buttons(){
 }
 //-----------------------Approval Buttons----------END------------------------------------------------------------
 
+//---------------------- edit View access-------------------------------------------------------------------
+public function action_editView_access(){
+    try{
+         $db = \DBManagerFactory::getInstance();
+        	$GLOBALS['db'];
+        	
+            	global $current_user; 
+        	    $log_in_user_id = $current_user->id;
+        	    $doc_id =$_POST['doc_id'];
+        	    $assigned_id = $_POST['assigned_id'];
+        	    
+      $sql_logged_user = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+        $result_logged_user = $GLOBALS['db']->query($sql_logged_user);
+        while($row_logged_user = $GLOBALS['db']->fetchByAssoc($result_logged_user)) 
+        {
+            $check_sales = $row_logged_user['teamfunction_c'];
+            $check_mc = $row_logged_user['mc_c'];
+            $check_team_lead = $row_logged_user['teamheirarchy_c'];
+            
+        }
+
+    $sql_assigned_user = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c,users.reports_to_id,users_cstm.user_lineage FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$assigned_id."' AND users.deleted = 0";
+        $result_assigned_user = $GLOBALS['db']->query($sql_assigned_user);
+        while($row_assigned_user = $GLOBALS['db']->fetchByAssoc($result_assigned_user)) 
+        {
+           $reports_to=$row_assigned_user['reports_to_id'];
+           $lineage=$row_assigned_user['user_lineage'];
+           
+            
+        }    
+       
+        
+        $lineage_array=explode(',',$lineage);
+        
+      $sql_tagged_user = "SELECT * FROM calls_cstm  WHERE id_c= '".$acc_id."'";
+        $result_tagged_user = $GLOBALS['db']->query($sql_tagged_user);
+        while($row_tagged_user = $GLOBALS['db']->fetchByAssoc($result_tagged_user)) 
+        {
+           
+           $tagged_users=$row_tagged_user['tag_hidden_c'];
+            
+        }        
+        
+        $tagged_users_array=explode(',',$tagged_users);
+        	    
+        	    if($acc_id==""){
+        	        
+        	        if($check_mc=="yes"||$check_team_lead=="team_lead"){
+        	            echo json_encode(array('message'=>"no_acc_id_view_all"));
+        	            
+        	        }else{
+        	             echo json_encode(array('message'=>"no_acc_id_view_few"));
+        	        }
+        	        
+        	    }
+        	    
+        	    else{
+        	       
+        	            
+        	        if($check_mc=="yes"){
+        	            
+        	        }
+        	        
+        	        else if(in_array($log_in_user_id,$lineage_array)){
+        	             
+        	            if($check_team_lead=="team_lead"){
+        	                
+        	            }
+        	            else{
+        	                 echo json_encode(array('message'=>"acc_id_view_no"));
+        	            }
+        	            
+        	        }
+        	        else if(in_array($log_in_user_id,$tagged_users_array)){
+        	            
+        	            if($check_team_lead=="team_lead"){
+        	                echo json_encode(array('message'=>"acc_id_view_few"));
+        	            }
+        	            else{
+        	                  echo json_encode(array('message'=>"acc_id_view_no"));
+        	            }
+        	            
+        	        } 
+        	         else if($log_in_user_id==$assigned_id){
+        	            
+        	            if($check_team_lead=="team_lead"){
+        	               
+        	            }
+        	            else{
+        	                  echo json_encode(array('message'=>"acc_id_view_no"));
+        	            }
+        	            
+        	        } 
+        	    }
+        	    
+         
+        	  
+    }catch(Exception $e) {
+          echo json_encode(array("status"=>false, "message"=>"some error occured"));
+      }
+      die();
+}
+
+
+//---------------------- edit View access---------END----------------------------------------------------------
+
+
 
 
 //--------------------------------Assigned user list according to login user-------------------

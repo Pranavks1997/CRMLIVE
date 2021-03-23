@@ -95,6 +95,29 @@ $( document ).ready(function() {
        $('#status_c').val('Upload');
       
       }
+      
+      
+        $.ajax({
+                url : 'index.php?module=Documents&action=editView_access',
+                type : 'POST',
+                dataType: "json",
+                 data:{
+                  
+                 assigned_id,
+                 doc_id
+                },
+                success : function(data){
+                if(data.message == "no_acc_id_view_all"){
+                    
+                }else if(data.message == "no_acc_id_view_few"){
+                    $("#activity_type_c option[value=non_global]").attr("disabled",true);
+                    $("#activity_type_c option[value=global]").attr("disabled",true);
+                }
+        }
+     
+ });
+      
+      
    
   }
   
@@ -229,7 +252,38 @@ $( document ).ready(function() {
             });  
          //--------------------------------approval buttons---------------END----------------   
          
-         
+           $.ajax({
+                url : 'index.php?module=Documents&action=editView_access',
+                type : 'POST',
+                dataType: "json",
+                 data:{
+                  
+                 assigned_id,
+                 doc_id
+                },
+                success : function(data){
+                    var tagged_users_new= [];
+                      $(".dropdown-chose-list span").each(function(){
+                      tagged_users_new.push($(this).text())
+                      });
+                      
+                      tagged_users_new= tagged_users_new.filter(tagged=>tagged);
+                    
+                if(data.message == "acc_id_view_no"){
+                    // alert("naanu");
+                    $("#activity_type_c option[value=non_global]").attr("disabled",true);
+                    $("#activity_type_c option[value=global]").attr("disabled",true);
+                    
+                    //  $(".dropdown-chose-list,.dropdown-display").hide(); 
+                    //  $("[field=tag_c]").append(`<span>${tagged_users_new}</span>`);
+                     
+                }else if(data.message == "acc_id_view_few"){
+                    $("#activity_type_c option[value=non_global]").attr("disabled",true);
+                    $("#activity_type_c option[value=global]").attr("disabled",true);
+                }
+        }
+     
+ });
              
     //-----------end of if condition------------------------------------       
   }

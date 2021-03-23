@@ -7085,10 +7085,10 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         $interactions = $this->mysql_fetch_assoc_all($query);
         $html = '';
         /* default fields */
-        // $html = '<div class="form-group">
-        //     <span class="primary-responsibilty-filter-head">Document Name</span>
-        //     <input type="text" class="form-control filter-document_name" name="filter-name" />
-        //     </div>';
+        $html = '<div class="form-group">
+            <span class="primary-responsibilty-filter-head">Document Name</span>
+            <input type="text" class="form-control filter-name" name="filter-name" />
+            </div>';
 
         // $html = '<div class="form-group">
         //         <span class="primary-responsibilty-filter-head">Document Type</span>
@@ -7122,13 +7122,23 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
     function get_all_option($column){
         global $current_user;
         $log_in_user_id = $current_user->id;
+        $parent_type = '';
         $fetch_query = 'SELECT DISTINCT('.$column.') as category FROM documents LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c WHERE deleted != 1';
         $result = $GLOBALS['db']->query($fetch_query);
         $data = '<option value="">Select Type</option>';
         if ($result->num_rows > 0) {
             while($row = $result->fetch_assoc()) {
                 if( ! is_null( $row['category'])&& $row['category']!== ''){
-                    $data .= '<option value="'.$row['category'].'">'.$row['category'].'</option>';
+                    if( strtolower($row['category']) == 'calls'){
+                    $parent_type = 'Activity';
+                    }
+                    elseif( strtolower($row['category']) == 'accounts'){
+                        $parent_type = 'Department';
+                    }
+                    else{
+                        $parent_type = $row['category'];
+                    }
+                    $data .= '<option value="'.$row['category'].'">'.beautify_label($parent_type).'</option>';
                 }
             }
         }
