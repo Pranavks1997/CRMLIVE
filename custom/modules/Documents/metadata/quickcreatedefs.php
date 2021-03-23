@@ -47,7 +47,6 @@ array (
         array (
           'file' => 'custom/modules/Documents/quick_create.js',
         ),
-        
       ),
       'useTabs' => false,
       'tabDefs' => 
@@ -88,15 +87,15 @@ array (
               'onchangeSetFileNameTo' => 'document_name',
             ),
           ),
-          1 => 'document_name',
-        ),
-        2 => 
-        array (
-          0 => 
+          1 => 
           array (
             'name' => 'template_type',
             'label' => 'LBL_DET_TEMPLATE_TYPE',
           ),
+        ),
+        2 => 
+        array (
+          0 => 'document_name',
           1 => 
           array (
             'name' => 'approver_c',
