@@ -7491,11 +7491,12 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $Sales = round($this->getDocumentStatusCountGraph('sales', $day) / $totalCount * 100, 0);
             $EntityDocuments = round($this->getDocumentStatusCountGraph('entity_documents', $day) / $totalCount * 100, 0);
             $ResearchandIntelligence = round($this->getDocumentStatusCountGraph('research_intelligence', $day) / $totalCount * 100, 0);
+            $Others = round($this->getDocumentStatusCountGraph('Others', $day) / $totalCount * 100, 0);
         }
         $Sales = $Sales ? $Sales : 0;
         $EntityDocuments = $EntityDocuments ? $EntityDocuments : 0;
         $ResearchandIntelligence = $ResearchandIntelligence ? $ResearchandIntelligence : 0;
-        
+        $Others = $Others ? $Others : 0;
         $data = '';
 
         if($Sales):
@@ -7516,6 +7517,12 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $data .= '<div style="width: '.$ResearchandIntelligence.'%" class="graph-bar-each">
                     <div style="width: 100%; height: 70px; background-color: #0000FF;"></div>
                     <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$ResearchandIntelligence.'%</p>
+                </div>';
+        endif;
+        if($Others):
+            $data .= '<div style="width: '.$Others.'%" class="graph-bar-each">
+                    <div style="width: 100%; height: 70px; background-color: #FFFF00;"></div>
+                    <p style="text-align: center; margin-top: 5px;font-size: 9px;">'.$Others.'%</p>
                 </div>';
         endif;
         echo json_encode(array("data"=>$data, "message" => "Success"));

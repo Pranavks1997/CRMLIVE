@@ -11,6 +11,9 @@
                 <li style="font-size: 11px; padding: 2px;">
                     <span style="background-color: #0000FF;color: #0000FF;height: 3px;width: 3px;font-size: xx-small;margin-right: 5px;">1</span>Research and Intelligence
                 </li>
+                <li style="font-size: 11px; padding: 2px;">
+                    <span style="background-color: #FFFF00;color: #FFFF00;height: 3px;width: 3px;font-size: xx-small;margin-right: 5px;">1</span>Others
+                </li>
             </ul>
         </div>
        
