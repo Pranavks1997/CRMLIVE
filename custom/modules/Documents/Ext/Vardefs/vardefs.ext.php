@@ -2,6 +2,17 @@
  //WARNING: The contents of this file are auto-generated
 
 
+
+$dictionary['Document']['fields']['documents'] = array(
+  'name' => 'documents',
+  'vname' => 'LBL_DOCUMENTS',
+  'type' => 'file',
+  'dbType' => 'varchar',
+  'len' => '255',
+  'reportable'=>true,
+  'importable' => false,
+);
+
 // created: 2021-01-07 14:09:44
 $dictionary["Document"]["fields"]["opportunities_documents_1"] = array (
   'name' => 'opportunities_documents_1',
@@ -105,6 +116,14 @@ $dictionary['Document']['fields']['status_id']['reportable']=true;
  // created: 2021-03-16 11:52:16
 $dictionary['Document']['fields']['sub_category_c']['inline_edit']='1';
 $dictionary['Document']['fields']['sub_category_c']['labelValue']='Sub Category';
+
+ 
+
+ // created: 2021-03-20 17:13:52
+$dictionary['Document']['fields']['template_type']['default']='Select';
+$dictionary['Document']['fields']['template_type']['inline_edit']=true;
+$dictionary['Document']['fields']['template_type']['merge_filter']='disabled';
+$dictionary['Document']['fields']['template_type']['reportable']=true;
 
  
 

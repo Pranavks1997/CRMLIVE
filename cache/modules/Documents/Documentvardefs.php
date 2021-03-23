@@ -498,7 +498,10 @@
       'type' => 'enum',
       'len' => 100,
       'options' => 'document_template_type_dom',
-      'reportable' => false,
+      'reportable' => true,
+      'default' => 'Select',
+      'inline_edit' => true,
+      'merge_filter' => 'disabled',
     ),
     'latest_revision_name' => 
     array (
@@ -572,6 +575,16 @@
       'relationship' => 'aos_contracts_documents',
       'source' => 'non-db',
       'module' => 'AOS_Contracts',
+    ),
+    'documents' => 
+    array (
+      'name' => 'documents',
+      'vname' => 'LBL_DOCUMENTS',
+      'type' => 'file',
+      'dbType' => 'varchar',
+      'len' => '255',
+      'reportable' => true,
+      'importable' => false,
     ),
     'opportunities_documents_1' => 
     array (

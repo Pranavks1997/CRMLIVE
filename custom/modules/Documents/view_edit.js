@@ -240,7 +240,7 @@ $( document ).ready(function() {
 
 $(document).on('click', function () {
 
-
+  if(doc_id != ""){
         
        var tag1=$("#tagged_users_c").val();
        
@@ -254,6 +254,8 @@ $(document).on('click', function () {
            
             $('#tag_hidden_c').val('');
        }
+  }
+  
 });
 //-----------------------tag  hidden users id--------------END---------------------------------  
 
@@ -421,7 +423,7 @@ $(document).on('click', function () {
         type : 'GET',
         success : function(all_category_list){
           if(selected_category == ""){
-            var list = '<option value=""></option> +'; 
+            var list = '<option value="Select">Select</option> +'; 
           }else{
                     var list = '<option value="'+selected_category+'">'+selected_category+'</option> +';
                 }
@@ -448,7 +450,8 @@ $(document).on('click', function () {
         "index.php?module=Documents&action=subCategory",
       data: { category_name:selected_category },
       success: function (data) {
-            var list = '<option value="'+selected_subCategory+'">'+selected_subCategory+'</option> +';
+            //var list = '<option value="Select">Select</option> +'; 
+           var list = '<option value="'+selected_subCategory+'">'+selected_subCategory+'</option> +';
           data=JSON.parse(data);
             data.forEach((subcategory)=>{
               if(subcategory.name != selected_subCategory){
@@ -458,6 +461,9 @@ $(document).on('click', function () {
             $("#sub_category_c").html(list);
       },
     });
+    }else{
+         var list = '<option value="Select">Select</option> +'; 
+          $("#sub_category_c").html(list);
     }
     
    
@@ -476,7 +482,7 @@ $(document).on('click', function () {
        
           // $("#sub_sector1_c").append(data);
          $("#sub_category_c").replaceWith('<select name="sub_category_c" id="sub_category_c"></select>');
-             var list = '<option value=""></option> +';
+             var list = '<option value="Select">Select</option> +';
           
           data=JSON.parse(data);
             data.forEach((subcategory)=>{
@@ -558,7 +564,7 @@ $(document).on('click', function () {
                validate = false;
         }
         
-         if($('#template_type').val()==''){
+         if($('#template_type').val()=='Select'){
             
              alert_validation.push("Document Type");
             
@@ -566,7 +572,7 @@ $(document).on('click', function () {
                validate = false;
          }
          
-          if($('#category_c').val()==''){
+          if($('#category_c').val()=='Select'){
             
              alert_validation.push("Category");
             
@@ -574,7 +580,7 @@ $(document).on('click', function () {
                validate = false;
          }
          
-         if($('#sub_category_c').val()==''){
+         if($('#sub_category_c').val()=='Select'){
             
              alert_validation.push("Sub Category");
             
@@ -642,10 +648,10 @@ $(document).on('click', function () {
     });
     
     $("#parent_name").on("click", function () {
-  //console.log("if in");
+  console.log("if in");
         
           if ($("#parent_name").css("background-color", "Red")) {
-            // console.log("check in");
+             console.log("check in");
         
             $("#parent_name").css("background-color", "#d8f5ee");
           }
