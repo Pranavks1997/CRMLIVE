@@ -15,6 +15,8 @@ $( document ).ready(function() {
     $('.panel-heading:contains("Activities")').hide();
     $('.panel-heading:contains("Departments")').hide();
     $('.panel-heading:contains("Opportunities")').hide();
+    $('.panel-heading:contains("Cases")').hide();
+    $('.panel-heading:contains("Bugs")').hide();
     
 //-----------------------------------------------Hide onload--------------------------------------
 

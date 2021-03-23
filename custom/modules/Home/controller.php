@@ -6669,6 +6669,9 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             if (strpos($row['user_lineage'], ',') !== false) {
                 $team_func_array = explode(',',  $row['user_lineage']);
             }
+            else {
+                $team_func_array = [$row['user_lineage']];
+            }
             $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
             $result3 = $GLOBALS['db']->query($sql3);
             while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
@@ -7589,6 +7592,9 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             if (strpos($row['user_lineage'], ',') !== false) {
                 $team_func_array = explode(',',  $row['user_lineage']);
             }
+            else {
+                $team_func_array = [$row['user_lineage']];
+            }
             $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
             $result3 = $GLOBALS['db']->query($sql3);
             while($row3 = $GLOBALS['db']->fetchByAssoc($result3))
@@ -7647,6 +7653,9 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $row = $result1->fetch_assoc();
             if (strpos($row['user_lineage'], ',') !== false) {
                 $team_func_array = explode(',',  $row['user_lineage']);
+            }
+            else {
+                $team_func_array = [$row['user_lineage']];
             }
             $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
             $result3 = $GLOBALS['db']->query($sql3);
