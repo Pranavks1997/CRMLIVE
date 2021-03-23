@@ -75,7 +75,7 @@ function getPendingDocumentRequestCount() {
             console.log("Pending Count Number ::: ", res);
             $('.pending-document-request-count').html(res.count + " <i class='fa fa-angle-double-down' aria-hidden='true'></i>");
             if (res && res.delegate_count == 0){
-                $(".doc_dele_count").css('display','none');
+                $(".doc_dele_count").attr('value',res.delegate_count);
             }
             if (res && res.count == 0) {
                 $('#click-here-text-document').html('');
@@ -541,8 +541,7 @@ function handleNoteDialog(event) {
 
 
 function fetchDocumentDelegateDialog() {
-    var temp = document.getElementsByClassName('pending-document-request-count');
-    var pendingReqCount = temp[0].innerText;
+    var pendingReqCount = $('.doc_dele_count').val()
     console.log("Ineer Delegate Value ::: ", pendingReqCount)
     var dialog = document.getElementById('documentDelegatemyModel');
     if (pendingReqCount != '0') {
@@ -553,6 +552,7 @@ function fetchDocumentDelegateDialog() {
         }
     } else {
         dialog.style.display = "none";
+        alert("There are no pending documents to delegate");
     }
 
     $.ajax({

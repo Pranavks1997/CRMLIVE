@@ -6807,11 +6807,13 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $response = $this->mysql_fetch_assoc_all($result); //get all result in an array
             foreach($response as $r){
                 $id = $r['id'];
-                $query_count_for_delegate_button = "SELECT approval_status FROM document_approval_table WHERE doc_id = '$id' AND ( approver = '$log_in_user_id' ORDER BY `id` DESC LIMIT 1";
+                
+                $query_count_for_delegate_button = "SELECT approval_status FROM document_approval_table WHERE doc_id = '$id' AND  approver = '$log_in_user_id' ORDER BY `id` DESC LIMIT 1";
                 $result_self_delegate = $GLOBALS['db']->query($query_count_for_delegate_button);
                 $count_delegate = $GLOBALS['db']->fetchByAssoc($result_self_delegate);
                 if($count_delegate && $count_delegate['approval_status'] == '0')
                     $DELE_COUNT += 1;
+                
                 $query = "SELECT approval_status FROM document_approval_table WHERE doc_id = '$id' AND ( approver = '$log_in_user_id' OR delegate_id = '$log_in_user_id' ) ORDER BY `id` DESC LIMIT 1";
                 $result = $GLOBALS['db']->query($query);
                 $count = $GLOBALS['db']->fetchByAssoc($result);
