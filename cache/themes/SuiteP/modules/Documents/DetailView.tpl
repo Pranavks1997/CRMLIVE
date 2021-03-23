@@ -209,22 +209,24 @@
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-{capture name="label" assign="label"}{sugar_translate label='LBL_DOC_NAME' module='Documents'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_DET_TEMPLATE_TYPE' module='Documents'}{/capture}
 {$label|strip_semicolon}:
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="document_name" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="enum" field="template_type" >
 
-{if !$fields.document_name.hidden}
+{if !$fields.template_type.hidden}
 {counter name="panelFieldCount" print=false}
 
-{if strlen($fields.document_name.value) <= 0}
-{assign var="value" value=$fields.document_name.default_value }
+
+{if is_string($fields.template_type.options)}
+<input type="hidden" class="sugar_field" id="{$fields.template_type.name}" value="{ $fields.template_type.options }">
+{ $fields.template_type.options }
 {else}
-{assign var="value" value=$fields.document_name.value }
-{/if} 
-<span class="sugar_field" id="{$fields.document_name.name}">{$fields.document_name.value}</span>
+<input type="hidden" class="sugar_field" id="{$fields.template_type.name}" value="{ $fields.template_type.value }">
+{ $fields.template_type.options[$fields.template_type.value]}
+{/if}
 {/if}
 
 </div>
@@ -245,24 +247,22 @@
 <div class="col-xs-12 col-sm-4 label col-1-label">
 
 
-{capture name="label" assign="label"}{sugar_translate label='LBL_DET_TEMPLATE_TYPE' module='Documents'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_DOC_NAME' module='Documents'}{/capture}
 {$label|strip_semicolon}:
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="enum" field="template_type" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="document_name" >
 
-{if !$fields.template_type.hidden}
+{if !$fields.document_name.hidden}
 {counter name="panelFieldCount" print=false}
 
-
-{if is_string($fields.template_type.options)}
-<input type="hidden" class="sugar_field" id="{$fields.template_type.name}" value="{ $fields.template_type.options }">
-{ $fields.template_type.options }
+{if strlen($fields.document_name.value) <= 0}
+{assign var="value" value=$fields.document_name.default_value }
 {else}
-<input type="hidden" class="sugar_field" id="{$fields.template_type.name}" value="{ $fields.template_type.value }">
-{ $fields.template_type.options[$fields.template_type.value]}
-{/if}
+{assign var="value" value=$fields.document_name.value }
+{/if} 
+<span class="sugar_field" id="{$fields.document_name.name}">{$fields.document_name.value}</span>
 {/if}
 
 </div>
@@ -677,22 +677,24 @@
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-{capture name="label" assign="label"}{sugar_translate label='LBL_DOC_NAME' module='Documents'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_DET_TEMPLATE_TYPE' module='Documents'}{/capture}
 {$label|strip_semicolon}:
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="document_name" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="enum" field="template_type" >
 
-{if !$fields.document_name.hidden}
+{if !$fields.template_type.hidden}
 {counter name="panelFieldCount" print=false}
 
-{if strlen($fields.document_name.value) <= 0}
-{assign var="value" value=$fields.document_name.default_value }
+
+{if is_string($fields.template_type.options)}
+<input type="hidden" class="sugar_field" id="{$fields.template_type.name}" value="{ $fields.template_type.options }">
+{ $fields.template_type.options }
 {else}
-{assign var="value" value=$fields.document_name.value }
-{/if} 
-<span class="sugar_field" id="{$fields.document_name.name}">{$fields.document_name.value}</span>
+<input type="hidden" class="sugar_field" id="{$fields.template_type.name}" value="{ $fields.template_type.value }">
+{ $fields.template_type.options[$fields.template_type.value]}
+{/if}
 {/if}
 
 </div>
@@ -713,24 +715,22 @@
 <div class="col-xs-12 col-sm-4 label col-1-label">
 
 
-{capture name="label" assign="label"}{sugar_translate label='LBL_DET_TEMPLATE_TYPE' module='Documents'}{/capture}
+{capture name="label" assign="label"}{sugar_translate label='LBL_DOC_NAME' module='Documents'}{/capture}
 {$label|strip_semicolon}:
 </div>
 
 
-<div class="col-xs-12 col-sm-8 detail-view-field" type="enum" field="template_type" >
+<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="document_name" >
 
-{if !$fields.template_type.hidden}
+{if !$fields.document_name.hidden}
 {counter name="panelFieldCount" print=false}
 
-
-{if is_string($fields.template_type.options)}
-<input type="hidden" class="sugar_field" id="{$fields.template_type.name}" value="{ $fields.template_type.options }">
-{ $fields.template_type.options }
+{if strlen($fields.document_name.value) <= 0}
+{assign var="value" value=$fields.document_name.default_value }
 {else}
-<input type="hidden" class="sugar_field" id="{$fields.template_type.name}" value="{ $fields.template_type.value }">
-{ $fields.template_type.options[$fields.template_type.value]}
-{/if}
+{assign var="value" value=$fields.document_name.value }
+{/if} 
+<span class="sugar_field" id="{$fields.document_name.name}">{$fields.document_name.value}</span>
 {/if}
 
 </div>

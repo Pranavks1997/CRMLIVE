@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-03-19 13:23:15
+<?php /* Smarty version 2.6.31, created on 2021-03-23 14:13:34
          compiled from custom/include/tpls/detailview1.tpl */ ?>
 <?php if ($this->_tpl_vars['fields']['id']['value'] != ''): ?>
 <br>

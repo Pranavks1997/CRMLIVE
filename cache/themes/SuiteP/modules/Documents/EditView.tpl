@@ -418,8 +418,8 @@ value='{$value}' title=''      >
 <div class="col-xs-12 col-sm-8 edit-view-field " type="file" field="filename"  >
 {counter name="panelFieldCount" print=false}
 
-<script type="text/javascript" src='cache/include/externalAPI.cache.js?v=BOjdVk1xblGbxlpUGt02jg'></script>
-<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=BOjdVk1xblGbxlpUGt02jg'></script>
+<script type="text/javascript" src='cache/include/externalAPI.cache.js?v=a_ljXgg2TnNW4VQO3uyB8A'></script>
+<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=a_ljXgg2TnNW4VQO3uyB8A'></script>
 {if !empty($fields.filename.value) }
 {assign var=showRemove value=true}
 {else}
@@ -557,40 +557,6 @@ YAHOO.util.Event.addListener(['{$fields.filename.name}_file', 'doc_type'], 'chan
 
 <!-- [/hide] -->
 </div>
-
-
-<div class="col-xs-12 col-sm-6 edit-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label" data-label="LBL_NAME">
-
-{minify}
-{capture name="label" assign="label"}{sugar_translate label='LBL_NAME' module='Documents'}{/capture}
-{$label|strip_semicolon}:
-
-<span class="required">*</span>
-{/minify}
-</div>
-
-<div class="col-xs-12 col-sm-8 edit-view-field " type="varchar" field="document_name"  >
-{counter name="panelFieldCount" print=false}
-
-{if strlen($fields.document_name.value) <= 0}
-{assign var="value" value=$fields.document_name.default_value }
-{else}
-{assign var="value" value=$fields.document_name.value }
-{/if}  
-<input type='text' name='{$fields.document_name.name}' 
-id='{$fields.document_name.name}' size='30' 
-maxlength='255' 
-value='{$value}' title=''      >
-</div>
-
-<!-- [/hide] -->
-</div>
-<div class="clear"></div>
-<div class="clear"></div>
-
 
 
 <div class="col-xs-12 col-sm-6 edit-view-row-item">
@@ -857,6 +823,40 @@ onclick="SUGAR.clearRelateField(this.form, '{$fields.template_type.name}-input',
 </script> 
 {/literal}
 {/if}
+</div>
+
+<!-- [/hide] -->
+</div>
+<div class="clear"></div>
+<div class="clear"></div>
+
+
+
+<div class="col-xs-12 col-sm-6 edit-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label" data-label="LBL_NAME">
+
+{minify}
+{capture name="label" assign="label"}{sugar_translate label='LBL_NAME' module='Documents'}{/capture}
+{$label|strip_semicolon}:
+
+<span class="required">*</span>
+{/minify}
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="varchar" field="document_name"  >
+{counter name="panelFieldCount" print=false}
+
+{if strlen($fields.document_name.value) <= 0}
+{assign var="value" value=$fields.document_name.default_value }
+{else}
+{assign var="value" value=$fields.document_name.value }
+{/if}  
+<input type='text' name='{$fields.document_name.name}' 
+id='{$fields.document_name.name}' size='30' 
+maxlength='255' 
+value='{$value}' title=''      >
 </div>
 
 <!-- [/hide] -->
@@ -1466,6 +1466,7 @@ addToValidate('EditView', 'linked_id', 'varchar', false,'{/literal}{sugar_transl
 addToValidate('EditView', 'selected_revision_id', 'varchar', false,'{/literal}{sugar_translate label='LBL_SELECTED_REVISION_ID' module='Documents' for_js=true}{literal}' );
 addToValidate('EditView', 'latest_revision_id', 'varchar', false,'{/literal}{sugar_translate label='LBL_LATEST_REVISION_ID' module='Documents' for_js=true}{literal}' );
 addToValidate('EditView', 'selected_revision_filename', 'varchar', false,'{/literal}{sugar_translate label='LBL_SELECTED_REVISION_FILENAME' module='Documents' for_js=true}{literal}' );
+addToValidate('EditView', 'documents', 'file', false,'{/literal}{sugar_translate label='LBL_DOCUMENTS' module='Documents' for_js=true}{literal}' );
 addToValidate('EditView', 'tagged_users_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_TAGGED_USERS' module='Documents' for_js=true}{literal}' );
 addToValidate('EditView', 'tagged_hidden_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_TAGGED_HIDDEN' module='Documents' for_js=true}{literal}' );
 addToValidate('EditView', 'approver_c', 'relate', false,'{/literal}{sugar_translate label='LBL_APPROVER' module='Documents' for_js=true}{literal}' );

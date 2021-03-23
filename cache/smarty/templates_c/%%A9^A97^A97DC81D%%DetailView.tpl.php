@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-03-19 13:41:27
+<?php /* Smarty version 2.6.31, created on 2021-03-23 15:44:46
          compiled from cache/themes/SuiteP/modules/Documents/DetailView.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 44, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 53, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 111, false),array('function', 'sugar_getimage', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 194, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 104, false),array('modifier', 'escape', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 518, false),array('modifier', 'url2html', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 518, false),array('modifier', 'nl2br', 'cache/themes/SuiteP/modules/Documents/DetailView.tpl', 518, false),)), $this); ?>
@@ -280,47 +280,6 @@ _image_inline.png
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_DOC_NAME','module' => 'Documents'), $this);?>
-<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
-<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
-:
-</div>
-
-
-<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="document_name" >
-
-<?php if (! $this->_tpl_vars['fields']['document_name']['hidden']): ?>
-<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
-
-
-<?php if (strlen ( $this->_tpl_vars['fields']['document_name']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['document_name']['default_value']); ?>
-<?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['document_name']['value']); ?>
-<?php endif; ?> 
-<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['document_name']['name']; ?>
-"><?php echo $this->_tpl_vars['fields']['document_name']['value']; ?>
-</span>
-<?php endif; ?>
-
-</div>
-
-
-</div>
-
-</div>
-
-
-<div class="row detail-view-row">
-
-
-
-<div class="col-xs-12 col-sm-6 detail-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label col-1-label">
-
-
 <?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_DET_TEMPLATE_TYPE','module' => 'Documents'), $this);?>
 <?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
 <?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
@@ -348,6 +307,47 @@ _image_inline.png
 <?php echo $this->_tpl_vars['fields']['template_type']['options'][$this->_tpl_vars['fields']['template_type']['value']]; ?>
 
 <?php endif; ?>
+<?php endif; ?>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label col-1-label">
+
+
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_DOC_NAME','module' => 'Documents'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+</div>
+
+
+<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="document_name" >
+
+<?php if (! $this->_tpl_vars['fields']['document_name']['hidden']): ?>
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<?php if (strlen ( $this->_tpl_vars['fields']['document_name']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['document_name']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['document_name']['value']); ?>
+<?php endif; ?> 
+<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['document_name']['name']; ?>
+"><?php echo $this->_tpl_vars['fields']['document_name']['value']; ?>
+</span>
 <?php endif; ?>
 
 </div>
@@ -835,47 +835,6 @@ _image_inline.png
 <div class="col-xs-12 col-sm-4 label col-2-label">
 
 
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_DOC_NAME','module' => 'Documents'), $this);?>
-<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
-<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
-:
-</div>
-
-
-<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="document_name" >
-
-<?php if (! $this->_tpl_vars['fields']['document_name']['hidden']): ?>
-<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
-
-
-<?php if (strlen ( $this->_tpl_vars['fields']['document_name']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['document_name']['default_value']); ?>
-<?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['document_name']['value']); ?>
-<?php endif; ?> 
-<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['document_name']['name']; ?>
-"><?php echo $this->_tpl_vars['fields']['document_name']['value']; ?>
-</span>
-<?php endif; ?>
-
-</div>
-
-
-</div>
-
-</div>
-
-
-<div class="row detail-view-row">
-
-
-
-<div class="col-xs-12 col-sm-6 detail-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label col-1-label">
-
-
 <?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_DET_TEMPLATE_TYPE','module' => 'Documents'), $this);?>
 <?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
 <?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
@@ -903,6 +862,47 @@ _image_inline.png
 <?php echo $this->_tpl_vars['fields']['template_type']['options'][$this->_tpl_vars['fields']['template_type']['value']]; ?>
 
 <?php endif; ?>
+<?php endif; ?>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label col-1-label">
+
+
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_DOC_NAME','module' => 'Documents'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+</div>
+
+
+<div class="col-xs-12 col-sm-8 detail-view-field" type="varchar" field="document_name" >
+
+<?php if (! $this->_tpl_vars['fields']['document_name']['hidden']): ?>
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<?php if (strlen ( $this->_tpl_vars['fields']['document_name']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['document_name']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['document_name']['value']); ?>
+<?php endif; ?> 
+<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['document_name']['name']; ?>
+"><?php echo $this->_tpl_vars['fields']['document_name']['value']; ?>
+</span>
 <?php endif; ?>
 
 </div>

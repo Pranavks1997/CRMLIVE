@@ -83,16 +83,16 @@ array (
           ),
           1 => 
           array (
-            'name' => 'document_name',
-            'label' => 'LBL_DOC_NAME',
+            'name' => 'template_type',
+            'label' => 'LBL_DET_TEMPLATE_TYPE',
           ),
         ),
         2 => 
         array (
           0 => 
           array (
-            'name' => 'template_type',
-            'label' => 'LBL_DET_TEMPLATE_TYPE',
+            'name' => 'document_name',
+            'label' => 'LBL_DOC_NAME',
           ),
           1 => 
           array (
@@ -130,7 +130,7 @@ array (
         ),
         5 => 
         array (
-         0 => 
+          0 => 
           array (
             'name' => 'multiple_file',
             'studio' => 'visible',

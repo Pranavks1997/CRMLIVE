@@ -1,5 +1,5 @@
 <?php
-// created: 2021-03-18 10:46:07
+// created: 2021-03-20 17:13:52
 $mod_strings = array (
   'LBL_ACCOUNTS_SUBPANEL_TITLE' => 'Departments',
   'LBL_SECURITYGROUPS' => 'Security Groups',
@@ -22,4 +22,5 @@ $mod_strings = array (
   'LBL_FILENAME_FOLLOW_UP' => 'File name',
   'LBL_DOCUMENT_VISIBILITY' => 'Document Visibility',
   'LBL_OPPORTUNITIES_DOCUMENTS_1_FROM_OPPORTUNITIES_TITLE' => 'Opportunities',
+  'LBL_TEMPLATE_TYPE' => 'Document Type',
 );

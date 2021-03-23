@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-03-19 15:56:53
+<?php /* Smarty version 2.6.31, created on 2021-03-23 15:44:16
          compiled from cache/themes/SuiteP/modules/Documents/EditView.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('modifier', 'escape', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 51, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 109, false),array('modifier', 'lookup', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 148, false),array('modifier', 'count', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 250, false),array('modifier', 'default', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 1158, false),array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 70, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 91, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 115, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 123, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 151, false),array('function', 'sugar_getimage', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 445, false),array('function', 'sugar_image', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 460, false),array('function', 'sugar_getscript', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 1354, false),array('block', 'minify', 'cache/themes/SuiteP/modules/Documents/EditView.tpl', 107, false),)), $this); ?>
@@ -626,8 +626,8 @@ value='<?php echo $this->_tpl_vars['value']; ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
 
-<script type="text/javascript" src='cache/include/externalAPI.cache.js?v=te5stJa3qHthg8JhYE02fg'></script>
-<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=te5stJa3qHthg8JhYE02fg'></script>
+<script type="text/javascript" src='cache/include/externalAPI.cache.js?v=a_ljXgg2TnNW4VQO3uyB8A'></script>
+<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=a_ljXgg2TnNW4VQO3uyB8A'></script>
 <?php if (! empty ( $this->_tpl_vars['fields']['filename']['value'] )): ?>
 <?php $this->assign('showRemove', true); ?>
 <?php else: ?>
@@ -828,46 +828,6 @@ _file', targEl: 'document_name'});
 
 <!-- [/hide] -->
 </div>
-
-
-<div class="col-xs-12 col-sm-6 edit-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label" data-label="LBL_NAME">
-
-<?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
-<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_NAME','module' => 'Documents'), $this);?>
-<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
-<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
-:
-
-<span class="required">*</span>
-<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
-</div>
-
-<div class="col-xs-12 col-sm-8 edit-view-field " type="varchar" field="document_name"  >
-<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
-
-
-<?php if (strlen ( $this->_tpl_vars['fields']['document_name']['value'] ) <= 0): ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['document_name']['default_value']); ?>
-<?php else: ?>
-<?php $this->assign('value', $this->_tpl_vars['fields']['document_name']['value']); ?>
-<?php endif; ?>  
-<input type='text' name='<?php echo $this->_tpl_vars['fields']['document_name']['name']; ?>
-' 
-id='<?php echo $this->_tpl_vars['fields']['document_name']['name']; ?>
-' size='30' 
-maxlength='255' 
-value='<?php echo $this->_tpl_vars['value']; ?>
-' title=''      >
-</div>
-
-<!-- [/hide] -->
-</div>
-<div class="clear"></div>
-<div class="clear"></div>
-
 
 
 <div class="col-xs-12 col-sm-6 edit-view-row-item">
@@ -1273,6 +1233,46 @@ SUGAR.AutoComplete.<?php echo $this->_tpl_vars['ac_key']; ?>
 '; ?>
 
 <?php endif; ?>
+</div>
+
+<!-- [/hide] -->
+</div>
+<div class="clear"></div>
+<div class="clear"></div>
+
+
+
+<div class="col-xs-12 col-sm-6 edit-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label" data-label="LBL_NAME">
+
+<?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_NAME','module' => 'Documents'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+
+<span class="required">*</span>
+<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="varchar" field="document_name"  >
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<?php if (strlen ( $this->_tpl_vars['fields']['document_name']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['document_name']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['document_name']['value']); ?>
+<?php endif; ?>  
+<input type='text' name='<?php echo $this->_tpl_vars['fields']['document_name']['name']; ?>
+' 
+id='<?php echo $this->_tpl_vars['fields']['document_name']['name']; ?>
+' size='30' 
+maxlength='255' 
+value='<?php echo $this->_tpl_vars['value']; ?>
+' title=''      >
 </div>
 
 <!-- [/hide] -->
@@ -2141,6 +2141,9 @@ addToValidate(\'EditView\', \'latest_revision_id\', \'varchar\', false,\''; ?>
 <?php echo '\' );
 addToValidate(\'EditView\', \'selected_revision_filename\', \'varchar\', false,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_SELECTED_REVISION_FILENAME','module' => 'Documents','for_js' => true), $this);?>
+<?php echo '\' );
+addToValidate(\'EditView\', \'documents\', \'file\', false,\''; ?>
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_DOCUMENTS','module' => 'Documents','for_js' => true), $this);?>
 <?php echo '\' );
 addToValidate(\'EditView\', \'tagged_users_c\', \'varchar\', false,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_TAGGED_USERS','module' => 'Documents','for_js' => true), $this);?>
