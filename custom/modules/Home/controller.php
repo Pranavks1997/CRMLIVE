@@ -4480,7 +4480,7 @@ public function is_activity_reassignment_applicable($activity_id) {
 
 
     
-    //-------------------------------------------------------------------------------------------------------------
+    //------------------Feteching the all data for Activity modules on click---------------//
      
     public function action_getActivity(){
         try
@@ -4594,6 +4594,7 @@ public function is_activity_reassignment_applicable($activity_id) {
         die();
     }
     
+    //------------For Activity Pending Table----------------------------------------//
     function action_getPendingActivityList(){
         try
         {
@@ -4689,6 +4690,7 @@ public function is_activity_reassignment_applicable($activity_id) {
         die();
     }
     
+    //---------------------For Activity Graph---------------------------//
     public function action_get_activity_graph(){
         $day = $_GET['dateBetween'];
         $totalCount = 0;
@@ -4742,7 +4744,9 @@ public function is_activity_reassignment_applicable($activity_id) {
         $count = $GLOBALS['db']->fetchByAssoc($count);
         return $count['count'];
     }
+    //-------------------------End Activity Graph---------------------------//
 
+    //--------------------For count of Pending Activity------------------//
     public function action_activity_pending_count(){
         try {
             global $current_user;
@@ -4786,6 +4790,7 @@ public function is_activity_reassignment_applicable($activity_id) {
         die();
     }
     
+    //Pagination
     function activitypagination($page, $numberOfPages, $type, $day, $searchTerm, $filter){
 
         $ends_count = 1;  //how many items at the ends (before and after [...])
@@ -4825,6 +4830,7 @@ public function is_activity_reassignment_applicable($activity_id) {
         return $data;
     }
     
+    //-------------------------For Activity Reminder----------------------------//
     public function action_activity_reminder_dialog_info()
     {
         try {
@@ -4940,6 +4946,8 @@ public function is_activity_reassignment_applicable($activity_id) {
         }
         die();
     }
+
+
     public function action_deselect_members_from_global_opportunity(){
         try {
             $db = \DBManagerFactory::getInstance();
@@ -5582,6 +5590,7 @@ public function is_activity_reassignment_applicable($activity_id) {
         }
         die();
     }
+    //------------------For storing the Result of Delegate in Activity----------------//
     public function action_activity_store_delegate_result(){
         try{
             $db = \DBManagerFactory::getInstance();
@@ -5605,6 +5614,8 @@ public function is_activity_reassignment_applicable($activity_id) {
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
     }
+
+    //-----------------------For Activity Remove Button-----------------------//
     public function action_activity_remove_delegate_user(){
         try{
             $db = \DBManagerFactory::getInstance();
@@ -5652,6 +5663,8 @@ public function is_activity_reassignment_applicable($activity_id) {
             $delegated_user = 0;
         return $delegated_user;
     }
+
+    //------------------For Activity Reminder-----------------------//
     public function action_set_activity_reminder(){
         try{
             $db = \DBManagerFactory::getInstance();
@@ -5699,39 +5712,8 @@ public function is_activity_reassignment_applicable($activity_id) {
         }
         die();
 
-
-
-
-
-
     }
-    public function action_set_activity_for_tag(){
-        try {
-            $db = \DBManagerFactory::getInstance();
-            $GLOBALS['db'];
-            $activity_id = $_POST['activity_id'];
-            $activity_id = $_POST['activity_tag_id'];
-            $user_id_list = '';
-            if ($_POST['userIdList']) {
-                $user_id_list = $_POST['userIdList'];
-            }
-            if ($_POST['tag_activity']) {
-                $user_id_list = $_POST['tag_activity'];
-                $user_id_list = implode(',',$user_id_list);
-            }
-            $count_query = "SELECT * FROM calls_cstm WHERE id_c='$activity_id'";
-            $result = $GLOBALS['db']->query($count_query);
-
-            $sub_query = "UPDATE calls_cstm SET tag_hidden_c = '$user_id_list' WHERE id_c='$activity_id'";
-            $GLOBALS['db']->query($sub_query);
-
-            echo json_encode(array("status"=> true, "message" => "Value Updated"));
-        } catch (Exception $e) {
-            echo json_encode(array("status" => false, "message" => "Some error occured"));
-        }
-        die();
-
-    }
+    
 
     function isActivityDelegate($userID, $id){
         $db = \DBManagerFactory::getInstance();
@@ -5787,7 +5769,35 @@ public function is_activity_reassignment_applicable($activity_id) {
         $count = $GLOBALS['db']->fetchByAssoc($result);
         return $count['count'];
     }
-    
+
+    //----------------------For activity Tag---------------------//
+    public function action_set_activity_for_tag(){
+        try {
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $activity_id = $_POST['activity_id'];
+            $activity_id = $_POST['activity_tag_id'];
+            $user_id_list = '';
+            if ($_POST['userIdList']) {
+                $user_id_list = $_POST['userIdList'];
+            }
+            if ($_POST['tag_activity']) {
+                $user_id_list = $_POST['tag_activity'];
+                $user_id_list = implode(',',$user_id_list);
+            }
+            $count_query = "SELECT * FROM calls_cstm WHERE id_c='$activity_id'";
+            $result = $GLOBALS['db']->query($count_query);
+
+            $sub_query = "UPDATE calls_cstm SET tag_hidden_c = '$user_id_list' WHERE id_c='$activity_id'";
+            $GLOBALS['db']->query($sub_query);
+
+            echo json_encode(array("status"=> true, "message" => "Value Updated"));
+        } catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+
+    }
     public function action_activity_tag_dialog_info()
     {
         try {
@@ -5835,6 +5845,7 @@ public function is_activity_reassignment_applicable($activity_id) {
         }
         die();
     }
+
     public function get_assigned_user_activity($activity_id) {
         $fetch_activity_info = "SELECT * FROM calls
         LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c WHERE id = '$activity_id'";
@@ -5967,7 +5978,7 @@ public function is_activity_reassignment_applicable($activity_id) {
         
         
         
-else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||$check_team_lead=='team_member_l3'||$check_team_lead=='team_lead'){
+        else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||$check_team_lead=='team_member_l3'||$check_team_lead=='team_lead'){
            
          $sql4='SELECT * FROM users WHERE reports_to_id="'.$log_in_user_id.'" AND deleted=0' ;
           $result4 = $GLOBALS['db']->query($sql4);
@@ -6261,9 +6272,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 //             echo json_encode(array("status"=>false, "message" => "Some error occured"));
 //         }
 //     }
-/**
- * Sequence Flow
- */
+
     /* Get Seqeunce Flow */
     public function action_getActivityStatusTimeline(){
         try{
@@ -6626,6 +6635,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
     */
 
+    //---------------------For document Pending Table list--------------------/////
+
     function action_getPendingDocumentList(){
         try
         {
@@ -6734,6 +6745,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
 
 
+    
     public function get_document_history(){
         try {
             $db = \DBManagerFactory::getInstance();
@@ -6770,6 +6782,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         die();
         
     }
+
+
     function getDocumentColumnFilters($type = null){
         /* Default Columns */
         if($type){
@@ -6819,6 +6833,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         return $columnFilterHtml;
     }
 
+    //Feteching the all data for Documents modules on click
     public function action_getDocument(){
         try
         {
@@ -7040,6 +7055,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
     }
 
 
+    //-------------------For Filtering Document Tables-------------------------//
     function DocumentfilterFields($type, $columnFilter){
         $data = '';
         switch($columnFilter){
@@ -7098,6 +7114,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         return $data;
     }
 
+    //---------------For Document Columns Header-------------------//
+
     function getDocumentColumnFiltersHeader($columnFilter){
 
         $data = '';
@@ -7152,6 +7170,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         return $data;
     }
 
+
+    //-----------------For Document list view Table-------------------------------------//
     function getDocumentColumnFiltersBody($columnFilter, $row){
 
         
@@ -7251,6 +7271,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         return $data;
     }
 
+    //--------------------For Document pending Aproval Table------------------------------//
     function getPendingDocumentColumnFiltersBody($columnFilter, $row){
 
         
@@ -7383,9 +7404,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         return $data;
     }
 
-    //TODO : 
-    // Chanage the name of the variable 
-    // look at this function again =.
+   //---------------For Document Graph-----------------------------//
     public function action_get_document_graph(){
         $day = $_GET['dateBetween'];
         $totalCount = 0;
@@ -7433,6 +7452,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         // echo $data;
         die;
     }
+
+    
     function getDocumentStatusCountGraph($status = null, $day, $closure_status = null){
         $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
@@ -7586,6 +7607,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         }
         die();
     }
+
+    //-------------------------For storing the Delegate result in Dialog box-------------------//
     public function action_document_store_delegate_result(){
         try{
             $db = \DBManagerFactory::getInstance();
@@ -7611,6 +7634,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         }
         die();
     }
+
+    //------------------For Rejection-------------//
     public function action_document_remove_delegate_user(){
         try{
             $db = \DBManagerFactory::getInstance();
@@ -7634,6 +7659,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
     }
+
+    //----------------For Count Of Document Delegate-----------------//
     function document_delegateActionCompleted($userID){
         global $current_user;
         $log_in_user_id = $current_user->id;
@@ -7646,6 +7673,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         return $count['count'];
     }
 
+    //---------------------For Document Aprroval Table-------------------//
     function action_get_document_approval_item(){
         try
         {
@@ -7712,6 +7740,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         }
         die();
     }
+
+    //-----------------For Document Note--------------------------//
 
     public function action_document_note_dialog_info() {
         try {
@@ -7862,6 +7892,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         die();
     }
 
+    //---------------------------For document Tag---------------------//
+
     public function action_document_tag_dialog_info()
     {
         try {
@@ -7945,6 +7977,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         die();
     }
 
+    
+
     public function action_set_document_for_tag(){
         try {
             $db = \DBManagerFactory::getInstance();
@@ -7973,14 +8007,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
     }
 
-
-
-
-
-    ///  ::::::::::::::::::::::::::::::::::::::::::::::::::::::  Joytrimoy Code ::::::::::::::::::::::::::::::::::::::::::::::::::
     
-    
-    
+
     //--------------------------------------for download----------------------//
 
      function action_document_export(){
@@ -8133,6 +8161,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         die;
     }
 
+
     function action_document_downloadCSV(){
         $data    = unserialize($_SESSION['csvData']);
         $headers = unserialize($_SESSION['csvHeaders']);
@@ -8154,6 +8183,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             exit;
         }
     }
+
+   
             
 }
 ?>
