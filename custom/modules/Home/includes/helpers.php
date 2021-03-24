@@ -968,8 +968,7 @@
                         $deligate = $row['delegate'];
                         $approver1=$row['user_id2_c'];
                     }
-                $sql5 = "SELECT user_id FROM tagged_user WHERE opp_id='".$id."'";
-                $result5 = $GLOBALS['db']->query($sql5);
+                $result5 = getQuery('user_id', 'tagged_user', 'opp_id = "'.$id.'"');    
                 while($row5 = $GLOBALS['db']->fetchByAssoc($result5))
                 {
                         $other1=$row5['user_id'];
@@ -996,7 +995,6 @@
                     die();
                 }
 
-                // $sql ="SELECT assigned_user_id FROM ".$table1." where id ='$id' ";
                 $sql ="SELECT ".$table1.".assigned_user_id, ".$table1.".created_by, ".$table2.".".$tag_column." FROM ".$table1." 
                 LEFT JOIN ".$table2." ON ".$table1.".id = ".$table2.".id_c
                 WHERE id ='$id' ";
@@ -1013,8 +1011,7 @@
                 $document_creator = $row['created_by'];
                 $user_id = $row['assigned_user_id'];
 
-                $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
-                $result1 = $GLOBALS['db']->query($sql1);
+                $result1 = getQuery('user_lineage', 'users_cstm', 'id_c = "'.$user_id.'"');
                 $row = $result1->fetch_assoc();
                 if (strpos($row['user_lineage'], ',') !== false) {
                     $team_func_array = explode(',',  $row['user_lineage']);
