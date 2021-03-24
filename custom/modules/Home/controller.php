@@ -657,7 +657,7 @@ class HomeController extends SugarController{
                 $data .='
                                 <tr>
                                     <td class="approvaltable-data-popup">'.$full_name.'</td>
-                                    <td class="approvaltable-data-popup">'.(beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>
+                                    <td class="approvaltable-data-popup">'.$this->append_currency($row['currency_c'], $this->beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>
                                     <td class="approvaltable-data-boolean-popup">'.(beautify_label($row['rfporeoipublished_c'])).'</td>
                                     <td class="approvaltable-data-popup">'.date_format(date_create($row['date_modified']),'d/m/Y').'</td>
                                     <td class="approvaltable-data-popup">
@@ -682,7 +682,7 @@ class HomeController extends SugarController{
             }
             echo $data;
         }catch(Exception $e){
-            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+            echo json_encode(array("status"=>false, "message" => "Some error occured",));
         }
         die();
     }
