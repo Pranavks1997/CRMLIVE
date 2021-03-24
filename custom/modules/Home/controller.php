@@ -515,6 +515,7 @@ class HomeController extends SugarController{
 
         $maxQuery .= " ORDER BY row_count DESC LIMIT 1";
         
+        
         $result = $GLOBALS['db']->query($maxQuery);
         $rowCount = $GLOBALS['db']->fetchByAssoc($result);
         if($rowCount)
