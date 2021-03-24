@@ -135,6 +135,7 @@ class HomeController extends SugarController{
 
             /* Opportunities repeater HTML (Table ROW) */
             ob_start();
+            include_once 'includes/helpers.php';
             include_once 'templates/partials/opportunities/repeater.php';
             $content .= ob_get_contents();
             ob_end_clean();
@@ -379,55 +380,6 @@ class HomeController extends SugarController{
         $recentActivity = $GLOBALS['db']->query($query);
         $count = mysqli_num_rows($recentActivity);
         return $count;
-    }
-    public function is_tagging_applicable($opportunity_id) {
-        global $current_user;
-    	$log_in_user_id = $current_user->id;
-    	$db = \DBManagerFactory::getInstance();
-        $GLOBALS['db'];
-
-        $team_func_array = $team_func_array1 = $others_id_array = array();
-
-        $sql ='SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE opportunities.id="'. $opportunity_id.'"';
-        $result = $GLOBALS['db']->query($sql);
-        while($row = $GLOBALS['db']->fetchByAssoc($result) )
-            {
-                $created_by=$row['assigned_user_id'];
-                $assigned=$row['assigned_user_id'];
-                $approver=$row['multiple_approver_c'];
-                $deligate = $row['delegate'];
-                $approver1=$row['user_id2_c'];
-            }
-        $sql5 = "SELECT user_id FROM tagged_user WHERE opp_id='".$opportunity_id."'";
-        $result5 = $GLOBALS['db']->query($sql5);
-        while($row5 = $GLOBALS['db']->fetchByAssoc($result5))
-        {
-                $other1=$row5['user_id'];
-                $others_id_array = explode(',', $other1);
-        }
-        if (strpos($deligate, ',') !== false) {
-            $team_func_array = explode(',', $deligate);
-        }
-        if (strpos($approver, ',') !== false) {
-            $team_func_array1 = explode(',', $approver);
-        }
-        $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
-        $result3 = $GLOBALS['db']->query($sql3);
-        while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
-        {
-            $check_sales = $row3['teamfunction_c'];
-            $check_mc = $row3['mc_c'];
-            $check_team_lead = $row3['teamheirarchy_c'];
-            
-        }
-        if($check_mc =="yes"|| $log_in_user_id == $created_by || $log_in_user_id == "1"
-        || in_array($log_in_user_id, $team_func_array1)||in_array($log_in_user_id, $others_id_array)  || in_array($log_in_user_id, $team_func_array) 
-        || $log_in_user_id == $approver1 || $log_in_user_id == $assigned)
-        {
-            return true;
-        } else{
-            return false;
-        }
     }
 
     public function is_mc($user_id){
@@ -4586,6 +4538,7 @@ public function is_activity_reassignment_applicable($activity_id) {
 
             /* Activities repeater HTML (Table ROW) */
             ob_start();
+            include_once 'includes/helpers.php';
             include_once 'templates/partials/activities/repeater.php';
             $content .= ob_get_contents();
             ob_end_clean();
@@ -6635,66 +6588,6 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         return $statusChar;
     }
     
-     public function is_activity_tagging_applicable($activity_id) {
-        try {
-
-            global $current_user;
-            $log_in_user_id = $current_user->id;
-            $db = \DBManagerFactory::getInstance();
-            $GLOBALS['db'];
-
-            $team_func_array = $team_func_array1 = $others_id_array = array();
-            $is_creator = false;
-            // $sql ="SELECT assigned_user_id FROM calls where id ='$activity_id' "; 
-            $sql ="SELECT calls.assigned_user_id, calls.created_by, calls_cstm.tag_hidden_c
-            FROM calls 
-            LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c
-            WHERE id ='$activity_id' ";
-
-            $result = $GLOBALS['db']->query($sql);
-            $row = $result->fetch_assoc();
-            if(strpos($row['tag_hidden_c'], ',') !== false) {
-                $tagged_user_array = explode(',',  $row['tag_hidden_c']);
-            } else {
-                $tagged_user_array = [$row['tag_hidden_c']];
-            }
-            if($row['created_by'] == $log_in_user_id) {
-                $is_creator = true;
-            }
-            $user_id = $row['assigned_user_id'];
-
-            $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
-            $result1 = $GLOBALS['db']->query($sql1);
-            $row = $result1->fetch_assoc();
-            if (strpos($row['user_lineage'], ',') !== false) {
-                $team_func_array = explode(',',  $row['user_lineage']);
-            }
-            else {
-                $team_func_array = [$row['user_lineage']];
-            }
-            $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
-            $result3 = $GLOBALS['db']->query($sql3);
-            while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
-            {
-                $check_sales = $row3['teamfunction_c'];
-                $check_mc = $row3['mc_c'];
-                $check_team_lead = $row3['teamheirarchy_c'];
-
-            }
-
-            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) || in_array($log_in_user_id, $tagged_user_array) || $is_creator == true ){
-                return true;
-            }
-            else {
-                return false;
-            }
-
-
-        }catch (Exception $e) {
-            echo json_encode(array("status" => false, "message" => "Some error occured"));
-        }
-        die();
-    }
 
 
     public function is_activity_reminder_applicable($activity_id){
@@ -6985,6 +6878,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
             // /* Opportunities repeater HTML (Table ROW) */
             ob_start();
+            include_once 'includes/helpers.php';
             include_once 'templates/partials/document/repeater.php';
             $content .= ob_get_contents();
             ob_end_clean();
@@ -7085,10 +6979,10 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         $interactions = $this->mysql_fetch_assoc_all($query);
         $html = '';
         /* default fields */
-        // $html = '<div class="form-group">
-        //     <span class="primary-responsibilty-filter-head">Document Name</span>
-        //     <input type="text" class="form-control filter-document_name" name="filter-name" />
-        //     </div>';
+        $html = '<div class="form-group">
+            <span class="primary-responsibilty-filter-head">Document Name</span>
+            <input type="text" class="form-control filter-name" name="filter-name" />
+            </div>';
 
         // $html = '<div class="form-group">
         //         <span class="primary-responsibilty-filter-head">Document Type</span>
@@ -7122,13 +7016,23 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
     function get_all_option($column){
         global $current_user;
         $log_in_user_id = $current_user->id;
+        $parent_type = '';
         $fetch_query = 'SELECT DISTINCT('.$column.') as category FROM documents LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c WHERE deleted != 1';
         $result = $GLOBALS['db']->query($fetch_query);
         $data = '<option value="">Select Type</option>';
         if ($result->num_rows > 0) {
             while($row = $result->fetch_assoc()) {
                 if( ! is_null( $row['category'])&& $row['category']!== ''){
-                    $data .= '<option value="'.$row['category'].'">'.$row['category'].'</option>';
+                    if( strtolower($row['category']) == 'calls'){
+                    $parent_type = 'Activity';
+                    }
+                    elseif( strtolower($row['category']) == 'accounts'){
+                        $parent_type = 'Department';
+                    }
+                    else{
+                        $parent_type = $row['category'];
+                    }
+                    $data .= '<option value="'.$row['category'].'">'.beautify_label($parent_type).'</option>';
                 }
             }
         }
@@ -7564,67 +7468,6 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         die();
     }
 
-    public function is_document_tagging_applicable($document_id) {
-        try {
-
-            global $current_user;
-            $log_in_user_id = $current_user->id;
-            $db = \DBManagerFactory::getInstance();
-            $GLOBALS['db'];
-
-            $team_func_array = $team_func_array1 = $others_id_array = $tagged_user_array = array();
-            $is_creator = false;
-            // $sql ="SELECT assigned_user_id FROM documents where id ='$document_id' ";
-            
-            $sql ="SELECT documents.assigned_user_id, documents.created_by, documents_cstm.tagged_hidden_c
-            FROM documents 
-            LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c
-            WHERE documents.id ='$document_id' ";
-            
-            $result = $GLOBALS['db']->query($sql);
-            $row = $result->fetch_assoc();
-            if(strpos($row['tagged_hidden_c'], ',') !== false) {
-                $tagged_user_array = explode(',',  $row['tagged_hidden_c']);
-            } else {
-                $tagged_user_array = [$row['tagged_hidden_c']];
-            }
-            if($row['created_by'] == $log_in_user_id) {
-                $is_creator = true;
-            }
-            $user_id = $row['assigned_user_id'];
-
-            $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
-            $result1 = $GLOBALS['db']->query($sql1);
-            $row = $result1->fetch_assoc();
-            if (strpos($row['user_lineage'], ',') !== false) {
-                $team_func_array = explode(',',  $row['user_lineage']);
-            }
-            else {
-                $team_func_array = [$row['user_lineage']];
-            }
-            $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
-            $result3 = $GLOBALS['db']->query($sql3);
-            while($row3 = $GLOBALS['db']->fetchByAssoc($result3))
-            {
-                $check_sales = $row3['teamfunction_c'];
-                $check_mc = $row3['mc_c'];
-                $check_team_lead = $row3['teamheirarchy_c'];
-
-            }
-
-            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) || in_array($log_in_user_id, $tagged_user_array) || $is_creator == true){
-                return true;
-            }
-            else {
-                return false;
-            }
-
-
-        }catch (Exception $e) {
-            echo json_encode(array("status" => false, "message" => "Some error occured"));
-        }
-        die();
-    }
 
     // Function for checking DB if the specific document note is applicable
     public function is_document_note_applicable($doc_id) {
@@ -8129,6 +7972,9 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         die();
 
     }
+
+
+
 
 
     ///  ::::::::::::::::::::::::::::::::::::::::::::::::::::::  Joytrimoy Code ::::::::::::::::::::::::::::::::::::::::::::::::::
