@@ -135,6 +135,7 @@ class HomeController extends SugarController{
 
             /* Opportunities repeater HTML (Table ROW) */
             ob_start();
+            include_once 'includes/helpers.php';
             include_once 'templates/partials/opportunities/repeater.php';
             $content .= ob_get_contents();
             ob_end_clean();
@@ -380,55 +381,6 @@ class HomeController extends SugarController{
         $count = mysqli_num_rows($recentActivity);
         return $count;
     }
-    public function is_tagging_applicable($opportunity_id) {
-        global $current_user;
-    	$log_in_user_id = $current_user->id;
-    	$db = \DBManagerFactory::getInstance();
-        $GLOBALS['db'];
-
-        $team_func_array = $team_func_array1 = $others_id_array = array();
-
-        $sql ='SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE opportunities.id="'. $opportunity_id.'"';
-        $result = $GLOBALS['db']->query($sql);
-        while($row = $GLOBALS['db']->fetchByAssoc($result) )
-            {
-                $created_by=$row['assigned_user_id'];
-                $assigned=$row['assigned_user_id'];
-                $approver=$row['multiple_approver_c'];
-                $deligate = $row['delegate'];
-                $approver1=$row['user_id2_c'];
-            }
-        $sql5 = "SELECT user_id FROM tagged_user WHERE opp_id='".$opportunity_id."'";
-        $result5 = $GLOBALS['db']->query($sql5);
-        while($row5 = $GLOBALS['db']->fetchByAssoc($result5))
-        {
-                $other1=$row5['user_id'];
-                $others_id_array = explode(',', $other1);
-        }
-        if (strpos($deligate, ',') !== false) {
-            $team_func_array = explode(',', $deligate);
-        }
-        if (strpos($approver, ',') !== false) {
-            $team_func_array1 = explode(',', $approver);
-        }
-        $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
-        $result3 = $GLOBALS['db']->query($sql3);
-        while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
-        {
-            $check_sales = $row3['teamfunction_c'];
-            $check_mc = $row3['mc_c'];
-            $check_team_lead = $row3['teamheirarchy_c'];
-            
-        }
-        if($check_mc =="yes"|| $log_in_user_id == $created_by || $log_in_user_id == "1"
-        || in_array($log_in_user_id, $team_func_array1)||in_array($log_in_user_id, $others_id_array)  || in_array($log_in_user_id, $team_func_array) 
-        || $log_in_user_id == $approver1 || $log_in_user_id == $assigned)
-        {
-            return true;
-        } else{
-            return false;
-        }
-    }
 
     public function is_mc($user_id){
         $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$user_id."' AND users.deleted = 0";
@@ -562,6 +514,7 @@ class HomeController extends SugarController{
             $maxQuery .= " AND ap.apply_for = '$status'";
 
         $maxQuery .= " ORDER BY row_count DESC LIMIT 1";
+        
         
         $result = $GLOBALS['db']->query($maxQuery);
         $rowCount = $GLOBALS['db']->fetchByAssoc($result);
@@ -705,7 +658,7 @@ class HomeController extends SugarController{
                 $data .='
                                 <tr>
                                     <td class="approvaltable-data-popup">'.$full_name.'</td>
-                                    <td class="approvaltable-data-popup">'.(beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>
+                                    <td class="approvaltable-data-popup">'.$this->append_currency($row['currency_c'], $this->beautify_amount($row['budget_allocated_oppertunity_c'])).'</td>
                                     <td class="approvaltable-data-boolean-popup">'.(beautify_label($row['rfporeoipublished_c'])).'</td>
                                     <td class="approvaltable-data-popup">'.date_format(date_create($row['date_modified']),'d/m/Y').'</td>
                                     <td class="approvaltable-data-popup">
@@ -730,7 +683,7 @@ class HomeController extends SugarController{
             }
             echo $data;
         }catch(Exception $e){
-            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+            echo json_encode(array("status"=>false, "message" => "Some error occured",));
         }
         die();
     }
@@ -4528,7 +4481,7 @@ public function is_activity_reassignment_applicable($activity_id) {
 
 
     
-    //-------------------------------------------------------------------------------------------------------------
+    //------------------Feteching the all data for Activity modules on click---------------//
      
     public function action_getActivity(){
         try
@@ -4586,6 +4539,7 @@ public function is_activity_reassignment_applicable($activity_id) {
 
             /* Activities repeater HTML (Table ROW) */
             ob_start();
+            include_once 'includes/helpers.php';
             include_once 'templates/partials/activities/repeater.php';
             $content .= ob_get_contents();
             ob_end_clean();
@@ -4641,6 +4595,7 @@ public function is_activity_reassignment_applicable($activity_id) {
         die();
     }
     
+    //------------For Activity Pending Table----------------------------------------//
     function action_getPendingActivityList(){
         try
         {
@@ -4736,6 +4691,7 @@ public function is_activity_reassignment_applicable($activity_id) {
         die();
     }
     
+    //---------------------For Activity Graph---------------------------//
     public function action_get_activity_graph(){
         $day = $_GET['dateBetween'];
         $totalCount = 0;
@@ -4789,7 +4745,9 @@ public function is_activity_reassignment_applicable($activity_id) {
         $count = $GLOBALS['db']->fetchByAssoc($count);
         return $count['count'];
     }
+    //-------------------------End Activity Graph---------------------------//
 
+    //--------------------For count of Pending Activity------------------//
     public function action_activity_pending_count(){
         try {
             global $current_user;
@@ -4833,6 +4791,7 @@ public function is_activity_reassignment_applicable($activity_id) {
         die();
     }
     
+    //Pagination
     function activitypagination($page, $numberOfPages, $type, $day, $searchTerm, $filter){
 
         $ends_count = 1;  //how many items at the ends (before and after [...])
@@ -4872,6 +4831,7 @@ public function is_activity_reassignment_applicable($activity_id) {
         return $data;
     }
     
+    //-------------------------For Activity Reminder----------------------------//
     public function action_activity_reminder_dialog_info()
     {
         try {
@@ -4987,6 +4947,8 @@ public function is_activity_reassignment_applicable($activity_id) {
         }
         die();
     }
+
+
     public function action_deselect_members_from_global_opportunity(){
         try {
             $db = \DBManagerFactory::getInstance();
@@ -5629,6 +5591,7 @@ public function is_activity_reassignment_applicable($activity_id) {
         }
         die();
     }
+    //------------------For storing the Result of Delegate in Activity----------------//
     public function action_activity_store_delegate_result(){
         try{
             $db = \DBManagerFactory::getInstance();
@@ -5652,6 +5615,8 @@ public function is_activity_reassignment_applicable($activity_id) {
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
     }
+
+    //-----------------------For Activity Remove Button-----------------------//
     public function action_activity_remove_delegate_user(){
         try{
             $db = \DBManagerFactory::getInstance();
@@ -5699,6 +5664,8 @@ public function is_activity_reassignment_applicable($activity_id) {
             $delegated_user = 0;
         return $delegated_user;
     }
+
+    //------------------For Activity Reminder-----------------------//
     public function action_set_activity_reminder(){
         try{
             $db = \DBManagerFactory::getInstance();
@@ -5746,39 +5713,8 @@ public function is_activity_reassignment_applicable($activity_id) {
         }
         die();
 
-
-
-
-
-
     }
-    public function action_set_activity_for_tag(){
-        try {
-            $db = \DBManagerFactory::getInstance();
-            $GLOBALS['db'];
-            $activity_id = $_POST['activity_id'];
-            $activity_id = $_POST['activity_tag_id'];
-            $user_id_list = '';
-            if ($_POST['userIdList']) {
-                $user_id_list = $_POST['userIdList'];
-            }
-            if ($_POST['tag_activity']) {
-                $user_id_list = $_POST['tag_activity'];
-                $user_id_list = implode(',',$user_id_list);
-            }
-            $count_query = "SELECT * FROM calls_cstm WHERE id_c='$activity_id'";
-            $result = $GLOBALS['db']->query($count_query);
-
-            $sub_query = "UPDATE calls_cstm SET tag_hidden_c = '$user_id_list' WHERE id_c='$activity_id'";
-            $GLOBALS['db']->query($sub_query);
-
-            echo json_encode(array("status"=> true, "message" => "Value Updated"));
-        } catch (Exception $e) {
-            echo json_encode(array("status" => false, "message" => "Some error occured"));
-        }
-        die();
-
-    }
+    
 
     function isActivityDelegate($userID, $id){
         $db = \DBManagerFactory::getInstance();
@@ -5834,7 +5770,35 @@ public function is_activity_reassignment_applicable($activity_id) {
         $count = $GLOBALS['db']->fetchByAssoc($result);
         return $count['count'];
     }
-    
+
+    //----------------------For activity Tag---------------------//
+    public function action_set_activity_for_tag(){
+        try {
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $activity_id = $_POST['activity_id'];
+            $activity_id = $_POST['activity_tag_id'];
+            $user_id_list = '';
+            if ($_POST['userIdList']) {
+                $user_id_list = $_POST['userIdList'];
+            }
+            if ($_POST['tag_activity']) {
+                $user_id_list = $_POST['tag_activity'];
+                $user_id_list = implode(',',$user_id_list);
+            }
+            $count_query = "SELECT * FROM calls_cstm WHERE id_c='$activity_id'";
+            $result = $GLOBALS['db']->query($count_query);
+
+            $sub_query = "UPDATE calls_cstm SET tag_hidden_c = '$user_id_list' WHERE id_c='$activity_id'";
+            $GLOBALS['db']->query($sub_query);
+
+            echo json_encode(array("status"=> true, "message" => "Value Updated"));
+        } catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+
+    }
     public function action_activity_tag_dialog_info()
     {
         try {
@@ -5882,6 +5846,7 @@ public function is_activity_reassignment_applicable($activity_id) {
         }
         die();
     }
+
     public function get_assigned_user_activity($activity_id) {
         $fetch_activity_info = "SELECT * FROM calls
         LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c WHERE id = '$activity_id'";
@@ -6014,7 +5979,7 @@ public function is_activity_reassignment_applicable($activity_id) {
         
         
         
-else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||$check_team_lead=='team_member_l3'||$check_team_lead=='team_lead'){
+        else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||$check_team_lead=='team_member_l3'||$check_team_lead=='team_lead'){
            
          $sql4='SELECT * FROM users WHERE reports_to_id="'.$log_in_user_id.'" AND deleted=0' ;
           $result4 = $GLOBALS['db']->query($sql4);
@@ -6308,9 +6273,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 //             echo json_encode(array("status"=>false, "message" => "Some error occured"));
 //         }
 //     }
-/**
- * Sequence Flow
- */
+
     /* Get Seqeunce Flow */
     public function action_getActivityStatusTimeline(){
         try{
@@ -6635,66 +6598,6 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         return $statusChar;
     }
     
-     public function is_activity_tagging_applicable($activity_id) {
-        try {
-
-            global $current_user;
-            $log_in_user_id = $current_user->id;
-            $db = \DBManagerFactory::getInstance();
-            $GLOBALS['db'];
-
-            $team_func_array = $team_func_array1 = $others_id_array = array();
-            $is_creator = false;
-            // $sql ="SELECT assigned_user_id FROM calls where id ='$activity_id' "; 
-            $sql ="SELECT calls.assigned_user_id, calls.created_by, calls_cstm.tag_hidden_c
-            FROM calls 
-            LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c
-            WHERE id ='$activity_id' ";
-
-            $result = $GLOBALS['db']->query($sql);
-            $row = $result->fetch_assoc();
-            if(strpos($row['tag_hidden_c'], ',') !== false) {
-                $tagged_user_array = explode(',',  $row['tag_hidden_c']);
-            } else {
-                $tagged_user_array = [$row['tag_hidden_c']];
-            }
-            if($row['created_by'] == $log_in_user_id) {
-                $is_creator = true;
-            }
-            $user_id = $row['assigned_user_id'];
-
-            $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
-            $result1 = $GLOBALS['db']->query($sql1);
-            $row = $result1->fetch_assoc();
-            if (strpos($row['user_lineage'], ',') !== false) {
-                $team_func_array = explode(',',  $row['user_lineage']);
-            }
-            else {
-                $team_func_array = [$row['user_lineage']];
-            }
-            $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
-            $result3 = $GLOBALS['db']->query($sql3);
-            while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) 
-            {
-                $check_sales = $row3['teamfunction_c'];
-                $check_mc = $row3['mc_c'];
-                $check_team_lead = $row3['teamheirarchy_c'];
-
-            }
-
-            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) || in_array($log_in_user_id, $tagged_user_array) || $is_creator == true ){
-                return true;
-            }
-            else {
-                return false;
-            }
-
-
-        }catch (Exception $e) {
-            echo json_encode(array("status" => false, "message" => "Some error occured"));
-        }
-        die();
-    }
 
 
     public function is_activity_reminder_applicable($activity_id){
@@ -6732,6 +6635,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
      *-----------------------------------------------------------------------------------------------------------
 
     */
+
+    //---------------------For document Pending Table list--------------------/////
 
     function action_getPendingDocumentList(){
         try
@@ -6841,6 +6746,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
 
 
+    
     public function get_document_history(){
         try {
             $db = \DBManagerFactory::getInstance();
@@ -6877,6 +6783,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         die();
         
     }
+
+
     function getDocumentColumnFilters($type = null){
         /* Default Columns */
         if($type){
@@ -6926,6 +6834,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         return $columnFilterHtml;
     }
 
+    //Feteching the all data for Documents modules on click
     public function action_getDocument(){
         try
         {
@@ -6985,6 +6894,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
             // /* Opportunities repeater HTML (Table ROW) */
             ob_start();
+            include_once 'includes/helpers.php';
             include_once 'templates/partials/document/repeater.php';
             $content .= ob_get_contents();
             ob_end_clean();
@@ -7146,6 +7056,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
     }
 
 
+    //-------------------For Filtering Document Tables-------------------------//
     function DocumentfilterFields($type, $columnFilter){
         $data = '';
         switch($columnFilter){
@@ -7204,6 +7115,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         return $data;
     }
 
+    //---------------For Document Columns Header-------------------//
+
     function getDocumentColumnFiltersHeader($columnFilter){
 
         $data = '';
@@ -7258,6 +7171,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         return $data;
     }
 
+
+    //-----------------For Document list view Table-------------------------------------//
     function getDocumentColumnFiltersBody($columnFilter, $row){
 
         
@@ -7357,6 +7272,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         return $data;
     }
 
+    //--------------------For Document pending Aproval Table------------------------------//
     function getPendingDocumentColumnFiltersBody($columnFilter, $row){
 
         
@@ -7489,9 +7405,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         return $data;
     }
 
-    //TODO : 
-    // Chanage the name of the variable 
-    // look at this function again =.
+   //---------------For Document Graph-----------------------------//
     public function action_get_document_graph(){
         $day = $_GET['dateBetween'];
         $totalCount = 0;
@@ -7539,6 +7453,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         // echo $data;
         die;
     }
+
+    
     function getDocumentStatusCountGraph($status = null, $day, $closure_status = null){
         $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
@@ -7574,67 +7490,6 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         die();
     }
 
-    public function is_document_tagging_applicable($document_id) {
-        try {
-
-            global $current_user;
-            $log_in_user_id = $current_user->id;
-            $db = \DBManagerFactory::getInstance();
-            $GLOBALS['db'];
-
-            $team_func_array = $team_func_array1 = $others_id_array = $tagged_user_array = array();
-            $is_creator = false;
-            // $sql ="SELECT assigned_user_id FROM documents where id ='$document_id' ";
-            
-            $sql ="SELECT documents.assigned_user_id, documents.created_by, documents_cstm.tagged_hidden_c
-            FROM documents 
-            LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c
-            WHERE documents.id ='$document_id' ";
-            
-            $result = $GLOBALS['db']->query($sql);
-            $row = $result->fetch_assoc();
-            if(strpos($row['tagged_hidden_c'], ',') !== false) {
-                $tagged_user_array = explode(',',  $row['tagged_hidden_c']);
-            } else {
-                $tagged_user_array = [$row['tagged_hidden_c']];
-            }
-            if($row['created_by'] == $log_in_user_id) {
-                $is_creator = true;
-            }
-            $user_id = $row['assigned_user_id'];
-
-            $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
-            $result1 = $GLOBALS['db']->query($sql1);
-            $row = $result1->fetch_assoc();
-            if (strpos($row['user_lineage'], ',') !== false) {
-                $team_func_array = explode(',',  $row['user_lineage']);
-            }
-            else {
-                $team_func_array = [$row['user_lineage']];
-            }
-            $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
-            $result3 = $GLOBALS['db']->query($sql3);
-            while($row3 = $GLOBALS['db']->fetchByAssoc($result3))
-            {
-                $check_sales = $row3['teamfunction_c'];
-                $check_mc = $row3['mc_c'];
-                $check_team_lead = $row3['teamheirarchy_c'];
-
-            }
-
-            if($check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) || in_array($log_in_user_id, $tagged_user_array) || $is_creator == true){
-                return true;
-            }
-            else {
-                return false;
-            }
-
-
-        }catch (Exception $e) {
-            echo json_encode(array("status" => false, "message" => "Some error occured"));
-        }
-        die();
-    }
 
     // Function for checking DB if the specific document note is applicable
     public function is_document_note_applicable($doc_id) {
@@ -7665,8 +7520,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             }
             $user_id = $row['assigned_user_id'];
 
-            $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
-            $result1 = $GLOBALS['db']->query($sql1);
+            $result1 = getQuery('user_lineage', 'users_cstm', 'id_c = "'.$user_id.'"');
             $row = $result1->fetch_assoc();
             if (strpos($row['user_lineage'], ',') !== false) {
                 $team_func_array = explode(',',  $row['user_lineage']);
@@ -7753,6 +7607,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         }
         die();
     }
+
+    //-------------------------For storing the Delegate result in Dialog box-------------------//
     public function action_document_store_delegate_result(){
         try{
             $db = \DBManagerFactory::getInstance();
@@ -7778,6 +7634,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         }
         die();
     }
+
+    //------------------For Rejection-------------//
     public function action_document_remove_delegate_user(){
         try{
             $db = \DBManagerFactory::getInstance();
@@ -7801,6 +7659,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
     }
+
+    //----------------For Count Of Document Delegate-----------------//
     function document_delegateActionCompleted($userID){
         global $current_user;
         $log_in_user_id = $current_user->id;
@@ -7813,6 +7673,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         return $count['count'];
     }
 
+    //---------------------For Document Aprroval Table-------------------//
     function action_get_document_approval_item(){
         try
         {
@@ -7880,6 +7741,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         die();
     }
 
+    //-----------------For Document Note--------------------------//
+
     public function action_document_note_dialog_info() {
         try {
 
@@ -7896,8 +7759,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $user_full_name = getUsername($created_user_id);
             $sub_head = 'Write a note';
 
-            $fetch_notes_history = "SELECT * FROM document_note WHERE doc_id = '$doc_id'";
-            $fetch_notes_history_result = $GLOBALS['db']->query($fetch_notes_history);
+            $fetch_notes_history_result = getQuery('*', 'document_note', 'doc_id = "'.$doc_id.'"');
 
             $data = '
                 <h2 class="deselectheading">' . $row['document_name'] . '</h2><br>
@@ -8029,6 +7891,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         die();
     }
 
+    //---------------------------For document Tag---------------------//
+
     public function action_document_tag_dialog_info()
     {
         try {
@@ -8084,8 +7948,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         try {
             global $current_user;
             $log_in_user_id = $current_user->id;
-            $fetch_query = "SELECT * FROM users WHERE deleted = 0 AND `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC";
-            $result = $GLOBALS['db']->query($fetch_query);
+
+            $result = getQuery("*", "users", "deleted = 0 AND `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC");
             $data = '<select class="select2" name="tag_document[]" id="" multiple>';
             $tagged_user_query = "SELECT * from documents_cstm where id_c = '$doc_id'";
             $result1 = $GLOBALS['db']->query($tagged_user_query);
@@ -8112,11 +7976,12 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         die();
     }
 
+    
+
     public function action_set_document_for_tag(){
         try {
             $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
-            // $document_id = $_POST['document_id'];
             $document_id = $_POST['document_tag_id'];
             $user_id_list = '';
             if ($_POST['userIdList'] != "undefined") {
@@ -8126,9 +7991,6 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 $user_id_list = $_POST['tag_document'];
                 $user_id_list = implode(',',$user_id_list);
             }
-            $count_query = "SELECT * FROM documents_cstm WHERE id_c='$document_id'";
-            $result = $GLOBALS['db']->query($count_query);
-
             $sub_query = "UPDATE documents_cstm SET tagged_hidden_c = '$user_id_list' WHERE id_c='$document_id'";
             $GLOBALS['db']->query($sub_query);
 
@@ -8140,11 +8002,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 
     }
 
+    
 
-    ///  ::::::::::::::::::::::::::::::::::::::::::::::::::::::  Joytrimoy Code ::::::::::::::::::::::::::::::::::::::::::::::::::
-    
-    
-    
     //--------------------------------------for download----------------------//
 
      function action_document_export(){
@@ -8297,6 +8156,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         die;
     }
 
+
     function action_document_downloadCSV(){
         $data    = unserialize($_SESSION['csvData']);
         $headers = unserialize($_SESSION['csvHeaders']);
@@ -8318,6 +8178,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             exit;
         }
     }
+
+   
             
 }
 ?>

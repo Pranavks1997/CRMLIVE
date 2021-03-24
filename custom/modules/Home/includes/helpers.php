@@ -944,3 +944,120 @@
         return implode(' ',$a);;
     }
 
+
+
+    ///  ::::::::::::::::::::::::::::::::::::::::::::::::::::::  Joytrimoy Code ::::::::::::::::::::::::::::::::::::::::::::::::::
+
+
+    function is_tagging_applicable($type, $id) {
+        try {
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $team_func_array = $team_func_array1 = $others_id_array = $tagged_user_array = array();
+
+            if($type == "opportunities") {
+                $sql ='SELECT * FROM opportunities LEFT JOIN opportunities_cstm ON opportunities.id = opportunities_cstm.id_c WHERE opportunities.id="'. $id.'"';
+                $result = $GLOBALS['db']->query($sql);
+                while($row = $GLOBALS['db']->fetchByAssoc($result) )
+                    {
+                        $created_by=$row['assigned_user_id'];
+                        $assigned=$row['assigned_user_id'];
+                        $approver=$row['multiple_approver_c'];
+                        $deligate = $row['delegate'];
+                        $approver1=$row['user_id2_c'];
+                    }
+                $result5 = getQuery('user_id', 'tagged_user', 'opp_id = "'.$id.'"');    
+                while($row5 = $GLOBALS['db']->fetchByAssoc($result5))
+                {
+                        $other1=$row5['user_id'];
+                        $others_id_array = explode(',', $other1);
+                }
+                if (strpos($deligate, ',') !== false) {
+                    $team_func_array = explode(',', $deligate);
+                }
+                if (strpos($approver, ',') !== false) {
+                    $team_func_array1 = explode(',', $approver);
+                }
+            } else {
+
+                if($type == "documents") {
+                    $table1 = $type;
+                    $table2 = $type."_cstm";
+                    $tag_column = "tagged_hidden_c";
+                } elseif ($type == "activities") {
+                    $table1 = "calls";
+                    $table2 = "calls_cstm";
+                    $tag_column = "tag_hidden_c";
+                } else {
+                    return false;
+                    die();
+                }
+
+                $sql ="SELECT ".$table1.".assigned_user_id, ".$table1.".created_by, ".$table2.".".$tag_column." FROM ".$table1." 
+                LEFT JOIN ".$table2." ON ".$table1.".id = ".$table2.".id_c
+                WHERE id ='$id' ";
+
+                $result = $GLOBALS['db']->query($sql);
+                $row = $result->fetch_assoc();
+
+                if(strpos($row[$tag_column], ',') !== false) {
+                    $tagged_user_array = explode(',',  $row[$tag_column]);
+                } else {
+                    $tagged_user_array = [$row[$tag_column]];
+                }
+
+                $document_creator = $row['created_by'];
+                $user_id = $row['assigned_user_id'];
+
+                $result1 = getQuery('user_lineage', 'users_cstm', 'id_c = "'.$user_id.'"');
+                $row = $result1->fetch_assoc();
+                if (strpos($row['user_lineage'], ',') !== false) {
+                    $team_func_array = explode(',',  $row['user_lineage']);
+                } else {
+                    $team_func_array = [$row['user_lineage']];
+                }
+            }
+
+            $sql3 = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+            $result3 = $GLOBALS['db']->query($sql3);
+            while($row3 = $GLOBALS['db']->fetchByAssoc($result3)) {
+                $check_sales = $row3['teamfunction_c'];
+                $check_mc = $row3['mc_c'];
+                $check_team_lead = $row3['teamheirarchy_c'];
+            }
+
+            if($type == "opportunities") {
+                if($check_mc =="yes"|| $log_in_user_id == $created_by || $log_in_user_id == "1"
+                || in_array($log_in_user_id, $team_func_array1)||in_array($log_in_user_id, $others_id_array)  || in_array($log_in_user_id, $team_func_array) 
+                || $log_in_user_id == $approver1 || $log_in_user_id == $assigned)
+                {
+                    return true;
+                } else{
+                    return false;
+                }
+            } else {
+                if( $check_mc =="yes"||  $log_in_user_id == "1" || in_array($log_in_user_id, $team_func_array) || in_array($log_in_user_id, $tagged_user_array) ||  is_creator($document_creator, $log_in_user_id) == true ){
+                    return true;
+                } else {
+                    return false;
+                }
+            }           
+        } catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();    
+    }
+
+
+    function is_creator($creator_id, $logged_in_user_id) {
+        if($creator_id == $logged_in_user_id) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    ///  ::::::::::::::::::::::::::::::::::::::::::::::::::::::  Joytrimoy Code ::::::::::::::::::::::::::::::::::::::::::::::::::
