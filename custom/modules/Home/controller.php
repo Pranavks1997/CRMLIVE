@@ -7498,8 +7498,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             }
             $user_id = $row['assigned_user_id'];
 
-            $sql1 = "SELECT user_lineage from users_cstm where id_c = '$user_id' ";
-            $result1 = $GLOBALS['db']->query($sql1);
+            $result1 = getQuery('user_lineage', 'users_cstm', 'id_c = "'.$user_id.'"');
             $row = $result1->fetch_assoc();
             if (strpos($row['user_lineage'], ',') !== false) {
                 $team_func_array = explode(',',  $row['user_lineage']);
@@ -7729,8 +7728,7 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
             $user_full_name = getUsername($created_user_id);
             $sub_head = 'Write a note';
 
-            $fetch_notes_history = "SELECT * FROM document_note WHERE doc_id = '$doc_id'";
-            $fetch_notes_history_result = $GLOBALS['db']->query($fetch_notes_history);
+            $fetch_notes_history_result = getQuery('*', 'document_note', 'doc_id = "'.$doc_id.'"');
 
             $data = '
                 <h2 class="deselectheading">' . $row['document_name'] . '</h2><br>
@@ -7917,8 +7915,8 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         try {
             global $current_user;
             $log_in_user_id = $current_user->id;
-            $fetch_query = "SELECT * FROM users WHERE deleted = 0 AND `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC";
-            $result = $GLOBALS['db']->query($fetch_query);
+
+            $result = getQuery("*", "users", "deleted = 0 AND `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC");
             $data = '<select class="select2" name="tag_document[]" id="" multiple>';
             $tagged_user_query = "SELECT * from documents_cstm where id_c = '$doc_id'";
             $result1 = $GLOBALS['db']->query($tagged_user_query);
@@ -7949,7 +7947,6 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         try {
             $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
-            // $document_id = $_POST['document_id'];
             $document_id = $_POST['document_tag_id'];
             $user_id_list = '';
             if ($_POST['userIdList'] != "undefined") {
@@ -7959,9 +7956,6 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
                 $user_id_list = $_POST['tag_document'];
                 $user_id_list = implode(',',$user_id_list);
             }
-            $count_query = "SELECT * FROM documents_cstm WHERE id_c='$document_id'";
-            $result = $GLOBALS['db']->query($count_query);
-
             $sub_query = "UPDATE documents_cstm SET tagged_hidden_c = '$user_id_list' WHERE id_c='$document_id'";
             $GLOBALS['db']->query($sub_query);
 
