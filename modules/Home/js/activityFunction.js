@@ -188,7 +188,7 @@ function fetchReminderDialog(id) {
  * @param {opp_id} id
  */
 
-function fetchTagDialog(id) {
+function fetchActivityTagDialog(id) {
     var dialog = document.getElementById('tag-activity-modal');
 
     $.ajax({
@@ -233,7 +233,7 @@ function activityclearDeselectDropDownValue() {
  * @param {discard,submit and close} event 
  */
 
-function handleTagDialog(event) {
+function handleActivityTagDialog(event) {
 
     var dialog = document.getElementById('tag-activity-modal');
     // var select_dialogue = document.getElementById('activity_member_info');
@@ -250,8 +250,15 @@ function handleTagDialog(event) {
             type: 'POST',
             data: $('.activity_tag_func').serialize(),
             success: function (data) {
+                var parsed_data = JSON.parse(data);
+                var message = "";
+                if(parsed_data.tagged_users) {
+                    message = message + parsed_data.tagged_users + " have been tagged";
+                    alert(message);
+                }
+
                 dialog.style.display = "none";
-                select_dialogue.style.display = "none";
+                // select_dialogue.style.display = "none";
             }
         });
     } else {
