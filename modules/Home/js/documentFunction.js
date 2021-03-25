@@ -527,8 +527,11 @@ function handleNoteDialog(event) {
                 note: note
             },
             success: function (data) {
+                var parsed_data = JSON.parse(data);
+                alert("Your note has been sent successfully!");
                 dialog.style.display = "none";
                 document.getElementById('note').value = "";
+                
             },
             error: function (data, errorThrown) {
                 alert(errorThrown);
@@ -677,8 +680,17 @@ function handleTagDialog(event) {
             data: $('.document_tag_func').serialize(),
 
             success: function (data) {
-                debugger;
+                // debugger;
+                // alert("Your note has been sent successfully!");
+                var parsed_data = JSON.parse(data);
+                var message = "";
                 dialog.style.display = "none";
+
+                if(parsed_data.tagged_users) {
+                    message = message + parsed_data.tagged_users + " have been tagged";
+                    alert(message);
+                }
+
                 // select_dialogue.style.display = "none";
             },
             error: function (data, errorThrown) {
