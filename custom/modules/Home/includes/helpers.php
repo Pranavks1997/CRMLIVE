@@ -1072,6 +1072,9 @@
             $alert->is_read = 0;
             $alert->save();
         }
+
+        // echo json_encode(array("status"=>true, "message" => "All Forms Saved Successfully and Email Sent to Business Head for Approval"));
+
     }
 
     function send_email($description,$emails,$subject){
@@ -1092,6 +1095,7 @@
            @$mail->Send();
         }
     }
+
 
     function getUserEmail($userID){
         $user_email_fetch        = "SELECT user_name FROM users WHERE id='$userID'";

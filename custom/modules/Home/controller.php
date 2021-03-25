@@ -5459,7 +5459,7 @@ public function is_activity_reassignment_applicable($activity_id) {
             $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
 
-            $data = $this->getDbData('activity_approval_table', '*', "id = '$id' ");
+            $data = $this->getDbData('activity_approval_table', '*', "acc_id = '$id' ");
             
             $data = $data[0];
             $acc_id = $data['acc_id'];
@@ -5469,6 +5469,8 @@ public function is_activity_reassignment_applicable($activity_id) {
             $sent_time = $data['sent_time'];
             $approver = $data['approver'];
             $delegateID = $data['delegate_id'];
+            $notification_id = $data['id'];
+            $description='';
             
             // $insertQuery = "INSERT INTO activity_approval_table (";
             // $insertFields = " acc_id, acc_type, status, sender, sent_time, approval_status, approver, delegate_id, ";
@@ -5499,7 +5501,45 @@ public function is_activity_reassignment_applicable($activity_id) {
             		$sql_insert_audit = 'INSERT INTO `calls_audit`(`id`, `parent_id`, `date_created`, `created_by`, `field_name`, `data_type`, `before_value_string`, `after_value_string`, `before_value_text`, `after_value_text`) VALUES ("'.$u_id.'","'.$id.'","'.$created_date.'","'.$log_in_user_id.'","status_new_c","varchar","Apply for Completed","Completed"," "," ")';
             		$result_audit = $GLOBALS['db']->query($sql_insert_audit);
                 }
-                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "query" => $updateQuery, "update_opportunity"=>$updateOpportunity));
+
+                 //For Notification
+                 $fetch_query = "SELECT c.*, cs.* FROM calls c JOIN activity_approval_table ap ON ap.acc_id = c.id LEFT JOIN calls_cstm cs ON c.id = cs.id_c WHERE c.deleted != 1 AND c.date_entered >= now() - interval '1200' day AND ap.id = '$notification_id'";
+                 $result_query = $GLOBALS['db']->query($fetch_query);
+                 $row = $GLOBALS['db']->fetchByAssoc($result_query);
+ 
+                 //Assigned_user_id
+                 $created_by_id_test = $row['created_by'];
+                 $user_lineage_query ="SELECT user_lineage FROM users_cstm WHERE id_c ='$created_by_id_test'";
+                 $result_lineage_query = $GLOBALS['db']->query($user_lineage_query);
+                 $row_lineage = $GLOBALS['db']->fetchByAssoc($result_lineage_query); 
+                 
+                 if($event =='Approve'){
+                     $assigned_user_id_approve =explode(',',$row_lineage['user_lineage']);
+                     array_push($assigned_user_id_approve,$row['created_by']);
+                     $assigned_user_id_approve = array_diff($assigned_user_id_approve, array($log_in_user_id) );
+ 
+                     $description = "Activity ".$row['name']." uploaded by ".getUsername($row['created_by'])." has been " .$event." by ".getUsername($log_in_user_id);
+                     send_notification('activity', $row['name'], $description,$assigned_user_id_approve,'www.google.com');
+                     $receiver_emails_approve = []; 
+                    foreach($assigned_user_id_approve as $user_id) {
+                         array_push($receiver_emails_approve, getUserEmail($user_id));
+                        }
+                    
+                    send_email($description,$receiver_emails_approve,'Approve the Activity');
+                 }
+                 if($event =='Reject'){
+                     $assigned_user_id_reject =[$row['created_by'], $row['user_id_c']];
+                     $description = "Activity ".$row['name']." uploaded by ".getUsername($row['created_by'])." has been " .$event." by ".getUsername($log_in_user_id);
+                     send_notification('activity',$row['name'],$description,$assigned_user_id_reject,'www.google.com');
+                    
+                     $receiver_emails_reject = []; 
+                    foreach($assigned_user_id_reject as $user_id) {
+                         array_push($receiver_emails_reject, getUserEmail($user_id));
+                        }
+                    send_email($description,$receiver_emails_reject,'Reject the Activity');
+                }
+
+                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "description"=>$description,"assigned_user_id_approve"=>$assigned_user_id_approve));
             }else{
                 echo json_encode(array("status"=>false, "message" => "Some error occured"));
             }
@@ -7908,7 +7948,8 @@ public function is_activity_reassignment_applicable($activity_id) {
             $sent_time = $data['sent_time'];
             $approver = $data['approver'];
             $delegateID = $data['delegate_id'];
-            
+            $notification_id = $data['id'];
+            $description='';
 
             $updateQuery = "UPDATE document_approval_table SET approval_status = '$ApprovalStatus' ";
             if($this->isDocumentDelegate($log_in_user_id, $id))
@@ -7928,10 +7969,53 @@ public function is_activity_reassignment_applicable($activity_id) {
             		$sql_insert_audit = 'INSERT INTO `documents_audit`(`id`, `parent_id`, `date_created`, `created_by`, `field_name`, `data_type`, `before_value_string`, `after_value_string`, `before_value_text`, `after_value_text`) VALUES ("'.$u_id.'","'.$id.'","'.$created_date.'","'.$log_in_user_id.'","status_new_c","varchar","Apply for Completed","Completed"," "," ")';
             		$result_audit = $GLOBALS['db']->query($sql_insert_audit);
                 }
-               echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "query" => $updateQuery, "update_document"=>$updateDocument));
+
+                //For Notification
+                $fetch_query = "SELECT d.*, ds.* FROM documents d JOIN document_approval_table ap ON ap.doc_id = d.id LEFT JOIN documents_cstm ds ON d.id = ds.id_c WHERE d.deleted != 1 AND d.date_entered >= now() - interval '1200' day AND ap.id = '$notification_id'";
+                $result_query = $GLOBALS['db']->query($fetch_query);
+                $row = $GLOBALS['db']->fetchByAssoc($result_query);
+
+                //Assigned_user_id
+                $created_by_id_test = $row['created_by'];
+                $user_lineage_query ="SELECT user_lineage FROM users_cstm WHERE id_c ='$created_by_id_test'";
+                $result_lineage_query = $GLOBALS['db']->query($user_lineage_query);
+                $row_lineage = $GLOBALS['db']->fetchByAssoc($result_lineage_query); 
+                
+                if($event =='Approve'){
+                    $assigned_user_id_approve =explode(',',$row_lineage['user_lineage']);
+                    array_push($assigned_user_id_approve,$row['created_by']);
+                    $assigned_user_id_approve = array_diff($assigned_user_id_approve, array($log_in_user_id) );
+
+                    $description = "Document ".$row['document_name']." uploaded by ".getUsername($row['created_by'])." has been " .$event." by ".getUsername($log_in_user_id);
+                    send_notification('documents', $row['document_name'], $description,$assigned_user_id_approve,'www.google.com');
+                    
+                    $receiver_emails_approve = []; 
+                    foreach($assigned_user_id_approve as $user_id) {
+                         array_push($receiver_emails_approve, getUserEmail($user_id));
+                        }
+                    
+                    send_email($description,$receiver_emails_approve,'Approve the Documents');
+                }
+                if($event =='Reject'){
+                    $assigned_user_id_reject =[$row['created_by'], $row['user_id_c']];
+                    $description = "Document ".$row['document_name']." uploaded by ".getUsername($row['created_by'])." has been " .$event." by ".getUsername($log_in_user_id);
+                    send_notification('documents',$row['document_name'],$description,$assigned_user_id_reject,'www.google.com');
+                    
+                    $receiver_emails_reject = []; 
+                    foreach($assigned_user_id_reject as $user_id) {
+                         array_push($receiver_emails_reject, getUserEmail($user_id));
+                        }
+                    send_email($description,$receiver_emails_reject,'Reject the Documents');
+                }
+                
+                
+                
+                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.","description"=>$description));
+            
             }else{
                 echo json_encode(array("status"=>false, "message" => "Some error occured"));
             }
+        
             
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured", "query" => $updateQuery));
