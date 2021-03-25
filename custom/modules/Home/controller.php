@@ -5776,23 +5776,60 @@ public function is_activity_reassignment_applicable($activity_id) {
         try {
             $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
-            $activity_id = $_POST['activity_id'];
+            // $activity_id = $_POST['activity_id'];
             $activity_id = $_POST['activity_tag_id'];
             $user_id_list = '';
-            if ($_POST['userIdList']) {
-                $user_id_list = $_POST['userIdList'];
-            }
+            // if ($_POST['userIdList']) {
+            //     $user_id_list = $_POST['userIdList'];
+            // }
             if ($_POST['tag_activity']) {
                 $user_id_list = $_POST['tag_activity'];
                 $user_id_list = implode(',',$user_id_list);
             }
+
+
+            $sql ="SELECT calls.name, calls.created_by, calls_cstm.tag_hidden_c
+            FROM calls 
+            LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c
+            WHERE id ='$activity_id' ";
+            $fetch_activity_info_result = $GLOBALS['db']->query($sql);
+            $row = $GLOBALS['db']->fetchByAssoc($fetch_activity_info_result);
+
+            
+            $last_users_array = explode(',', $row['tag_hidden_c']);
+            $latest_users_array = $_POST['tag_activity'];
+            $untagged_user_ids = $tagged_user_ids = $untagged_names_arr = $tagged_names_arr = [];
+
+            $untagged_user_ids = array_diff($last_users_array, $latest_users_array);
+            $tagged_user_ids = array_diff($latest_users_array, $last_users_array);
+
+            foreach($untagged_user_ids as $id) {
+                array_push($untagged_names_arr, getUsername($id));
+            }    
+            foreach($tagged_user_ids as $id) {
+                array_push($tagged_names_arr, getUsername($id));
+            }     
+
+            $tagged_users_string = implode(',',$tagged_names_arr);
+            $untagged_users_string = implode(',',$untagged_names_arr);
+
+
+            $notification_message = "You have been tagged. Now you can edit /make changes to activity ".$row['name'];
+            send_notification("Activities", $row['name'], $notification_message, $tagged_user_ids, 'www.google.com');
+
+            $receiver_emails = []; 
+            foreach($tagged_user_ids as $user_id) {
+                array_push($receiver_emails, getUserEmail($user_id));
+            }
+            send_email($notification_message, [$receiver_emails], 'You have been tagged');
+
             $count_query = "SELECT * FROM calls_cstm WHERE id_c='$activity_id'";
             $result = $GLOBALS['db']->query($count_query);
 
             $sub_query = "UPDATE calls_cstm SET tag_hidden_c = '$user_id_list' WHERE id_c='$activity_id'";
             $GLOBALS['db']->query($sub_query);
 
-            echo json_encode(array("status"=> true, "message" => "Value Updated"));
+            echo json_encode(array("status"=> true, "message" => "Value Updated", "tagged_users" => $tagged_users_string, "untagged_users" => $untagged_users_string));
         } catch (Exception $e) {
             echo json_encode(array("status" => false, "message" => "Some error occured"));
         }
@@ -7482,6 +7519,17 @@ public function is_activity_reassignment_applicable($activity_id) {
             $query = "INSERT INTO document_note (doc_id, created_by, notes) VALUES ('$doc_id', '$user_id', '$note')";
             $GLOBALS['db']->query($query);
 
+            $result1 = getQuery('*', 'documents', 'id = "'.$doc_id.'"');
+            $row = $result1->fetch_assoc();
+
+            if($user_id != $row['created_by']) {
+                $notification_message = getUsername($user_id)." has written a note on document ".$row['document_name'];
+                send_notification("Documents", $row['document_name'], $notification_message, [$row['created_by']], 'www.google.com');
+
+                $receiver_email = getUserEmail($row['created_by']);
+                send_email($notification_message, [$receiver_email], 'New Note');  
+            }
+
             echo json_encode(array("status"=> true, "message" => "Note Added"));
             die();
         } catch (Exception $e) {
@@ -7984,17 +8032,53 @@ public function is_activity_reassignment_applicable($activity_id) {
             $GLOBALS['db'];
             $document_id = $_POST['document_tag_id'];
             $user_id_list = '';
-            if ($_POST['userIdList'] != "undefined") {
-                $user_id_list = $_POST['userIdList'];
-            }
+            // if ($_POST['userIdList'] != "undefined") {
+            //     $user_id_list = $_POST['userIdList'];
+            // }
             if ($_POST['tag_document']) {
                 $user_id_list = $_POST['tag_document'];
                 $user_id_list = implode(',',$user_id_list);
             }
+
+            $sql ="SELECT documents.document_name, documents.created_by, documents_cstm.tagged_hidden_c
+            FROM documents 
+            LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c
+            WHERE id ='$document_id' ";
+            $fetch_document_info_result = $GLOBALS['db']->query($sql);
+            $row = $GLOBALS['db']->fetchByAssoc($fetch_document_info_result);
+
+
+            $last_users_array = explode(',', $row['tagged_hidden_c']);
+            $latest_users_array = $_POST['tag_document'];
+            $untagged_user_ids = $tagged_user_ids = $untagged_names_arr = $tagged_names_arr = [];
+
+            $untagged_user_ids = array_diff($last_users_array, $latest_users_array);
+            $tagged_user_ids = array_diff($latest_users_array, $last_users_array);
+
+            foreach($untagged_user_ids as $id) {
+                array_push($untagged_names_arr, getUsername($id));
+            }    
+            foreach($tagged_user_ids as $id) {
+                array_push($tagged_names_arr, getUsername($id));
+            }     
+
+            $tagged_users_string = implode(',',$tagged_names_arr);
+            $untagged_users_string = implode(',',$untagged_names_arr);
+
+
+            $notification_message = "You have been tagged. Now you can edit /make changes to document ".$row['document_name'];
+            send_notification("Documents", $row['document_name'], $notification_message, $tagged_user_ids, 'www.google.com');
+
+            $receiver_emails = []; 
+            foreach($tagged_user_ids as $user_id) {
+                array_push($receiver_emails, getUserEmail($user_id));
+            }
+            send_email($notification_message, [$receiver_emails], 'You have been tagged');
+
             $sub_query = "UPDATE documents_cstm SET tagged_hidden_c = '$user_id_list' WHERE id_c='$document_id'";
             $GLOBALS['db']->query($sub_query);
 
-            echo json_encode(array("status"=> true, "message" => "Value Updated"));
+            echo json_encode(array("status"=> true, "message" => "Value Updated", "tagged_users" => $tagged_users_string, "untagged_users" => $untagged_users_string));
         } catch (Exception $e) {
             echo json_encode(array("status" => false, "message" => "Some error occured"));
         }
