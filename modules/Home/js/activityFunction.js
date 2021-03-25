@@ -6,8 +6,8 @@ function getPendingActivityRequestCount() {
         success: function (res) {
             res = JSON.parse(res)
             $('.pending-activity-request-count').html(res.count + " <i class='fa fa-angle-double-down' aria-hidden='true'></i>");
-            if (res && res.delegate_count == 0){
-                $(".activity_dele_count").attr('value',res.delegate_count)
+            if (res && res.delegate_count == 0) {
+                $(".activity_dele_count").attr('value', res.delegate_count)
             }
             if (res && res.count == 0) {
                 $('#click-here-text-activity').html('');
@@ -550,6 +550,7 @@ function updateActivityStatus() {
                 getPendingActivityRequestCount();
                 openActivityApprovalDialog('close');
                 activitydateBetween('30')
+                alert(data.description);
             } else {
                 alert(data.message);
             }
@@ -702,25 +703,25 @@ function getDelegateMembersActivity() {
 function fetchActivityDelegateDialog() {
     var response_state = $('.activity_dele_count').val()
     var dialog = document.getElementById('activityDelegatemyModel');
-    if (response_state != 0 ){
+    if (response_state != 0) {
         dialog.style.display = "block";
         $.ajax({
             url: 'index.php?module=Home&action=activity_delegated_dialog_info',
             type: 'GET',
             data: {},
             success: function (data) {
-    
+
                 var parsed_data = JSON.parse(data);
                 $('#activity_delegated_info').html(parsed_data.delegated_info);
                 // dialog.style.display = "block";
             }
-        }); 
+        });
     }
-    else{
+    else {
         dialog.style.display = "none";
         alert("There are no pending Activity to delegate");
     }
-    
+
 }
 $('#activity_delegate_submit').click(function () {
     var Select_Proxy = $('#activity_Select_Proxy').val();

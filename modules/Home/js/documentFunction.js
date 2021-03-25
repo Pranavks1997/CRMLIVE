@@ -74,8 +74,8 @@ function getPendingDocumentRequestCount() {
             res = JSON.parse(res)
             console.log("Pending Count Number ::: ", res);
             $('.pending-document-request-count').html(res.count + " <i class='fa fa-angle-double-down' aria-hidden='true'></i>");
-            if (res && res.delegate_count == 0){
-                $(".doc_dele_count").attr('value',res.delegate_count);
+            if (res && res.delegate_count == 0) {
+                $(".doc_dele_count").attr('value', res.delegate_count);
             }
             if (res && res.count == 0) {
                 $('#click-here-text-document').html('');
@@ -383,13 +383,12 @@ function updateDocumentStatus() {
         success: function (data) {
             console.log("test", data);
             data = JSON.parse(data);
-            debugger
             if (data.status) {
                 fetchDocumentByStatus();
                 getPendingDocumentRequestCount();
-
                 openDocumentApprovalDialog('close');
                 documentdateBetween('30')
+                alert(data.description);
             } else {
                 alert(data.message);
             }
