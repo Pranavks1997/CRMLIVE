@@ -3042,9 +3042,16 @@ class HomeController extends SugarController{
             $approvalDelegateUpdateQuery = $GLOBALS['db']->query($approvalDelegateUpdate);
 
             //$fetch_organization_count = $GLOBALS['db']->fetchByAssoc($save_delegate_query_result);
+            $description = "You have been delegated by ".getUserName($log_in_user_id);
+            send_notification('opporturnity','Delegate',$description,[$proxy],'www.google.com');
+    
+            $reciever_email = getUserEmail($proxy);
+            send_email($description,[$reciever_email],'Delegate');
+            echo json_encode(array("status"=>true, "message"=>"Data Succesfully updated", "proxy"=> $proxy,"proxy_name"=>getUserName($proxy)));
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
+        die();
 
     }
     public function action_remove_delegate_user(){
@@ -4023,7 +4030,17 @@ public function action_new_assigned_list(){
                           $result31 = $GLOBALS['db']->query($sql31);
                           
                           if($db->query($sql3)==TRUE){
-                              echo json_encode(array("status"=>true, "message" => "Success"));
+
+                            //Notification
+                            $opp_name_query = "SELECT name FROM `opportunities` where id ='".$opportunity_id."'";
+                            $result_opp_name = $GLOBALS['db']->query($opp_name_query);
+                            $row_opp_name = $GLOBALS['db']->fetchByAssoc($result_opp_name);
+                            
+                            $description ="The Oppurtunity ". $row_opp_name['name'] ." was re-assigned to ".getUserName($assigned_id)." by ".getUserName($log_in_user_id);
+                             send_email($description,[getUserEmail($reports_to_id)],"Re-assign User");
+ 
+                             send_notification('oppurnity','Re-assign User',$description,[$assigned_id],'www.google.com');
+                              echo json_encode(array("status"=>true, "message" => "Success","description"=>$description));
                               
                           }
                                  
@@ -4035,13 +4052,11 @@ public function action_new_assigned_list(){
                           $result3 = $GLOBALS['db']->query($sql3);
                           
                           if($db->query($sql3)==TRUE){
-                              echo json_encode(array("status"=>true, "message" => "Success"));
+
+                           
+                            echo json_encode(array("status"=>true, "message" => "Success"));
                           }
-                            }
-                     
-                         
-                      
-                 
+                        }
                     
              }
                    }
@@ -5651,6 +5666,13 @@ public function is_activity_reassignment_applicable($activity_id) {
             $approvalDelegateUpdateQuery = $GLOBALS['db']->query($approvalDelegateUpdate);
 
             //$fetch_organization_count = $GLOBALS['db']->fetchByAssoc($save_delegate_query_result);
+            //Notification
+            $description = "You have been delegated by ".getUserName($log_in_user_id);
+            send_notification('document','Delegate',$description,[$proxy],'www.google.com');
+    
+            $reciever_email = getUserEmail($proxy);
+            send_email($description,[$reciever_email],'Delegate');
+            echo json_encode(array("status"=>true, "message"=>"Data Succesfully updated", "proxy"=> $proxy,"proxy_name"=>getUserName($proxy)));
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
@@ -6141,21 +6163,12 @@ public function is_activity_reassignment_applicable($activity_id) {
         	    
         	     $result = $GLOBALS['db']->query($sql);
         	     
-        while($row = $GLOBALS['db']->fetchByAssoc($result)) 
-        {
-            
-           
-            
-            
-          $assigned_id=$row['id'];
-          $approver_id=$row['reports_to_id'];
-           
-           
-    
-            
-        }
-        
-        $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."' WHERE id='".$activity_id."'";//updating new assigned id
+                while($row = $GLOBALS['db']->fetchByAssoc($result)) 
+                {   
+                    $assigned_id=$row['id'];
+                    $approver_id=$row['reports_to_id'];
+                }
+$update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."' WHERE id='".$activity_id."'";//updating new assigned id
         
       if($db->query($update_activty_querry)==TRUE){
            
@@ -6169,10 +6182,7 @@ public function is_activity_reassignment_applicable($activity_id) {
         	     
                  while($row_tagged_database = $GLOBALS['db']->fetchByAssoc($result_tagged_database)) 
                      {
-            
-                              $tagged_user_database=$row_tagged_database['tag_hidden_c'];
-                              
-           
+                         $tagged_user_database=$row_tagged_database['tag_hidden_c'];
                       }
                       
                       $tagged_user_database_array=explode(',',$tagged_user_database);
@@ -6205,7 +6215,16 @@ public function is_activity_reassignment_applicable($activity_id) {
 	    		        
 	    		          if($db->query($update_activty_cstm_tagged_querry)==TRUE){
 	    		              
-	    		             echo json_encode(array('message'=>true));
+                           $activity_name_query = "SELECT name FROM `calls` where id ='".$activity_id."'";
+                           $result_activity_name = $GLOBALS['db']->query($activity_name_query);
+                           $row_activity_name = $GLOBALS['db']->fetchByAssoc($result_activity_name);
+                           
+                           $description ="The Activity ". $row_activity_name['name'] ." was re-assigned to ".getUserName($assigned_id)." by ".getUserName($log_in_user_id);
+                            send_email($description,[getUserEmail($approver_id)],"Re-assign User");
+
+                            send_notification('activity','Re-assign User',$description,[$assigned_id],'www.google.com');
+	    		             
+                            echo json_encode(array('message'=>true,"description"=>$description));
 	    		             
 	    		          }
                  
@@ -7716,7 +7735,13 @@ public function is_activity_reassignment_applicable($activity_id) {
             $approvalDelegateUpdateQuery = $GLOBALS['db']->query($approvalDelegateUpdate);
 
             //$fetch_organization_count = $GLOBALS['db']->fetchByAssoc($save_delegate_query_result);
-        echo json_encode(array("status"=>true, "message"=>"Data Succesfully updated", "proxy"=> $proxy));
+        //Notification
+        $description = "You have been delegated by ".getUserName($log_in_user_id);
+        send_notification('document','Delegate',$description,[$proxy],'www.google.com');
+
+        $reciever_email = getUserEmail($proxy);
+        send_email($description,[$reciever_email],'Delegate');
+        echo json_encode(array("status"=>true, "message"=>"Data Succesfully updated", "proxy"=> $proxy,"proxy_name"=>getUserName($proxy)));
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }

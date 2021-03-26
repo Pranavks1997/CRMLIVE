@@ -530,7 +530,7 @@ function handleNoteDialog(event) {
                 alert("Your note has been sent successfully!");
                 dialog.style.display = "none";
                 document.getElementById('note').value = "";
-                
+
             },
             error: function (data, errorThrown) {
                 alert(errorThrown);
@@ -584,7 +584,8 @@ $('#document_delegate_submit').click(function () {
                 // delegate_Edit: delegate_Edit,
             },
             success: function (data) {
-                console.log(data);
+                data = JSON.parse(data);
+                alert(data.proxy_name + " has been delegated");
                 var delegateModel = document.getElementById("documentDelegatemyModel");
                 delegateModel.style.display = "none";
             }
@@ -685,7 +686,7 @@ function handleTagDialog(event) {
                 var message = "";
                 dialog.style.display = "none";
 
-                if(parsed_data.tagged_users) {
+                if (parsed_data.tagged_users) {
                     message = message + parsed_data.tagged_users + " have been tagged";
                     alert(message);
                 }
