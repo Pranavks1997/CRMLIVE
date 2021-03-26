@@ -70,15 +70,15 @@ $dictionary["User"]["fields"]["opportunities_users_2opportunities_ida"] = array 
 );
 
 
- // created: 2021-02-04 10:52:20
-$dictionary['User']['fields']['bid_commercial_head_c']['inline_edit']='1';
-$dictionary['User']['fields']['bid_commercial_head_c']['labelValue']='Bid/Commercial Head';
-
- 
-
  // created: 2020-11-02 10:05:39
 $dictionary['User']['fields']['mc_c']['inline_edit']='1';
 $dictionary['User']['fields']['mc_c']['labelValue']='Management Committee';
+
+ 
+
+ // created: 2020-12-22 08:17:16
+$dictionary['User']['fields']['teamheirarchy_c']['inline_edit']='1';
+$dictionary['User']['fields']['teamheirarchy_c']['labelValue']='Team Heirarchy';
 
  
 
@@ -95,14 +95,14 @@ $dictionary['User']['fields']['first_name']['merge_filter']='disabled';
 
  
 
- // created: 2021-01-18 14:13:16
-$dictionary['User']['fields']['last_name']['required']=true;
+ // created: 2021-02-04 10:52:20
+$dictionary['User']['fields']['bid_commercial_head_c']['inline_edit']='1';
+$dictionary['User']['fields']['bid_commercial_head_c']['labelValue']='Bid/Commercial Head';
 
  
 
- // created: 2020-12-22 08:17:16
-$dictionary['User']['fields']['teamheirarchy_c']['inline_edit']='1';
-$dictionary['User']['fields']['teamheirarchy_c']['labelValue']='Team Heirarchy';
+ // created: 2021-01-18 14:13:16
+$dictionary['User']['fields']['last_name']['required']=true;
 
  
 ?>

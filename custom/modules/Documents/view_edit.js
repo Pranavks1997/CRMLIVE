@@ -336,6 +336,9 @@ $(document).on('click', function () {
                   approver
                  },
                 success : function(data){
+                if(data.message !== undefined){
+                    alert(data.message)
+                }
                 if(data.button == 'hide'){
                     $("#status_c").val("Approval Pending");
                     $("#apply_for_complete").hide();
@@ -401,6 +404,10 @@ $(document).on('click', function () {
                  
                  },
                 success : function(data){
+
+                if(data.message !== undefined){
+                    alert(data.message)
+                }
                 
                 if(data.button == 'hide'){
                     $("#approve_document").hide();
@@ -447,6 +454,10 @@ $(document).on('click', function () {
                  
                  },
                 success : function(data){
+
+                if(data.message !== undefined){
+                    alert(data.message)
+                }
                 
                 if(data.button == 'hide'){
                     $("#approve_document").hide();

@@ -60,6 +60,18 @@ class DocumentsViewDetail extends ViewDetail
 
     public function display()
     {
+
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+
+        if(isset($_SESSION['flash'][$log_in_user_id])){
+            echo '<script>
+                alert(\''.$_SESSION['flash'][$log_in_user_id]['message'].'\')
+            </script>';
+
+            unset($_SESSION['flash'][$log_in_user_id]);
+        }
+
         echo '<script type="text/javascript" src="custom/modules/Documents/view_detail.js"></script>';
         //check to see if the file field is empty.  This should not occur and would only happen when an error has ocurred during upload, or from db manipulation of record.
         if (empty($this->bean->filename)) {

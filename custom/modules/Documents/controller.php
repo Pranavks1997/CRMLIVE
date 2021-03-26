@@ -287,62 +287,126 @@ class DocumentsController extends SugarController
 
 
 //------------------------------Send Approval----------------------------------------
-    public function action_send_approval(){
-     try{
-        $db = \DBManagerFactory::getInstance();
-        $GLOBALS['db'];
+  public function action_send_approval(){
+    try{
+      $db = \DBManagerFactory::getInstance();
+      $GLOBALS['db'];
         	  
-       	global $current_user; 
-       	$log_in_user_id = $current_user->id;
+      global $current_user; 
+      $log_in_user_id = $current_user->id;
 
-       	$status = $_POST['status'];
-        $sender = $_POST['sender'];
-        $date = $_POST['date'];
-        $approver = $_POST['approver'];
-        $doc_id = $_POST['doc_id'];
-        $doc_type = $_POST['doc_type'];
+      $status = $_POST['status'];
+      $sender = $_POST['sender'];
+      // $date = $_POST['date'];
+      $date = date('Y-m-d');
+      $approver = $_POST['approver'];
+      $doc_id = $_POST['doc_id'];
+      $doc_type = $_POST['doc_type'];
                   
-		/*if($status == "Upcoming"){
-		   $status = 'Apply For Completed';
-		}*/
-		$status = "Pending Approval";
+  		/*if($status == "Upcoming"){
+  		   $status = 'Apply For Completed';
+  		}*/
+		  $status = "Pending Approval";
                   
-        $sql_approval_status = "SELECT * FROM document_approval_table WHERE id=(SELECT MAX(id) FROM document_approval_table WHERE doc_id ='".$doc_id."' ) ";
+      $sql_approval_status = "SELECT * FROM document_approval_table WHERE id=(SELECT MAX(id) FROM document_approval_table WHERE doc_id ='".$doc_id."' ) ";
         
-        $result_approval_status = $GLOBALS['db']->query($sql_approval_status);
-        while($row_approval_status=$GLOBALS['db']->fetchByAssoc($result_approval_status)){
-            $approval_status = $row_approval_status['approval_status'];      
-        }
+      $result_approval_status = $GLOBALS['db']->query($sql_approval_status);
+      while($row_approval_status=$GLOBALS['db']->fetchByAssoc($result_approval_status)){
+        $approval_status = $row_approval_status['approval_status'];      
+      }
 
-        if($approval_status == '0'){
-           echo json_encode(array("status"=>"Pending" )); 
-        }else if($approval_status == '1'){
-            echo json_encode(array("status"=>"approved" ));
-        }else if($approval_status == '2'){
-            $sql_insert_activity = "INSERT INTO `document_approval_table`( `doc_id`, `doc_type`, `status`, `sender`, `sent_time`, `approval_status`,`approver`) VALUES ('".$doc_id."','".$doc_type."','".$status."','".$sender."','".$date."','0','".$approver."')";
-            if($GLOBALS['db']->query($sql_insert_activity)==TRUE){
-                $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
-                if($GLOBALS['db']->query($update_documents_cstm)==TRUE){
-                     echo json_encode(array("button"=>"hide"));
-                }
+      if($approval_status == '0'){
+        exit(json_encode(array("status"=>"Pending" ))); 
+      }
+      else if($approval_status == '1'){
+        exit(json_encode(array("status"=>"approved" )));
+      }
+      else if($approval_status == '2'){
+        $sql_insert_activity = "INSERT INTO `document_approval_table`( `doc_id`, `doc_type`, `status`, `sender`, `sent_time`, `approval_status`,`approver`) VALUES ('".$doc_id."','".$doc_type."','".$status."','".$sender."','".$date."','0','".$approver."')";
+      if($GLOBALS['db']->query($sql_insert_activity)==TRUE){
+        $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+        $GLOBALS['db']->query($update_documents_cstm);
                   
-              }
-        }else{
-            $sql_insert_activity = "INSERT INTO `document_approval_table`( `doc_id`, `doc_type`, `status`, `sender`, `sent_time`, `approval_status`,`approver`) VALUES ('".$doc_id."','".$doc_type."','".$status."','".$sender."','".$date."','0','".$approver."')";
+      }
+    }
+    else{
+      $sql_max_id = "SELECT MAX(id) as id FROM document_approval_table";
 
-            $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+      $result_max_id = $GLOBALS['db']->query($sql_max_id);
+
+      while ($row = $GLOBALS['db']->fetchByAssoc($result_max_id)) {
+        $id = ++$row['id'];
+      }
+      $sql_insert_activity = "INSERT INTO `document_approval_table`(`id`, `doc_id`, `doc_type`, `status`, `sender`, `sent_time`, `approval_status`,`approver`) VALUES ('".$id."', '".$doc_id."','".$doc_type."','".$status."','".$sender."','".$date."','0','".$approver."')";
+
+      $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
 
             // die($update_documents_cstm);
 
-            if($GLOBALS['db']->query($sql_insert_activity) && $GLOBALS['db']->query($update_documents_cstm)){
-                echo json_encode(array("button"=>"hide"));
-            }
-        }
+      $GLOBALS['db']->query($sql_insert_activity);
+      $GLOBALS['db']->query($update_documents_cstm);
+    }
+
+    // Get Document Details
+    $sql = "SELECT * FROM `documents` WHERE `id`='".$doc_id."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to = $row['assigned_user_id'];
+      $document_name = $row['document_name']; 
+      $document_id = $row['id'];
+    }
+
+    // Get approver name
+    $sql = "SELECT * FROM `users` WHERE `id`='".$approver."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $approver = $row['first_name'].' '.$row['last_name'];
+      $approver_id = $row['id'];
+      $approver_email = $row['user_name'];
+    }
+
+    //Send Notification to approver
+    $alert = BeanFactory::newBean('Alerts');
+    $alert->name = '';
+    
+    $alert->description = 'Document "'.$document_name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'" is pending for your approval.';
+
+    $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Documents&record='.$document_id;
+    $alert->target_module = 'Documents';
+    $alert->assigned_user_id = $approver_id;
+    $alert->type = 'info';
+    $alert->is_read = 0;
+    $alert->save();
+
+    // Send email to approver
+    $template = 'Document "'.$document_name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'" is pending for your approval.';
+
+    $emailObj = new Email();  
+    $defaults = $emailObj->getSystemDefaultEmail();
+
+    $mail = new SugarPHPMailer();  
+    $mail->setMailerForSystem();  
+    $mail->From = $defaults['email'];  
+    $mail->FromName = $defaults['name'];  
+    $mail->Subject = 'Document '.$document_name.' approval request';
+    $mail->Body =$template;
+    $mail->IsHTML(true); 
+    $mail->prepForOutbound();  
+    $mail->AddAddress($approver_email);
+    @$mail->Send(); 
+
+    echo json_encode([
+      "button" => "hide",
+      "message" => "Approval request has been sent to ".$approver
+    ]);
         	    
-     }catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
-		die();
+  }
+  catch(Exception $e){
+    echo json_encode(array("status"=>false, "message" => "Some error occured"));
+  }
+	die();
 	}
 //------------------------------Send Approval------------------END-------------------
 
@@ -350,44 +414,154 @@ class DocumentsController extends SugarController
 //-----------------------------Approve----------------------------------------------
 public function action_approve(){
  	try{
-    	$db = \DBManagerFactory::getInstance();
-    	$GLOBALS['db'];
+    $db = \DBManagerFactory::getInstance();
+    $GLOBALS['db'];
     	  
-    	global $current_user; 
-    	$log_in_user_id = $current_user->id;
+    global $current_user; 
+    $log_in_user_id = $current_user->id;
     	      
-        $sender = $_POST['assigned_id'];
-        $date = $_POST['date'];
-        $approver = $_POST['approver_id'];
-        $doc_id = $_POST['doc_id'];
-        $comments=$_POST['comments'];
-        $status='Approved';
+    $sender = $_POST['assigned_id'];
+    $date = $_POST['date'];
+    $approver = $_POST['approver_id'];
+    $doc_id = $_POST['doc_id'];
+    $comments=$_POST['comments'];
+    $status='Approved';
 
-        $sql_delegate="SELECT * FROM `documents_cstm` WHERE `id_c`='".$doc_id."';";
-        $result_delegate = $GLOBALS['db']->query($sql_delegate);
+    $sql_delegate="SELECT * FROM `documents_cstm` WHERE `id_c`='".$doc_id."';";
+    $result_delegate = $GLOBALS['db']->query($sql_delegate);
         
-        while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)){
+    while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)){
 			$delegate_id=$row_delegate['delegate_id'];            
-        }
+    }
 
-        if($log_in_user_id==$delegate_id){
-        	$update_query="UPDATE `document_approval_table` SET `approval_status`='1',delegate_approve_reject_date='".date('Y-m-d H:i:s')."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
+    if($log_in_user_id==$delegate_id){
+      $update_query="UPDATE `document_approval_table` SET `approval_status`='1',delegate_approve_reject_date='".date('Y-m-d H:i:s')."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
 
-        	$update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+      $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
 
-        	if($GLOBALS['db']->query($update_query) && $GLOBALS['db']->query($update_documents_cstm)){
-        		echo json_encode(array("button"=>"hide"));
-        	}
-        }
-        else{
-	        $update_query="UPDATE `document_approval_table` SET `approval_status`='1',`approve_reject_date`='".date('Y-m-d H:i:s')."',`approver_comment`='".$comments."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
+      $GLOBALS['db']->query($update_query);
+      $GLOBALS['db']->query($update_documents_cstm);
+    }
+    else{
+      $update_query="UPDATE `document_approval_table` SET `approval_status`='1',`approve_reject_date`='".date('Y-m-d H:i:s')."',`approver_comment`='".$comments."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
 
-	        $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+      $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
 
-	        if($GLOBALS['db']->query($update_query) && $GLOBALS['db']->query($update_documents_cstm)){               
-	              echo json_encode(array("button"=>"hide"));
-	        }
-        }
+      $GLOBALS['db']->query($update_query);
+      $GLOBALS['db']->query($update_documents_cstm);
+    }
+
+    // Get assigned to user id
+    $sql = "SELECT * FROM `documents` WHERE `id`='".$doc_id."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to = $row['assigned_user_id'];
+      $document_name = $row['document_name']; 
+      $document_id = $row['id'];
+    }
+
+    // Get assigned user name
+    $sql = "SELECT * FROM `users` WHERE `id`='".$assigned_to."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to_name = $row['first_name'].' '.$row['last_name'];
+      $assigned_to_email = $row['user_name'];
+    }
+
+    // Get Tagged Users
+    $sql = "SELECT * FROM `documents_cstm` WHERE id_c='".$doc_id."'";
+    $result = $GLOBALS['db']->query($sql);
+    
+    while($row = $GLOBALS['db']->fetchByAssoc($result)){
+      $tagged_ids = $row['tagged_hidden_c'];
+    }
+
+    $tagged_id_array = explode(',', $tagged_ids);
+
+    $tagged_users = [];
+    foreach ($tagged_id_array as $key => $user_id) {
+      $sql = 'SELECT * FROM `users` WHERE id="'.$user_id.'"';
+      $result = $GLOBALS['db']->query($sql);
+
+      while($row = $GLOBALS['db']->fetchByAssoc($result)){
+        $tagged_users[] = $row;
+      }
+      
+    }
+
+    // If assigned to user exists
+    if((bool)$assigned_to_name){
+      // Send Notification to assigned user
+      $alert = BeanFactory::newBean('Alerts');
+      $alert->name = '';
+      
+      $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$document_id;
+      $alert->target_module = 'Documents';
+      $alert->assigned_user_id = $assigned_to;
+      $alert->type = 'info';
+      $alert->is_read = 0;
+      $alert->save();
+
+      // Send email to assigned user
+      $template = 'Document - "'.$document_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $emailObj = new Email();  
+      $defaults = $emailObj->getSystemDefaultEmail();  
+      $mail = new SugarPHPMailer();  
+      $mail->setMailerForSystem();  
+      $mail->From = $defaults['email'];  
+      $mail->FromName = $defaults['name'];  
+      $mail->Subject = 'Document '.$document_name.' approval mail';
+      $mail->Body =$template;
+      $mail->prepForOutbound();  
+      $mail->AddAddress($assigned_to_email);
+      @$mail->Send();
+
+
+      // Send Notifications and email to tagged users
+      foreach ($tagged_users as $key => $user) {
+        // Send Notification to tagged user
+        $alert = BeanFactory::newBean('Alerts');
+        $alert->name = '';
+        
+        $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+        $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$document_id;
+        $alert->target_module = 'Documents';
+        $alert->assigned_user_id = $user['id'];
+        $alert->type = 'info';
+        $alert->is_read = 0;
+        $alert->save();
+
+        // Send Email to tagged user
+        $template = 'Document - "'.$document_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+        $emailObj = new Email();  
+        $defaults = $emailObj->getSystemDefaultEmail();
+
+        $mail = new SugarPHPMailer();  
+        $mail->setMailerForSystem();  
+        $mail->From = $defaults['email'];  
+        $mail->FromName = $defaults['name'];  
+        $mail->Subject = 'Document '.$document_name.' approval mail';
+        $mail->Body =$template;
+        $mail->IsHTML(true); 
+        $mail->prepForOutbound();  
+        $mail->AddAddress($user['user_name']);
+        @$mail->Send();
+
+      }
+
+      echo json_encode([
+        'button'=>'hide', 
+        'message' => 'Document "'.$document_name.'" approved successfully.'
+      ]);
+    } 
+
               
        
     	    
@@ -400,51 +574,159 @@ public function action_approve(){
 
 //----------------------------Reject------------------------------------------------
 public function action_reject(){
-    try{
-    	$db = \DBManagerFactory::getInstance();
-    	$GLOBALS['db'];
+  try{
+    $db = \DBManagerFactory::getInstance();
+    $GLOBALS['db'];
     	  
-    	global $current_user; 
-    	$log_in_user_id = $current_user->id;
+    global $current_user; 
+    $log_in_user_id = $current_user->id;
     	      
-    	$sender = $_POST['assigned_id'];
-    	$date = $_POST['date'];
-    	$approver = $_POST['approver_id'];
-    	$doc_id = $_POST['doc_id'];
-    	$comments=$_POST['comment_reject'];
+    $sender = $_POST['assigned_id'];
+    $date = $_POST['date'];
+    $approver = $_POST['approver_id'];
+    $doc_id = $_POST['doc_id'];
+    $comments=$_POST['comment_reject'];
 
-    	$status = 'Pending Approval';
+    $status = 'Pending Approval';
              
-    	// echo $sender.'--/--'.$approver.'--/--'.$comments.'--/--'.$doc_id;
+    // echo $sender.'--/--'.$approver.'--/--'.$comments.'--/--'.$doc_id;
 
-    	$sql_delegate="SELECT * FROM `documents_cstm` WHERE `id_c`='".$doc_id."';";
-    	$result_delegate = $GLOBALS['db']->query($sql_delegate);
+    $sql_delegate="SELECT * FROM `documents_cstm` WHERE `id_c`='".$doc_id."';";
+    $result_delegate = $GLOBALS['db']->query($sql_delegate);
     	
-    	while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)) {
-            $delegate_id=$row_delegate['delegate_id'];
+    while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)) {
+      $delegate_id=$row_delegate['delegate_id'];
 		}
 		if($log_in_user_id==$delegate_id){
 			$update_query="UPDATE `document_approval_table` SET `approval_status`='2',delegate_approve_reject_date='".date('Y-m-d H:i:s')."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
 
 			$update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
 
-			if($GLOBALS['db']->query($update_query) && $GLOBALS['db']->query($update_documents_cstm)){
-				echo json_encode(array("button"=>"hide"));
-			}
+			$GLOBALS['db']->query($update_query);
+      $GLOBALS['db']->query($update_documents_cstm);
 		}
 		else{
-	    	$update_query="UPDATE `document_approval_table` SET `approval_status`='2',`approve_reject_date`='".date('Y-m-d H:i:s')."',`approver_comment`='".$comments."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
+	    $update_query="UPDATE `document_approval_table` SET `approval_status`='2',`approve_reject_date`='".date('Y-m-d H:i:s')."',`approver_comment`='".$comments."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
 
-	    	$update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+	    $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
 	    
-	    	if($GLOBALS['db']->query($update_query) && $GLOBALS['db']->query($update_documents_cstm)){
-	        	echo json_encode(array("button"=>"hide"));
-	    	}	    
-		}     
+	    $GLOBALS['db']->query($update_query); 
+      $GLOBALS['db']->query($update_documents_cstm);
+		}
+
+    // Get assigned to user id
+    $sql = "SELECT * FROM `documents` WHERE `id`='".$doc_id."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to = $row['assigned_user_id'];
+      $document_name = $row['document_name']; 
+      $document_id = $row['id'];
     }
-    catch(Exception $e){
-    	echo json_encode(array("status"=>false, "message" => "Some error occured"));
+
+    // Get assigned user name
+    $sql = "SELECT * FROM `users` WHERE `id`='".$assigned_to."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to_name = $row['first_name'].' '.$row['last_name'];
+      $assigned_to_email = $row['user_name'];
     }
+
+    $sql = "SELECT * FROM `documents_cstm` WHERE id_c='".$doc_id."'";
+    $result = $GLOBALS['db']->query($sql);
+    
+    while($row = $GLOBALS['db']->fetchByAssoc($result)){
+      $tagged_ids = $row['tagged_hidden_c'];
+    }
+
+    $tagged_id_array = explode(',', $tagged_ids);
+
+    $tagged_users = [];
+    foreach ($tagged_id_array as $key => $user_id) {
+      $sql = 'SELECT * FROM `users` WHERE id="'.$user_id.'"';
+      $result = $GLOBALS['db']->query($sql);
+
+      while($row = $GLOBALS['db']->fetchByAssoc($result)){
+        $tagged_users[] = $row;
+      }
+      
+    }
+
+    // If assigned to user exists
+    if((bool)$assigned_to_name){
+      // Send Notification to assigned user
+      $alert = BeanFactory::newBean('Alerts');
+      $alert->name = '';
+      
+      $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$document_id;
+      $alert->target_module = 'Documents';
+      $alert->assigned_user_id = $assigned_to;
+      $alert->type = 'info';
+      $alert->is_read = 0;
+      $alert->save();
+
+      // Send email to assigned user
+      $template = 'Document - "'.$document_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $emailObj = new Email();  
+      $defaults = $emailObj->getSystemDefaultEmail();  
+      $mail = new SugarPHPMailer();  
+      $mail->setMailerForSystem();  
+      $mail->From = $defaults['email'];  
+      $mail->FromName = $defaults['name'];  
+      $mail->Subject = 'Document '.$document_name.' rejection mail';
+      $mail->Body =$template;
+      $mail->prepForOutbound();  
+      $mail->AddAddress($assigned_to_email);
+      @$mail->Send();
+
+      // Send Notifications and email to tagged users
+      foreach ($tagged_users as $key => $user) {
+        // Send Notification to tagged user
+        $alert = BeanFactory::newBean('Alerts');
+        $alert->name = '';
+        
+        $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+        $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$document_id;
+        $alert->target_module = 'Documents';
+        $alert->assigned_user_id = $user['id'];
+        $alert->type = 'info';
+        $alert->is_read = 0;
+        $alert->save();
+
+        // Send Email to tagged user
+        $template = 'Document - "'.$document_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+        $emailObj = new Email();  
+        $defaults = $emailObj->getSystemDefaultEmail();
+
+        $mail = new SugarPHPMailer();  
+        $mail->setMailerForSystem();  
+        $mail->From = $defaults['email'];  
+        $mail->FromName = $defaults['name'];  
+        $mail->Subject = 'Document '.$document_name.' rejection mail';
+        $mail->Body =$template;
+        $mail->IsHTML(true); 
+        $mail->prepForOutbound();  
+        $mail->AddAddress($user['user_name']);
+        @$mail->Send();
+
+      }
+
+
+      echo json_encode([
+        'button'=>'hide', 
+        'message' => 'Document "'.$document_name.'" rejected successfully.'
+      ]);   
+    }   
+  }
+  catch(Exception $e){
+    echo json_encode(array("status"=>false, "message" => "Some error occured"));
+  }
 	die();
 }
 //----------------------------Reject---------------------------END------------------
