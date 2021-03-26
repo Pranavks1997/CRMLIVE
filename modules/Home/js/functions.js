@@ -700,14 +700,23 @@ function openDeselectDialog(event) {
         dialog.style.display = "none";
     } else if (event === "submit") {
         var hidden_id = document.getElementById('hidden_value').value;
-        console.log(hidden_id);
+        // console.log(hidden_id);
         $.ajax({
             url: 'index.php?module=Home&action=deselect_members_from_global_opportunity',
             type: 'POST',
             data: $('.test-tag').serialize(),
             success: function (data) {
-                console.log(data);
+                var parsed_data = JSON.parse(data);
+                var message = "";
+                
+
+                if(parsed_data.tagged_users) {
+                    message = message + parsed_data.tagged_users + " have been tagged";
+                    alert(message);
+                }
+
                 dialog.style.display = "none";
+                
             }
         });
     } else {

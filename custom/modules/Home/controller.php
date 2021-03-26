@@ -4959,20 +4959,70 @@ public function is_activity_reassignment_applicable($activity_id) {
                 $user_id_list = $_POST['tag_opporunity'];
                 $user_id_list = implode(',',$user_id_list);
             }
-            $count_query = "SELECT * FROM tagged_user WHERE opp_id='$opportunity_id'";
+            // $count_query = "SELECT * FROM tagged_user WHERE opp_id='$opportunity_id'";
+
+            $count_query ="SELECT tagged_user.*, opportunities.name
+            FROM opportunities 
+            LEFT JOIN tagged_user ON opportunities.id = tagged_user.opp_id
+            WHERE opportunities.id ='$opportunity_id' ";
             $result = $GLOBALS['db']->query($count_query);
+            $row = $GLOBALS['db']->fetchByAssoc($result);
+
+            $untagged_user_ids = $tagged_user_ids = $untagged_names_arr = $tagged_names_arr = [];
+            $last_users_array = explode(',', $row['user_id']);
+            $latest_users_array = $_POST['tag_opporunity'];
+            $untagged_user_ids = array_diff($last_users_array, $latest_users_array);
+            $tagged_user_ids = array_diff($latest_users_array, $last_users_array);
+
+
             if ($result->num_rows > 0) {
                 $query = "UPDATE tagged_user SET user_id = '$user_id_list' WHERE opp_id='$opportunity_id'";
                 $result = $GLOBALS['db']->query($query);
-                echo json_encode(array("status" => true, "message" => "Tag Updated.", "Result"=>$result));
+                // echo json_encode(array("status" => true, "message" => "Tag Updated.", "Result"=>$result));
             } else {
                 $query = "INSERT into tagged_user(opp_id,user_id) VALUES('$opportunity_id','$user_id_list')";
                 $result = $GLOBALS['db']->query($query);
-                echo json_encode(array("status" => true, "message" => "Tag UpdatInstereded.", "Result"=>$opportunity_id));
+                // echo json_encode(array("status" => true, "message" => "Tag UpdatInstereded.", "Result"=>$opportunity_id));
             }
             $sub_query = "UPDATE opportunities_cstm SET tagged_hiden_c = '$user_id_list' WHERE id_c='$opportunity_id'";
             $GLOBALS['db']->query($sub_query);
-            echo json_encode(array("status" => true, "message" => "Tag Updated.", "Result"=>$result));
+
+
+            foreach($untagged_user_ids as $id) {
+                array_push($untagged_names_arr, getUsername($id));
+            }    
+            foreach($tagged_user_ids as $id) {
+                array_push($tagged_names_arr, getUsername($id));
+            }     
+
+            $tagged_users_string = implode(',',$tagged_names_arr);
+            $untagged_users_string = implode(',',$untagged_names_arr);
+
+
+            $notification_message = "You have been tagged. Now you can edit /make changes to opportunities ".$row['name'];
+            send_notification("Opportunities", $row['name'], $notification_message, $tagged_user_ids, 'www.google.com');
+
+            $receiver_emails = []; 
+            foreach($tagged_user_ids as $user_id) {
+                array_push($receiver_emails, getUserEmail($user_id));
+            }
+            // send_email($notification_message, $receiver_emails, 'You have been tagged');
+            if(count($receiver_emails) > 0) {
+                send_email($notification_message, $receiver_emails, 'You have been tagged');
+            }
+
+            $untagged_receiver_emails = [];
+            foreach($untagged_user_ids as $user_id) {
+                array_push($untagged_receiver_emails, getUserEmail($user_id));
+            }
+            if(count($untagged_receiver_emails) > 0) {
+                $untagged_notification_message = "You have been untagged. Now you cannot edit /make changes to opportunities ".$row['name'];
+                send_email($untagged_notification_message, $untagged_receiver_emails, 'You have been untagged');
+            }
+
+
+
+            echo json_encode(array("status" => true, "message" => "Tag Updated.", "Result"=>$result, "tagged_users" => $tagged_users_string, "untagged_users" => $untagged_users_string));
         } catch (Exception $e) {
             echo json_encode(array("status" => false, "message" => "Some error occured"));
         }
@@ -5861,7 +5911,22 @@ public function is_activity_reassignment_applicable($activity_id) {
             foreach($tagged_user_ids as $user_id) {
                 array_push($receiver_emails, getUserEmail($user_id));
             }
-            send_email($notification_message, [$receiver_emails], 'You have been tagged');
+            // send_email($notification_message, $receiver_emails, 'You have been tagged');
+
+            if(count($receiver_emails) > 0) {
+                send_email($notification_message, $receiver_emails, 'You have been tagged');
+            }
+
+            $untagged_receiver_emails = [];
+            foreach($untagged_users_string as $user_id) {
+                array_push($untagged_receiver_emails, getUserEmail($user_id));
+            }
+            if(count($untagged_receiver_emails) > 0) {
+                $untagged_notification_message = "You have been untagged. Now you cannot edit /make changes to activity ".$row['name'];
+                send_email($untagged_notification_message, $untagged_receiver_emails, 'You have been untagged');
+            }
+
+
 
             $count_query = "SELECT * FROM calls_cstm WHERE id_c='$activity_id'";
             $result = $GLOBALS['db']->query($count_query);
@@ -7564,7 +7629,7 @@ public function is_activity_reassignment_applicable($activity_id) {
 
             if($user_id != $row['created_by']) {
                 $notification_message = getUsername($user_id)." has written a note on document ".$row['document_name'];
-                send_notification("Documents", $row['document_name'], $notification_message, [$row['created_by']], 'www.google.com');
+                send_notification("Documents", $row['document_name'], $notification_message, [$row['created_by']], '');
 
                 $receiver_email = getUserEmail($row['created_by']);
                 send_email($notification_message, [$receiver_email], 'New Note');  
@@ -8157,7 +8222,19 @@ public function is_activity_reassignment_applicable($activity_id) {
             foreach($tagged_user_ids as $user_id) {
                 array_push($receiver_emails, getUserEmail($user_id));
             }
-            send_email($notification_message, [$receiver_emails], 'You have been tagged');
+            if(count($receiver_emails) > 0) {
+                send_email($notification_message, $receiver_emails, 'You have been tagged');
+            }
+
+            $untagged_receiver_emails = [];
+            foreach($untagged_users_string as $user_id) {
+                array_push($untagged_receiver_emails, getUserEmail($user_id));
+            }
+            if(count($untagged_receiver_emails) > 0) {
+                $untagged_notification_message = "You have been untagged. Now you cannot edit /make changes to document ".$row['document_name'];
+                send_email($untagged_notification_message, $untagged_receiver_emails, 'You have been untagged');
+            }
+
 
             $sub_query = "UPDATE documents_cstm SET tagged_hidden_c = '$user_id_list' WHERE id_c='$document_id'";
             $GLOBALS['db']->query($sub_query);
