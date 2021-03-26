@@ -252,7 +252,7 @@ function handleActivityTagDialog(event) {
             success: function (data) {
                 var parsed_data = JSON.parse(data);
                 var message = "";
-                if(parsed_data.tagged_users) {
+                if (parsed_data.tagged_users) {
                     message = message + parsed_data.tagged_users + " have been tagged";
                     alert(message);
                 }
@@ -641,7 +641,6 @@ function activityhandleReassignmentDialog(event) {
 
             var assigned_opportunity_id = document.getElementById('assigned_activity_id').value;
             var assigned_name = document.getElementById('activity_assigned_to_new_c').value;
-
             $.ajax({
                 url: 'index.php?module=Home&action=activity_update_assigned',
                 type: 'POST',
@@ -651,14 +650,12 @@ function activityhandleReassignmentDialog(event) {
                 },
                 success: function (data) {
                     dat = JSON.parse(data)
+                    alert(dat.description);
                     if (dat.message == "false") {
                         alert("Please check assigned user name");
                     }
 
                     else {
-
-
-
                         $.ajax({
                             url: 'index.php?module=Home&action=activity_assigned_history',
                             type: 'POST',
@@ -744,6 +741,8 @@ $('#activity_delegate_submit').click(function () {
                 // delegate_Edit: delegate_Edit,
             },
             success: function (data) {
+                data = JSON.parse(data);
+                alert(data.proxy_name + " has been delegated");
                 var delegateModel = document.getElementById("activityDelegatemyModel");
                 delegateModel.style.display = "none";
             }
