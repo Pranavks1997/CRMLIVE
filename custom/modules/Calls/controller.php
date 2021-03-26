@@ -2,6 +2,8 @@
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 require_once('include/MVC/Controller/SugarController.php');
+require_once('include/SugarPHPMailer.php');
+include_once('include/utils/db_utils.php');
 
 class CallsController extends SugarController
 {
@@ -963,61 +965,125 @@ public function action_approval_buttons(){
 //----------------------send approval/apply for complete ---------------------------------------------------
 
 public function action_send_approval(){
-     try{
-         $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
+  try{
+    $db = \DBManagerFactory::getInstance();
+    $GLOBALS['db'];
         	  
-        	   global $current_user; 
-        	    $log_in_user_id = $current_user->id;
-        	      $status = $_POST['status'];
-                  $sender = $_POST['sender'];
-                  $date = $_POST['date'];
-                  $approver = $_POST['approver'];
-                  $acc_id = $_POST['acc_id'];
-                  $acc_type = $_POST['acc_type'];
+    global $current_user; 
+    $log_in_user_id = $current_user->id;
+    $status = $_POST['status'];
+    $sender = $_POST['sender'];
+    // $date = $_POST['date'];
+    $date = date('Y-m-d');
+    $approver = $_POST['approver'];
+    $acc_id = $_POST['acc_id'];
+    $acc_type = $_POST['acc_type'];
                   
-               if($status == "Upcoming"){
-                   $status = 'Apply For Completed';
-               }
+    if($status == "Upcoming"){
+      $status = 'Apply For Completed';
+    }
                   
-            $sql_approval_status = "SELECT * FROM activity_approval_table WHERE id=(SELECT MAX(id) FROM activity_approval_table WHERE acc_id ='".$acc_id."' ) ";
-            $result_approval_status = $GLOBALS['db']->query($sql_approval_status);
-            while($row_approval_status=$GLOBALS['db']->fetchByAssoc($result_approval_status)){
-                $approval_status = $row_approval_status['approval_status'];
-              
-            }
-            if($approval_status == '0'){
-               echo json_encode(array("status"=>"Pending" )); 
-            }else if($approval_status == '1'){
-                echo json_encode(array("status"=>"approved" ));
-            }else if($approval_status == '2'){
-                $sql_insert_activity = "INSERT INTO `activity_approval_table`( `acc_id`, `acc_type`, `status`, `sender`, `sent_time`, `approval_status`,`approver`) VALUES ('".$acc_id."','".$acc_type."','".$status."','".$sender."','".$date."','0','".$approver."')";
-                if($GLOBALS['db']->query($sql_insert_activity)==TRUE){
-                    $update_calls_cstm = "UPDATE `calls_cstm` SET `status_new_c`='".$status."' WHERE `id_c`='".$acc_id."'";
-                    if($GLOBALS['db']->query($update_calls_cstm)==TRUE){
-                         echo json_encode(array("button"=>"hide"));
-                    }
-                      
-                  }
-            }else{
-                $sql_insert_activity = "INSERT INTO `activity_approval_table`( `acc_id`, `acc_type`, `status`, `sender`, `sent_time`, `approval_status`,`approver`) VALUES ('".$acc_id."','".$acc_type."','".$status."','".$sender."','".$date."','0','".$approver."')";
-                // $GLOBALS['db']->query($sql_insert_activity);
-                  if($GLOBALS['db']->query($sql_insert_activity)==TRUE){
-                       
-                    //   $update_calls_cstm = "UPDATE `calls_cstm` SET `status_new_c`='".$status."' WHERE `id_c`='".$acc_id."'";
-                    // if($GLOBALS['db']->query($update_calls_cstm)==TRUE){
-                        
-                    // }
-                     echo json_encode(array("button"=>"hide"));
+    $sql_approval_status = "SELECT * FROM activity_approval_table WHERE id=(SELECT MAX(id) FROM activity_approval_table WHERE acc_id ='".$acc_id."' ) ";
+    
+    $result_approval_status = $GLOBALS['db']->query($sql_approval_status);
+    
+    while($row_approval_status=$GLOBALS['db']->fetchByAssoc($result_approval_status)){
+      $approval_status = $row_approval_status['approval_status'];          
+    }
+    
+    if($approval_status == '0'){
+      exit(json_encode(array("status"=>"Pending" ))); 
+    }
+    else if($approval_status == '1'){
+      exit(json_encode(array("status"=>"approved" )));
+    }
+    else if($approval_status == '2'){
+      $sql_insert_activity = "INSERT INTO `activity_approval_table`( `acc_id`, `acc_type`, `status`, `sender`, `sent_time`, `approval_status`,`approver`) VALUES ('".$acc_id."','".$acc_type."','".$status."','".$sender."','".$date."','0','".$approver."')";
+      
+      if($GLOBALS['db']->query($sql_insert_activity)==TRUE){
+        $update_calls_cstm = "UPDATE `calls_cstm` SET `status_new_c`='".$status."' WHERE `id_c`='".$acc_id."'";
+      
+        $GLOBALS['db']->query($update_calls_cstm);
+      }
+    }
+    else{
+      $sql_max_id = "SELECT MAX(id) as id FROM activity_approval_table";
+
+      $result_max_id = $GLOBALS['db']->query($sql_max_id);
+
+      while ($row = $GLOBALS['db']->fetchByAssoc($result_max_id)) {
+        $id = ++$row['id'];
+      }
+
+      $sql_insert_activity = "INSERT INTO `activity_approval_table`(`id`, `acc_id`, `acc_type`, `status`, `sender`, `sent_time`, `approval_status`,`approver`) VALUES ('".$id."', '".$acc_id."','".$acc_type."','".$status."','".$sender."','".$date."','0','".$approver."')";
+      
+      // $GLOBALS['db']->query($sql_insert_activity);
+      $GLOBALS['db']->query($sql_insert_activity);
                     
                     
-                  }
-            }
+    }
+
+
+    // Get Activity Details
+    $sql = "SELECT * FROM `calls` WHERE `id`='".$acc_id."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to = $row['assigned_user_id'];
+      $activity_name = $row['name']; 
+      $activity_id = $row['id'];
+    }
+
+    // Get approver name
+    $sql = "SELECT * FROM `users` WHERE `id`='".$approver."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $approver = $row['first_name'].' '.$row['last_name'];
+      $approver_id = $row['id'];
+      $approver_email = $row['user_name'];
+    }
+
+    //Send Notification to approver
+    $alert = BeanFactory::newBean('Alerts');
+    $alert->name = '';
+    
+    $alert->description = 'Activity "'.$activity_name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'" is pending for your approval.';
+
+    $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
+    $alert->target_module = 'Activities';
+    $alert->assigned_user_id = $approver_id;
+    $alert->type = 'info';
+    $alert->is_read = 0;
+    $alert->save();
+
+    // Send email to approver
+    $template = 'Activity "'.$activity_name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'" is pending for your approval.';
+
+    $emailObj = new Email();  
+    $defaults = $emailObj->getSystemDefaultEmail();
+
+    $mail = new SugarPHPMailer();  
+    $mail->setMailerForSystem();  
+    $mail->From = $defaults['email'];  
+    $mail->FromName = $defaults['name'];  
+    $mail->Subject = 'Activity '.$activity_name.' approval request';
+    $mail->Body =$template;
+    $mail->IsHTML(true); 
+    $mail->prepForOutbound();  
+    $mail->AddAddress($approver_email);
+    @$mail->Send();    
+
+    echo json_encode([
+      "button" => "hide",
+      "message" => "Approval request has been sent to ".$approver
+    ]);
         	    
-     }catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
-		die();
+  }
+  catch(Exception $e){
+    echo json_encode(array("status"=>false, "message" => "Some error occured"));
+  }
+	die();
 }
 
 //----------------------send approval/apply for complete ----------END---------------------------------------
@@ -1133,57 +1199,157 @@ public function action_editView_access(){
 
 
 public function action_approve(){
-     try{
-         $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-        	  
-        	   global $current_user; 
-        	    $log_in_user_id = $current_user->id;
-        	      
-                  $sender = $_POST['assigned_id'];
-                  $date = $_POST['date'];
-                  $approver = $_POST['approver_id'];
-                  $acc_id = $_POST['acc_id'];
-                 $comments=$_POST['comments'];
-                 $status='Completed';
-                 
-                 
-                   $sql_delegate="SELECT * FROM `calls_cstm` WHERE `id_c`='".$acc_id."';";
-                  $result_delegate = $GLOBALS['db']->query($sql_delegate);
-                    while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)) 
-                    {
-                        $delegate_id=$row_delegate['delegate_id'];
-                        
-                    }
-                    
-                    if($log_in_user_id==$delegate_id){
-                        
-                          $update_query="UPDATE `activity_approval_table` SET `approval_status`='1',delegate_approve_reject_date='".$date."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
-                   if($GLOBALS['db']->query($update_query)==TRUE){
-                       
-                    
-                       
-                          echo json_encode(array("button"=>"hide"));
-                    }
-                        }
-                        
-                    else{
-                  
-              $update_query="UPDATE `activity_approval_table` SET `approval_status`='1',`approve_reject_date`='".$date."',`approver_comment`='".$comments."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
-                   if($GLOBALS['db']->query($update_query)==TRUE){
-                       
-                    
-                       
-                          echo json_encode(array("button"=>"hide"));
-                    }
-           
-                    }
-                    
-                    
-     }catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
-		die();
+  try{
+    $db = \DBManagerFactory::getInstance();
+    $GLOBALS['db'];
+          	  
+    global $current_user; 
+    $log_in_user_id = $current_user->id;
+
+    $sender = $_POST['assigned_id'];
+    $date = $_POST['date'];
+    $approver = $_POST['approver_id'];
+    $acc_id = $_POST['acc_id'];
+    $comments=$_POST['comments'];
+    $status='Completed';
+                   
+                   
+    $sql_delegate="SELECT * FROM `calls_cstm` WHERE `id_c`='".$acc_id."';";
+    $result_delegate = $GLOBALS['db']->query($sql_delegate);
+
+    while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)) {
+      $delegate_id=$row_delegate['delegate_id'];
+    }
+
+    if($log_in_user_id==$delegate_id){                      
+      $update_query="UPDATE `activity_approval_table` SET `approval_status`='1',delegate_approve_reject_date='".$date."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
+                     
+      $GLOBALS['db']->query($update_query);
+    }
+    else{
+      $update_query="UPDATE `activity_approval_table` SET `approval_status`='1',`approve_reject_date`='".$date."',`approver_comment`='".$comments."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
+      
+      $GLOBALS['db']->query($update_query);
+    }
+
+    // Get assigned to user id
+    $sql = "SELECT * FROM `calls` WHERE `id`='".$acc_id."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to = $row['assigned_user_id'];
+      $activity_name = $row['name']; 
+      $activity_id = $row['id'];
+    }
+
+    // Get assigned user name
+    $sql = "SELECT * FROM `users` WHERE `id`='".$assigned_to."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to_name = $row['first_name'].' '.$row['last_name'];
+      $assigned_to_email = $row['user_name'];
+    }
+
+    // Get Tagged Users
+    $sql = "SELECT * FROM `calls_cstm` WHERE id_c='".$acc_id."'";
+    $result = $GLOBALS['db']->query($sql);
+    
+    while($row = $GLOBALS['db']->fetchByAssoc($result)){
+      $tagged_ids = $row['tag_hidden_c'];
+    }
+
+    $tagged_id_array = explode(',', $tagged_ids);
+
+    $tagged_users = [];
+    foreach ($tagged_id_array as $key => $user_id) {
+      $sql = 'SELECT * FROM `users` WHERE id="'.$user_id.'"';
+      $result = $GLOBALS['db']->query($sql);
+
+      while($row = $GLOBALS['db']->fetchByAssoc($result)){
+        $tagged_users[] = $row;
+      }
+      
+    }
+
+    // If assigned to user exists
+    if((bool)$assigned_to_name){
+      // Send Notification to assigned user
+      $alert = BeanFactory::newBean('Alerts');
+      $alert->name = '';
+      
+      $alert->description = 'Activity "'.$activity_name.'" assigned to "'.$assigned_to_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
+      $alert->target_module = 'Activities';
+      $alert->assigned_user_id = $assigned_to;
+      $alert->type = 'info';
+      $alert->is_read = 0;
+      $alert->save();
+
+      // Send email to assigned user
+      $template = 'Activity - '.$activity_name.' has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $emailObj = new Email();  
+      $defaults = $emailObj->getSystemDefaultEmail();
+
+      $mail = new SugarPHPMailer();  
+      $mail->setMailerForSystem();  
+      $mail->From = $defaults['email'];  
+      $mail->FromName = $defaults['name'];  
+      $mail->Subject = 'Activity '.$activity_name.' approval mail';
+      $mail->Body =$template;
+      $mail->IsHTML(true); 
+      $mail->prepForOutbound();  
+      $mail->AddAddress($assigned_to_email);
+      @$mail->Send();
+
+      // Send Notifications and email to tagged users
+      foreach ($tagged_users as $key => $user) {
+        // Send Notification to tagged user
+        $alert = BeanFactory::newBean('Alerts');
+        $alert->name = '';
+        
+        $alert->description = 'Activity "'.$activity_name.'" assigned to "'.$assigned_to_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+        $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
+        $alert->target_module = 'Activities';
+        $alert->assigned_user_id = $user['id'];
+        $alert->type = 'info';
+        $alert->is_read = 0;
+        $alert->save();
+
+        // Send Email to tagged user
+        $template = 'Activity - '.$activity_name.' has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+        $emailObj = new Email();  
+        $defaults = $emailObj->getSystemDefaultEmail();
+
+        $mail = new SugarPHPMailer();  
+        $mail->setMailerForSystem();  
+        $mail->From = $defaults['email'];  
+        $mail->FromName = $defaults['name'];  
+        $mail->Subject = 'Activity '.$activity_name.' approval mail';
+        $mail->Body =$template;
+        $mail->IsHTML(true); 
+        $mail->prepForOutbound();  
+        $mail->AddAddress($user['user_name']);
+        @$mail->Send();
+
+      }
+
+    }
+
+    echo json_encode([
+        'button'=>'hide', 
+        'message' => 'Activity "'.$activity_name.'" approved successfully.'
+    ]);
+
+  }
+  catch(Exception $e){
+    echo json_encode(array("status"=>false, "message" => "Some error occured"));
+  }
+	die();
 }
 
 //---------------------------Approve-------------END--------------------------------------------------------------
@@ -1193,66 +1359,151 @@ public function action_approve(){
 
 
 public function action_reject(){
-     try{
-         $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
+  try{
+    $db = \DBManagerFactory::getInstance();
+    $GLOBALS['db'];
         	  
-        	   global $current_user; 
-        	    $log_in_user_id = $current_user->id;
-        	      
-                  $sender = $_POST['assigned_id'];
-                  $date = $_POST['date'];
-                  $approver = $_POST['approver_id'];
-                  $acc_id = $_POST['acc_id'];
-                 $comments=$_POST['comment_reject'];
-                 
-                 
-                    $sql_delegate="SELECT * FROM `calls_cstm` WHERE `id_c`='".$acc_id."';";
-                  $result_delegate = $GLOBALS['db']->query($sql_delegate);
-                    while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)) 
-                    {
-                        $delegate_id=$row_delegate['delegate_id'];
-                        
-                    }
-                    
-                    if($log_in_user_id==$delegate_id){
-                       
-                        
-                          $update_query="UPDATE `activity_approval_table` SET `approval_status`='2',delegate_approve_reject_date='".$date."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
-                   if($GLOBALS['db']->query($update_query)==TRUE){
-                       
-                    
-                       
-                          echo json_encode(array("button"=>"hide"));
-                    }
-                        }
-                        
-                    else{
-                  
-              $update_query="UPDATE `activity_approval_table` SET `approval_status`='2',`approve_reject_date`='".$date."',`approver_comment`='".$comments."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
-                   if($GLOBALS['db']->query($update_query)==TRUE){
-                       
-                    
-                       
-                          echo json_encode(array("button"=>"hide"));
-                    }
-           
-                    }
+    global $current_user; 
+    $log_in_user_id = $current_user->id;
+
+    $sender = $_POST['assigned_id'];
+    $date = $_POST['date'];
+    $approver = $_POST['approver_id'];
+    $acc_id = $_POST['acc_id'];
+    $comments=$_POST['comment_reject'];
+                              
+    $sql_delegate="SELECT * FROM `calls_cstm` WHERE `id_c`='".$acc_id."';";
+    $result_delegate = $GLOBALS['db']->query($sql_delegate);
+    while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)) { 
+      $delegate_id=$row_delegate['delegate_id'];
+    }
+    if($log_in_user_id==$delegate_id){                   
+      $update_query="UPDATE `activity_approval_table` SET `approval_status`='2',delegate_approve_reject_date='".$date."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
+                   
+      $GLOBALS['db']->query($update_query);
+    }                    
+    else{              
+      $update_query="UPDATE `activity_approval_table` SET `approval_status`='2',`approve_reject_date`='".$date."',`approver_comment`='".$comments."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
+      
+      $GLOBALS['db']->query($update_query);    
+    }
                 
-               
+    // Get assigned to user id
+    $sql = "SELECT * FROM `calls` WHERE `id`='".$acc_id."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to = $row['assigned_user_id'];
+      $activity_name = $row['name']; 
+      $activity_id = $row['id'];
+    }
+
+    // Get assigned user name
+    $sql = "SELECT * FROM `users` WHERE `id`='".$assigned_to."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to_name = $row['first_name'].' '.$row['last_name'];
+      $assigned_to_email = $row['user_name'];
+    }
+
+    // Get Tagged Users
+    $sql = "SELECT * FROM `calls_cstm` WHERE id_c='".$acc_id."'";
+    $result = $GLOBALS['db']->query($sql);
+    
+    while($row = $GLOBALS['db']->fetchByAssoc($result)){
+      $tagged_ids = $row['tag_hidden_c'];
+    }
+
+    $tagged_id_array = explode(',', $tagged_ids);
+
+    $tagged_users = [];
+    foreach ($tagged_id_array as $key => $user_id) {
+      $sql = 'SELECT * FROM `users` WHERE id="'.$user_id.'"';
+      $result = $GLOBALS['db']->query($sql);
+
+      while($row = $GLOBALS['db']->fetchByAssoc($result)){
+        $tagged_users[] = $row;
+      }
+      
+    }
+
+    // If assigned to user exists
+    if((bool)$assigned_to_name){
+      // Send Notification to assigned user
+      $alert = BeanFactory::newBean('Alerts');
+      $alert->name = '';
+      
+      $alert->description = 'Activity "'.$activity_name.'" assigned to "'.$assigned_to_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
+      $alert->target_module = 'Activities';
+      $alert->assigned_user_id = $assigned_to;
+      $alert->type = 'info';
+      $alert->is_read = 0;
+      $alert->save();
+
+      // Send email to assigned user
+      $template = 'Activity - "'.$activity_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $emailObj = new Email();  
+      $defaults = $emailObj->getSystemDefaultEmail();  
+      $mail = new SugarPHPMailer();  
+      $mail->setMailerForSystem();  
+      $mail->From = $defaults['email'];  
+      $mail->FromName = $defaults['name'];  
+      $mail->Subject = 'Activity '.$activity_name.' rejection mail';
+      $mail->Body =$template;
+      $mail->IsHTML(true); 
+      $mail->prepForOutbound();  
+      $mail->AddAddress($assigned_to_email);
+      @$mail->Send();
+
+      // Send Notifications and email to tagged users
+      foreach ($tagged_users as $key => $user) {
+        // Send Notification to tagged user
+        $alert = BeanFactory::newBean('Alerts');
+        $alert->name = '';
+        
+        $alert->description = 'Activity "'.$activity_name.'" assigned to "'.$assigned_to_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+        $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
+        $alert->target_module = 'Activities';
+        $alert->assigned_user_id = $user['id'];
+        $alert->type = 'info';
+        $alert->is_read = 0;
+        $alert->save();
+
+        // Send Email to tagged user
+        $template = 'Activity - "'.$activity_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+        $emailObj = new Email();  
+        $defaults = $emailObj->getSystemDefaultEmail();
+
+        $mail = new SugarPHPMailer();  
+        $mail->setMailerForSystem();  
+        $mail->From = $defaults['email'];  
+        $mail->FromName = $defaults['name'];  
+        $mail->Subject = 'Activity '.$activity_name.' rejection mail';
+        $mail->Body =$template;
+        $mail->IsHTML(true); 
+        $mail->prepForOutbound();  
+        $mail->AddAddress($user['user_name']);
+        @$mail->Send();
+
+      }
+    }           
                   
-            //   $update_query="UPDATE `activity_approval_table` SET `approval_status`='2',`approve_reject_date`='".$date."',`approver_comment`='".$comments."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
-              
-            //       if($GLOBALS['db']->query($update_query)==TRUE){
-                       
-            //              echo json_encode(array("button"=>"hide"));
-            //         }
-           
+    
+    echo json_encode([
+      'button'=>'hide', 
+      'message' => 'Activity "'.$activity_name.'" rejected successfully.'
+    ]);     
         	    
-     }catch(Exception $e){
+  }catch(Exception $e){
     		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
-		die();
+  }
+	die();
 }
 
 

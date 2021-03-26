@@ -39,20 +39,24 @@
                     </button>
                     <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="getActivitySequenceFlow('<?php echo $row['id']; ?>')">
                         <?php // if($this->checkRecentActivityForActivity($row['id'])): ?>
-                            <img id="search-icon" src="modules/Home/assets/Frame-12.svg" alt="svg" style="color: #333333;"/>
+
+                            <img id="search-icon" title="Audit Trail" src="modules/Home/assets/Frame-12.svg" alt="svg" style="color: #333333;"/>
+
                         <?php // endif; ?>
                     </button>
                     <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="fetchTagDialog('<?php echo $row['id']; ?>')">
-                        <?php if ($this->is_activity_tagging_applicable($row['id'])) { ?>
-                            <i id="search-icon" class="fa fa-tag" aria-hidden="true"> </i>
+                        <?php  if (is_tagging_applicable("activities", $row['id'])) {  ?> 
+                            <i id="search-icon" title="Tag Users" class="fa fa-tag" aria-hidden="true"> </i>
                         <?php } ?>
                     </button>
                     <a style="width: 15px;" href="index.php?module=Calls&action=DetailView&record=<?php echo $row['id']; ?>" class="eye" id="search-btn">
-                        <i id="search-icon" class="fa fa-eye" aria-hidden="true"> </i>
+                        <i id="search-icon" title="View Details" class="fa fa-eye" aria-hidden="true"> </i>
                     </a>
                     <button class="" id="reminderBtn" style="width: 15px;" onclick="fetchReminderDialog('<?php echo $row['id']; ?>')">
                         <?php if ($this->is_activity_reminder_applicable($row['id'])) { ?>
-                            <i id="reminder-icon" class="fa fa-bell" aria-hidden="true"> </i>
+
+                            <i id="reminder-icon" title="Reminder" class="fa fa-bell" aria-hidden="true"> </i>
+
                         <?php } ?>
                     </button>
                 </div>

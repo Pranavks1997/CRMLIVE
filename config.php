@@ -1,12 +1,12 @@
 <?php
-// created: 2021-01-18 12:44:07
+// created: 2021-03-23 12:27:52
 $sugar_config = array (
   'addAjaxBannedModules' => 
   array (
     0 => 'SecurityGroups',
   ),
   'admin_access_control' => false,
-  'admin_export_only' => false,
+  'admin_export_only' => true,
   'aod' => 
   array (
     'enable_aod' => false,
@@ -82,15 +82,7 @@ $sugar_config = array (
   ),
   'date_formats' => 
   array (
-    // 'Y-m-d' => '2010-12-23',
-    // 'm-d-Y' => '12-23-2010',
-    // 'd-m-Y' => '23-12-2010',
-    // 'Y/m/d' => '2010/12/23',
-    // 'm/d/Y' => '12/23/2010',
     'd/m/Y' => '23/12/2010',
-    // 'Y.m.d' => '2010.12.23',
-    // 'd.m.Y' => '23.12.2010',
-    // 'm.d.Y' => '12.23.2010',
   ),
   'datef' => 'm/d/Y',
   'dbconfig' => 
@@ -306,9 +298,9 @@ $sugar_config = array (
   'google_auth_json' => '',
   'hide_history_contacts_emails' => 
   array (
-    'Cases' => false,
+    'Cases' => true,
     'Accounts' => false,
-    'Opportunities' => false,
+    'Opportunities' => true,
   ),
   'hide_subpanels' => true,
   'history_max_viewed' => 50,
@@ -325,7 +317,7 @@ $sugar_config = array (
     'timeout' => 86400,
   ),
   'js_custom_version' => 1,
-  'js_lang_version' => 38,
+  'js_lang_version' => 41,
   'languages' => 
   array (
     'en_us' => 'English (US)',
@@ -342,13 +334,13 @@ $sugar_config = array (
   'log_memory_usage' => false,
   'logger' => 
   array (
-    'level' => 'fatal',
+    'level' => 'debug',
     'file' => 
     array (
       'ext' => '.log',
       'name' => 'CRM',
       'dateFormat' => '%c',
-      'maxSize' => '10MB',
+      'maxSize' => '100MB',
       'maxLogs' => 10,
       'suffix' => '',
     ),
@@ -368,18 +360,23 @@ $sugar_config = array (
   'oauth2_encryption_key' => 'ygKqRVRI5YL0t9Ep8NPvR93FZhj8U8iVzk+snwObv/Q=',
   'passwordsetting' => 
   array (
-    'SystemGeneratedPasswordON' => '',
+    'SystemGeneratedPasswordON' => '0',
     'generatepasswordtmpl' => 'c2f2bf75-bccf-9f8d-11de-5f8e953d1013',
     'lostpasswordtmpl' => 'c44f0ca2-5ebb-e530-0e76-5f8e95492298',
     'factoremailtmpl' => 'c566888b-b1c2-c228-6c00-5f8e95c05d16',
-    'forgotpasswordON' => false,
+    'forgotpasswordON' => '1',
     'linkexpiration' => '1',
     'linkexpirationtime' => '30',
-    'linkexpirationtype' => '1',
+    'linkexpirationtype' => '60',
     'systexpiration' => '1',
     'systexpirationtime' => '7',
     'systexpirationtype' => '1',
     'systexpirationlogin' => '',
+    'oneupper' => '0',
+    'onelower' => '0',
+    'onenumber' => '0',
+    'onespecial' => '0',
+    'minpwdlength' => '4',
   ),
   'portal_view' => 'single_user',
   'require_accounts' => true,
@@ -491,4 +488,8 @@ $sugar_config = array (
   'use_real_names' => true,
   'vcal_time' => '2',
   'verify_client_ip' => true,
+  'SAML_loginurl' => '',
+  'SAML_logouturl' => '',
+  'SAML_X509Cert' => '',
+  'authenticationClass' => '',
 );

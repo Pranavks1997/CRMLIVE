@@ -83,16 +83,16 @@ array (
           ),
           1 => 
           array (
-            'name' => 'document_name',
-            'label' => 'LBL_DOC_NAME',
+            'name' => 'template_type',
+            'label' => 'LBL_DET_TEMPLATE_TYPE',
           ),
         ),
         2 => 
         array (
           0 => 
           array (
-            'name' => 'template_type',
-            'label' => 'LBL_DET_TEMPLATE_TYPE',
+            'name' => 'document_name',
+            'label' => 'LBL_DOC_NAME',
           ),
           1 => 
           array (
@@ -132,9 +132,10 @@ array (
         array (
           0 => 
           array (
-            'name' => 'followup',
-            'comment' => 'File name associated with the note (attachment)',
-            'label' => 'LBL_FOLLOWUP',
+            'name' => 'multiple_file',
+            'studio' => 'visible',
+            'label' => 'Follow-up Documents',
+            'customCode' => '{include file=$FILEUPLOAD filename=$ATTACHMENTS}',
           ),
           1 => 
           array (

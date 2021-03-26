@@ -1,1 +1,1 @@
-Could not connect to the database. Please refer to suitecrm.log for details (0).
+NULL

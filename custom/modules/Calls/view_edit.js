@@ -143,69 +143,6 @@ $( document ).ready(function() {
               
              });
              
-           
-           
-            //  $.ajax({
-            //     url : 'index.php?module=Calls&action=untagged_users_list',
-            //     type : 'POST',
-            //     data:{
-            //     acc_id,
-            //     assigned_id,
-            //     approver_id
-            //     },
-                 
-            //     success : function(data){
-                 
-            //       // $("#untagged_users_c").attr("disabled",false);
-            //         $('[field=untag_c]').html('<div class="demo1"><select id="untag_c"  name="" multiple ></select></div>');
-                    
-            //          var  data1 ="";
-   
-            //           if(data.status == true){
-            //             var i;
-            //             var text = '';
-                        
-            //             if(acc_id != "" ){
-            //               //console.log(data.user_id);
-            //                  //console.log(data.other_user_id);
-            //                   //console.log(data.other_user_id.includes(data.user_id[i]));
-            //                 for (i = 0; i<data.user_id.length; i++) {
-                            
-            //                     if(data.other_user_id.includes(data.user_id[i])){
-                               
-            //                         text +=  '<option value="'+data.user_id[i]+'" selected>'+data.name[i]+' / '+data.email[i]+'</option>'
-                               
-                                 
-            //                     }else{
-                                
-            //                         text +=  '<option value="'+data.user_id[i]+'">'+data.name[i]+' / '+data.email[i]+'</option>'
-                                    
-            //                     }
-            //                 }
-                            
-                            
-            //             }
-            //             else{
-            //                 for (i = 0; i<data.user_id.length; i++) {
-                                
-            //                         text +=  '<option value="'+data.user_id[i]+'">'+data.name[i]+' / '+data.email[i]+'</option>'
-            //                 }
-            //                     }
-                        
-                                                           
-                        
-            //              $("#untag_c").append(text);
-                         
-            //             $('.demo1').dropdown({});
-                        
-            //           }
-                 
-            //     }
-              
-            //  });
-            
-             
-             
             
   //--------------------------------------tagged and untagged user list----------------------------------- 
   
@@ -334,14 +271,7 @@ $( document ).ready(function() {
 
 $(document).on('click', function () {
 
- var untag1=$("#untag_c").val();
-       
-        // if(untag1!=null){
-        
-        // var untag=untag1.join();
-        // $('#untag_hidden_c').val(untag);
-        // }
-        
+
        var tag1=$("#tag_c").val();
        
        if(tag1!=null){
@@ -944,26 +874,30 @@ $.ajax({
             var oppurtunity_id = $('#parent_id').val();
             if($('#parent_type').val() == 'Opportunities'){
                 if(oppurtunity_id != ''){
-                    $.ajax({
-                        url : 'index.php?module=Calls&action=oppurtunity_status',
-                        type : 'POST',
-                        dataType: "json",
-                         data :
-                            {
-                                opp_id:oppurtunity_id ,
-                            },
-                        success : function(data){
-                            var x=data.opp_status;
-                          if (data.status = true){
-                              
-                                 $('#audit_trail_c').val(x.join('\r\n'))
-                                $('#audit_trail_c').attr('readonly',true);
-                          }else{
-                              alert(data.message);
-                              window.location.reload();
-                          }
-                        }
-                    });
+               
+                                        $.ajax({
+                                                url : 'index.php?module=Calls&action=oppurtunity_status',
+                                                type : 'POST',
+                                                dataType: "json",
+                                                 data :
+                                                    {
+                                                        opp_id:oppurtunity_id ,
+                                                    },
+                                                success : function(data){
+                                                    var x=data.opp_status;
+                                                  if (data.status = true){
+                                                      
+                                                         $('#audit_trail_c').val(x.join('\r\n'))
+                                                        $('#audit_trail_c').attr('readonly',true);
+                                                  }else{
+                                                      alert(data.message);
+                                                      window.location.reload();
+                                                  }
+                                                }
+                                            });
+                                
+                    
+                   
                 }
             }
         }
@@ -996,20 +930,50 @@ $.ajax({
     
     custom_check_form = function(view){
         var validate = true;
+         var alert_validation = [];
         if($('#type_of_interaction_c').val()=='select'){
-             alert('Please Select Type of Interaction');
+           //  alert('Please Select Type of Interaction');
+             alert_validation.push("Type of Interaction");
+            
               $("#type_of_interaction_c").css("background-color", "Red");
                validate = false;
         }
         if($('#type_of_interaction_c').val() != 'Preparation' ) {
            if($('#name_of_person_c').val() == ''){
-            alert('Please fill Name of Person Contacted');
+           // alert('Please fill Name of Person Contacted');
+             alert_validation.push("Name of Person Contacted");
                validate = false;
            }
             
         }
        
+       if($('#parent_name').val() == '' ) {
+           $("#parent_name").css("background-color", "Red");
+          //  alert('Please fill Related To');
+            alert_validation.push("Related To");
+               validate = false;
+          
+            
+        }
+        
+         if($('#name').val() == '' ) {
+           $("#name").css("background-color", "Red");
+          //  alert('Please fill Related To');
+            alert_validation.push("Subject");
+               validate = false;
+          
+            
+        }
+        
+         if(validate == false){
+           if(alert_validation.length>0) {
+            alert(`Please fill the required fields : \n${alert_validation.join('\n')} `);
+           }
+             
+          }
+        
         if(validate && check_form(view)) {
+             alert_validation = [];
               return true;
         }
         else {
@@ -1021,38 +985,38 @@ $.ajax({
     
 //------------------------------------------------------Relate to onchange-------------------------------------------------    
     
-    $(document).on('click blur','#parent_name',function() {
+    // $(document).on('click blur','#parent_name',function() {
         
-      //  alert('a');
-        var type=$('#parent_type').val();
-        var p_id=$('#parent_id').val();
-         var name=$('#parent_name').val();
+    //   //  alert('a');
+    //     var type=$('#parent_type').val();
+    //     var p_id=$('#parent_id').val();
+    //      var name=$('#parent_name').val();
          
-        if(type=='Calls'){
-            
-             $.ajax({
-                        url : 'index.php?module=Calls&action=follow_up_activity_check',
-                        type : 'POST',
-                        dataType: "json",
-                         data :
-                            {
-                                p_id
-                            },
-                        success : function(data){
+    //     if(type=='Calls'){
+    //       if (p_id!=''){
+    //          $.ajax({
+    //                     url : 'index.php?module=Calls&action=follow_up_activity_check',
+    //                     type : 'POST',
+    //                     dataType: "json",
+    //                      data :
+    //                         {
+    //                             p_id
+    //                         },
+    //                     success : function(data){
                             
-                            if(data.status==true){
+    //                         if(data.status==true){
                                 
-                                alert('Follow up Activity "'+data.f_name+'" for Activity "'+name+ '"  already exists');
-                                $('#parent_name').val('');
-                                $('#parent_id').val('');
-                            }
+    //                             alert('Follow up Activity "'+data.f_name+'" for Activity "'+name+ '"  already exists');
+    //                             $('#parent_name').val('');
+    //                             $('#parent_id').val('');
+    //                         }
                             
-                             if(data.status==false){
+    //                          if(data.status==false){
                                 
-                                alert("Permission denied to create Follow UP Activity for  '"+name+"'");
-                                $('#parent_name').val('');
-                                $('#parent_id').val('');
-                            }
+    //                             alert("Permission denied to create Follow UP Activity for  '"+name+"'");
+    //                             $('#parent_name').val('');
+    //                             $('#parent_id').val('');
+    //                         }
                             
                             
                             
@@ -1060,43 +1024,43 @@ $.ajax({
                             
                             
                             
-                        }
-             })
+    //                     }
+    //          })
             
+    //       }
             
-            
-        }
+    //     }
         
-          if(type=='Opportunities'){
+    //     //   if(type=='Opportunities'){
           
-             $.ajax({
-                        url : 'index.php?module=Calls&action=follow_up_opp_check',
-                        type : 'POST',
-                        dataType: "json",
-                         data :
-                            {
-                                p_id
-                            },
-                        success : function(data){
+    //     //      $.ajax({
+    //     //                 url : 'index.php?module=Calls&action=follow_up_opp_check',
+    //     //                 type : 'POST',
+    //     //                 dataType: "json",
+    //     //                  data :
+    //     //                     {
+    //     //                         p_id
+    //     //                     },
+    //     //                 success : function(data){
                             
-                            if(data.status==true){
-                                
-                                alert("Permission denied to create Activity for opportunity '"+name+"'");
-                                $('#parent_name').val('');
-                                $('#parent_id').val('');
-                                 $('#audit_trail_c').val('');
-                            }
+    //     //                     if(data.status==true){
+    //     //                         $('#audit_trail_c').val('');
+    //     //                         alert("Permission denied to create Activity for opportunity '"+name+"'");
+    //     //                         $('#parent_name').val('');
+    //     //                         $('#parent_id').val('');
+    //     //                          $('#audit_trail_c').val('');
+    //     //                     }
                             
                          
                             
-                        }
-             });
+    //     //                 }
+    //     //      });
             
             
             
-        }
+    //     // }
         
-    })
+    // })
     
     
     
@@ -1127,6 +1091,9 @@ $.ajax({
                  
                  },
                 success : function(data){
+                if(data.message !== undefined){
+                    alert(data.message)
+                }
                 if(data.button == 'hide'){
                     $("#status_new_c").val("Apply for Completed");
                     $("#apply_for_complete").hide();
@@ -1233,6 +1200,10 @@ $("#close_approve").on('click',function(){
                  },
                 success : function(data){
                 
+                if(data.message !== undefined){
+                    alert(data.message)
+                }
+                
                 if(data.button == 'hide'){
                     $("#approve_activity").hide();
                     $("#reject_activity").hide();
@@ -1278,6 +1249,10 @@ $("#close_approve").on('click',function(){
                  },
                 success : function(data){
                 
+                if(data.message !== undefined){
+                    alert(data.message)
+                }
+                
                 if(data.button == 'hide'){
                     $("#approve_activity").hide();
                     $("#reject_activity").hide();
@@ -1307,6 +1282,36 @@ $("#type_of_interaction_c").on("click", function () {
   }
 });
 
+$("#parent_name").on("click", function () {
+  //console.log("if in");
+
+  if ($("#parent_name").css("background-color", "Red")) {
+    // console.log("check in");
+
+    $("#parent_name").css("background-color", "#d8f5ee");
+  }
+});
+
+$("#name").on("click", function () {
+  //console.log("if in");
+
+  if ($("#name").css("background-color", "Red")) {
+    // console.log("check in");
+
+    $("#name").css("background-color", "#d8f5ee");
+  }
+});
+
+//------------------------------------Astericks---------------------------------
+
+
+ if ($("[data-label='LBL_LIST_RELATED_TO'] span").text() == "") {
+             $("[data-label='LBL_LIST_RELATED_TO']").append(
+              "<span style='color:red;'>*</span>"
+              );
+               } 
+               
+//------------------------------------Astericks---------------------------------
 
 //------------------------------------Write code above this line---------------------------------------------------------------------
 });

@@ -2,6 +2,17 @@
  //WARNING: The contents of this file are auto-generated
 
 
+
+$dictionary['Document']['fields']['documents'] = array(
+  'name' => 'documents',
+  'vname' => 'LBL_DOCUMENTS',
+  'type' => 'file',
+  'dbType' => 'varchar',
+  'len' => '255',
+  'reportable'=>true,
+  'importable' => false,
+);
+
 // created: 2021-01-07 14:09:44
 $dictionary["Document"]["fields"]["opportunities_documents_1"] = array (
   'name' => 'opportunities_documents_1',
@@ -14,116 +25,9 @@ $dictionary["Document"]["fields"]["opportunities_documents_1"] = array (
 );
 
 
-
-$GLOBALS['dictionary']['Document']['fields']['followup'] = array (
-
-     'name' => 'followup',
-
-     'vname' => 'LBL_FOLLOWUP',
-
-     'type' => 'file',
-
-     'dbType' => 'varchar',
-
-     'len' => '255',
-
-     'reportable' => true,
-
-     'comment' => 'File name associated with the note (attachment)',
-
-     'importable' => false,
-
-);
-
-$GLOBALS['dictionary']['Document']['fields']['file_mime_type'] = array(
-
-     'name' => 'file_mime_type',
-
-     'vname' => 'LBL_FILE_MIME_TYPE',
-
-     'type' => 'varchar',
-
-     'len' => '100',
-
-     'comment' => 'Attachment MIME type',
-
-     'importable' => false,
-
-);
-
-$GLOBALS['dictionary']['Document']['fields']['file_url'] = array (
-
-     'name' => 'file_url',
-
-     'vname' => 'LBL_FILE_URL',
-
-     'type' => 'varchar',
-
-     'source' => 'non-db',
-
-     'reportable' => false,
-
-     'comment' => 'Path to file (can be URL)',
-
-     'importable' => false,
-
-);
-
- // created: 2021-03-16 11:52:49
-$dictionary['Document']['fields']['tagged_users_c']['inline_edit']='1';
-$dictionary['Document']['fields']['tagged_users_c']['labelValue']='Tagged Users';
-
- 
-
- // created: 2021-03-16 11:53:04
-$dictionary['Document']['fields']['tagged_hidden_c']['inline_edit']='1';
-$dictionary['Document']['fields']['tagged_hidden_c']['labelValue']='tagged hidden';
-
- 
-
- // created: 2021-03-16 11:04:38
-$dictionary['Document']['fields']['tag_c']['inline_edit']='1';
-$dictionary['Document']['fields']['tag_c']['labelValue']='Tag';
-
- 
-
- // created: 2021-03-16 12:01:25
-$dictionary['Document']['fields']['approver_c']['inline_edit']='1';
-$dictionary['Document']['fields']['approver_c']['labelValue']='Approver';
-
- 
-
- // created: 2021-03-17 14:55:51
-$dictionary['Document']['fields']['parent_name']['inline_edit']='1';
-$dictionary['Document']['fields']['parent_name']['labelValue']='Related To';
-
- 
-
- // created: 2021-03-16 11:55:03
-$dictionary['Document']['fields']['follow_up_date_c']['inline_edit']='1';
-$dictionary['Document']['fields']['follow_up_date_c']['labelValue']='Follow up date';
-
- 
-
- // created: 2021-03-16 11:50:55
-$dictionary['Document']['fields']['category_c']['inline_edit']='1';
-$dictionary['Document']['fields']['category_c']['labelValue']='Category';
-
- 
-
- // created: 2021-03-16 11:51:58
-$dictionary['Document']['fields']['subcategory_id']['inline_edit']=true;
-$dictionary['Document']['fields']['subcategory_id']['merge_filter']='disabled';
-
- 
-
- // created: 2021-03-16 12:01:25
-$dictionary['Document']['fields']['user_id_c']['inline_edit']=1;
-
- 
-
- // created: 2021-03-17 14:55:51
-$dictionary['Document']['fields']['parent_type']['inline_edit']=1;
+ // created: 2021-03-16 11:50:30
+$dictionary['Document']['fields']['status_c']['inline_edit']='1';
+$dictionary['Document']['fields']['status_c']['labelValue']='Status';
 
  
 
@@ -138,15 +42,53 @@ $dictionary['Document']['fields']['category_id']['merge_filter']='disabled';
 
  
 
+ // created: 2021-03-16 11:55:03
+$dictionary['Document']['fields']['follow_up_date_c']['inline_edit']='1';
+$dictionary['Document']['fields']['follow_up_date_c']['labelValue']='Follow up date';
+
+ 
+
+ // created: 2021-03-16 11:51:58
+$dictionary['Document']['fields']['subcategory_id']['inline_edit']=true;
+$dictionary['Document']['fields']['subcategory_id']['merge_filter']='disabled';
+
+ 
+
+ // created: 2021-03-16 11:52:49
+$dictionary['Document']['fields']['tagged_users_c']['inline_edit']='1';
+$dictionary['Document']['fields']['tagged_users_c']['labelValue']='Tagged Users';
+
+ 
+
  // created: 2021-03-16 13:07:49
 $dictionary['Document']['fields']['document_visibility_c']['inline_edit']='1';
 $dictionary['Document']['fields']['document_visibility_c']['labelValue']='Document Visibility';
 
  
 
+ // created: 2021-03-16 11:53:04
+$dictionary['Document']['fields']['tagged_hidden_c']['inline_edit']='1';
+$dictionary['Document']['fields']['tagged_hidden_c']['labelValue']='tagged hidden';
+
+ 
+
  // created: 2021-03-16 11:59:17
 $dictionary['Document']['fields']['tag_comments_c']['inline_edit']='1';
 $dictionary['Document']['fields']['tag_comments_c']['labelValue']='Comments';
+
+ 
+
+ // created: 2021-03-16 12:01:25
+$dictionary['Document']['fields']['approver_c']['inline_edit']='1';
+$dictionary['Document']['fields']['approver_c']['labelValue']='Approver';
+
+ 
+
+ // created: 2021-03-20 17:13:52
+$dictionary['Document']['fields']['template_type']['default']='Select';
+$dictionary['Document']['fields']['template_type']['inline_edit']=true;
+$dictionary['Document']['fields']['template_type']['merge_filter']='disabled';
+$dictionary['Document']['fields']['template_type']['reportable']=true;
 
  
 
@@ -157,15 +99,37 @@ $dictionary['Document']['fields']['status_id']['reportable']=true;
 
  
 
+ // created: 2021-03-16 11:04:38
+$dictionary['Document']['fields']['tag_c']['inline_edit']='1';
+$dictionary['Document']['fields']['tag_c']['labelValue']='Tag';
+
+ 
+
+ // created: 2021-03-16 12:01:25
+$dictionary['Document']['fields']['user_id_c']['inline_edit']=1;
+
+ 
+
+ // created: 2021-03-16 11:50:55
+$dictionary['Document']['fields']['category_c']['inline_edit']='1';
+$dictionary['Document']['fields']['category_c']['labelValue']='Category';
+
+ 
+
+ // created: 2021-03-17 14:55:51
+$dictionary['Document']['fields']['parent_type']['inline_edit']=1;
+
+ 
+
  // created: 2021-03-16 11:52:16
 $dictionary['Document']['fields']['sub_category_c']['inline_edit']='1';
 $dictionary['Document']['fields']['sub_category_c']['labelValue']='Sub Category';
 
  
 
- // created: 2021-03-16 11:50:30
-$dictionary['Document']['fields']['status_c']['inline_edit']='1';
-$dictionary['Document']['fields']['status_c']['labelValue']='Status';
+ // created: 2021-03-17 14:55:51
+$dictionary['Document']['fields']['parent_name']['inline_edit']='1';
+$dictionary['Document']['fields']['parent_name']['labelValue']='Related To';
 
  
 ?>

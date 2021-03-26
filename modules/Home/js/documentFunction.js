@@ -72,8 +72,11 @@ function getPendingDocumentRequestCount() {
         data: $('.approval-form').serialize(),
         success: function (res) {
             res = JSON.parse(res)
-            console.log(res)
+            console.log("Pending Count Number ::: ", res);
             $('.pending-document-request-count').html(res.count + " <i class='fa fa-angle-double-down' aria-hidden='true'></i>");
+            if (res && res.delegate_count == 0){
+                $(".doc_dele_count").attr('value',res.delegate_count);
+            }
             if (res && res.count == 0) {
                 $('#click-here-text-document').html('');
                 $('#approve-pending-text-document').html('No Requests Pending For Approval');
@@ -117,7 +120,7 @@ function changeAddLabel(evnt) {
     if (evnt == 'Create Activity') {
         redirectLink = "'index.php?module=Calls&action=EditView'";
     }
-    else if (evnt == 'Create Document') {
+    else if (evnt == 'Upload Document') {
         redirectLink = "'index.php?module=Documents&action=EditView'";
     }
     $("#add_opportunity").attr("onclick", "location.href = " + redirectLink);
@@ -496,6 +499,10 @@ $(document).on('click', '#document_download_btn', function () {
 // :::::::::::::::::::::::::::::::::::::::::::: Joytirmoy Code :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 
+function isEmptyOrSpaces(str) {
+    return str === null || str.match(/^ *$/) !== null;
+}
+
 function handleNoteDialog(event) {
 
 
@@ -508,16 +515,23 @@ function handleNoteDialog(event) {
         // var hidden_note_id = document.getElementById('hidden_note_value').value;
         var doc_id = document.getElementById('doc_id').value;
         var note = document.getElementById('note').value;
+        if (isEmptyOrSpaces(note)) {
+            return false;
+            exit();
+        }
         $.ajax({
             url: 'index.php?module=Home&action=set_note_for_document',
             type: 'POST',
             data: {
-                // note_id: hidden_note_id,
                 doc_id: doc_id,
                 note: note
             },
             success: function (data) {
                 dialog.style.display = "none";
+                document.getElementById('note').value = "";
+            },
+            error: function (data, errorThrown) {
+                alert(errorThrown);
             }
         });
     } else {
@@ -527,8 +541,20 @@ function handleNoteDialog(event) {
 
 
 function fetchDocumentDelegateDialog() {
+    var pendingReqCount = $('.doc_dele_count').val()
+    console.log("Ineer Delegate Value ::: ", pendingReqCount)
     var dialog = document.getElementById('documentDelegatemyModel');
-    dialog.style.display = "block";
+    if (pendingReqCount != '0') {
+        if (dialog.style.display === "block") {
+            dialog.style.display = "none";
+        } else {
+            dialog.style.display = "block"
+        }
+    } else {
+        dialog.style.display = "none";
+        alert("There are no pending documents to delegate");
+    }
+
     $.ajax({
         url: 'index.php?module=Home&action=document_delegated_dialog_info',
         type: 'GET',
@@ -563,9 +589,9 @@ $('#document_delegate_submit').click(function () {
         });
     }
 });
-var delegateModel = document.getElementById("documentDelegatemyModel");
+var delegateModelForClose = document.getElementById("documentDelegatemyModel");
 $(document).on('click', '#documentDelegateclose', function () {
-    delegateModel.style.display = "none";
+    delegateModelForClose.style.display = "none";
 });
 $(document).on('click', '.remove-document-delegate', function () {
     $.ajax({
@@ -595,17 +621,9 @@ function fetchNoteDialog(id) {
             console.log(sendNoteToText);
 
             $("#send_note_to").html(sendNoteToText);
-
-            // $('#send_not_to').html(sendNoteToText);
-
             $('#doc_id').val(parsed_data.doc_id);
-            // $('#activity_member_info').html(parsed_data.optionList);
-            // document.getElementById('activity_tag_id').value = parsed_data.activity_id;
-            dialog.style.display = "block";
-            initSelect2();
 
-            // var temp = parsed_data.msuid.split(',');
-            // $('#deselect_members').val(temp);
+            dialog.style.display = "block";
         },
         error: function (data, errorThrown) {
             alert(errorThrown)
@@ -657,11 +675,17 @@ function handleTagDialog(event) {
             url: 'index.php?module=Home&action=set_document_for_tag',
             type: 'POST',
             data: $('.document_tag_func').serialize(),
+
             success: function (data) {
+                debugger;
                 dialog.style.display = "none";
-                select_dialogue.style.display = "none";
+                // select_dialogue.style.display = "none";
+            },
+            error: function (data, errorThrown) {
+                alert(errorThrown)
             }
-        });
+        })
+
     } else {
         dialog.style.display = "block"
     }

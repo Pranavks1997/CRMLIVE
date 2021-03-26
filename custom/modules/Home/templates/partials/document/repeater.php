@@ -34,18 +34,20 @@
                 
 
                     <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="fetchDocumentTagDialog('<?php echo $row['id']; ?>')">
-                        <?php if ($this->is_document_tagging_applicable($row['id'])) { ?>
-                            <i id="search-icon" class="fa fa-tag" aria-hidden="true"> </i>
+                        <?php if (is_tagging_applicable("documents", $row['id'])) { ?>  
+                            <i id="search-icon" title="Tag User" class="fa fa-tag" aria-hidden="true"> </i>
                         <?php } ?>
                     </button>
 
                     <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="fetchNoteDialog('<?php echo $row['id']; ?>')">
                         <?php if ($this->is_document_note_applicable($row['id'])) { ?>
-                            <i id="search-icon" class="fa fa-pencil-square" aria-hidden="true"> </i>
+
+                            <i id="search-icon" title="Note" class="fa fa-pencil-square-o" aria-hidden="true" style="background-color: transparent; color: black;"> </i>
+
                         <?php } ?>
                     </button>
                     <a style="width: 15px;" href="index.php?module=Documents&action=DetailView&record=<?php echo $row['id']; ?>" class="eye" id="search-btn">
-                        <i id="search-icon" class="fa fa-eye" aria-hidden="true"> </i>
+                        <i id="search-icon" title="View Details" class="fa fa-eye" aria-hidden="true"> </i>
                     </a>
                     <!-- <button class="" id="reminderBtn" style="width: 15px;" onclick="fetchReminderDialog('<?php echo $row['id']; ?>')">
                         <?php //if ($this->is_activity_reminder_applicable($row['id'])) { ?>

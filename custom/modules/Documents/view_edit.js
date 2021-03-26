@@ -95,6 +95,29 @@ $( document ).ready(function() {
        $('#status_c').val('Upload');
       
       }
+      
+      
+        $.ajax({
+                url : 'index.php?module=Documents&action=editView_access',
+                type : 'POST',
+                dataType: "json",
+                 data:{
+                  
+                 assigned_id,
+                 doc_id
+                },
+                success : function(data){
+                if(data.message == "no_acc_id_view_all"){
+                    
+                }else if(data.message == "no_acc_id_view_few"){
+                    $("#activity_type_c option[value=non_global]").attr("disabled",true);
+                    $("#activity_type_c option[value=global]").attr("disabled",true);
+                }
+        }
+     
+ });
+      
+      
    
   }
   
@@ -229,7 +252,38 @@ $( document ).ready(function() {
             });  
          //--------------------------------approval buttons---------------END----------------   
          
-         
+           $.ajax({
+                url : 'index.php?module=Documents&action=editView_access',
+                type : 'POST',
+                dataType: "json",
+                 data:{
+                  
+                 assigned_id,
+                 doc_id
+                },
+                success : function(data){
+                    var tagged_users_new= [];
+                      $(".dropdown-chose-list span").each(function(){
+                      tagged_users_new.push($(this).text())
+                      });
+                      
+                      tagged_users_new= tagged_users_new.filter(tagged=>tagged);
+                    
+                if(data.message == "acc_id_view_no"){
+                    // alert("naanu");
+                    $("#activity_type_c option[value=non_global]").attr("disabled",true);
+                    $("#activity_type_c option[value=global]").attr("disabled",true);
+                    
+                    //  $(".dropdown-chose-list,.dropdown-display").hide(); 
+                    //  $("[field=tag_c]").append(`<span>${tagged_users_new}</span>`);
+                     
+                }else if(data.message == "acc_id_view_few"){
+                    $("#activity_type_c option[value=non_global]").attr("disabled",true);
+                    $("#activity_type_c option[value=global]").attr("disabled",true);
+                }
+        }
+     
+ });
              
     //-----------end of if condition------------------------------------       
   }
@@ -240,7 +294,7 @@ $( document ).ready(function() {
 
 $(document).on('click', function () {
 
-
+  if(doc_id != ""){
         
        var tag1=$("#tagged_users_c").val();
        
@@ -254,6 +308,8 @@ $(document).on('click', function () {
            
             $('#tag_hidden_c').val('');
        }
+  }
+  
 });
 //-----------------------tag  hidden users id--------------END---------------------------------  
 
@@ -280,6 +336,9 @@ $(document).on('click', function () {
                   approver
                  },
                 success : function(data){
+                if(data.message !== undefined){
+                    alert(data.message)
+                }
                 if(data.button == 'hide'){
                     $("#status_c").val("Approval Pending");
                     $("#apply_for_complete").hide();
@@ -345,6 +404,10 @@ $(document).on('click', function () {
                  
                  },
                 success : function(data){
+
+                if(data.message !== undefined){
+                    alert(data.message)
+                }
                 
                 if(data.button == 'hide'){
                     $("#approve_document").hide();
@@ -391,6 +454,10 @@ $(document).on('click', function () {
                  
                  },
                 success : function(data){
+
+                if(data.message !== undefined){
+                    alert(data.message)
+                }
                 
                 if(data.button == 'hide'){
                     $("#approve_document").hide();
@@ -421,7 +488,7 @@ $(document).on('click', function () {
         type : 'GET',
         success : function(all_category_list){
           if(selected_category == ""){
-            var list = '<option value=""></option> +'; 
+            var list = '<option value="Select">Select</option> +'; 
           }else{
                     var list = '<option value="'+selected_category+'">'+selected_category+'</option> +';
                 }
@@ -448,7 +515,8 @@ $(document).on('click', function () {
         "index.php?module=Documents&action=subCategory",
       data: { category_name:selected_category },
       success: function (data) {
-            var list = '<option value="'+selected_subCategory+'">'+selected_subCategory+'</option> +';
+            //var list = '<option value="Select">Select</option> +'; 
+           var list = '<option value="'+selected_subCategory+'">'+selected_subCategory+'</option> +';
           data=JSON.parse(data);
             data.forEach((subcategory)=>{
               if(subcategory.name != selected_subCategory){
@@ -458,6 +526,9 @@ $(document).on('click', function () {
             $("#sub_category_c").html(list);
       },
     });
+    }else{
+         var list = '<option value="Select">Select</option> +'; 
+          $("#sub_category_c").html(list);
     }
     
    
@@ -476,7 +547,7 @@ $(document).on('click', function () {
        
           // $("#sub_sector1_c").append(data);
          $("#sub_category_c").replaceWith('<select name="sub_category_c" id="sub_category_c"></select>');
-             var list = '<option value=""></option> +';
+             var list = '<option value="Select">Select</option> +';
           
           data=JSON.parse(data);
             data.forEach((subcategory)=>{
@@ -558,7 +629,7 @@ $(document).on('click', function () {
                validate = false;
         }
         
-         if($('#template_type').val()==''){
+         if($('#template_type').val()=='Select'){
             
              alert_validation.push("Document Type");
             
@@ -566,7 +637,7 @@ $(document).on('click', function () {
                validate = false;
          }
          
-          if($('#category_c').val()==''){
+          if($('#category_c').val()=='Select'){
             
              alert_validation.push("Category");
             
@@ -574,7 +645,7 @@ $(document).on('click', function () {
                validate = false;
          }
          
-         if($('#sub_category_c').val()==''){
+         if($('#sub_category_c').val()=='Select'){
             
              alert_validation.push("Sub Category");
             
@@ -642,15 +713,95 @@ $(document).on('click', function () {
     });
     
     $("#parent_name").on("click", function () {
-  //console.log("if in");
+  console.log("if in");
         
           if ($("#parent_name").css("background-color", "Red")) {
-            // console.log("check in");
+             console.log("check in");
         
             $("#parent_name").css("background-color", "#d8f5ee");
           }
     });
    
+ //---------------------------multiple file upload -------------------------------------------------     
+ 
+ 
+	var record_id = $('input[name="record"]').val();
+	$('#EditView').attr('enctype','multipart/form-data');
+	var x = 1; //initlal text box count
+	
+		
+    $(".input_fields_wrap").on("click",".remove_field", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parent('div').remove(); x--;
+    });
+	
+	$(".downloadAttachment").click(function(e) {
+        var fileName = $(this).attr("name");
+        var name = $(this).text();
+        
+        var data = [
+            {
+                "id": fileName,
+                "type": name.substr((name.lastIndexOf('.') + 1)),
+                "module": "Document",
+                "folder": "Document",
+                
+            }
+        ];
+        downloadAttachment(data);
+        
+        
+    });
+	
+	$(".remove_attachment").click(function(e) {
+        var fileName = $(this).attr("name");
+        var name = $(this).prev().text();
+        var extension = name.substr((name.lastIndexOf('.') + 1));
+        var flag = confirm("Are you want to delete " + name + " attachment");
+        if (flag) {
+            removeAttachment(fileName, extension)
+        }
+    });	
+
+
+function downloadAttachment(data) {
+    var $form = $('<form></form>')
+        .attr('action', 'index.php?entryPoint=multiple_file&action_type=download')
+        .attr('method', 'post')
+        .attr('target', '_blank')
+        .appendTo('body');
+    for (var i in data) {
+        if (!data.hasOwnProperty(i)) continue;
+        $('<input type="hidden"/>')
+            .attr('name', i)
+            .val(JSON.stringify(data[i]))
+            .appendTo($form);
+    }
+    $form.submit();
+}
+
+function removeAttachment(fileName, extension) {
+    $.ajax({
+        url: 'index.php?entryPoint=multiple_file',
+        type: 'POST',
+        async: false,
+        data: {
+            id: fileName,
+            extension: extension,
+            module: 'Document',
+         			folder: 'Document',
+         			action_type: "remove"
+        },
+        success: function(result) {
+            var data = $.parseJSON(result);
+            $('[name=' + data.attachment_id + ']').prev().hide();
+            $('[name=' + data.attachment_id + ']').hide();
+        }
+    });
+}
+ 
+ //------------------------------multiple file upload ---------END------------------------------------  
+ 
+ 
   
 //***************************************Write code above this line***************************************  
 });
