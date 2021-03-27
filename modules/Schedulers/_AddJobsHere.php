@@ -515,18 +515,18 @@ function activityReminder()
   send_email($row['name'], $data['user_name']);
   $description = "Reminder";
   $link = "index.php?module=Calls&action=DetailView&record=".$row['id'];
-  send_notification('activity',$row['name'],$description,$row['assigned_user_id'],$link);
+  send_notification('activity',$row['name'],$description,[$row['assigned_user_id']],$link);
 }
  function send_email($activity_name,$email){
-     		$template = "Remainder for '$activity_name' is to be completed";
+     		$template = "Reminder for '$activity_name' is to be completed";
             require_once('include/SugarPHPMailer.php');
             include_once('include/utils/db_utils.php');
             $emailObj = new Email();  
             $defaults = $emailObj->getSystemDefaultEmail();  
             $mail = new SugarPHPMailer();  
             $mail->setMailerForSystem();  
-            $mail->From = $defaults['xelpmocdeveloper@gmail.com'];  
-            $mail->FromName = $defaults['xelpmoc'];  
+            $mail->From = $defaults['email'];  
+            $mail->FromName = $defaults['name'];  
             $mail->Subject = "Reminder for activity"; 
             $mail->Body =$template;
             $mail->prepForOutbound();  
