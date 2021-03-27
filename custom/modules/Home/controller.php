@@ -6013,7 +6013,7 @@ public function is_activity_reassignment_applicable($activity_id) {
             }
 
             $untagged_receiver_emails = [];
-            foreach($untagged_users_string as $user_id) {
+            foreach($untagged_user_ids as $user_id) {
                 array_push($untagged_receiver_emails, getUserEmail($user_id));
             }
             if(count($untagged_receiver_emails) > 0) {
@@ -6076,7 +6076,7 @@ public function is_activity_reassignment_applicable($activity_id) {
                         <td>'  . date_format(date_create($row['activity_date_c']), 'd/m/Y') . '</td>
                         </tr>';
             $data .= '</tbody></table>';
-            $optionList = $this->activity_tag_dialog_dropdown_info($activity_id);
+            $optionList = $this->tag_dialog_dropdown_info("activities", $activity_id);
           echo json_encode(array('activity_info'=>$data,'activity_id'=>$activity_id, 'optionList'=> $optionList));
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
@@ -6089,35 +6089,6 @@ public function is_activity_reassignment_applicable($activity_id) {
         LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c WHERE id = '$activity_id'";
         $fetch_activity_info_result = $GLOBALS['db']->query($fetch_activity_info);
         $result = $GLOBALS['db']->fetchByAssoc($fetch_activity_info_result);
-    }
-    public function activity_tag_dialog_dropdown_info($activity_id) {
-        try {
-            global $current_user;
-            $log_in_user_id = $current_user->id;
-            $fetch_query = "SELECT * FROM users WHERE deleted = 0 AND `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC";
-            $result = $GLOBALS['db']->query($fetch_query);
-            $data = '<select class="select2" name="tag_activity[]" id="" multiple>';
-            $tagged_user_query = "SELECT * from calls_cstm where id_c = '$activity_id'";
-            $result1 = $GLOBALS['db']->query($tagged_user_query);
-            $tagged_user_row = $result1->fetch_assoc();
-            $tagged_user_array = explode(',', $tagged_user_row['tag_hidden_c']);
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
-                    $full_name = $row['first_name'] . ' ' . $row['last_name'];
-                    if (in_array($row['id'],$tagged_user_array)){
-                        $data .= '<option value="'.$row['id'].'" selected>'.$full_name.'</option>';
-                    }
-                    else{
-                        $data .= '<option value="'.$row['id'].'" >'.$full_name.'</option>';
-                    }
-                }
-            }
-            $data .= "</select>";
-            return $data;
-        }catch(Exception $e){
-            echo json_encode(array("status"=>false, "message" => "Some error occured"));
-        }
-        die();
     }
     
  public function action_activity_new_assigned_list(){
@@ -8231,7 +8202,7 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
                         <td>' . ucwords($creator_full_name). '</td>
                         </tr>';
             $data .= '</tbody></table>';
-            $optionList = $this->document_tag_dialog_dropdown_info($doc_id);
+            $optionList = $this->tag_dialog_dropdown_info("documents", $doc_id);
 
 
           echo json_encode(array('document_info'=>$data,'document_id'=>$doc_id, 'optionList'=> $optionList));
@@ -8240,40 +8211,6 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
         }
         die();
     }
-
-
-    public function document_tag_dialog_dropdown_info($doc_id) {
-        try {
-            global $current_user;
-            $log_in_user_id = $current_user->id;
-
-            $result = getQuery("*", "users", "deleted = 0 AND `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC");
-            $data = '<select class="select2" name="tag_document[]" id="" multiple>';
-            $tagged_user_query = "SELECT * from documents_cstm where id_c = '$doc_id'";
-            $result1 = $GLOBALS['db']->query($tagged_user_query);
-            $tagged_user_row = $result1->fetch_assoc();
-
-
-            $tagged_user_array = explode(',', $tagged_user_row['tagged_hidden_c']);
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
-                    $full_name = $row['first_name'] . ' ' . $row['last_name'];
-                    if (in_array($row['id'],$tagged_user_array)){
-                        $data .= '<option value="'.$row['id'].'" selected>'.$full_name.'</option>';
-                    }
-                    else{
-                        $data .= '<option value="'.$row['id'].'" >'.$full_name.'</option>';
-                    }
-                }
-            }
-            $data .= "</select>";
-            return $data;
-        }catch(Exception $e){
-            echo json_encode(array("status"=>false, "message" => "Some error occured"));
-        }
-        die();
-    }
-
     
 
     public function action_set_document_for_tag(){
@@ -8328,7 +8265,7 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
             }
 
             $untagged_receiver_emails = [];
-            foreach($untagged_users_string as $user_id) {
+            foreach($untagged_user_ids as $user_id) {
                 array_push($untagged_receiver_emails, getUserEmail($user_id));
             }
             if(count($untagged_receiver_emails) > 0) {
@@ -8523,6 +8460,51 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
             unset($_SESSION['csvData']);
             exit;
         }
+    }
+    
+
+    public function tag_dialog_dropdown_info($type, $id) {
+
+        try {
+
+            if ($type == "documents") {
+                $table = "documents_cstm";
+                $select_name = "tag_document";
+                $hidden_tags = "tagged_hidden_c";
+            } elseif ($type == "activities") {
+                $table = "calls_cstm";
+                $select_name = "tag_activity";
+                $hidden_tags = "tag_hidden_c";
+            }
+
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+
+            $result = getQuery("*", "users", "deleted = 0 AND `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC");
+            $data = '<select class="select2" name="'.$select_name.'[]" id="" multiple>';
+
+            $result1 = getQuery("*", $table, "id_c = '$id'");
+            $tagged_user_row = $result1->fetch_assoc();
+
+            $tagged_user_array = explode(',', $tagged_user_row[$hidden_tags]);
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    $full_name = $row['first_name'] . ' ' . $row['last_name'];
+                    if (in_array($row['id'],$tagged_user_array)){
+                        $data .= '<option value="'.$row['id'].'" selected>'.$full_name.'</option>';
+                    }
+                    else{
+                        $data .= '<option value="'.$row['id'].'" >'.$full_name.'</option>';
+                    }
+                }
+            }
+            $data .= "</select>";
+            return $data;
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+
     }
 
    
