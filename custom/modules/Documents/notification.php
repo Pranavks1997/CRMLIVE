@@ -1,4 +1,8 @@
 <?php
+if (!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
+
+require_once('include/SugarPHPMailer.php');
+include_once('include/utils/db_utils.php');
 
 class notification{
 	

@@ -2,6 +2,8 @@
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 require_once('include/MVC/Controller/SugarController.php');
+require_once('include/SugarPHPMailer.php');
+include_once('include/utils/db_utils.php');
 
 class DocumentsController extends SugarController
 {
@@ -499,7 +501,7 @@ public function action_approve(){
       
       // $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
-      $alert->description = 'Document "'.$document_name.'" is approved for "'.$comments.'" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $alert->description = 'Document "'.$document_name.'" is approved for "Approved" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
       $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$document_id;
       $alert->target_module = 'Documents';
@@ -509,7 +511,7 @@ public function action_approve(){
       $alert->save();
 
       // Send email to assigned user
-      $template = 'Document "'.$document_name.'" is approved for "'.$comments.'" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $template = 'Document "'.$document_name.'" is approved for "Approved" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
       $emailObj = new Email();  
       $defaults = $emailObj->getSystemDefaultEmail();  
@@ -663,7 +665,7 @@ public function action_reject(){
       
       // $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
-      $alert->description = 'Document "'.$document_name.'" is rejected for "'.$comments.'" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $alert->description = 'Document "'.$document_name.'" is rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
       $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$document_id;
       $alert->target_module = 'Documents';
@@ -673,7 +675,7 @@ public function action_reject(){
       $alert->save();
 
       // Send email to assigned user
-      $template = 'Document "'.$document_name.'" is rejected for "'.$comments.'" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $template = 'Document "'.$document_name.'" is rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
       $emailObj = new Email();  
       $defaults = $emailObj->getSystemDefaultEmail();  

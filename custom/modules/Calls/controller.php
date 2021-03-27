@@ -1278,7 +1278,7 @@ public function action_approve(){
       $alert = BeanFactory::newBean('Alerts');
       $alert->name = '';
 
-      $alert->description = 'Activity "'.$activity_name.'" is approved for "'.$comments.'" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $alert->description = 'Activity "'.$activity_name.'" is approved for "Completed" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
       $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
       $alert->target_module = 'Activities';
@@ -1288,7 +1288,7 @@ public function action_approve(){
       $alert->save();
 
       // Send email to assigned user
-      $template = 'Activity "'.$activity_name.'" is approved for "'.$comments.'" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $template = 'Activity "'.$activity_name.'" is approved for "Completed" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
       $emailObj = new Email();  
       $defaults = $emailObj->getSystemDefaultEmail();
@@ -1436,7 +1436,7 @@ public function action_reject(){
       
       // $alert->description = 'Activity "'.$activity_name.'" assigned to "'.$assigned_to_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
-      $alert->description = 'Activity "'.$activity_name.'" is rejected for "'.$comments.'" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $alert->description = 'Activity "'.$activity_name.'" is rejected for "Apply for Complete" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
       $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
       $alert->target_module = 'Activities';
@@ -1446,7 +1446,7 @@ public function action_reject(){
       $alert->save();
 
       // Send email to assigned user
-      $template = 'Activity "'.$activity_name.'" is rejected for "'.$comments.'" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $template = 'Activity "'.$activity_name.'" is rejected for "Apply for Complete" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
       $emailObj = new Email();  
       $defaults = $emailObj->getSystemDefaultEmail();  

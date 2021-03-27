@@ -2,6 +2,9 @@
 
 use SuiteCRM\Utility\SuiteValidator;
 
+require_once('include/SugarPHPMailer.php');
+include_once('include/utils/db_utils.php');
+
 /**
  *
  * SugarCRM Community Edition is a customer relationship management program developed by
@@ -539,6 +542,7 @@ function activityDate(){
         	$GLOBALS['db'];
     		$sql = 'SELECT * FROM `activity_approval_table` WHERE `approval_status`="0" AND status="Apply For Completed" AND CURRENT_DATE > sent_time + INTERVAL 7 day';
     		$result = $GLOBALS['db']->query($sql);
+
     		if($result->num_rows>0){
 				while($rows = $GLOBALS['db']->fetchByAssoc($result) )
 				{
@@ -553,6 +557,10 @@ function activityDate(){
             		$result_audit = $GLOBALS['db']->query($sql_insert_audit);
 					$update_activity_query="UPDATE activity_approval_table SET approval_status ='3' WHERE acc_id='".$rows['acc_id']."'";
 					$res_calls_update = $db->query($update_activity_query);
+
+                    //Send Over Due Reminders
+                    sendOverDueNotificationAndMail($rows['acc_id']);
+
 				}
     		}
     	    $sql1 = 'SELECT t1.acc_id,t2.activity_date_c FROM activity_approval_table as t1 LEFT JOIN calls_cstm as t2 ON t2.id_c = t1.acc_id WHERE t1.approval_status="2" AND t1.status="Apply For Completed" AND t2.activity_date_c < CURRENT_DATE';
@@ -569,6 +577,9 @@ function activityDate(){
                     $created_date= date("Y-m-d H:i:s", time());
             		$sql_insert_audit = 'INSERT INTO `calls_audit`(`id`, `parent_id`, `date_created`, `created_by`, `field_name`, `data_type`, `before_value_string`, `after_value_string`, `before_value_text`, `after_value_text`) VALUES ("'.$id.'","'.$acc_id.'","'.$created_date.'","Schedular","status_new_c","varchar","Apply For Completed","Overdue"," "," ")';
             		$result_audit = $GLOBALS['db']->query($sql_insert_audit);
+
+                    //Send Over Due Reminders
+                    sendOverDueNotificationAndMail($rows['acc_id']);
 				
 				}
     		}
@@ -587,6 +598,9 @@ function activityDate(){
                     $created_date= date("Y-m-d H:i:s", time());
             		$sql_insert_audit = 'INSERT INTO `calls_audit`(`id`, `parent_id`, `date_created`, `created_by`, `field_name`, `data_type`, `before_value_string`, `after_value_string`, `before_value_text`, `after_value_text`) VALUES ("'.$id.'","'.$acc_id.'","'.$created_date.'","Schedular","status_new_c","varchar","Upcoming","Overdue"," "," ")';
             		$result_audit = $GLOBALS['db']->query($sql_insert_audit);
+
+                    //Send Over Due Reminders
+                    sendOverDueNotificationAndMail($rows['acc_id']);
 				
 				}
     		}
@@ -596,6 +610,107 @@ function activityDate(){
     		echo json_encode(array("status"=>false, "message" => "Some error occured"));
     	}
     	return true;
+    }
+
+    function sendOverDueNotificationAndMail($acc_id){
+        // Get activity details
+        $activity = getActivityDetailsByAccId($acc_id);
+
+        // Get assigned user 
+        $assigned_user = getUserByID($activity['assigned_user_id']);
+
+        // Send Notification to assigned user
+        $alert = BeanFactory::newBean('Alerts');
+        $alert->name = '';
+        $alert->description = 'Activity "'.$activity['name'].'" is overdue';
+        $alert->url_redirect = 'index.php?action=DetailView&module=Calls&record='.$acc_id;
+        $alert->target_module = 'Activities';
+        $alert->assigned_user_id = $assigned_user['id'];
+        $alert->type = 'info';
+        $alert->is_read = 0;
+        $alert->save();
+
+        // Send email to assigned user
+        $template = 'Activity "'.$activity['name'].'" is overdue';
+
+        $emailObj = new Email();  
+        $defaults = $emailObj->getSystemDefaultEmail();
+
+        $mail = new SugarPHPMailer();  
+        $mail->setMailerForSystem();  
+        $mail->From = $defaults['email'];  
+        $mail->FromName = $defaults['name'];  
+        $mail->Subject = 'Activity "'.$activity['name'].'" overdue reminder';
+        $mail->Body =$template;
+        $mail->IsHTML(true); 
+        $mail->prepForOutbound();  
+        $mail->AddAddress($assigned_user['user_name']);
+        @$mail->Send();
+
+        // Get linage users
+        $linage_users = explode(',', $assigned_user['cstm']['user_lineage']);
+        foreach ($linage_users as $key => $user_id) {
+            $linage_user = getUserByID($user_id);
+            //Send Notification to linage user
+            $alert = BeanFactory::newBean('Alerts');
+            $alert->name = '';
+            $alert->description = 'Activity "'.$activity['name'].'" is overdue';
+            $alert->url_redirect = 'index.php?action=DetailView&module=Calls&record='.$rows['acc_id'];
+            $alert->target_module = 'Activities';
+            $alert->assigned_user_id = $user_id;
+            $alert->type = 'info';
+            $alert->is_read = 0;
+            $alert->save();
+
+            //Send Email to linage user
+            $template = 'Activity "'.$activity['name'].'" is overdue';
+
+            $emailObj = new Email();  
+            $defaults = $emailObj->getSystemDefaultEmail();
+
+            $mail = new SugarPHPMailer();  
+            $mail->setMailerForSystem();  
+            $mail->From = $defaults['email'];  
+            $mail->FromName = $defaults['name'];  
+            $mail->Subject = 'Activity "'.$activity['name'].'" overdue reminder';
+            $mail->Body =$template;
+            $mail->IsHTML(true); 
+            $mail->prepForOutbound();  
+            $mail->AddAddress($linage_user['user_name']);
+            @$mail->Send();
+        }
+    }
+
+    function getActivityDetailsByAccId($acc_id){
+        $sql = "SELECT * FROM `calls` WHERE `id`='".$acc_id."';";
+        $result = $GLOBALS['db']->query($sql);
+
+        $data = [];
+        while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+            $data = $row;
+        }
+        return $data; 
+    }
+
+    function getUserByID($user_id){
+        $sql = "SELECT * FROM `users` WHERE id='".$user_id."'";
+        $result = $GLOBALS['db']->query($sql);
+        
+        $data = [];
+        while($row = $GLOBALS['db']->fetchByAssoc($result)){
+            $data = $row;
+        }
+
+        if(count($data)){
+            $sql = "SELECT * FROM `users_cstm` WHERE id_c='".$user_id."'";
+            $result = $GLOBALS['db']->query($sql);
+
+            while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+                $data['cstm'] = $row;
+            }
+        }
+
+        return $data;
     }
 
 function removeDocumentsFromFS()
