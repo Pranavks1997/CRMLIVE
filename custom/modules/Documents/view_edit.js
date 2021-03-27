@@ -315,40 +315,42 @@ $(document).on('click', function () {
 
 //----------------------send approval/apply for complete ---------------------------------------------------
      
-      $("#apply_for_complete").on("click",function() {
+$("#apply_for_complete").on("click",function() {
+  let sender = assigned_id;
+  let m= new Date();
+  let date  = m.getUTCFullYear() +"/"+ (m.getUTCMonth()+1) +"/"+ m.getUTCDate() + " " + m.getUTCHours() + ":" + m.getUTCMinutes() + ":" + m.getUTCSeconds();
+  let approver = $('#user_id_c').val();
           
-           
-           let sender = assigned_id;
-           let m= new Date();
-           let date  = m.getUTCFullYear() +"/"+ (m.getUTCMonth()+1) +"/"+ m.getUTCDate() + " " + m.getUTCHours() + ":" + m.getUTCMinutes() + ":" + m.getUTCSeconds();
-           let approver = $('#user_id_c').val();
-          
-           $.ajax({
-                url : 'index.php?module=Documents&action=send_approval',
-                type : 'POST',
-                dataType: "json",
-                 data:{
-                  doc_id,
-                  doc_type,
-                  status,
-                  sender,
-                  date,
-                  approver
-                 },
-                success : function(data){
-                if(data.message !== undefined){
-                    alert(data.message)
-                }
-                if(data.button == 'hide'){
-                    $("#status_c").val("Approval Pending");
-                    $("#apply_for_complete").hide();
-                   $("#SAVE_HEADER").trigger("click");
-                }
-            
-            }
-     
-           });
-      })
+  $.ajax({
+    url : 'index.php?module=Documents&action=send_approval',
+    type : 'POST',
+    dataType: "json",
+    data:{
+      doc_id,
+      doc_type,
+      status,
+      sender,
+      date,
+      approver
+    },
+    beforeSend: function(){
+      $("#apply_for_complete").attr('disabled', true).val("Loading..");
+    },
+    success : function(data){
+      if(data.message !== undefined){
+        alert(data.message)
+      }
+      if(data.button == 'hide'){
+        $("#status_c").val("Approval Pending");
+        $("#apply_for_complete").hide();
+        $("#SAVE_HEADER").trigger("click");
+      } 
+      else{
+        $("#apply_for_complete").attr('disabled', false).val("send for approval");
+      }     
+    } 
+  });
+})
      
        
 

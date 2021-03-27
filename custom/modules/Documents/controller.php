@@ -497,7 +497,9 @@ public function action_approve(){
       $alert = BeanFactory::newBean('Alerts');
       $alert->name = '';
       
-      $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      // $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $alert->description = 'Document "'.$document_name.'" is approved for "'.$comments.'" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
       $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$document_id;
       $alert->target_module = 'Documents';
@@ -507,7 +509,7 @@ public function action_approve(){
       $alert->save();
 
       // Send email to assigned user
-      $template = 'Document - "'.$document_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $template = 'Document "'.$document_name.'" is approved for "'.$comments.'" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
       $emailObj = new Email();  
       $defaults = $emailObj->getSystemDefaultEmail();  
@@ -538,7 +540,7 @@ public function action_approve(){
         $alert->save();
 
         // Send Email to tagged user
-        $template = 'Document - "'.$document_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+        $template = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
         $emailObj = new Email();  
         $defaults = $emailObj->getSystemDefaultEmail();
@@ -659,7 +661,9 @@ public function action_reject(){
       $alert = BeanFactory::newBean('Alerts');
       $alert->name = '';
       
-      $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      // $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $alert->description = 'Document "'.$document_name.'" is rejected for "'.$comments.'" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
       $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$document_id;
       $alert->target_module = 'Documents';
@@ -669,7 +673,7 @@ public function action_reject(){
       $alert->save();
 
       // Send email to assigned user
-      $template = 'Document - "'.$document_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $template = 'Document "'.$document_name.'" is rejected for "'.$comments.'" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
       $emailObj = new Email();  
       $defaults = $emailObj->getSystemDefaultEmail();  
