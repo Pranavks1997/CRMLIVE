@@ -3043,7 +3043,7 @@ class HomeController extends SugarController{
 
             //$fetch_organization_count = $GLOBALS['db']->fetchByAssoc($save_delegate_query_result);
             $description = "You have been delegated by ".getUserName($log_in_user_id);
-            send_notification('opporturnity','Delegate',$description,[$proxy],'www.google.com');
+            send_notification('opporturnity','Delegate',$description,[$proxy],'');
     
             $reciever_email = getUserEmail($proxy);
             send_email($description,[$reciever_email],'Delegate');
@@ -4032,15 +4032,16 @@ public function action_new_assigned_list(){
                           if($db->query($sql3)==TRUE){
 
                             //Notification
-                            $opp_name_query = "SELECT name FROM `opportunities` where id ='".$opportunity_id."'";
+                            $opp_name_query = "SELECT * FROM `opportunities` where id ='".$opportunity_id."'";
                             $result_opp_name = $GLOBALS['db']->query($opp_name_query);
                             $row_opp_name = $GLOBALS['db']->fetchByAssoc($result_opp_name);
                             
+                            $link = 'index.php?action=DetailView&module=Opportunities&record='.$row_opp_name['id'];
                             $description ="The Oppurtunity ". $row_opp_name['name'] ." was re-assigned to ".getUserName($assigned_id)." by ".getUserName($log_in_user_id);
                              send_email($description,[getUserEmail($reports_to_id)],"Re-assign User");
  
-                             send_notification('oppurnity','Re-assign User',$description,[$assigned_id],'www.google.com');
-                              echo json_encode(array("status"=>true, "message" => "Success","description"=>$description));
+                             send_notification('oppurnity','Re-assign User',$description,[$assigned_id],$link);
+                              echo json_encode(array("status"=>true, "message" => "Success","description"=>$description,"opp"=>$opportunity_id));
                               
                           }
                                  
@@ -4053,8 +4054,16 @@ public function action_new_assigned_list(){
                           
                           if($db->query($sql3)==TRUE){
 
-                           
-                            echo json_encode(array("status"=>true, "message" => "Success"));
+                            $opp_name_query = "SELECT * FROM `opportunities` where id ='".$opportunity_id."'";
+                            $result_opp_name = $GLOBALS['db']->query($opp_name_query);
+                            $row_opp_name = $GLOBALS['db']->fetchByAssoc($result_opp_name);
+                            
+                            $link = 'index.php?action=DetailView&module=Opportunities&record='.$row_opp_name['id'];
+                            $description ="The Oppurtunity ". $row_opp_name['name'] ." was re-assigned to ".getUserName($assigned_id)." by ".getUserName($log_in_user_id);
+                             send_email($description,[getUserEmail($reports_to_id)],"Re-assign User");
+ 
+                             send_notification('oppurnity','Re-assign User',$description,[$assigned_id],$link);
+                             echo json_encode(array("status"=>true, "message" => "Success","description"=>$description,"opp"=>$opportunity_id));
                           }
                         }
                     
@@ -5578,13 +5587,16 @@ public function is_activity_reassignment_applicable($activity_id) {
                  $result_lineage_query = $GLOBALS['db']->query($user_lineage_query);
                  $row_lineage = $GLOBALS['db']->fetchByAssoc($result_lineage_query); 
                  
+                 $link = 'index.php?module=Calls&action=DetailView&record='.$row['id'];
+
                  if($event =='Approve'){
                      $assigned_user_id_approve =explode(',',$row_lineage['user_lineage']);
                      array_push($assigned_user_id_approve,$row['created_by']);
                      $assigned_user_id_approve = array_diff($assigned_user_id_approve, array($log_in_user_id) );
  
                      $description = "Activity ".$row['name']." uploaded by ".getUsername($row['created_by'])." has been " .$event." by ".getUsername($log_in_user_id);
-                     send_notification('activity', $row['name'], $description,$assigned_user_id_approve,'www.google.com');
+                    
+                     send_notification('activity', $row['name'], $description,$assigned_user_id_approve,$link);
                      $receiver_emails_approve = []; 
                     foreach($assigned_user_id_approve as $user_id) {
                          array_push($receiver_emails_approve, getUserEmail($user_id));
@@ -5595,7 +5607,7 @@ public function is_activity_reassignment_applicable($activity_id) {
                  if($event =='Reject'){
                      $assigned_user_id_reject =[$row['created_by'], $row['user_id_c']];
                      $description = "Activity ".$row['name']." uploaded by ".getUsername($row['created_by'])." has been " .$event." by ".getUsername($log_in_user_id);
-                     send_notification('activity',$row['name'],$description,$assigned_user_id_reject,'www.google.com');
+                     send_notification('activity',$row['name'],$description,$assigned_user_id_reject,$link);
                     
                      $receiver_emails_reject = []; 
                     foreach($assigned_user_id_reject as $user_id) {
@@ -5718,7 +5730,7 @@ public function is_activity_reassignment_applicable($activity_id) {
             //$fetch_organization_count = $GLOBALS['db']->fetchByAssoc($save_delegate_query_result);
             //Notification
             $description = "You have been delegated by ".getUserName($log_in_user_id);
-            send_notification('document','Delegate',$description,[$proxy],'www.google.com');
+            send_notification('document','Delegate',$description,[$proxy],'');
     
             $reciever_email = getUserEmail($proxy);
             send_email($description,[$reciever_email],'Delegate');
@@ -6280,14 +6292,16 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
 	    		        
 	    		          if($db->query($update_activty_cstm_tagged_querry)==TRUE){
 	    		              
-                           $activity_name_query = "SELECT name FROM `calls` where id ='".$activity_id."'";
+                           $activity_name_query = "SELECT * FROM `calls` where id ='".$activity_id."'";
                            $result_activity_name = $GLOBALS['db']->query($activity_name_query);
                            $row_activity_name = $GLOBALS['db']->fetchByAssoc($result_activity_name);
+
+                           $link = "index.php?module=Calls&action=DetailView&record=".$row_activity_name['id'];
                            
                            $description ="The Activity ". $row_activity_name['name'] ." was re-assigned to ".getUserName($assigned_id)." by ".getUserName($log_in_user_id);
                             send_email($description,[getUserEmail($approver_id)],"Re-assign User");
 
-                            send_notification('activity','Re-assign User',$description,[$assigned_id],'www.google.com');
+                            send_notification('activity','Re-assign User',$description,[$assigned_id],$link);
 	    		             
                             echo json_encode(array('message'=>true,"description"=>$description));
 	    		             
@@ -8070,14 +8084,15 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
                 $user_lineage_query ="SELECT user_lineage FROM users_cstm WHERE id_c ='$created_by_id_test'";
                 $result_lineage_query = $GLOBALS['db']->query($user_lineage_query);
                 $row_lineage = $GLOBALS['db']->fetchByAssoc($result_lineage_query); 
-                
+
+                $link = "index.php?module=Documents&action=DetailView&record=".$row['id'];
                 if($event =='Approve'){
                     $assigned_user_id_approve =explode(',',$row_lineage['user_lineage']);
                     array_push($assigned_user_id_approve,$row['created_by']);
                     $assigned_user_id_approve = array_diff($assigned_user_id_approve, array($log_in_user_id) );
 
                     $description = "Document ".$row['document_name']." uploaded by ".getUsername($row['created_by'])." has been " .$event." by ".getUsername($log_in_user_id);
-                    send_notification('documents', $row['document_name'], $description,$assigned_user_id_approve,'www.google.com');
+                    send_notification('documents', $row['document_name'], $description,$assigned_user_id_approve,$link);
                     
                     $receiver_emails_approve = []; 
                     foreach($assigned_user_id_approve as $user_id) {
@@ -8089,7 +8104,7 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
                 if($event =='Reject'){
                     $assigned_user_id_reject =[$row['created_by'], $row['user_id_c']];
                     $description = "Document ".$row['document_name']." uploaded by ".getUsername($row['created_by'])." has been " .$event." by ".getUsername($log_in_user_id);
-                    send_notification('documents',$row['document_name'],$description,$assigned_user_id_reject,'www.google.com');
+                    send_notification('documents',$row['document_name'],$description,$assigned_user_id_reject,$link);
                     
                     $receiver_emails_reject = []; 
                     foreach($assigned_user_id_reject as $user_id) {
@@ -8100,7 +8115,7 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
                 
                 
                 
-                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.","description"=>$description));
+                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.","description"=>$description,"link"=>$link));
             
             }else{
                 echo json_encode(array("status"=>false, "message" => "Some error occured"));

@@ -708,15 +708,15 @@ function openDeselectDialog(event) {
             success: function (data) {
                 var parsed_data = JSON.parse(data);
                 var message = "";
-                
 
-                if(parsed_data.tagged_users) {
+
+                if (parsed_data.tagged_users) {
                     message = message + parsed_data.tagged_users + " have been tagged";
                     alert(message);
                 }
 
                 dialog.style.display = "none";
-                
+
             }
         });
     } else {
