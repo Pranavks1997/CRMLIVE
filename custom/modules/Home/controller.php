@@ -812,6 +812,9 @@ class HomeController extends SugarController{
                 $updateOpportunity .= " AND approver_rejector = '$log_in_user_id'";
             }
 
+            $updateOpportunityStatus = "";
+            $assigned_id = "";
+            $assigned_name = "";
             if($db->query($updateOpportunity)==TRUE){
                 if($Approved){
                     if(!$this->checkPendingAndRejectedApprovals($id, $_POST['changed-status'])){
@@ -832,10 +835,68 @@ class HomeController extends SugarController{
                             
                          }
                 }
-                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.","opps_id"=>$id,"rfp"=>$rfp_eoi,"opp_status"=>$changedStatus,"assigned_id"=>$assigned_id,"assigned_name"=>$assigned_name));
+                $updateOpportunityStatus = "true";
+                // echo json_encode(array("status"=>true,  "message" => "Status changed successfully.","opps_id"=>$id,"rfp"=>$rfp_eoi,"opp_status"=>$changedStatus,"assigned_id"=>$assigned_id,"assigned_name"=>$assigned_name));
             }else{
+                $updateOpportunityStatus = "false";
+                // echo json_encode(array("status"=>false, "message" => "Some error occured"));
+            }
+
+
+            
+
+            $result1 = getQuery('*', 'opportunities', 'id = "'.$id.'"');
+            $row1 = $result1->fetch_assoc();
+
+            $result1 = getQuery('multiple_approver_c', 'opportunities_cstm', 'id_c = "'.$id.'"');
+            $row2 = $result1->fetch_assoc();
+
+            $multiple_approvers_array = explode(',', $row2['multiple_approver_c']);
+            $assigned_user_id = $row1['assigned_user_id'];
+            $approver_name = $this->getUserName($log_in_user_id);
+            $opportunity_link = "index.php?action=DetailView&module=Opportunities&record=".$id;
+
+            if($event == "Approve") {
+                
+                $description = "Opportunity '".$row1['name']."'  is approved for '".$changedStatus."' by '".$approver_name."''";
+                send_notification("Opportunities", $row1['name'], $description, [$assigned_user_id], $opportunity_link);
+        
+                $receiver_email = getUserEmail($assigned_user_id);
+                send_email($description,[$receiver_email],'Opportunity Approved');
+
+            } elseif($event == "Reject") {
+                
+                $receivers = [$assigned_user_id];
+                $receiver_emails = [getUserEmail($assigned_user_id)];
+
+                if($this->isDelegate($log_in_user_id, $id)){
+                    foreach($multiple_approvers_array as $a) {
+                        array_push($receivers, $a);
+                    }
+                } else {
+                    foreach($multiple_approvers_array as $a) {
+                        if($a != $log_in_user_id) {
+                            array_push($receivers, $a);
+                        }
+                    }
+                }
+
+                foreach($receivers as $r) {
+                    array_push($receiver_emails, getUserEmail($r));
+                }
+
+                $description = "Opportunity '".$row1['name']."'  is rejected for '".$changedStatus."' by '".$approver_name."''";
+                send_notification("Opportunities", $row1['name'], $description, $receivers, $opportunity_link);
+        
+                send_email($description,$receiver_emails,'Opportunity Rejected');
+            }
+
+            if ($updateOpportunityStatus == "true") {
+                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.","opps_id"=>$id,"rfp"=>$rfp_eoi,"opp_status"=>$changedStatus,"assigned_id"=>$assigned_id,"assigned_name"=>$assigned_name, "is_approved"=>$Approved));
+            } else {
                 echo json_encode(array("status"=>false, "message" => "Some error occured"));
             }
+
             
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
@@ -5925,9 +5986,9 @@ public function is_activity_reassignment_applicable($activity_id) {
             $tagged_users_string = implode(',',$tagged_names_arr);
             $untagged_users_string = implode(',',$untagged_names_arr);
 
-
+            $activity_link = "index.php?action=DetailView&module=Calls&record=".$activity_id;
             $notification_message = "You have been tagged. Now you can edit /make changes to activity ".$row['name'];
-            send_notification("Activities", $row['name'], $notification_message, $tagged_user_ids, 'www.google.com');
+            send_notification("Activities", $row['name'], $notification_message, $tagged_user_ids, $activity_link);
 
             $receiver_emails = []; 
             foreach($tagged_user_ids as $user_id) {
@@ -8239,9 +8300,9 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
             $tagged_users_string = implode(',',$tagged_names_arr);
             $untagged_users_string = implode(',',$untagged_names_arr);
 
-
+            $document_link = "index.php?action=DetailView&module=Calls&record=".$document_id;
             $notification_message = "You have been tagged. Now you can edit /make changes to document ".$row['document_name'];
-            send_notification("Documents", $row['document_name'], $notification_message, $tagged_user_ids, 'www.google.com');
+            send_notification("Documents", $row['document_name'], $notification_message, $tagged_user_ids, $document_link);
 
             $receiver_emails = []; 
             foreach($tagged_user_ids as $user_id) {

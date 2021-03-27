@@ -223,11 +223,18 @@ function updateStatus() {
         data: $('.approval-form').serialize(),
         success: function (data) {
             data = JSON.parse(data);
+            
             if (data.status) {
                 fetchByStatus(Status);
                 getPendingRequestCount();
                 openApprovalDialog('close');
                 dateBetween('30')
+                if(data.is_approved == 1) {
+                    alert('Opportunity approved successfully');
+                } else {
+                    alert('Opportunity rejected successfully');
+                }
+                
             } else {
                 alert(data.message);
             }
