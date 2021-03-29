@@ -664,7 +664,7 @@
     <div id="tag-activity-modal" class="desModal">
         <!-- Modal content -->
         <div class="deselect-modal-content">
-            <span class="deselectclose" onclick="handleTagDialog('close')">&times;</span>
+            <span class="deselectclose" onclick="handleActivityTagDialog('close')">&times;</span>
             <form class="activity_tag_func">
                     <div id="activity_tag_info">
                         
@@ -687,8 +687,8 @@
                     </select> -->
                     <br><div style="height: 20px;"></div>
                     <div>
-                        <button class="saveBtnDeselect" type="button" onclick="handleTagDialog('submit')">Save</button>
-                        <button class="submitBtnDeselect" type="button" onclick="handleTagDialog('discard')">Close</button>
+                        <button class="saveBtnDeselect" type="button" onclick="handleActivityTagDialog('submit')">Save</button>
+                        <button class="submitBtnDeselect" type="button" onclick="handleActivityTagDialog('discard')">Close</button>
                     </div>
                 </section>
             </form>

@@ -1,11 +1,14 @@
 <?php 
 
 if (!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
+    
 class description
 {
 
     function description_save($bean, $event, $arguments)
     {
+        // echo 'hello';
+        // die();
         global $current_user;
     	$log_in_user_id = $current_user->id;
     	

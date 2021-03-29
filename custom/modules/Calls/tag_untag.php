@@ -46,13 +46,5 @@ class taguntag
     $bean->db->query('UPDATE `calls_cstm` SET `tag_hidden_c`="'.$tagged_ids.'" WHERE `id_c`="'.$id.'"');
 
 
-// 			if($activity_type=="non_global"){
-// 			    $bean->db->query('UPDATE `calls_cstm` SET `tag_hidden_c`="" WHERE `id_c`="'.$id.'"'); 	
-// 			}
-// 			else{
-			        
-// 			    $bean->db->query('UPDATE `calls_cstm` SET `untag_hidden_c`="" WHERE `id_c`="'.$id.'"'); 
-			
-// 			}
-            
+    
 }}

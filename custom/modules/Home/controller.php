@@ -812,6 +812,9 @@ class HomeController extends SugarController{
                 $updateOpportunity .= " AND approver_rejector = '$log_in_user_id'";
             }
 
+            $updateOpportunityStatus = "";
+            $assigned_id = "";
+            $assigned_name = "";
             if($db->query($updateOpportunity)==TRUE){
                 if($Approved){
                     if(!$this->checkPendingAndRejectedApprovals($id, $_POST['changed-status'])){
@@ -832,10 +835,68 @@ class HomeController extends SugarController{
                             
                          }
                 }
-                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.","opps_id"=>$id,"rfp"=>$rfp_eoi,"opp_status"=>$changedStatus,"assigned_id"=>$assigned_id,"assigned_name"=>$assigned_name));
+                $updateOpportunityStatus = "true";
+                // echo json_encode(array("status"=>true,  "message" => "Status changed successfully.","opps_id"=>$id,"rfp"=>$rfp_eoi,"opp_status"=>$changedStatus,"assigned_id"=>$assigned_id,"assigned_name"=>$assigned_name));
             }else{
+                $updateOpportunityStatus = "false";
+                // echo json_encode(array("status"=>false, "message" => "Some error occured"));
+            }
+
+
+            
+
+            $result1 = getQuery('*', 'opportunities', 'id = "'.$id.'"');
+            $row1 = $result1->fetch_assoc();
+
+            $result1 = getQuery('multiple_approver_c', 'opportunities_cstm', 'id_c = "'.$id.'"');
+            $row2 = $result1->fetch_assoc();
+
+            $multiple_approvers_array = explode(',', $row2['multiple_approver_c']);
+            $assigned_user_id = $row1['assigned_user_id'];
+            $approver_name = $this->getUserName($log_in_user_id);
+            $opportunity_link = "index.php?action=DetailView&module=Opportunities&record=".$id;
+
+            if($event == "Approve") {
+                
+                $description = "Opportunity '".$row1['name']."'  is approved for '".$changedStatus."' by '".$approver_name."''";
+                send_notification("Opportunities", $row1['name'], $description, [$assigned_user_id], $opportunity_link);
+        
+                $receiver_email = getUserEmail($assigned_user_id);
+                send_email($description,[$receiver_email],'Opportunity Approved');
+
+            } elseif($event == "Reject") {
+                
+                $receivers = [$assigned_user_id];
+                $receiver_emails = [getUserEmail($assigned_user_id)];
+
+                if($this->isDelegate($log_in_user_id, $id)){
+                    foreach($multiple_approvers_array as $a) {
+                        array_push($receivers, $a);
+                    }
+                } else {
+                    foreach($multiple_approvers_array as $a) {
+                        if($a != $log_in_user_id) {
+                            array_push($receivers, $a);
+                        }
+                    }
+                }
+
+                foreach($receivers as $r) {
+                    array_push($receiver_emails, getUserEmail($r));
+                }
+
+                $description = "Opportunity '".$row1['name']."'  is rejected for '".$changedStatus."' by '".$approver_name."''";
+                send_notification("Opportunities", $row1['name'], $description, $receivers, $opportunity_link);
+        
+                send_email($description,$receiver_emails,'Opportunity Rejected');
+            }
+
+            if ($updateOpportunityStatus == "true") {
+                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.","opps_id"=>$id,"rfp"=>$rfp_eoi,"opp_status"=>$changedStatus,"assigned_id"=>$assigned_id,"assigned_name"=>$assigned_name, "is_approved"=>$Approved));
+            } else {
                 echo json_encode(array("status"=>false, "message" => "Some error occured"));
             }
+
             
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
@@ -3042,9 +3103,16 @@ class HomeController extends SugarController{
             $approvalDelegateUpdateQuery = $GLOBALS['db']->query($approvalDelegateUpdate);
 
             //$fetch_organization_count = $GLOBALS['db']->fetchByAssoc($save_delegate_query_result);
+            $description = "You have been delegated by ".getUserName($log_in_user_id);
+            send_notification('opporturnity','Delegate',$description,[$proxy],'');
+    
+            $reciever_email = getUserEmail($proxy);
+            send_email($description,[$reciever_email],'Delegate');
+            echo json_encode(array("status"=>true, "message"=>"Data Succesfully updated", "proxy"=> $proxy,"proxy_name"=>getUserName($proxy)));
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
+        die();
 
     }
     public function action_remove_delegate_user(){
@@ -4023,7 +4091,18 @@ public function action_new_assigned_list(){
                           $result31 = $GLOBALS['db']->query($sql31);
                           
                           if($db->query($sql3)==TRUE){
-                              echo json_encode(array("status"=>true, "message" => "Success"));
+
+                            //Notification
+                            $opp_name_query = "SELECT * FROM `opportunities` where id ='".$opportunity_id."'";
+                            $result_opp_name = $GLOBALS['db']->query($opp_name_query);
+                            $row_opp_name = $GLOBALS['db']->fetchByAssoc($result_opp_name);
+                            
+                            $link = 'index.php?action=DetailView&module=Opportunities&record='.$row_opp_name['id'];
+                            $description ="The Oppurtunity ". $row_opp_name['name'] ." was re-assigned to ".getUserName($assigned_id)." by ".getUserName($log_in_user_id);
+                             send_email($description,[getUserEmail($reports_to_id)],"Re-assign User");
+ 
+                             send_notification('oppurnity','Re-assign User',$description,[$assigned_id],$link);
+                              echo json_encode(array("status"=>true, "message" => "Success","description"=>$description,"opp"=>$opportunity_id));
                               
                           }
                                  
@@ -4035,13 +4114,19 @@ public function action_new_assigned_list(){
                           $result3 = $GLOBALS['db']->query($sql3);
                           
                           if($db->query($sql3)==TRUE){
-                              echo json_encode(array("status"=>true, "message" => "Success"));
+
+                            $opp_name_query = "SELECT * FROM `opportunities` where id ='".$opportunity_id."'";
+                            $result_opp_name = $GLOBALS['db']->query($opp_name_query);
+                            $row_opp_name = $GLOBALS['db']->fetchByAssoc($result_opp_name);
+                            
+                            $link = 'index.php?action=DetailView&module=Opportunities&record='.$row_opp_name['id'];
+                            $description ="The Oppurtunity ". $row_opp_name['name'] ." was re-assigned to ".getUserName($assigned_id)." by ".getUserName($log_in_user_id);
+                             send_email($description,[getUserEmail($reports_to_id)],"Re-assign User");
+ 
+                             send_notification('oppurnity','Re-assign User',$description,[$assigned_id],$link);
+                             echo json_encode(array("status"=>true, "message" => "Success","description"=>$description,"opp"=>$opportunity_id));
                           }
-                            }
-                     
-                         
-                      
-                 
+                        }
                     
              }
                    }
@@ -4959,20 +5044,70 @@ public function is_activity_reassignment_applicable($activity_id) {
                 $user_id_list = $_POST['tag_opporunity'];
                 $user_id_list = implode(',',$user_id_list);
             }
-            $count_query = "SELECT * FROM tagged_user WHERE opp_id='$opportunity_id'";
+            // $count_query = "SELECT * FROM tagged_user WHERE opp_id='$opportunity_id'";
+
+            $count_query ="SELECT tagged_user.*, opportunities.name
+            FROM opportunities 
+            LEFT JOIN tagged_user ON opportunities.id = tagged_user.opp_id
+            WHERE opportunities.id ='$opportunity_id' ";
             $result = $GLOBALS['db']->query($count_query);
+            $row = $GLOBALS['db']->fetchByAssoc($result);
+
+            $untagged_user_ids = $tagged_user_ids = $untagged_names_arr = $tagged_names_arr = [];
+            $last_users_array = explode(',', $row['user_id']);
+            $latest_users_array = $_POST['tag_opporunity'];
+            $untagged_user_ids = array_diff($last_users_array, $latest_users_array);
+            $tagged_user_ids = array_diff($latest_users_array, $last_users_array);
+
+
             if ($result->num_rows > 0) {
                 $query = "UPDATE tagged_user SET user_id = '$user_id_list' WHERE opp_id='$opportunity_id'";
                 $result = $GLOBALS['db']->query($query);
-                echo json_encode(array("status" => true, "message" => "Tag Updated.", "Result"=>$result));
+                // echo json_encode(array("status" => true, "message" => "Tag Updated.", "Result"=>$result));
             } else {
                 $query = "INSERT into tagged_user(opp_id,user_id) VALUES('$opportunity_id','$user_id_list')";
                 $result = $GLOBALS['db']->query($query);
-                echo json_encode(array("status" => true, "message" => "Tag UpdatInstereded.", "Result"=>$opportunity_id));
+                // echo json_encode(array("status" => true, "message" => "Tag UpdatInstereded.", "Result"=>$opportunity_id));
             }
             $sub_query = "UPDATE opportunities_cstm SET tagged_hiden_c = '$user_id_list' WHERE id_c='$opportunity_id'";
             $GLOBALS['db']->query($sub_query);
-            echo json_encode(array("status" => true, "message" => "Tag Updated.", "Result"=>$result));
+
+
+            foreach($untagged_user_ids as $id) {
+                array_push($untagged_names_arr, getUsername($id));
+            }    
+            foreach($tagged_user_ids as $id) {
+                array_push($tagged_names_arr, getUsername($id));
+            }     
+
+            $tagged_users_string = implode(',',$tagged_names_arr);
+            $untagged_users_string = implode(',',$untagged_names_arr);
+
+
+            $notification_message = "You have been tagged. Now you can edit /make changes to opportunities ".$row['name'];
+            send_notification("Opportunities", $row['name'], $notification_message, $tagged_user_ids, 'www.google.com');
+
+            $receiver_emails = []; 
+            foreach($tagged_user_ids as $user_id) {
+                array_push($receiver_emails, getUserEmail($user_id));
+            }
+            // send_email($notification_message, $receiver_emails, 'You have been tagged');
+            if(count($receiver_emails) > 0) {
+                send_email($notification_message, $receiver_emails, 'You have been tagged');
+            }
+
+            $untagged_receiver_emails = [];
+            foreach($untagged_user_ids as $user_id) {
+                array_push($untagged_receiver_emails, getUserEmail($user_id));
+            }
+            if(count($untagged_receiver_emails) > 0) {
+                $untagged_notification_message = "You have been untagged. Now you cannot edit /make changes to opportunities ".$row['name'];
+                send_email($untagged_notification_message, $untagged_receiver_emails, 'You have been untagged');
+            }
+
+
+
+            echo json_encode(array("status" => true, "message" => "Tag Updated.", "Result"=>$result, "tagged_users" => $tagged_users_string, "untagged_users" => $untagged_users_string));
         } catch (Exception $e) {
             echo json_encode(array("status" => false, "message" => "Some error occured"));
         }
@@ -5459,7 +5594,7 @@ public function is_activity_reassignment_applicable($activity_id) {
             $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
 
-            $data = $this->getDbData('activity_approval_table', '*', "id = '$id' ");
+            $data = $this->getDbData('activity_approval_table', '*', "acc_id = '$id' ");
             
             $data = $data[0];
             $acc_id = $data['acc_id'];
@@ -5469,6 +5604,8 @@ public function is_activity_reassignment_applicable($activity_id) {
             $sent_time = $data['sent_time'];
             $approver = $data['approver'];
             $delegateID = $data['delegate_id'];
+            $notification_id = $data['id'];
+            $description='';
             
             // $insertQuery = "INSERT INTO activity_approval_table (";
             // $insertFields = " acc_id, acc_type, status, sender, sent_time, approval_status, approver, delegate_id, ";
@@ -5499,7 +5636,48 @@ public function is_activity_reassignment_applicable($activity_id) {
             		$sql_insert_audit = 'INSERT INTO `calls_audit`(`id`, `parent_id`, `date_created`, `created_by`, `field_name`, `data_type`, `before_value_string`, `after_value_string`, `before_value_text`, `after_value_text`) VALUES ("'.$u_id.'","'.$id.'","'.$created_date.'","'.$log_in_user_id.'","status_new_c","varchar","Apply for Completed","Completed"," "," ")';
             		$result_audit = $GLOBALS['db']->query($sql_insert_audit);
                 }
-                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "query" => $updateQuery, "update_opportunity"=>$updateOpportunity));
+
+                 //For Notification
+                 $fetch_query = "SELECT c.*, cs.* FROM calls c JOIN activity_approval_table ap ON ap.acc_id = c.id LEFT JOIN calls_cstm cs ON c.id = cs.id_c WHERE c.deleted != 1 AND c.date_entered >= now() - interval '1200' day AND ap.id = '$notification_id'";
+                 $result_query = $GLOBALS['db']->query($fetch_query);
+                 $row = $GLOBALS['db']->fetchByAssoc($result_query);
+ 
+                 //Assigned_user_id
+                 $created_by_id_test = $row['created_by'];
+                 $user_lineage_query ="SELECT user_lineage FROM users_cstm WHERE id_c ='$created_by_id_test'";
+                 $result_lineage_query = $GLOBALS['db']->query($user_lineage_query);
+                 $row_lineage = $GLOBALS['db']->fetchByAssoc($result_lineage_query); 
+                 
+                 $link = 'index.php?module=Calls&action=DetailView&record='.$row['id'];
+
+                 if($event =='Approve'){
+                     $assigned_user_id_approve =explode(',',$row_lineage['user_lineage']);
+                     array_push($assigned_user_id_approve,$row['created_by']);
+                     $assigned_user_id_approve = array_diff($assigned_user_id_approve, array($log_in_user_id) );
+ 
+                     $description = "Activity ".$row['name']." uploaded by ".getUsername($row['created_by'])." has been " .$event." by ".getUsername($log_in_user_id);
+                    
+                     send_notification('activity', $row['name'], $description,$assigned_user_id_approve,$link);
+                     $receiver_emails_approve = []; 
+                    foreach($assigned_user_id_approve as $user_id) {
+                         array_push($receiver_emails_approve, getUserEmail($user_id));
+                        }
+                    
+                    send_email($description,$receiver_emails_approve,'Approve the Activity');
+                 }
+                 if($event =='Reject'){
+                     $assigned_user_id_reject =[$row['created_by'], $row['user_id_c']];
+                     $description = "Activity ".$row['name']." uploaded by ".getUsername($row['created_by'])." has been " .$event." by ".getUsername($log_in_user_id);
+                     send_notification('activity',$row['name'],$description,$assigned_user_id_reject,$link);
+                    
+                     $receiver_emails_reject = []; 
+                    foreach($assigned_user_id_reject as $user_id) {
+                         array_push($receiver_emails_reject, getUserEmail($user_id));
+                        }
+                    send_email($description,$receiver_emails_reject,'Reject the Activity');
+                }
+
+                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "description"=>$description,"assigned_user_id_approve"=>$assigned_user_id_approve));
             }else{
                 echo json_encode(array("status"=>false, "message" => "Some error occured"));
             }
@@ -5611,6 +5789,13 @@ public function is_activity_reassignment_applicable($activity_id) {
             $approvalDelegateUpdateQuery = $GLOBALS['db']->query($approvalDelegateUpdate);
 
             //$fetch_organization_count = $GLOBALS['db']->fetchByAssoc($save_delegate_query_result);
+            //Notification
+            $description = "You have been delegated by ".getUserName($log_in_user_id);
+            send_notification('document','Delegate',$description,[$proxy],'');
+    
+            $reciever_email = getUserEmail($proxy);
+            send_email($description,[$reciever_email],'Delegate');
+            echo json_encode(array("status"=>true, "message"=>"Data Succesfully updated", "proxy"=> $proxy,"proxy_name"=>getUserName($proxy)));
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
@@ -5776,23 +5961,75 @@ public function is_activity_reassignment_applicable($activity_id) {
         try {
             $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
-            $activity_id = $_POST['activity_id'];
+            // $activity_id = $_POST['activity_id'];
             $activity_id = $_POST['activity_tag_id'];
             $user_id_list = '';
-            if ($_POST['userIdList']) {
-                $user_id_list = $_POST['userIdList'];
-            }
+            // if ($_POST['userIdList']) {
+            //     $user_id_list = $_POST['userIdList'];
+            // }
             if ($_POST['tag_activity']) {
                 $user_id_list = $_POST['tag_activity'];
                 $user_id_list = implode(',',$user_id_list);
             }
+
+
+            $sql ="SELECT calls.name, calls.created_by, calls_cstm.tag_hidden_c
+            FROM calls 
+            LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c
+            WHERE id ='$activity_id' ";
+            $fetch_activity_info_result = $GLOBALS['db']->query($sql);
+            $row = $GLOBALS['db']->fetchByAssoc($fetch_activity_info_result);
+
+            
+            $last_users_array = explode(',', $row['tag_hidden_c']);
+            $latest_users_array = $_POST['tag_activity'];
+            $untagged_user_ids = $tagged_user_ids = $untagged_names_arr = $tagged_names_arr = [];
+
+            $untagged_user_ids = array_diff($last_users_array, $latest_users_array);
+            $tagged_user_ids = array_diff($latest_users_array, $last_users_array);
+
+            foreach($untagged_user_ids as $id) {
+                array_push($untagged_names_arr, getUsername($id));
+            }    
+            foreach($tagged_user_ids as $id) {
+                array_push($tagged_names_arr, getUsername($id));
+            }     
+
+            $tagged_users_string = implode(',',$tagged_names_arr);
+            $untagged_users_string = implode(',',$untagged_names_arr);
+
+            $activity_link = "index.php?action=DetailView&module=Calls&record=".$activity_id;
+            $notification_message = "You have been tagged. Now you can edit /make changes to activity ".$row['name'];
+            send_notification("Activities", $row['name'], $notification_message, $tagged_user_ids, $activity_link);
+
+            $receiver_emails = []; 
+            foreach($tagged_user_ids as $user_id) {
+                array_push($receiver_emails, getUserEmail($user_id));
+            }
+            // send_email($notification_message, $receiver_emails, 'You have been tagged');
+
+            if(count($receiver_emails) > 0) {
+                send_email($notification_message, $receiver_emails, 'You have been tagged');
+            }
+
+            $untagged_receiver_emails = [];
+            foreach($untagged_user_ids as $user_id) {
+                array_push($untagged_receiver_emails, getUserEmail($user_id));
+            }
+            if(count($untagged_receiver_emails) > 0) {
+                $untagged_notification_message = "You have been untagged. Now you cannot edit /make changes to activity ".$row['name'];
+                send_email($untagged_notification_message, $untagged_receiver_emails, 'You have been untagged');
+            }
+
+
+
             $count_query = "SELECT * FROM calls_cstm WHERE id_c='$activity_id'";
             $result = $GLOBALS['db']->query($count_query);
 
             $sub_query = "UPDATE calls_cstm SET tag_hidden_c = '$user_id_list' WHERE id_c='$activity_id'";
             $GLOBALS['db']->query($sub_query);
 
-            echo json_encode(array("status"=> true, "message" => "Value Updated"));
+            echo json_encode(array("status"=> true, "message" => "Value Updated", "tagged_users" => $tagged_users_string, "untagged_users" => $untagged_users_string));
         } catch (Exception $e) {
             echo json_encode(array("status" => false, "message" => "Some error occured"));
         }
@@ -5839,7 +6076,7 @@ public function is_activity_reassignment_applicable($activity_id) {
                         <td>'  . date_format(date_create($row['activity_date_c']), 'd/m/Y') . '</td>
                         </tr>';
             $data .= '</tbody></table>';
-            $optionList = $this->activity_tag_dialog_dropdown_info($activity_id);
+            $optionList = $this->tag_dialog_dropdown_info("activities", $activity_id);
           echo json_encode(array('activity_info'=>$data,'activity_id'=>$activity_id, 'optionList'=> $optionList));
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
@@ -5852,35 +6089,6 @@ public function is_activity_reassignment_applicable($activity_id) {
         LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c WHERE id = '$activity_id'";
         $fetch_activity_info_result = $GLOBALS['db']->query($fetch_activity_info);
         $result = $GLOBALS['db']->fetchByAssoc($fetch_activity_info_result);
-    }
-    public function activity_tag_dialog_dropdown_info($activity_id) {
-        try {
-            global $current_user;
-            $log_in_user_id = $current_user->id;
-            $fetch_query = "SELECT * FROM users WHERE deleted = 0 AND `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC";
-            $result = $GLOBALS['db']->query($fetch_query);
-            $data = '<select class="select2" name="tag_activity[]" id="" multiple>';
-            $tagged_user_query = "SELECT * from calls_cstm where id_c = '$activity_id'";
-            $result1 = $GLOBALS['db']->query($tagged_user_query);
-            $tagged_user_row = $result1->fetch_assoc();
-            $tagged_user_array = explode(',', $tagged_user_row['tag_hidden_c']);
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
-                    $full_name = $row['first_name'] . ' ' . $row['last_name'];
-                    if (in_array($row['id'],$tagged_user_array)){
-                        $data .= '<option value="'.$row['id'].'" selected>'.$full_name.'</option>';
-                    }
-                    else{
-                        $data .= '<option value="'.$row['id'].'" >'.$full_name.'</option>';
-                    }
-                }
-            }
-            $data .= "</select>";
-            return $data;
-        }catch(Exception $e){
-            echo json_encode(array("status"=>false, "message" => "Some error occured"));
-        }
-        die();
     }
     
  public function action_activity_new_assigned_list(){
@@ -6064,21 +6272,12 @@ public function is_activity_reassignment_applicable($activity_id) {
         	    
         	     $result = $GLOBALS['db']->query($sql);
         	     
-        while($row = $GLOBALS['db']->fetchByAssoc($result)) 
-        {
-            
-           
-            
-            
-          $assigned_id=$row['id'];
-          $approver_id=$row['reports_to_id'];
-           
-           
-    
-            
-        }
-        
-        $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."' WHERE id='".$activity_id."'";//updating new assigned id
+                while($row = $GLOBALS['db']->fetchByAssoc($result)) 
+                {   
+                    $assigned_id=$row['id'];
+                    $approver_id=$row['reports_to_id'];
+                }
+$update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."' WHERE id='".$activity_id."'";//updating new assigned id
         
       if($db->query($update_activty_querry)==TRUE){
            
@@ -6092,10 +6291,7 @@ public function is_activity_reassignment_applicable($activity_id) {
         	     
                  while($row_tagged_database = $GLOBALS['db']->fetchByAssoc($result_tagged_database)) 
                      {
-            
-                              $tagged_user_database=$row_tagged_database['tag_hidden_c'];
-                              
-           
+                         $tagged_user_database=$row_tagged_database['tag_hidden_c'];
                       }
                       
                       $tagged_user_database_array=explode(',',$tagged_user_database);
@@ -6128,7 +6324,18 @@ public function is_activity_reassignment_applicable($activity_id) {
 	    		        
 	    		          if($db->query($update_activty_cstm_tagged_querry)==TRUE){
 	    		              
-	    		             echo json_encode(array('message'=>true));
+                           $activity_name_query = "SELECT * FROM `calls` where id ='".$activity_id."'";
+                           $result_activity_name = $GLOBALS['db']->query($activity_name_query);
+                           $row_activity_name = $GLOBALS['db']->fetchByAssoc($result_activity_name);
+
+                           $link = "index.php?module=Calls&action=DetailView&record=".$row_activity_name['id'];
+                           
+                           $description ="The Activity ". $row_activity_name['name'] ." was re-assigned to ".getUserName($assigned_id)." by ".getUserName($log_in_user_id);
+                            send_email($description,[getUserEmail($approver_id)],"Re-assign User");
+
+                            send_notification('activity','Re-assign User',$description,[$assigned_id],$link);
+	    		             
+                            echo json_encode(array('message'=>true,"description"=>$description));
 	    		             
 	    		          }
                  
@@ -7482,6 +7689,17 @@ public function is_activity_reassignment_applicable($activity_id) {
             $query = "INSERT INTO document_note (doc_id, created_by, notes) VALUES ('$doc_id', '$user_id', '$note')";
             $GLOBALS['db']->query($query);
 
+            $result1 = getQuery('*', 'documents', 'id = "'.$doc_id.'"');
+            $row = $result1->fetch_assoc();
+
+            if($user_id != $row['created_by']) {
+                $notification_message = getUsername($user_id)." has written a note on document ".$row['document_name'];
+                send_notification("Documents", $row['document_name'], $notification_message, [$row['created_by']], '');
+
+                $receiver_email = getUserEmail($row['created_by']);
+                send_email($notification_message, [$receiver_email], 'New Note');  
+            }
+
             echo json_encode(array("status"=> true, "message" => "Note Added"));
             die();
         } catch (Exception $e) {
@@ -7628,7 +7846,13 @@ public function is_activity_reassignment_applicable($activity_id) {
             $approvalDelegateUpdateQuery = $GLOBALS['db']->query($approvalDelegateUpdate);
 
             //$fetch_organization_count = $GLOBALS['db']->fetchByAssoc($save_delegate_query_result);
-        echo json_encode(array("status"=>true, "message"=>"Data Succesfully updated", "proxy"=> $proxy));
+        //Notification
+        $description = "You have been delegated by ".getUserName($log_in_user_id);
+        send_notification('document','Delegate',$description,[$proxy],'www.google.com');
+
+        $reciever_email = getUserEmail($proxy);
+        send_email($description,[$reciever_email],'Delegate');
+        echo json_encode(array("status"=>true, "message"=>"Data Succesfully updated", "proxy"=> $proxy,"proxy_name"=>getUserName($proxy)));
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
@@ -7860,7 +8084,8 @@ public function is_activity_reassignment_applicable($activity_id) {
             $sent_time = $data['sent_time'];
             $approver = $data['approver'];
             $delegateID = $data['delegate_id'];
-            
+            $notification_id = $data['id'];
+            $description='';
 
             $updateQuery = "UPDATE document_approval_table SET approval_status = '$ApprovalStatus' ";
             if($this->isDocumentDelegate($log_in_user_id, $id))
@@ -7880,10 +8105,54 @@ public function is_activity_reassignment_applicable($activity_id) {
             		$sql_insert_audit = 'INSERT INTO `documents_audit`(`id`, `parent_id`, `date_created`, `created_by`, `field_name`, `data_type`, `before_value_string`, `after_value_string`, `before_value_text`, `after_value_text`) VALUES ("'.$u_id.'","'.$id.'","'.$created_date.'","'.$log_in_user_id.'","status_new_c","varchar","Apply for Completed","Completed"," "," ")';
             		$result_audit = $GLOBALS['db']->query($sql_insert_audit);
                 }
-               echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "query" => $updateQuery, "update_document"=>$updateDocument));
+
+                //For Notification
+                $fetch_query = "SELECT d.*, ds.* FROM documents d JOIN document_approval_table ap ON ap.doc_id = d.id LEFT JOIN documents_cstm ds ON d.id = ds.id_c WHERE d.deleted != 1 AND d.date_entered >= now() - interval '1200' day AND ap.id = '$notification_id'";
+                $result_query = $GLOBALS['db']->query($fetch_query);
+                $row = $GLOBALS['db']->fetchByAssoc($result_query);
+
+                //Assigned_user_id
+                $created_by_id_test = $row['created_by'];
+                $user_lineage_query ="SELECT user_lineage FROM users_cstm WHERE id_c ='$created_by_id_test'";
+                $result_lineage_query = $GLOBALS['db']->query($user_lineage_query);
+                $row_lineage = $GLOBALS['db']->fetchByAssoc($result_lineage_query); 
+
+                $link = "index.php?module=Documents&action=DetailView&record=".$row['id'];
+                if($event =='Approve'){
+                    $assigned_user_id_approve =explode(',',$row_lineage['user_lineage']);
+                    array_push($assigned_user_id_approve,$row['created_by']);
+                    $assigned_user_id_approve = array_diff($assigned_user_id_approve, array($log_in_user_id) );
+
+                    $description = "Document ".$row['document_name']." uploaded by ".getUsername($row['created_by'])." has been " .$event." by ".getUsername($log_in_user_id);
+                    send_notification('documents', $row['document_name'], $description,$assigned_user_id_approve,$link);
+                    
+                    $receiver_emails_approve = []; 
+                    foreach($assigned_user_id_approve as $user_id) {
+                         array_push($receiver_emails_approve, getUserEmail($user_id));
+                        }
+                    
+                    send_email($description,$receiver_emails_approve,'Approve the Documents');
+                }
+                if($event =='Reject'){
+                    $assigned_user_id_reject =[$row['created_by'], $row['user_id_c']];
+                    $description = "Document ".$row['document_name']." uploaded by ".getUsername($row['created_by'])." has been " .$event." by ".getUsername($log_in_user_id);
+                    send_notification('documents',$row['document_name'],$description,$assigned_user_id_reject,$link);
+                    
+                    $receiver_emails_reject = []; 
+                    foreach($assigned_user_id_reject as $user_id) {
+                         array_push($receiver_emails_reject, getUserEmail($user_id));
+                        }
+                    send_email($description,$receiver_emails_reject,'Reject the Documents');
+                }
+                
+                
+                
+                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.","description"=>$description,"link"=>$link));
+            
             }else{
                 echo json_encode(array("status"=>false, "message" => "Some error occured"));
             }
+        
             
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured", "query" => $updateQuery));
@@ -7933,7 +8202,7 @@ public function is_activity_reassignment_applicable($activity_id) {
                         <td>' . ucwords($creator_full_name). '</td>
                         </tr>';
             $data .= '</tbody></table>';
-            $optionList = $this->document_tag_dialog_dropdown_info($doc_id);
+            $optionList = $this->tag_dialog_dropdown_info("documents", $doc_id);
 
 
           echo json_encode(array('document_info'=>$data,'document_id'=>$doc_id, 'optionList'=> $optionList));
@@ -7942,40 +8211,6 @@ public function is_activity_reassignment_applicable($activity_id) {
         }
         die();
     }
-
-
-    public function document_tag_dialog_dropdown_info($doc_id) {
-        try {
-            global $current_user;
-            $log_in_user_id = $current_user->id;
-
-            $result = getQuery("*", "users", "deleted = 0 AND `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC");
-            $data = '<select class="select2" name="tag_document[]" id="" multiple>';
-            $tagged_user_query = "SELECT * from documents_cstm where id_c = '$doc_id'";
-            $result1 = $GLOBALS['db']->query($tagged_user_query);
-            $tagged_user_row = $result1->fetch_assoc();
-
-
-            $tagged_user_array = explode(',', $tagged_user_row['tagged_hidden_c']);
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
-                    $full_name = $row['first_name'] . ' ' . $row['last_name'];
-                    if (in_array($row['id'],$tagged_user_array)){
-                        $data .= '<option value="'.$row['id'].'" selected>'.$full_name.'</option>';
-                    }
-                    else{
-                        $data .= '<option value="'.$row['id'].'" >'.$full_name.'</option>';
-                    }
-                }
-            }
-            $data .= "</select>";
-            return $data;
-        }catch(Exception $e){
-            echo json_encode(array("status"=>false, "message" => "Some error occured"));
-        }
-        die();
-    }
-
     
 
     public function action_set_document_for_tag(){
@@ -7984,17 +8219,65 @@ public function is_activity_reassignment_applicable($activity_id) {
             $GLOBALS['db'];
             $document_id = $_POST['document_tag_id'];
             $user_id_list = '';
-            if ($_POST['userIdList'] != "undefined") {
-                $user_id_list = $_POST['userIdList'];
-            }
+            // if ($_POST['userIdList'] != "undefined") {
+            //     $user_id_list = $_POST['userIdList'];
+            // }
             if ($_POST['tag_document']) {
                 $user_id_list = $_POST['tag_document'];
                 $user_id_list = implode(',',$user_id_list);
             }
+
+            $sql ="SELECT documents.document_name, documents.created_by, documents_cstm.tagged_hidden_c
+            FROM documents 
+            LEFT JOIN documents_cstm ON documents.id = documents_cstm.id_c
+            WHERE id ='$document_id' ";
+            $fetch_document_info_result = $GLOBALS['db']->query($sql);
+            $row = $GLOBALS['db']->fetchByAssoc($fetch_document_info_result);
+
+
+            $last_users_array = explode(',', $row['tagged_hidden_c']);
+            $latest_users_array = $_POST['tag_document'];
+            $untagged_user_ids = $tagged_user_ids = $untagged_names_arr = $tagged_names_arr = [];
+
+            $untagged_user_ids = array_diff($last_users_array, $latest_users_array);
+            $tagged_user_ids = array_diff($latest_users_array, $last_users_array);
+
+            foreach($untagged_user_ids as $id) {
+                array_push($untagged_names_arr, getUsername($id));
+            }    
+            foreach($tagged_user_ids as $id) {
+                array_push($tagged_names_arr, getUsername($id));
+            }     
+
+            $tagged_users_string = implode(',',$tagged_names_arr);
+            $untagged_users_string = implode(',',$untagged_names_arr);
+
+            $document_link = "index.php?action=DetailView&module=Calls&record=".$document_id;
+            $notification_message = "You have been tagged. Now you can edit /make changes to document ".$row['document_name'];
+            send_notification("Documents", $row['document_name'], $notification_message, $tagged_user_ids, $document_link);
+
+            $receiver_emails = []; 
+            foreach($tagged_user_ids as $user_id) {
+                array_push($receiver_emails, getUserEmail($user_id));
+            }
+            if(count($receiver_emails) > 0) {
+                send_email($notification_message, $receiver_emails, 'You have been tagged');
+            }
+
+            $untagged_receiver_emails = [];
+            foreach($untagged_user_ids as $user_id) {
+                array_push($untagged_receiver_emails, getUserEmail($user_id));
+            }
+            if(count($untagged_receiver_emails) > 0) {
+                $untagged_notification_message = "You have been untagged. Now you cannot edit /make changes to document ".$row['document_name'];
+                send_email($untagged_notification_message, $untagged_receiver_emails, 'You have been untagged');
+            }
+
+
             $sub_query = "UPDATE documents_cstm SET tagged_hidden_c = '$user_id_list' WHERE id_c='$document_id'";
             $GLOBALS['db']->query($sub_query);
 
-            echo json_encode(array("status"=> true, "message" => "Value Updated"));
+            echo json_encode(array("status"=> true, "message" => "Value Updated", "tagged_users" => $tagged_users_string, "untagged_users" => $untagged_users_string));
         } catch (Exception $e) {
             echo json_encode(array("status" => false, "message" => "Some error occured"));
         }
@@ -8177,6 +8460,51 @@ public function is_activity_reassignment_applicable($activity_id) {
             unset($_SESSION['csvData']);
             exit;
         }
+    }
+    
+
+    public function tag_dialog_dropdown_info($type, $id) {
+
+        try {
+
+            if ($type == "documents") {
+                $table = "documents_cstm";
+                $select_name = "tag_document";
+                $hidden_tags = "tagged_hidden_c";
+            } elseif ($type == "activities") {
+                $table = "calls_cstm";
+                $select_name = "tag_activity";
+                $hidden_tags = "tag_hidden_c";
+            }
+
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+
+            $result = getQuery("*", "users", "deleted = 0 AND `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC");
+            $data = '<select class="select2" name="'.$select_name.'[]" id="" multiple>';
+
+            $result1 = getQuery("*", $table, "id_c = '$id'");
+            $tagged_user_row = $result1->fetch_assoc();
+
+            $tagged_user_array = explode(',', $tagged_user_row[$hidden_tags]);
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    $full_name = $row['first_name'] . ' ' . $row['last_name'];
+                    if (in_array($row['id'],$tagged_user_array)){
+                        $data .= '<option value="'.$row['id'].'" selected>'.$full_name.'</option>';
+                    }
+                    else{
+                        $data .= '<option value="'.$row['id'].'" >'.$full_name.'</option>';
+                    }
+                }
+            }
+            $data .= "</select>";
+            return $data;
+        }catch(Exception $e){
+            echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }
+        die();
+
     }
 
    

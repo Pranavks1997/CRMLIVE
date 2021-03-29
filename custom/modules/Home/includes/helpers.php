@@ -1058,6 +1058,49 @@
             return false;
         }
     }
-
-
     ///  ::::::::::::::::::::::::::::::::::::::::::::::::::::::  Joytrimoy Code ::::::::::::::::::::::::::::::::::::::::::::::::::
+
+    function send_notification($module,$name,$description,$users,$redirectUrl){
+        foreach($users as $id) {
+            $alert = BeanFactory::newBean('Alerts');
+            $alert->name =$name;
+            $alert->description = $description;
+            $alert->url_redirect = $redirectUrl;
+            $alert->target_module = $module;
+            $alert->assigned_user_id = $id; 
+            $alert->type = 'info';
+            $alert->is_read = 0;
+            $alert->save();
+        }
+
+        // echo json_encode(array("status"=>true, "message" => "All Forms Saved Successfully and Email Sent to Business Head for Approval"));
+
+    }
+
+    function send_email($description,$emails,$subject){
+        $template = $description;
+        require_once('include/SugarPHPMailer.php');
+        include_once('include/utils/db_utils.php');
+        foreach($emails as $email) {
+           $emailObj = new Email();  
+           $defaults = $emailObj->getSystemDefaultEmail();  
+           $mail = new SugarPHPMailer();  
+           $mail->setMailerForSystem();  
+           $mail->From = $defaults['email'];  
+           $mail->FromName = $defaults['name'];  
+           $mail->Subject = $subject;
+           $mail->Body =$template;
+           $mail->prepForOutbound();  
+           $mail->AddAddress($email);
+           @$mail->Send();
+        }
+    }
+
+
+    function getUserEmail($userID){
+        $user_email_fetch        = "SELECT user_name FROM users WHERE id='$userID'";
+        $user_email_fetch_result = $GLOBALS['db']->query($user_email_fetch);
+        $user_email_fetch_row    = $GLOBALS['db']->fetchByAssoc($user_email_fetch_result);
+        $user_email              = $user_email_fetch_row['user_name'];
+        return $user_email;
+    }

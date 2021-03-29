@@ -44,7 +44,7 @@
 
                         <?php // endif; ?>
                     </button>
-                    <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="fetchTagDialog('<?php echo $row['id']; ?>')">
+                    <button class="tag1" id="deselectBtn" style="margin-right: 7px;width: 15px;" onclick="fetchActivityTagDialog('<?php echo $row['id']; ?>')">
                         <?php  if (is_tagging_applicable("activities", $row['id'])) {  ?> 
                             <i id="search-icon" title="Tag Users" class="fa fa-tag" aria-hidden="true"> </i>
                         <?php } ?>
