@@ -1584,21 +1584,7 @@ public function action_send_for_approval(){
 	    		   $sender_name=$row1['fullname'];
 			}
           
-          
-          
-//           $sql1 ='SELECT * FROM opportunities_cstm WHERE id_c="'. $opportunity_id.'"';
-// 			$result1 = $GLOBALS['db']->query($sql1);
-			
-// 			while($row1 = $GLOBALS['db']->fetchByAssoc($result1) )
-// 				{
-				    
-// 				 echo   $approver=$row1['multiple_approver_c'];
-// 				    //  $deligate=$row1['delegate'];
-				    
-				    
-// 				}
-
-
+     
                 	if($apply_for=='qualifylead')
 				{
 				    $apply='Qualify Lead';
@@ -1649,16 +1635,16 @@ public function action_send_for_approval(){
                                     			if($db->query($sql)==TRUE){
                                     			 
                                     		//alerts
-                                    			 //  $alert = BeanFactory::newBean('Alerts');
-                                    				// 		$alert->name ='"'.$opp_name.'"';
-                                    				// 		$alert->description = ' is recieved for approval for '. $apply.' by '.$sender_name.'';
-                                    				// 		$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id;
-                                    				// 		$alert->target_module = 'Opportunities';
-                                    				// 		$alert->assigned_user_id = $approvers;
-                                    				// 		$alert->type = 'info';
-                                    				// 		$alert->is_read = 0;
-                                    				// 		$alert->save();
-                                    				// 		echo json_encode(array("status"=>true, "message" => "All Forms Saved Successfully and Email Sent to Business Head for Approval"));
+                                    			            $alert = BeanFactory::newBean('Alerts');
+                                    						$alert->name ='Opportunity "'.$opp_name.'"';
+                                    						$alert->description = ' is recieved for approval to '. $apply.' by '.$sender_name.'';
+                                    						$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id;
+                                    						$alert->target_module = 'Opportunities';
+                                    						$alert->assigned_user_id = $approvers;
+                                    						$alert->type = 'info';
+                                    						$alert->is_read = 0;
+                                    						$alert->save();
+                                    				//		echo json_encode(array("status"=>true, "message" => "All Forms Saved Successfully and Email Sent to Business Head for Approval"));
                                     				
                                     			
                                                   
@@ -1681,17 +1667,17 @@ public function action_send_for_approval(){
                                     				     
                                     			if($db->query($sql)==TRUE){
                                     			 
-                                    		//alerts
-                                    			 //  $alert = BeanFactory::newBean('Alerts');
-                                    				// 		$alert->name ='"'.$opp_name.'"';
-                                    				// 		$alert->description = ' is recieved for approval for '. $apply.' by '.$sender_name.'';
-                                    				// 		$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id;
-                                    				// 		$alert->target_module = 'Opportunities';
-                                    				// 		$alert->assigned_user_id = $approvers;
-                                    				// 		$alert->type = 'info';
-                                    				// 		$alert->is_read = 0;
-                                    				// 		$alert->save();
-                                    				// 		echo json_encode(array("status"=>true, "message" => "All Forms Saved Successfully and Email Sent to Business Head for Approval"));
+                                    	            	//alerts
+                                    		                $alert = BeanFactory::newBean('Alerts');
+                                    						$alert->name ='Opportunity "'.$opp_name.'"';
+                                    						$alert->description = ' is recieved for approval to '. $apply.' by '.$sender_name.'';
+                                    						$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id;
+                                    						$alert->target_module = 'Opportunities';
+                                    						$alert->assigned_user_id = $approvers;
+                                    						$alert->type = 'info';
+                                    						$alert->is_read = 0;
+                                    						$alert->save();
+                                    				//		echo json_encode(array("status"=>true, "message" => "All Forms Saved Successfully and Email Sent to Business Head for Approval"));
                                     				
                                     			
                                                   
@@ -1707,146 +1693,29 @@ public function action_send_for_approval(){
                                     		}
                                     				
 	
-	
-		
-//                 	$sql4="SELECT * FROM approval_table WHERE date_time=(SELECT max(date_time) FROM approval_table WHERE  opp_id='".$opportunity_id."' AND status='".$status."' AND rfp_eoi_published='".$rfp_eoi_published."')";
-                    				
-//                     				$result4 = $GLOBALS['db']->query($sql4);
-                    			
-                    			
-//                     			    if($result4->num_rows>0){
-                    			        
-//                     			    	while($row4 = $GLOBALS['db']->fetchByAssoc($result4) ){
-                    				    
-//                     			    	   array_push( $Approved_array,$row4['Approved']);
-//                     			    	   array_push( $Rejected_array,$row4['Rejected']);
-//                     			    	  array_push ( $pending_array,$row4['pending']);
-                    			    	   
-//                     			    	}
-                    			    	
-//                     			    	$value=1;
-//                     			    	 foreach($Approved_array as $app){
-//                     			    	     $value=$app*$value;
-//                     			    	 }
-                    			    	 
-//                     			    	 $value1=0;
-//                     			    	  foreach($Rejected_array as $rej){
-//                     			    	     $value1=$rej+$value1;
-//                     			    	 }
-                    			    	
-                    			    	 
-//                     			    	 $value2=0;
-//                     			    	 foreach($pending_array as $pen){
-//                     			    	     $value2=$pen+$value2;
-//                     			    	 }
-                    			    	
-//                     			    	if($value1>0){
-//                     			    	    $value1=1;
-                    			    	   
-//                     			    	}
-                    			    	    
-//                     			    //	echo $value1;
-                    			    	 
-//                                         if($value1==1 )	{
-                                            
-                                            
-//                                             	foreach($approver_array as $approvers){
-                				     
-//                 				          	$sql="UPDATE approval_table SET Approved=0,Rejected=0,pending=1 WHERE approver_rejector='".$approvers."' AND opp_id='".$opportunity_id."' AND status='".$status."' AND rfp_eoi_published='".$rfp_eoi_published."' " ;		     
-                                    		
-//                                     			if($db->query($sql)==TRUE){
-//                                     			 ////alerts
-//                                     			 //  $alert = BeanFactory::newBean('Alerts');
-//                                     				// 		$alert->name =$opp_name;
-//                                     				// 		$alert->description = ' is recieved for approval for '. $apply.' by '.$sender_name.'';
-//                                     				// 		$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id;
-//                                     				// 		$alert->target_module = 'Opportunities';
-//                                     				// 		$alert->assigned_user_id = $approvers;
-//                                     				// 		$alert->type = 'info';
-//                                     				// 		$alert->is_read = 0;
-//                                     				// 		$alert->save();
-//                                     				// 		echo json_encode(array("status"=>true, "message" => "All Forms Saved Successfully and Email Sent to Business Head for Approval"));
-                                    				
-                                    			
-                                                 
-//                                                      }
-                                    			
-//                                     			 $message="true";
-                                    			
-                                    				
-                                    				    
-                                    				    
-//                                             }
-                                    				
-                                            
-                    			        
-//                     			    }
-                    			 
-//   }
-  
-     
-//         			     else 	{
-                                                        			          
-                                    			
-//                 				foreach($approver_array as $approvers){
-                				   
-//                 				      $sql='INSERT INTO approval_table( opp_id,rfp_eoi_published,sender,status,apply_for,Approved,Rejected,approver_rejector,comments,date_time,pending) VALUES ("'. $opportunity_id.'","'.$rfp_eoi_published.'","'.$log_in_user_id.'","'.$status.'","'.$apply_for.'","0","0","'.$approvers.'","","'.$date_time.'","1")';
-                                    				
-                                    				     
-//                                     			if($db->query($sql)==TRUE){
-                                    			 
-//                                     		//alerts
-//                                     			 //  $alert = BeanFactory::newBean('Alerts');
-//                                     				// 		$alert->name ='"'.$opp_name.'"';
-//                                     				// 		$alert->description = ' is recieved for approval for '. $apply.' by '.$sender_name.'';
-//                                     				// 		$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id;
-//                                     				// 		$alert->target_module = 'Opportunities';
-//                                     				// 		$alert->assigned_user_id = $approvers;
-//                                     				// 		$alert->type = 'info';
-//                                     				// 		$alert->is_read = 0;
-//                                     				// 		$alert->save();
-//                                     				// 		echo json_encode(array("status"=>true, "message" => "All Forms Saved Successfully and Email Sent to Business Head for Approval"));
-                                    				
-                                    			
-                                                  
-                                                 
-//                                                      }
-                                    			
-//                                     			 $message="true";
-                                    			
-                                    				
-                                    				    
-                                    				    
-//                                             }
-                                    				
-//                     			     }			
-				
-			
-			
-			
-			
 			
 			
 			
 			
 				if ($message=="true"){
+				    
 				   echo 'Opportunity  "'.$opp_name.'" has been sent to '.$approver_name.' for approval';
-				   	// foreach($email_array as $email){
-        //                             				$template = '"'.$opp_name.'" is recieved for approval for '. $apply.' by '.$sender_name.' Please Review : <a href="'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id.'">Click Here</a>';
-        //                             						require_once('include/SugarPHPMailer.php');
-        //                             						include_once('include/utils/db_utils.php');
-        //                             					    $emailObj = new Email();  
-        //                             					    $defaults = $emailObj->getSystemDefaultEmail();  
-        //                             					    $mail = new SugarPHPMailer();  
-        //                             					    $mail->setMailerForSystem();  
-        //                             					    $mail->From = $defaults['xelpmocdeveloper@gmail.com'];  
-        //                             					    $mail->FromName = $defaults['xelpmoc'];  
-        //                             					    $mail->Subject = ''. $opp_name.'  is sent for  approval'; 
-        //                             						$mail->Body =$template;
-        //                             					    $mail->prepForOutbound();  
-        //                             					    $mail->AddAddress($email); 
-        //                             					    @$mail->Send();
-        //                             				}
+				   	foreach($email_array as $email){
+                                    				$template = 'Opportunity "'.$opp_name.'" is recieved for approval for '. $apply.' by '.$sender_name.' Please Review : "'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id.'"';
+                                    						require_once('include/SugarPHPMailer.php');
+                                    						include_once('include/utils/db_utils.php');
+                                    					    $emailObj = new Email();  
+                                    					    $defaults = $emailObj->getSystemDefaultEmail();  
+                                    					    $mail = new SugarPHPMailer();  
+                                    					    $mail->setMailerForSystem();  
+                                    					    $mail->From = $defaults['xelpmoctestmail@gmail.com'];  
+                                    					    $mail->FromName = $defaults['CRM'];  
+                                    					    $mail->Subject = ''. $opp_name.'  is sent for  approval'; 
+                                    						$mail->Body =$template;
+                                    					    $mail->prepForOutbound();  
+                                    					    $mail->AddAddress($email); 
+                                    					    @$mail->Send();
+                                    				}
 				}
 				
 			
@@ -1928,7 +1797,7 @@ public function action_approve(){
 			while($row = $GLOBALS['db']->fetchByAssoc($result) )
 				{
 				   $opp_name=$row['name'];
-				   array_push($alert_users, $row['created_by']);
+				  // array_push($alert_users, $row['created_by']);
 				   array_push($alert_users,$row['assigned_user_id']);
                     
 				}
@@ -2068,7 +1937,7 @@ public function action_approve(){
                     			    
                     			     if($db->query($sql77)==TRUE){
                     			         
-                    			         // akash change here
+                    			        
                     			         
                     			        echo json_encode(array("status"=>true,"next_status"=>$next_status));
                     			        
@@ -2176,19 +2045,7 @@ public function action_approve(){
         
                                                		} 
                                                		
-                                               		
-                                               		
-                                               		
-                                    		
-                                    
-                                    		
-                                    		
-                                    		
-                                    		
-                                    		
-                                    		
-                                    		
-              
+           
      }
      else{
          
@@ -2205,39 +2062,42 @@ public function action_approve(){
               $result= $GLOBALS['db']->query($sql);
                if($GLOBALS['db']->query($sql)==TRUE){
                    
-            //   foreach($alert_users as $user){
-            //                         			   $alert = BeanFactory::newBean('Alerts');
-            //                         						$alert->name ='"'.$opp_name.'"';
-            //                         						$alert->description = ' is approved for '. $apply.' by '.$approver_name.'';
-            //                         						$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id;
-            //                         						$alert->target_module = 'Opportunities';
-            //                         						$alert->assigned_user_id = $user;
-            //                         						$alert->type = 'info';
-            //                         						$alert->is_read = 0;
-            //                         						$alert->save(); 
+              foreach($alert_users as $user){
+                                    			   $alert = BeanFactory::newBean('Alerts');
+                                    						$alert->name ='Opportunity "'.$opp_name.'"';
+                                    						$alert->description = ' is approved for '. $apply.' by '.$approver_name.'';
+                                    						$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id;
+                                    						$alert->target_module = 'Opportunities';
+                                    						$alert->assigned_user_id = $user;
+                                    						$alert->type = 'info';
+                                    						$alert->is_read = 0;
+                                    						$alert->save(); 
                     			             
-            //         			         }
+                    			         }
+            
+            
             //         		// //emails
-            //                         					foreach($email_array as $email){
-            //                         				$template = '"'.$opp_name.'" is approved for '. $apply.' by '.$sender_name.' Please Review : <a href="'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id.'">Click Here</a>';
-            //                         						require_once('include/SugarPHPMailer.php');
-            //                         						include_once('include/utils/db_utils.php');
-            //                         					    $emailObj = new Email();  
-            //                         					    $defaults = $emailObj->getSystemDefaultEmail();  
-            //                         					    $mail = new SugarPHPMailer();  
-            //                         					    $mail->setMailerForSystem();  
-            //                         					    $mail->From = $defaults['xelpmocdeveloper@gmail.com'];  
-            //                         					    $mail->FromName = $defaults['xelpmoc'];  
-            //                         					    $mail->Subject = ''. $opp_name.'  is approved'; 
-            //                         						$mail->Body =$template;
-            //                         					    $mail->prepForOutbound();  
-            //                         					    $mail->AddAddress($email); 
-            //                         					    @$mail->Send();
-            //                         				}		         
+                                    					foreach($email_array as $email){
+                                    				$template = 'Opportunity "'.$opp_name.'" is approved for '. $apply.' by '.$approver_name.' Please Review : "'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id.'"';
+                                    						require_once('include/SugarPHPMailer.php');
+                                    						include_once('include/utils/db_utils.php');
+                                    					    $emailObj = new Email();  
+                                    					    $defaults = $emailObj->getSystemDefaultEmail();  
+                                    					    $mail = new SugarPHPMailer();  
+                                    					    $mail->setMailerForSystem();  
+                                    					    $mail->From = $defaults['xelpmoctestmail@gmail.com'];  
+                                    					    $mail->FromName = $defaults['CRM'];  
+                                    					    $mail->Subject = ''. $opp_name.'  is approved'; 
+                                    						$mail->Body =$template;
+                                    					    $mail->prepForOutbound();  
+                                    					    $mail->AddAddress($email); 
+                                    					    @$mail->Send();
+                                    				}		         
               }
              
            
          }
+         
                            	$sql2="SELECT * FROM approval_table  WHERE opp_id='".$opportunity_id."' AND status='".$status."' AND rfp_eoi_published='".$rfp_eoi_published."' AND row_count=(SELECT max(row_count) FROM approval_table WHERE  opp_id='".$opportunity_id."' AND status='".$status."' AND rfp_eoi_published='".$rfp_eoi_published."') ";
                     			
                     				$result2 = $GLOBALS['db']->query($sql2);
@@ -2299,36 +2159,37 @@ public function action_approve(){
               $result= $GLOBALS['db']->query($sql);
               if($GLOBALS['db']->query($sql)==TRUE){
                   
-            //   foreach($alert_users as $user){
-            //                         			   $alert = BeanFactory::newBean('Alerts');
-            //                         						$alert->name ='"'.$opp_name.'"';
-            //                         						$alert->description = ' is approved for '. $apply.' by '.$approver_name.'';
-            //                         						$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id;
-            //                         						$alert->target_module = 'Opportunities';
-            //                         						$alert->assigned_user_id = $user;
-            //                         						$alert->type = 'info';
-            //                         						$alert->is_read = 0;
-            //                         						$alert->save(); 
+              foreach($alert_users as $user){
+                                    			   $alert = BeanFactory::newBean('Alerts');
+                                    						$alert->name ='Opportunity "'.$opp_name.'"';
+                                    						$alert->description = ' is approved for '. $apply.' by '.$approver_name.'';
+                                    						$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id;
+                                    						$alert->target_module = 'Opportunities';
+                                    						$alert->assigned_user_id = $user;
+                                    						$alert->type = 'info';
+                                    						$alert->is_read = 0;
+                                    						$alert->save(); 
                     			             
-            //         			         }
+                    			         }
+            
                     			         
             //         			         	// //emails
-            //                         					foreach($email_array as $email){
-            //                         				$template = '"'.$opp_name.'" is approved for '. $apply.' by '.$sender_name.' Please Review : <a href="'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id.'">Click Here</a>';
-            //                         						require_once('include/SugarPHPMailer.php');
-            //                         						include_once('include/utils/db_utils.php');
-            //                         					    $emailObj = new Email();  
-            //                         					    $defaults = $emailObj->getSystemDefaultEmail();  
-            //                         					    $mail = new SugarPHPMailer();  
-            //                         					    $mail->setMailerForSystem();  
-            //                         					    $mail->From = $defaults['xelpmocdeveloper@gmail.com'];  
-            //                         					    $mail->FromName = $defaults['xelpmoc'];  
-            //                         					    $mail->Subject = ''. $opp_name.' is approved'; 
-            //                         						$mail->Body =$template;
-            //                         					    $mail->prepForOutbound();  
-            //                         					    $mail->AddAddress($email); 
-            //                         					    @$mail->Send();
-            //                         				}
+                                    					foreach($email_array as $email){
+                                    				$template = 'Opportunity "'.$opp_name.'" is approved for '. $apply.' by '.$approver_name.' Please Review : "'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id.'"';
+                                    						require_once('include/SugarPHPMailer.php');
+                                    						include_once('include/utils/db_utils.php');
+                                    					    $emailObj = new Email();  
+                                    					    $defaults = $emailObj->getSystemDefaultEmail();  
+                                    					    $mail = new SugarPHPMailer();  
+                                    					    $mail->setMailerForSystem();  
+                                    					    $mail->From = $defaults['xelpmoctestmail@gmail.com'];  
+                                    					    $mail->FromName = $defaults['CRM'];  
+                                    					    $mail->Subject = ''. $opp_name.' is approved'; 
+                                    						$mail->Body =$template;
+                                    					    $mail->prepForOutbound();  
+                                    					    $mail->AddAddress($email); 
+                                    					    @$mail->Send();
+                                    				}
               }
              
            
@@ -2451,17 +2312,20 @@ public function action_reject(){
            
            	$alert_users=array();
 				
-				  $sql="SELECT * FROM opportunities WHERE id = '".$opportunity_id."'";
+				  $sql="SELECT opportunities.name,opportunities.assigned_user_id,opportunities_cstm.multiple_approver_c FROM opportunities LEFT JOIN opportunities_cstm ON opportunities_cstm.id_c = opportunities.id WHERE opportunities.id='$opportunity_id'";
             
 			$result = $GLOBALS['db']->query($sql);
 			
 			while($row = $GLOBALS['db']->fetchByAssoc($result) )
 				{
 				   $opp_name=$row['name'];
-				   array_push($alert_users, $row['created_by']);
+				 //  array_push($alert_users, $row['created_by']);
 				   array_push($alert_users,$row['assigned_user_id']);
+				   $m_approver=$row['multiple_approver_c'];
                     
 				}
+				$m_approver_array=array();
+				$m_approver_array=explode(',',$m_approver);
 				  $sql2="SELECT * FROM tagged_user WHERE opp_id='".$opportunity_id."'";
         	$result2 = $GLOBALS['db']->query($sql2);
         	
@@ -2475,8 +2339,15 @@ public function action_reject(){
 				$tag_array=explode(',',$tag);
 				
 				$alert_users=array_merge($alert_users,$tag_array);
+				$alert_users=array_merge($alert_users,$m_approver_array);
+				
+				 if (($key = array_search($log_in_user_id,$alert_users)) !== false) {
+	    			       
+    unset($alert_users[$key]);
+}
 			
 			$alert_users=array_unique($alert_users);
+			
           	$sql1 = "SELECT  id, user_name,CONCAT(IFNULL(first_name,''), ' ', IFNULL(last_name,'')) AS fullname FROM users WHERE id='".$log_in_user_id."'  ";
 		 	$result1 = $GLOBALS['db']->query($sql1);
 			while($row1 = $GLOBALS['db']->fetchByAssoc($result1))
@@ -2524,35 +2395,37 @@ public function action_reject(){
               $sql='UPDATE approval_table SET Approved="'.$Approved.'" ,Rejected="'.$Rejected.'",pending="'.$pending.'", delegate_comments="'.$Comments.'", delegate_date_time="'.$date_time.'" WHERE opp_id="'.$opportunity_id.'"   AND delegate_id="'.$log_in_user_id.'"  AND status="'.$status.'" AND rfp_eoi_published="'.$rfp_eoi_published.'" AND pending=1';
               $result= $GLOBALS['db']->query($sql);
               echo "rejected";
-                   //alerts
-                    			         //foreach($alert_users as $user){
-                                //     			   $alert = BeanFactory::newBean('Alerts');
-                                //     						$alert->name ='"'.$opp_name.'"';
-                                //     						$alert->description = ' is rejected for '. $apply.' by '.$approver_name.'';
-                                //     						$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id;
-                                //     						$alert->target_module = 'Opportunities';
-                                //     						$alert->assigned_user_id = $user;
-                                //     						$alert->type = 'info';
-                                //     						$alert->is_read = 0;
-                                //     						$alert->save(); 
+                //   alerts
+                    			         foreach($alert_users as $user){
+                                    			   $alert = BeanFactory::newBean('Alerts');
+                                    						$alert->name ='Opportunity "'.$opp_name.'"';
+                                    						$alert->description = ' is rejected for '. $apply.' by '.$approver_name.'';
+                                    						$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id;
+                                    						$alert->target_module = 'Opportunities';
+                                    						$alert->assigned_user_id = $user;
+                                    						$alert->type = 'info';
+                                    						$alert->is_read = 0;
+                                    						$alert->save(); 
                     			             
-                    			         //}
-                    			         //	foreach($email_array as $email){
-                                //     				$template = '"'.$opp_name.'" is rejected for '. $apply.' by '.$sender_name.' Please Review : <a href="'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id.'">Click Here</a>';
-                                //     						require_once('include/SugarPHPMailer.php');
-                                //     						include_once('include/utils/db_utils.php');
-                                //     					    $emailObj = new Email();  
-                                //     					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                //     					    $mail = new SugarPHPMailer();  
-                                //     					    $mail->setMailerForSystem();  
-                                //     					    $mail->From = $defaults['xelpmocdeveloper@gmail.com'];  
-                                //     					    $mail->FromName = $defaults['xelpmoc'];  
-                                //     					    $mail->Subject = ''. $opp_name.'  is rejected'; 
-                                //     						$mail->Body =$template;
-                                //     					    $mail->prepForOutbound();  
-                                //     					    $mail->AddAddress($email); 
-                                //     					    @$mail->Send();
-                                //     				}
+                    			         }
+                    			         
+                    			         
+                    			         	foreach($email_array as $email){
+                                    				$template = 'Opportunity "'.$opp_name.'" is rejected for '. $apply.' by '.$approver_name.' Please Review : "'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id.'"';
+                                    						require_once('include/SugarPHPMailer.php');
+                                    						include_once('include/utils/db_utils.php');
+                                    					    $emailObj = new Email();  
+                                    					    $defaults = $emailObj->getSystemDefaultEmail();  
+                                    					    $mail = new SugarPHPMailer();  
+                                    					    $mail->setMailerForSystem();  
+                                    					    $mail->From = $defaults['xelpmoctestmail@gmail.com'];  
+                                    					    $mail->FromName = $defaults['CRM'];  
+                                    					    $mail->Subject = ''. $opp_name.'  is rejected'; 
+                                    						$mail->Body =$template;
+                                    					    $mail->prepForOutbound();  
+                                    					    $mail->AddAddress($email); 
+                                    					    @$mail->Send();
+                                    				}
          }
          
              
@@ -2571,34 +2444,36 @@ public function action_reject(){
               echo "rejected";
               
                //alerts
-                    			         //foreach($alert_users as $user){
-                                //     			   $alert = BeanFactory::newBean('Alerts');
-                                //     						$alert->name ='"'.$opp_name.'"';
-                                //     						$alert->description = ' is rejected for '. $apply.' by '.$approver_name.'';
-                                //     						$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id;
-                                //     						$alert->target_module = 'Opportunities';
-                                //     						$alert->assigned_user_id = $user;
-                                //     						$alert->type = 'info';
-                                //     						$alert->is_read = 0;
-                                //     						$alert->save(); 
+                    			         foreach($alert_users as $user){
+                                    			   $alert = BeanFactory::newBean('Alerts');
+                                    						$alert->name ='Opportunity "'.$opp_name.'"';
+                                    						$alert->description = ' is rejected for '. $apply.' by '.$approver_name.'';
+                                    						$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id;
+                                    						$alert->target_module = 'Opportunities';
+                                    						$alert->assigned_user_id = $user;
+                                    						$alert->type = 'info';
+                                    						$alert->is_read = 0;
+                                    						$alert->save(); 
                     			             
-                    			         //}
-                    			         //	foreach($email_array as $email){
-                                //     				$template = '"'.$opp_name.'" is rejected for '. $apply.' by '.$sender_name.' Please Review : <a href="'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id.'">Click Here</a>';
-                                //     						require_once('include/SugarPHPMailer.php');
-                                //     						include_once('include/utils/db_utils.php');
-                                //     					    $emailObj = new Email();  
-                                //     					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                //     					    $mail = new SugarPHPMailer();  
-                                //     					    $mail->setMailerForSystem();  
-                                //     					    $mail->From = $defaults['xelpmocdeveloper@gmail.com'];  
-                                //     					    $mail->FromName = $defaults['xelpmoc'];  
-                                //     					    $mail->Subject = ''. $opp_name.'  is rejected'; 
-                                //     						$mail->Body =$template;
-                                //     					    $mail->prepForOutbound();  
-                                //     					    $mail->AddAddress($email); 
-                                //     					    @$mail->Send();
-                                //     				}
+                    			         }
+                    			         
+                    			         
+                    			         	foreach($email_array as $email){
+                                    				$template = 'Opportunity "'.$opp_name.'" is rejected for '. $apply.' by '.$approver_name.' Please Review : "'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id.'"';
+                                    						require_once('include/SugarPHPMailer.php');
+                                    						include_once('include/utils/db_utils.php');
+                                    					    $emailObj = new Email();  
+                                    					    $defaults = $emailObj->getSystemDefaultEmail();  
+                                    					    $mail = new SugarPHPMailer();  
+                                    					    $mail->setMailerForSystem();  
+                                    					    $mail->From = $defaults['xelpmoctestmail@gmail.com'];  
+                                    					    $mail->FromName = $defaults['CRM'];  
+                                    					    $mail->Subject = ''. $opp_name.'  is rejected'; 
+                                    						$mail->Body =$template;
+                                    					    $mail->prepForOutbound();  
+                                    					    $mail->AddAddress($email); 
+                                    					    @$mail->Send();
+                                    				}
          }
          
          }
@@ -3366,13 +3241,16 @@ public function action_save_untagged_users_list(){
 
 public function action_save_tagged_users_list(){
      try{  
+         
+         	
         global $current_user;
        $op_id = $_POST['opps_id'];
        $tagged=$_POST['tagged'];
        $opp_name=$_POST['opp_name'];
        $base_url=$_POST['base_url'];
        $assigned_id=$_POST['assigned_id'];
-    	  $log_in_user_id = $current_user->id;
+       $log_in_user_id = $current_user->id;
+       //$arr_2=array();
    
    $tagged_array=explode(',',$tagged);
   
@@ -3542,7 +3420,7 @@ public function action_save_tagged_users_list(){
                                    
 			             
 				
-		                     	if( $db->query($update_sql)==TRUE){	
+		  	if( $db->query($update_sql)==TRUE){	
 		                     	    
 				while($row = $GLOBALS['db']->fetchByAssoc($result)){
 				    $old=$row['user_id'];
@@ -3551,46 +3429,79 @@ public function action_save_tagged_users_list(){
 				$old_array=explode(',',$old);
 				
 				$arr_1 = array_diff($tagged_array,$old_array);
+				$arr_2 = array_diff($old_array,$tagged_array);
 				// echo $old_array;
 				// echo $tagged_array;
-				// echo $arr_1;
+			
+			
 					$email_array=array();
+					$email_array_old=array();
 					$sql23 = "SELECT  * FROM users WHERE id IN ('".implode("','",$arr_1)."') ";
-		 	$result23 = $GLOBALS['db']->query($sql23);
-			while($row23 = $GLOBALS['db']->fetchByAssoc($result23))
-			{
-	    		    
-	    		  array_push($email_array,$row23['user_name']);
-			}
+		            	$result23 = $GLOBALS['db']->query($sql23);
+                			while($row23 = $GLOBALS['db']->fetchByAssoc($result23))
+                			{
+                	    		    
+                	    		  array_push($email_array,$row23['user_name']);
+                			}
+                			
+                				$sql25 = "SELECT  * FROM users WHERE id IN ('".implode("','",$arr_2)."') ";
+		            	$result25 = $GLOBALS['db']->query($sql25);
+                			while($row25 = $GLOBALS['db']->fetchByAssoc($result25))
+                			{
+                	    		    
+                	    		  array_push($email_array_old,$row25['user_name']);
+                			}
 	
-				// foreach($arr_1 as $user){
-    //                                 			   $alert = BeanFactory::newBean('Alerts');
-    //                                 						//$alert->name =$opp_name;
-    //                                 						$alert->description = 'You have been tagged for opportunity "'.$opp_name.'"';
-    //                                 						$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$op_id;
-    //                                 						$alert->target_module = 'Opportunities';
-    //                                 						$alert->assigned_user_id = $user;
-    //                                 						$alert->type = 'info';
-    //                                 						$alert->is_read = 0;
-    //                                 						$alert->save();
-    //                                 						}
-    //                                 				// //emails
-    //                                 					foreach($email_array as $email){
-    //                                 				$template = 'You have been tagged for opportunity "'.$opp_name.'" Please Review : <a href="'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$op_id.'">Click Here</a>';
-    //                                 						require_once('include/SugarPHPMailer.php');
-    //                                 						include_once('include/utils/db_utils.php');
-    //                                 					    $emailObj = new Email();  
-    //                                 					    $defaults = $emailObj->getSystemDefaultEmail();  
-    //                                 					    $mail = new SugarPHPMailer();  
-    //                                 					    $mail->setMailerForSystem();  
-    //                                 					    $mail->From = $defaults['xelpmocdeveloper@gmail.com'];  
-    //                                 					    $mail->FromName = $defaults['xelpmoc'];  
-    //                                 					    $mail->Subject = 'You have been tagged for opportunity "'.$opp_name.'"'; 
-    //                                 						$mail->Body =$template;
-    //                                 					    $mail->prepForOutbound();  
-    //                                 					    $mail->AddAddress($email); 
-    //                                 					    @$mail->Send();
-    //                                 				}			
+				foreach($arr_1 as $user){
+                                    			   $alert = BeanFactory::newBean('Alerts');
+                                    						//$alert->name =$opp_name;
+                                    						$alert->description = 'You have been tagged. Now you can edit /make changes to opportunity "'.$opp_name.'"';
+                                    						$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$op_id;
+                                    						$alert->target_module = 'Opportunities';
+                                    						$alert->assigned_user_id = $user;
+                                    						$alert->type = 'info';
+                                    						$alert->is_read = 0;
+                                    						$alert->save();
+                                    					}
+                                    						
+                                    				// //emails
+                                    				foreach($email_array_old as $email){
+    
+    
+                                    			        	$template = 'You have been untagged for opportunity "'.$opp_name.'"';
+                                    						require_once('include/SugarPHPMailer.php');
+                                    						include_once('include/utils/db_utils.php');
+                                    					    $emailObj = new Email();  
+                                    					    $defaults = $emailObj->getSystemDefaultEmail();  
+                                    					    $mail = new SugarPHPMailer();  
+                                    					    $mail->setMailerForSystem();  
+                                    					    $mail->From = $defaults['xelpmoctestmail@gmail.com'];  
+                                    					    $mail->FromName = $defaults['CRM'];  
+                                    					    $mail->Subject = 'You have been Untagged for opportunity "'.$opp_name.'"'; 
+                                    						$mail->Body =$template;
+                                    					    $mail->prepForOutbound();  
+                                    					    $mail->AddAddress($email); 
+                                    					    @$mail->Send();
+                                    				}			
+                                    				
+                                    						foreach($email_array as $email1){
+    
+    
+                                    			        	$template = 'You have been tagged for opportunity "'.$opp_name.'" Please Review : "'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$op_id.'"';
+                                    						require_once('include/SugarPHPMailer.php');
+                                    						include_once('include/utils/db_utils.php');
+                                    					    $emailObj = new Email();  
+                                    					    $defaults = $emailObj->getSystemDefaultEmail();  
+                                    					    $mail = new SugarPHPMailer();  
+                                    					    $mail->setMailerForSystem();  
+                                    					    $mail->From = $defaults['xelpmoctestmail@gmail.com'];  
+                                    					    $mail->FromName = $defaults['CRM'];  
+                                    					    $mail->Subject = 'You have been tagged for opportunity "'.$opp_name.'"'; 
+                                    						$mail->Body =$template;
+                                    					    $mail->prepForOutbound();  
+                                    					    $mail->AddAddress($email1); 
+                                    					    @$mail->Send();
+                                    				}			
 			}
 			
 			
@@ -3632,8 +3543,8 @@ public function action_save_tagged_users_list(){
                                 //     					    $defaults = $emailObj->getSystemDefaultEmail();  
                                 //     					    $mail = new SugarPHPMailer();  
                                 //     					    $mail->setMailerForSystem();  
-                                //     					    $mail->From = $defaults['xelpmocdeveloper@gmail.com'];  
-                                //     					    $mail->FromName = $defaults['xelpmoc'];  
+                                //     					    $mail->From = $defaults['xelpmoctestmail@gmail.com'];  
+                                //     					    $mail->FromName = $defaults['CRM'];  
                                 //     					    $mail->Subject = 'You have been tagged for opportunity "'.$opp_name.'"'; 
                                 //     						$mail->Body =$template;
                                 //     					    $mail->prepForOutbound();  
@@ -3861,7 +3772,7 @@ public function action_new_assigned_list(){
               $rr_name=array();
                $n=1;
     	  $log_in_user_id = $current_user->id;
-    	  
+    	 
     	  
     	   $sql5='SELECT * FROM opportunities WHERE id="'.$opportunity_id.'"';
     	    $result5 = $GLOBALS['db']->query($sql5);
@@ -4217,7 +4128,7 @@ public function action_new_assigned_list(){
             
              if($log_in_user_id==$assigned_id||$log_in_user_id==$reports_to||$opportunity_id==''||$log_in_user_id==$team_lead_id){
                  
-               
+                
                   
                    $sql1="SELECT users_cstm.teamfunction_c,users_cstm.teamheirarchy_c, users1.id,CONCAT(IFNULL(users1.first_name,''), ' ', IFNULL(users1.last_name,'')) AS name,CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS r_name FROM users INNER JOIN users as users1 ON users.id=users1.reports_to_id INNER JOIN users_cstm ON users_cstm.id_c=users1.id WHERE users1.id IN ('".implode("','",$id_array1)."') AND users1.deleted=0 ORDER BY `name` ASC";
         $result1 = $GLOBALS['db']->query($sql1);
@@ -4281,15 +4192,19 @@ public function action_new_assigned_list(){
                     			    	}
                     			    
                     			    	
-                    	
+                    	 
                     			    	  
                     			    if( $value2==1 )	{
                     			         echo json_encode("block");
+                    			                          			    }
+                    			                          			    else{
+                    			                          			          echo json_encode(array('1'=>$name_array,'2'=>$h_array,'3'=>$r_name,'a'=>$combined));
                     			                          			    }
                     			                          			    
                     			    }
                     			    
                     			else{
+                    			 
                     			    echo json_encode(array('1'=>$name_array,'2'=>$h_array,'3'=>$r_name,'a'=>$combined));
                     			    
                     			}

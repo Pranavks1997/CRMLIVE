@@ -637,6 +637,47 @@ $.ajax({
     $("#type_of_interaction_c").css("background-color", "#d8f5ee");
   }
 });
+
+
+    
+    $('#parent_name').on('click blur', function(e) {
+        if(e.type === 'click'){
+            $('#btn_parent_name').trigger('click');
+        }
+        else if(e.type === 'blur'){
+            var oppurtunity_id = $('#parent_id').val();
+            if($('#parent_type').val() == 'Opportunities'){
+                if(oppurtunity_id != ''){
+               
+                                        $.ajax({
+                                                url : 'index.php?module=Calls&action=oppurtunity_status',
+                                                type : 'POST',
+                                                dataType: "json",
+                                                 data :
+                                                    {
+                                                        opp_id:oppurtunity_id ,
+                                                    },
+                                                success : function(data){
+                                                    var x=data.opp_status;
+                                                  if (data.status = true){
+                                                      
+                                                         $('#audit_trail_c').val(x.join('\r\n'))
+                                                        $('#audit_trail_c').attr('readonly',true);
+                                                  }else{
+                                                      alert(data.message);
+                                                      window.location.reload();
+                                                  }
+                                                }
+                                            });
+                                
+                    
+                   
+                }
+            }
+        }
+    });
+    
+  
    
   //*************************************************Write code above this line**********************************  
 });
