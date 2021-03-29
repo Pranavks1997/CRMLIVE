@@ -74,8 +74,8 @@ function getPendingDocumentRequestCount() {
             res = JSON.parse(res)
             console.log("Pending Count Number ::: ", res);
             $('.pending-document-request-count').html(res.count + " <i class='fa fa-angle-double-down' aria-hidden='true'></i>");
-            if (res && res.delegate_count == 0){
-                $(".doc_dele_count").attr('value',res.delegate_count);
+            if (res && res.delegate_count == 0) {
+                $(".doc_dele_count").attr('value', res.delegate_count);
             }
             if (res && res.count == 0) {
                 $('#click-here-text-document').html('');
@@ -383,13 +383,12 @@ function updateDocumentStatus() {
         success: function (data) {
             console.log("test", data);
             data = JSON.parse(data);
-            debugger
             if (data.status) {
                 fetchDocumentByStatus();
                 getPendingDocumentRequestCount();
-
                 openDocumentApprovalDialog('close');
                 documentdateBetween('30')
+                alert(data.description);
             } else {
                 alert(data.message);
             }
@@ -527,8 +526,11 @@ function handleNoteDialog(event) {
                 note: note
             },
             success: function (data) {
+                var parsed_data = JSON.parse(data);
+                alert("Your note has been sent successfully!");
                 dialog.style.display = "none";
                 document.getElementById('note').value = "";
+
             },
             error: function (data, errorThrown) {
                 alert(errorThrown);
@@ -582,7 +584,8 @@ $('#document_delegate_submit').click(function () {
                 // delegate_Edit: delegate_Edit,
             },
             success: function (data) {
-                console.log(data);
+                data = JSON.parse(data);
+                alert(data.proxy_name + " has been delegated");
                 var delegateModel = document.getElementById("documentDelegatemyModel");
                 delegateModel.style.display = "none";
             }
@@ -677,8 +680,17 @@ function handleTagDialog(event) {
             data: $('.document_tag_func').serialize(),
 
             success: function (data) {
-                debugger;
+                // debugger;
+                // alert("Your note has been sent successfully!");
+                var parsed_data = JSON.parse(data);
+                var message = "";
                 dialog.style.display = "none";
+
+                if (parsed_data.tagged_users) {
+                    message = message + parsed_data.tagged_users + " have been tagged";
+                    alert(message);
+                }
+
                 // select_dialogue.style.display = "none";
             },
             error: function (data, errorThrown) {

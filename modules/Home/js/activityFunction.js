@@ -6,8 +6,8 @@ function getPendingActivityRequestCount() {
         success: function (res) {
             res = JSON.parse(res)
             $('.pending-activity-request-count').html(res.count + " <i class='fa fa-angle-double-down' aria-hidden='true'></i>");
-            if (res && res.delegate_count == 0){
-                $(".activity_dele_count").attr('value',res.delegate_count)
+            if (res && res.delegate_count == 0) {
+                $(".activity_dele_count").attr('value', res.delegate_count)
             }
             if (res && res.count == 0) {
                 $('#click-here-text-activity').html('');
@@ -188,7 +188,7 @@ function fetchReminderDialog(id) {
  * @param {opp_id} id
  */
 
-function fetchTagDialog(id) {
+function fetchActivityTagDialog(id) {
     var dialog = document.getElementById('tag-activity-modal');
 
     $.ajax({
@@ -233,7 +233,7 @@ function activityclearDeselectDropDownValue() {
  * @param {discard,submit and close} event 
  */
 
-function handleTagDialog(event) {
+function handleActivityTagDialog(event) {
 
     var dialog = document.getElementById('tag-activity-modal');
     // var select_dialogue = document.getElementById('activity_member_info');
@@ -250,8 +250,15 @@ function handleTagDialog(event) {
             type: 'POST',
             data: $('.activity_tag_func').serialize(),
             success: function (data) {
+                var parsed_data = JSON.parse(data);
+                var message = "";
+                if (parsed_data.tagged_users) {
+                    message = message + parsed_data.tagged_users + " have been tagged";
+                    alert(message);
+                }
+
                 dialog.style.display = "none";
-                select_dialogue.style.display = "none";
+                // select_dialogue.style.display = "none";
             }
         });
     } else {
@@ -550,6 +557,7 @@ function updateActivityStatus() {
                 getPendingActivityRequestCount();
                 openActivityApprovalDialog('close');
                 activitydateBetween('30')
+                alert(data.description);
             } else {
                 alert(data.message);
             }
@@ -633,7 +641,6 @@ function activityhandleReassignmentDialog(event) {
 
             var assigned_opportunity_id = document.getElementById('assigned_activity_id').value;
             var assigned_name = document.getElementById('activity_assigned_to_new_c').value;
-
             $.ajax({
                 url: 'index.php?module=Home&action=activity_update_assigned',
                 type: 'POST',
@@ -643,14 +650,12 @@ function activityhandleReassignmentDialog(event) {
                 },
                 success: function (data) {
                     dat = JSON.parse(data)
+                    alert(dat.description);
                     if (dat.message == "false") {
                         alert("Please check assigned user name");
                     }
 
                     else {
-
-
-
                         $.ajax({
                             url: 'index.php?module=Home&action=activity_assigned_history',
                             type: 'POST',
@@ -702,25 +707,25 @@ function getDelegateMembersActivity() {
 function fetchActivityDelegateDialog() {
     var response_state = $('.activity_dele_count').val()
     var dialog = document.getElementById('activityDelegatemyModel');
-    if (response_state != 0 ){
+    if (response_state != 0) {
         dialog.style.display = "block";
         $.ajax({
             url: 'index.php?module=Home&action=activity_delegated_dialog_info',
             type: 'GET',
             data: {},
             success: function (data) {
-    
+
                 var parsed_data = JSON.parse(data);
                 $('#activity_delegated_info').html(parsed_data.delegated_info);
                 // dialog.style.display = "block";
             }
-        }); 
+        });
     }
-    else{
+    else {
         dialog.style.display = "none";
         alert("There are no pending Activity to delegate");
     }
-    
+
 }
 $('#activity_delegate_submit').click(function () {
     var Select_Proxy = $('#activity_Select_Proxy').val();
@@ -736,6 +741,8 @@ $('#activity_delegate_submit').click(function () {
                 // delegate_Edit: delegate_Edit,
             },
             success: function (data) {
+                data = JSON.parse(data);
+                alert(data.proxy_name + " has been delegated");
                 var delegateModel = document.getElementById("activityDelegatemyModel");
                 delegateModel.style.display = "none";
             }

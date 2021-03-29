@@ -513,26 +513,39 @@ function activityReminder()
     $result1 = $db->query($get_user_email);
     $data = $GLOBALS['db']->fetchByAssoc($result1);
   send_email($row['name'], $data['user_name']);
+  $description = "Reminder";
+  $link = "index.php?module=Calls&action=DetailView&record=".$row['id'];
+  send_notification('activity',$row['name'],$description,[$row['assigned_user_id']],$link);
 }
  function send_email($activity_name,$email){
-     		$template = "Remainder for '$activity_name' is to be completed";
+     		$template = "Reminder for '$activity_name' is to be completed";
             require_once('include/SugarPHPMailer.php');
             include_once('include/utils/db_utils.php');
             $emailObj = new Email();  
             $defaults = $emailObj->getSystemDefaultEmail();  
             $mail = new SugarPHPMailer();  
             $mail->setMailerForSystem();  
-            $mail->From = $defaults['xelpmocdeveloper@gmail.com'];  
-            $mail->FromName = $defaults['xelpmoc'];  
+            $mail->From = $defaults['email'];  
+            $mail->FromName = $defaults['name'];  
             $mail->Subject = "Reminder for activity"; 
             $mail->Body =$template;
             $mail->prepForOutbound();  
             $mail->AddAddress($email); 
-            $mail->Send();                 
-	
-    
+            $mail->Send();                   
 }
-
+function send_notification($module,$name,$description,$users,$redirectUrl){
+    foreach($users as $id) {
+        $alert = BeanFactory::newBean('Alerts');
+        $alert->name =$name;
+        $alert->description = $description;
+        $alert->url_redirect = $redirectUrl;
+        $alert->target_module = $module;
+        $alert->assigned_user_id = $id; 
+        $alert->type = 'info';
+        $alert->is_read = 0;
+        $alert->save();
+    }
+}
 function activityDate(){
         try{
             $db = \DBManagerFactory::getInstance();
