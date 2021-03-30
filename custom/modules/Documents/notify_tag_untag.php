@@ -49,7 +49,7 @@ class notify_tag_untag
 				    	// Send Notification to newly tagged member
 				    	$alert = BeanFactory::newBean('Alerts');
 		                $alert->name = '';
-		                $alert->description = 'You have been tagged for Document "'.$bean->document_name.'".Now you can edit / make changes';
+		                $alert->description = 'You have been tagged for document "'.$bean->document_name.'".Now you can edit / make changes';
 		                $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$bean->id;
 		                $alert->target_module = 'Documents';
 		                $alert->assigned_user_id = $user_id;
@@ -58,7 +58,7 @@ class notify_tag_untag
 		                $alert->save();
 
 		                // Send email to newly tagged member
-						$template = 'You have been tagged for Document "'.$bean->document_name.'".Now you can edit / make changes';
+						$template = 'You have been tagged for document "'.$bean->document_name.'".Now you can edit / make changes';
 
 						$emailObj = new Email();  
 						$defaults = $emailObj->getSystemDefaultEmail();  
@@ -66,7 +66,7 @@ class notify_tag_untag
 						$mail->setMailerForSystem();  
 						$mail->From = $defaults['email'];  
 						$mail->FromName = $defaults['name'];  
-						$mail->Subject = 'Document tagging mail for - '.$bean->document_name.'';
+						$mail->Subject = 'CRM ALERT - Tagged';
 						$mail->Body =$template;
 						$mail->prepForOutbound();  
 						$mail->AddAddress($user['user_name']);
@@ -97,7 +97,7 @@ class notify_tag_untag
 				    	// Send Notification to newly untagged member
 				    	$alert = BeanFactory::newBean('Alerts');
 		                $alert->name = '';
-		                $alert->description = 'You have been untagged from Document "'.$bean->document_name.'"';
+		                $alert->description = 'You have been untagged from document "'.$bean->document_name.'"';
 		                $alert->url_redirect = 'index.php?action=listView&module=Documents';
 		                $alert->target_module = 'Documents';
 		                $alert->assigned_user_id = $user_id;
@@ -106,7 +106,7 @@ class notify_tag_untag
 		                $alert->save();
 
 		                // Send email to newly untagged member
-						$template = 'Document "'.$bean->document_name.'" has been untagged from you';
+						$template = 'You have been untagged from document "'.$bean->document_name.'"';
 
 						$emailObj = new Email();  
 						$defaults = $emailObj->getSystemDefaultEmail();  
@@ -114,7 +114,7 @@ class notify_tag_untag
 						$mail->setMailerForSystem();  
 						$mail->From = $defaults['email'];  
 						$mail->FromName = $defaults['name'];  
-						$mail->Subject = 'You have been untagged from Document "'.$bean->document_name.'"';
+						$mail->Subject = 'CRM ALERT - Untagged';
 						$mail->Body =$template;
 						$mail->prepForOutbound();  
 						$mail->AddAddress($user['user_name']);

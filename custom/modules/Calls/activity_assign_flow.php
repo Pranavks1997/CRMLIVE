@@ -2,6 +2,9 @@
 
 if (!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
+require_once('include/SugarPHPMailer.php');
+include_once('include/utils/db_utils.php');
+
 class activity_assign
 {
 
@@ -34,7 +37,7 @@ class activity_assign
                
                $bean->db->query("INSERT INTO `activity_assign_flow`(`acc_id`, `assigned_by`, `assigned_to_id`, `approver_ids`,`status`,`acc_type`) VALUES ('".$id."','".$assigned_by."','".$assigned_to."','".$approvers."','".$acc_status."','".$acc_type."')");
 
-               
+
                 if(!(bool)$bean->fetched_row){
                     // Send Notification To Respective Approver 
                     $sql = "SELECT * FROM users WHERE id='".$bean->user_id_c."'";
@@ -43,13 +46,46 @@ class activity_assign
                     while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
                         $alert = BeanFactory::newBean('Alerts');
                         $alert->name = '';
-                        $alert->description = 'New Activity "'.$bean->name.'" Created by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+                        $alert->description = 'New activity "'.$bean->name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'"';
                         $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$bean->id;
                         $alert->target_module = 'Activities';
                         $alert->assigned_user_id = $bean->user_id_c;
                         $alert->type = 'info';
                         $alert->is_read = 0;
                         $alert->save();
+
+                        // Get approver user details
+                        $user = $this->getUserByID($bean->user_id_c);
+
+                        // Send mail to approver
+                        $template = 'New activity "'.$bean->name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+                        $emailObj = new Email();  
+                        $defaults = $emailObj->getSystemDefaultEmail();  
+                        $mail = new SugarPHPMailer();  
+                        $mail->setMailerForSystem();  
+                        $mail->From = $defaults['email'];  
+                        $mail->FromName = $defaults['name'];  
+                        $mail->Subject = 'CRM ALERT - Activity created.';
+                        $mail->Body =$template;
+                        $mail->prepForOutbound();  
+                        $mail->AddAddress($user['user_name']);
+                        @$mail->Send();
+
+                        // Send mail to creator
+                        $template = 'You have created activity "'.$bean->name.'".';
+
+                        $emailObj = new Email();  
+                        $defaults = $emailObj->getSystemDefaultEmail();  
+                        $mail = new SugarPHPMailer();  
+                        $mail->setMailerForSystem();  
+                        $mail->From = $defaults['email'];  
+                        $mail->FromName = $defaults['name'];  
+                        $mail->Subject = 'CRM ALERT - Activity created.';
+                        $mail->Body =$template;
+                        $mail->prepForOutbound();  
+                        $mail->AddAddress($current_user->user_name);
+                        @$mail->Send();
 
                         // Setting session data for alert
                         $_SESSION['flash'][$current_user->id] = [
@@ -63,4 +99,17 @@ class activity_assign
              
 
         
-    }}
+    }
+
+    private function getUserByID($user_id){
+        $sql = "SELECT * FROM `users` WHERE id='".$user_id."'";
+        $result = $GLOBALS['db']->query($sql);
+        
+        $data = [];
+        while($row = $GLOBALS['db']->fetchByAssoc($result)){
+            $data = $row;
+        }
+
+        return $data;
+    }
+}

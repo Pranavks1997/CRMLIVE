@@ -1067,7 +1067,7 @@ public function action_send_approval(){
     $mail->setMailerForSystem();  
     $mail->From = $defaults['email'];  
     $mail->FromName = $defaults['name'];  
-    $mail->Subject = 'Activity '.$activity_name.' approval request';
+    $mail->Subject = 'CRM ALERT - Approval Request';
     $mail->Body =$template;
     $mail->IsHTML(true); 
     $mail->prepForOutbound();  
@@ -1278,7 +1278,7 @@ public function action_approve(){
       $alert = BeanFactory::newBean('Alerts');
       $alert->name = '';
 
-      $alert->description = 'Activity "'.$activity_name.'" is approved for "Completed" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $alert->description = 'Activity "'.$activity_name.'" is approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
       $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
       $alert->target_module = 'Activities';
@@ -1288,7 +1288,7 @@ public function action_approve(){
       $alert->save();
 
       // Send email to assigned user
-      $template = 'Activity "'.$activity_name.'" is approved for "Completed" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $template = 'Activity "'.$activity_name.'" is approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
       $emailObj = new Email();  
       $defaults = $emailObj->getSystemDefaultEmail();
@@ -1297,7 +1297,7 @@ public function action_approve(){
       $mail->setMailerForSystem();  
       $mail->From = $defaults['email'];  
       $mail->FromName = $defaults['name'];  
-      $mail->Subject = 'Activity '.$activity_name.' approval mail';
+      $mail->Subject = 'CRM ALERT - Approved';
       $mail->Body =$template;
       $mail->IsHTML(true); 
       $mail->prepForOutbound();  
@@ -1329,7 +1329,7 @@ public function action_approve(){
         $mail->setMailerForSystem();  
         $mail->From = $defaults['email'];  
         $mail->FromName = $defaults['name'];  
-        $mail->Subject = 'Activity '.$activity_name.' approval mail';
+        $mail->Subject = 'CRM ALERT - Approved';
         $mail->Body =$template;
         $mail->IsHTML(true); 
         $mail->prepForOutbound();  
@@ -1436,7 +1436,7 @@ public function action_reject(){
       
       // $alert->description = 'Activity "'.$activity_name.'" assigned to "'.$assigned_to_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
-      $alert->description = 'Activity "'.$activity_name.'" is rejected for "Apply for Complete" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $alert->description = 'Activity "'.$activity_name.'" is rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
       $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
       $alert->target_module = 'Activities';
@@ -1446,7 +1446,7 @@ public function action_reject(){
       $alert->save();
 
       // Send email to assigned user
-      $template = 'Activity "'.$activity_name.'" is rejected for "Apply for Complete" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $template = 'Activity "'.$activity_name.'" is rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
       $emailObj = new Email();  
       $defaults = $emailObj->getSystemDefaultEmail();  
@@ -1454,7 +1454,7 @@ public function action_reject(){
       $mail->setMailerForSystem();  
       $mail->From = $defaults['email'];  
       $mail->FromName = $defaults['name'];  
-      $mail->Subject = 'Activity '.$activity_name.' rejection mail';
+      $mail->Subject = 'CRM ALERT - Rejected';
       $mail->Body =$template;
       $mail->IsHTML(true); 
       $mail->prepForOutbound();  
@@ -1486,7 +1486,7 @@ public function action_reject(){
         $mail->setMailerForSystem();  
         $mail->From = $defaults['email'];  
         $mail->FromName = $defaults['name'];  
-        $mail->Subject = 'Activity '.$activity_name.' rejection mail';
+        $mail->Subject = 'CRM ALERT - Rejected';
         $mail->Body =$template;
         $mail->IsHTML(true); 
         $mail->prepForOutbound();  
