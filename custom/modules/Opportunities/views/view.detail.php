@@ -24,9 +24,20 @@ class OpportunitiesViewDetail extends ViewDetail
 
 public function display(){
 		
-	echo file_get_contents("custom/modules/Calls/other_multi_select_user/m-select.html");
-	 echo '<link rel="stylesheet" type="text/css" href="custom/modules/Calls/quick_create_custom.css">';
-	 echo file_get_contents("custom/modules/Opportunities/form.html");
+		echo file_get_contents("custom/modules/Calls/other_multi_select_user/m-select.html");
+		echo '<link rel="stylesheet" type="text/css" href="custom/modules/Calls/quick_create_custom.css">';
+		echo file_get_contents("custom/modules/Opportunities/form.html");
+	 
+		global $current_user;
+    	$log_in_user_id = $current_user->id;
+
+    	if(isset($_SESSION['flash'][$log_in_user_id])){
+    		echo '<script>
+    			alert(\''.$_SESSION['flash'][$log_in_user_id]['message'].'\')
+    		</script>';
+
+    		unset($_SESSION['flash'][$log_in_user_id]);
+    	}
 	 
 		if(!empty($this->bean->id)){
 			$this->ss->assign('ATTACHMENTS',$this->getAttachments($this->bean->id,'Opportunity'));

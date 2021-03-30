@@ -7129,11 +7129,14 @@ var base_url = window.location.href.split('?')[0];
      
     // })
    // alert(tagged);
+  
+   
      var assigned_id = $("#assigned_user_id").val();
+      
      $.ajax({
                 url : 'index.php?module=Opportunities&action=save_tagged_users_list',
                 type : 'POST',
-                dataType: "json",
+              //  dataType: "json",
                 data:{
                  opps_id,
                  tagged,
@@ -7143,8 +7146,9 @@ var base_url = window.location.href.split('?')[0];
                 },
                  
                 success : function(data){
-                
-                 alert(data);
+                 
+               
+                 //alert(data);
                  
                 }
      
@@ -8661,11 +8665,11 @@ $.ajax({
         },
         
         success : function(data1){
-           
+          
            
              datw=JSON.parse(data1);
            
-          
+         
            
            if(datw=='block'){
            $('#assigned_to_new_c').attr('readonly',true);
@@ -8697,7 +8701,7 @@ $.ajax({
             minLength: 0,
             scroll: true
         }).keydown(function() {
-          
+         
             $(this).autocomplete("search", "");
         });
              

@@ -16,20 +16,30 @@ $hook_array['after_relationship_delete'] = Array();
 $hook_array['after_relationship_delete'][] = Array(77, 'deleteRelationship', 'modules/Opportunities/OpportunitiesJjwg_MapsLogicHook.php','OpportunitiesJjwg_MapsLogicHook', 'deleteRelationship'); 
 $hook_array['before_save'] = Array(); 
 $hook_array['before_save'][] = Array(90, 'Attachments', 'custom/modules/Opportunities/uploadAttchments.php','cls_attachments', 'fn_attachments'); 
+
 $hook_array['after_save'] = Array();
 $hook_array['after_save'][] = Array(
-    83,
-    'Retrieve and compare values',
-    'custom/modules/Opportunities/updateHistory.php',
-    'updateHistory',
-    'after_save_method'
-);
-$hook_array['after_save'] = Array();
-$hook_array['after_save'][] = Array(
-    84,
+    81,
     'Retrieve and compare values',
     'custom/modules/Opportunities/description.php',
     'description',
     'description_save'
+);
+
+
+$hook_array['after_save'][] = Array(
+    82,
+    'compare values',
+    'custom/modules/Opportunities/updateHistory.php',
+    'updateHistory',
+    'after_save_method'
+);
+
+$hook_array['after_save'][] = Array(
+    83,
+    'Nofitication',
+    'custom/modules/Opportunities/notification.php',
+    'notification',
+    'send'
 );
 ?>

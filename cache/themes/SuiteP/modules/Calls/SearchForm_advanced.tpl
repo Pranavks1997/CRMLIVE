@@ -66,8 +66,8 @@
             <div class="form-item">
                                 
 <select name='parent_type_advanced'   id='parent_type_advanced' title=''
-onchange='document.popup_query_form.{$fields.parent_name_advanced.name}.value="";document.popup_query_form.parent_id.value=""; 
-        changeParentQSSearchView("{$fields.parent_name_advanced.name}"); checkParentType(document.popup_query_form.parent_type_advanced.value, document.popup_query_form.btn_{$fields.parent_name_advanced.name});'>
+onchange='document.search_form.{$fields.parent_name_advanced.name}.value="";document.search_form.parent_id.value=""; 
+        changeParentQSSearchView("{$fields.parent_name_advanced.name}"); checkParentType(document.search_form.parent_type_advanced.value, document.search_form.btn_{$fields.parent_name_advanced.name});'>
 {html_options options=$fields.parent_name_advanced.options selected=$fields.parent_type_advanced.value}
 </select>
 <br>
@@ -80,7 +80,7 @@ onchange='document.popup_query_form.{$fields.parent_name_advanced.name}.value=""
 <span class="id-ff multiple">
 <button type="button" name="btn_{$fields.parent_name_advanced.name}"   title="{$APP.LBL_SELECT_BUTTON_TITLE}"
 	   class="button firstChild" value="{$APP.LBL_SELECT_BUTTON_LABEL}"
-	   onclick='if(document.popup_query_form.parent_type_advanced.value != "") open_popup(document.popup_query_form.parent_type_advanced.value, 600, 400, "", true, false, {literal}{"call_back_function":"set_return","form_name":"popup_query_form","field_to_name_array":{"id":"parent_id","name":"parent_name_advanced"}}{/literal}, "single", true);'><span class="suitepicon suitepicon-action-select"></span></button>
+	   onclick='if(document.search_form.parent_type_advanced.value != "") open_popup(document.search_form.parent_type_advanced.value, 600, 400, "", true, false, {literal}{"call_back_function":"set_return","form_name":"search_form","field_to_name_array":{"id":"parent_id","name":"parent_name_advanced"}}{/literal}, "single", true);'><span class="suitepicon suitepicon-action-select"></span></button>
 <button type="button" name="btn_clr_{$fields.parent_name_advanced.name}"   title="{$APP.LBL_CLEAR_BUTTON_TITLE}"  class="button lastChild" onclick="this.form.{$fields.parent_name_advanced.name}.value = ''; this.form.{$fields.parent_name_advanced.id_name}.value = '';" value="{$APP.LBL_CLEAR_BUTTON_LABEL}">
 <span class="suitepicon suitepicon-action-clear"></span>
 </button>
@@ -226,7 +226,7 @@ YAHOO.util.Event.onContentReady(
 <script type="text/javascript">
 Calendar.setup ({ldelim}
 inputField : "{$fields.activity_date_c_advanced.name}",
-form : "popup_query_form",
+form : "",
 ifFormat : "{$CALENDAR_FORMAT}",
 daFormat : "{$CALENDAR_FORMAT}",
 button : "{$fields.activity_date_c_advanced.name}_trigger",
@@ -259,18 +259,29 @@ weekNumbers:false
                             </div>
             <div class="form-item">
                                 
-<span class="dateTime">
-{assign var=date_value value=$fields.date_entered_advanced.value }
-<input class="date_input" autocomplete="off" type="text" name="{$fields.date_entered_advanced.name}" id="{$fields.date_entered_advanced.name}" value="{$date_value}" title=''  tabindex='0'    size="11" maxlength="10" >
-    <button type="button" id="{$fields.date_entered_advanced.name}_trigger" class="btn btn-danger" onclick="return false;"><span class="suitepicon suitepicon-module-calendar" alt="{$APP.LBL_ENTER_DATE}"></span></button>
-</span>
+{assign var="id" value=$fields.date_entered_advanced.name }
+
+{if isset($smarty.request.date_entered_advanced_range_choice)}
+{assign var="starting_choice" value=$smarty.request.date_entered_advanced_range_choice}
+{else}
+{assign var="starting_choice" value="="}
+{/if}
+
+<div class="clear hidden dateTimeRangeChoiceClear"></div>
+<div class="dateTimeRangeChoice" style="white-space:nowrap !important;">
+<select id="{$id}_range_choice" name="{$id}_range_choice" onchange="{$id}_range_change(this.value);">
+{html_options options=$fields.date_entered_advanced.options selected=$starting_choice}
+</select>
+</div>
+
+<div id="{$id}_range_div" style="{if preg_match('/^\[/', $smarty.request.range_date_entered_advanced)  || $starting_choice == 'between'}display:none{else}display:''{/if};">
+<input autocomplete="off" type="text" name="range_{$id}" id="range_{$id}" value='{if empty($smarty.request.range_date_entered_advanced) && !empty($smarty.request.date_entered_advanced)}{$smarty.request.date_entered_advanced}{else}{$smarty.request.range_date_entered_advanced}{/if}' title=''   size="11" class="dateRangeInput">
+    <button id="{$id}_trigger" type="button" onclick="return false;" class="btn btn-danger"><span class="suitepicon suitepicon-module-calendar"  alt="{$APP.LBL_ENTER_DATE}"></span></button>
 <script type="text/javascript">
 Calendar.setup ({ldelim}
-inputField : "{$fields.date_entered_advanced.name}",
-form : "popup_query_form",
-ifFormat : "{$CALENDAR_FORMAT}",
+inputField : "range_{$id}",
 daFormat : "{$CALENDAR_FORMAT}",
-button : "{$fields.date_entered_advanced.name}_trigger",
+button : "{$id}_trigger",
 singleClick : true,
 dateStr : "{$date_value}",
 startWeekday: {$CALENDAR_FDOW|default:'0'},
@@ -279,7 +290,130 @@ weekNumbers:false
 {rdelim}
 );
 </script>
+    
+</div>
 
+<div id="{$id}_between_range_div" style="{if $starting_choice=='between'}display:'';{else}display:none;{/if}">
+{assign var=date_value value=$fields.date_entered_advanced.value }
+<input autocomplete="off" type="text" name="start_range_{$id}" id="start_range_{$id}" value='{$smarty.request.start_range_date_entered_advanced }' title=''  tabindex='' size="11" class="dateRangeInput">
+    <button id="start_range_{$id}_trigger" type="button" onclick="return false" class="btn btn-danger"><span class="suitepicon suitepicon-module-calendar" alt="{$APP.LBL_ENTER_DATE}"></span></button>
+<script type="text/javascript">
+Calendar.setup ({ldelim}
+inputField : "start_range_{$id}",
+daFormat : "{$CALENDAR_FORMAT}",
+button : "start_range_{$id}_trigger",
+singleClick : true,
+dateStr : "{$date_value}",
+step : 1,
+weekNumbers:false
+{rdelim}
+);
+</script>
+ 
+{$APP.LBL_AND}
+{assign var=date_value value=$fields.date_entered_advanced.value }
+<input autocomplete="off" type="text" name="end_range_{$id}" id="end_range_{$id}" value='{$smarty.request.end_range_date_entered_advanced }' title=''  tabindex='' size="11" class="dateRangeInput" maxlength="10">
+    <button id="end_range_{$id}_trigger" type="button" onclick="return false" class="btn btn-danger">
+        <span class="suitepicon suitepicon-module-calendar" alt="{$APP.LBL_ENTER_DATE}"></span>
+    </button>
+<script type="text/javascript">
+Calendar.setup ({ldelim}
+inputField : "end_range_{$id}",
+daFormat : "{$CALENDAR_FORMAT}",
+button : "end_range_{$id}_trigger",
+singleClick : true,
+dateStr : "{$date_value}",
+step : 1,
+weekNumbers:false
+{rdelim}
+);
+</script>
+ 
+</div>
+
+
+<script type='text/javascript'>
+
+function {$id}_range_change(val) 
+{ldelim}
+  if(val == 'between') {ldelim}
+     document.getElementById("range_{$id}").value = '';  
+     document.getElementById("{$id}_range_div").style.display = 'none';
+     document.getElementById("{$id}_between_range_div").style.display = ''; 
+  {rdelim} else if (val == '=' || val == 'not_equal' || val == 'greater_than' || val == 'less_than') {ldelim}
+     if((/^\[.*\]$/).test(document.getElementById("range_{$id}").value))
+     {ldelim}
+     	document.getElementById("range_{$id}").value = '';
+     {rdelim}
+     document.getElementById("start_range_{$id}").value = '';
+     document.getElementById("end_range_{$id}").value = '';
+     document.getElementById("{$id}_range_div").style.display = '';
+     document.getElementById("{$id}_between_range_div").style.display = 'none';
+  {rdelim} else {ldelim}
+     document.getElementById("range_{$id}").value = '[' + val + ']';    
+     document.getElementById("start_range_{$id}").value = '';
+     document.getElementById("end_range_{$id}").value = ''; 
+     document.getElementById("{$id}_range_div").style.display = 'none';
+     document.getElementById("{$id}_between_range_div").style.display = 'none';         
+  {rdelim}
+{rdelim}
+
+var {$id}_range_reset = function()
+{ldelim}
+{$id}_range_change('=');
+{rdelim}
+
+YAHOO.util.Event.onDOMReady(function() {ldelim}
+if(document.getElementById('search_form_clear'))
+{ldelim}
+YAHOO.util.Event.addListener('search_form_clear', 'click', {$id}_range_reset);
+{rdelim}
+
+{rdelim});
+
+YAHOO.util.Event.onDOMReady(function() {ldelim}
+ 	if(document.getElementById('search_form_clear_advanced'))
+ 	 {ldelim}
+ 	     YAHOO.util.Event.addListener('search_form_clear_advanced', 'click', {$id}_range_reset);
+ 	 {rdelim}
+
+{rdelim});
+
+YAHOO.util.Event.onDOMReady(function() {ldelim}
+    //register on basic search form button if it exists
+    if(document.getElementById('search_form_submit'))
+     {ldelim}
+         YAHOO.util.Event.addListener('search_form_submit', 'click',{$id}_range_validate);
+     {rdelim}
+    //register on advanced search submit button if it exists
+   if(document.getElementById('search_form_submit_advanced'))
+    {ldelim}
+        YAHOO.util.Event.addListener('search_form_submit_advanced', 'click',{$id}_range_validate);
+    {rdelim}
+
+{rdelim});
+
+// this function is specific to range date searches and will check that both start and end date ranges have been
+// filled prior to submitting search form.  It is called from the listener added above.
+function {$id}_range_validate(e){ldelim}
+    if (
+            (document.getElementById("start_range_{$id}").value.length >0 && document.getElementById("end_range_{$id}").value.length == 0)
+          ||(document.getElementById("end_range_{$id}").value.length >0 && document.getElementById("start_range_{$id}").value.length == 0)
+       )
+    {ldelim}
+        e.preventDefault();
+        alert('{$APP.LBL_CHOOSE_START_AND_END_DATES}');
+        if (document.getElementById("start_range_{$id}").value.length == 0) {ldelim}
+            document.getElementById("start_range_{$id}").focus();
+        {rdelim}
+        else {ldelim}
+            document.getElementById("end_range_{$id}").focus();
+        {rdelim}
+    {rdelim}
+
+{rdelim}
+
+</script>
                             </div>
         </div>
     </div>
@@ -308,7 +442,7 @@ weekNumbers:false
 <script type="text/javascript">
 Calendar.setup ({ldelim}
 inputField : "{$fields.next_date_c_advanced.name}",
-form : "popup_query_form",
+form : "",
 ifFormat : "{$CALENDAR_FORMAT}",
 daFormat : "{$CALENDAR_FORMAT}",
 button : "{$fields.next_date_c_advanced.name}_trigger",
@@ -470,4 +604,4 @@ weekNumbers:false
         });
     });
     {/literal}
-</script>{literal}<script language="javascript">if(typeof sqs_objects == 'undefined'){var sqs_objects = new Array;}sqs_objects['popup_query_form_modified_by_name_advanced']={"form":"popup_query_form","method":"get_user_array","field_list":["user_name","id"],"populate_list":["modified_by_name_advanced","modified_user_id_advanced"],"required_list":["modified_user_id"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};sqs_objects['popup_query_form_created_by_name_advanced']={"form":"popup_query_form","method":"get_user_array","field_list":["user_name","id"],"populate_list":["created_by_name_advanced","created_by_advanced"],"required_list":["created_by"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};sqs_objects['popup_query_form_assigned_user_name_advanced']={"form":"popup_query_form","method":"get_user_array","field_list":["user_name","id"],"populate_list":["assigned_user_name_advanced","assigned_user_id_advanced"],"required_list":["assigned_user_id"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};sqs_objects['popup_query_form_parent_name_advanced']={"form":"popup_query_form","method":"query","modules":["Accounts"],"group":"or","field_list":["name","id"],"populate_list":["parent_name_advanced","parent_id_advanced"],"required_list":["parent_id"],"conditions":[{"name":"name","op":"like_custom","end":"%","value":""}],"order":"name","limit":"30","no_match_text":"No Match"};sqs_objects['popup_query_form_contact_name_advanced']={"form":"popup_query_form","method":"get_contact_array","modules":["Contacts"],"field_list":["salutation","first_name","last_name","id"],"populate_list":["contact_name_advanced","contact_id_advanced","contact_id_advanced","contact_id_advanced"],"required_list":["contact_id"],"group":"or","conditions":[{"name":"first_name","op":"like_custom","end":"%","value":""},{"name":"last_name","op":"like_custom","end":"%","value":""}],"order":"last_name","limit":"30","no_match_text":"No Match"};sqs_objects['popup_query_form_approver_c_advanced']={"form":"popup_query_form","method":"get_user_array","field_list":["user_name","id"],"populate_list":["approver_c_advanced","user_id_c_advanced"],"required_list":["user_id_c"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};</script>{/literal}
+</script>{literal}<script language="javascript">if(typeof sqs_objects == 'undefined'){var sqs_objects = new Array;}sqs_objects['search_form_modified_by_name_advanced']={"form":"search_form","method":"get_user_array","field_list":["user_name","id"],"populate_list":["modified_by_name_advanced","modified_user_id_advanced"],"required_list":["modified_user_id"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};sqs_objects['search_form_created_by_name_advanced']={"form":"search_form","method":"get_user_array","field_list":["user_name","id"],"populate_list":["created_by_name_advanced","created_by_advanced"],"required_list":["created_by"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};sqs_objects['search_form_assigned_user_name_advanced']={"form":"search_form","method":"get_user_array","field_list":["user_name","id"],"populate_list":["assigned_user_name_advanced","assigned_user_id_advanced"],"required_list":["assigned_user_id"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};sqs_objects['search_form_parent_name_advanced']={"form":"search_form","method":"query","modules":["Accounts"],"group":"or","field_list":["name","id"],"populate_list":["parent_name_advanced","parent_id_advanced"],"required_list":["parent_id"],"conditions":[{"name":"name","op":"like_custom","end":"%","value":""}],"order":"name","limit":"30","no_match_text":"No Match"};sqs_objects['search_form_contact_name_advanced']={"form":"search_form","method":"get_contact_array","modules":["Contacts"],"field_list":["salutation","first_name","last_name","id"],"populate_list":["contact_name_advanced","contact_id_advanced","contact_id_advanced","contact_id_advanced"],"required_list":["contact_id"],"group":"or","conditions":[{"name":"first_name","op":"like_custom","end":"%","value":""},{"name":"last_name","op":"like_custom","end":"%","value":""}],"order":"last_name","limit":"30","no_match_text":"No Match"};sqs_objects['search_form_approver_c_advanced']={"form":"search_form","method":"get_user_array","field_list":["user_name","id"],"populate_list":["approver_c_advanced","user_id_c_advanced"],"required_list":["user_id_c"],"conditions":[{"name":"user_name","op":"like_custom","end":"%","value":""}],"limit":"30","no_match_text":"No Match"};</script>{/literal}

@@ -856,13 +856,25 @@ class HomeController extends SugarController{
             $approver_name = $this->getUserName($log_in_user_id);
             $opportunity_link = "index.php?action=DetailView&module=Opportunities&record=".$id;
 
+            $statusForNotification = '';
+            if($changedStatus == "QualifiedLead") {
+                $statusForNotification = "Qualified Lead";
+            } elseif ($changedStatus == "QualifiedDpr") {
+                $statusForNotification = "Qualified DPR";
+            } elseif ($changedStatus == "QualifiedBid") {
+                $statusForNotification = "Qualified Bid";
+            } else {
+                $statusForNotification = $changedStatus;
+            }
+
+
             if($event == "Approve") {
                 
-                $description = "Opportunity '".$row1['name']."'  is approved for '".$changedStatus."' by '".$approver_name."''";
+                $description = 'Opportunity "'.$row1['name'].'" is approved for "'.$statusForNotification.'" by "'.$approver_name.'"';
                 send_notification("Opportunities", $row1['name'], $description, [$assigned_user_id], $opportunity_link);
         
                 $receiver_email = getUserEmail($assigned_user_id);
-                send_email($description,[$receiver_email],'Opportunity Approved');
+                send_email($description,[$receiver_email],'CRM ALERT - Approved');
 
             } elseif($event == "Reject") {
                 
@@ -885,10 +897,10 @@ class HomeController extends SugarController{
                     array_push($receiver_emails, getUserEmail($r));
                 }
 
-                $description = "Opportunity '".$row1['name']."'  is rejected for '".$changedStatus."' by '".$approver_name."''";
+                $description = 'Opportunity "'.$row1['name'].'" is rejected for "'.$statusForNotification.'" by "'.$approver_name.'"';
                 send_notification("Opportunities", $row1['name'], $description, $receivers, $opportunity_link);
         
-                send_email($description,$receiver_emails,'Opportunity Rejected');
+                send_email($description,$receiver_emails,'CRM ALERT - Rejected');
             }
 
             if ($updateOpportunityStatus == "true") {
@@ -5999,7 +6011,7 @@ public function is_activity_reassignment_applicable($activity_id) {
             $untagged_users_string = implode(',',$untagged_names_arr);
 
             $activity_link = "index.php?action=DetailView&module=Calls&record=".$activity_id;
-            $notification_message = "You have been tagged. Now you can edit /make changes to activity ".$row['name'];
+            $notification_message = 'You have been tagged for activity "'.$row['name'].'". Now you can edit /make changes.';
             send_notification("Activities", $row['name'], $notification_message, $tagged_user_ids, $activity_link);
 
             $receiver_emails = []; 
@@ -6009,7 +6021,7 @@ public function is_activity_reassignment_applicable($activity_id) {
             // send_email($notification_message, $receiver_emails, 'You have been tagged');
 
             if(count($receiver_emails) > 0) {
-                send_email($notification_message, $receiver_emails, 'You have been tagged');
+                send_email($notification_message, $receiver_emails, 'CRM ALERT - Tagged');
             }
 
             $untagged_receiver_emails = [];
@@ -6017,8 +6029,8 @@ public function is_activity_reassignment_applicable($activity_id) {
                 array_push($untagged_receiver_emails, getUserEmail($user_id));
             }
             if(count($untagged_receiver_emails) > 0) {
-                $untagged_notification_message = "You have been untagged. Now you cannot edit /make changes to activity ".$row['name'];
-                send_email($untagged_notification_message, $untagged_receiver_emails, 'You have been untagged');
+                $untagged_notification_message = 'You have been untagged from activity "'.$row['name'].'".';
+                send_email($untagged_notification_message, $untagged_receiver_emails, 'CRM ALERT - Untagged');
             }
 
 
@@ -7693,11 +7705,11 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
             $row = $result1->fetch_assoc();
 
             if($user_id != $row['created_by']) {
-                $notification_message = getUsername($user_id)." has written a note on document ".$row['document_name'];
+                $notification_message = '"'.getUsername($user_id).'" has written a note on document "'.$row['document_name'].'"';
                 send_notification("Documents", $row['document_name'], $notification_message, [$row['created_by']], '');
 
                 $receiver_email = getUserEmail($row['created_by']);
-                send_email($notification_message, [$receiver_email], 'New Note');  
+                send_email($notification_message, [$receiver_email], 'CRM ALERT - New Note');  
             }
 
             echo json_encode(array("status"=> true, "message" => "Note Added"));
@@ -8252,8 +8264,9 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
             $tagged_users_string = implode(',',$tagged_names_arr);
             $untagged_users_string = implode(',',$untagged_names_arr);
 
-            $document_link = "index.php?action=DetailView&module=Calls&record=".$document_id;
-            $notification_message = "You have been tagged. Now you can edit /make changes to document ".$row['document_name'];
+            $document_link = "index.php?action=DetailView&module=Documents&record=".$document_id;
+            // $notification_message = "You have been tagged. Now you can edit /make changes to document ".$row['document_name'];
+            $notification_message = 'You have been tagged for document "'.$row['document_name'].'". Now you can edit /make changes.';
             send_notification("Documents", $row['document_name'], $notification_message, $tagged_user_ids, $document_link);
 
             $receiver_emails = []; 
@@ -8261,7 +8274,7 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
                 array_push($receiver_emails, getUserEmail($user_id));
             }
             if(count($receiver_emails) > 0) {
-                send_email($notification_message, $receiver_emails, 'You have been tagged');
+                send_email($notification_message, $receiver_emails, 'CRM ALERT - Tagged');
             }
 
             $untagged_receiver_emails = [];
@@ -8269,8 +8282,8 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
                 array_push($untagged_receiver_emails, getUserEmail($user_id));
             }
             if(count($untagged_receiver_emails) > 0) {
-                $untagged_notification_message = "You have been untagged. Now you cannot edit /make changes to document ".$row['document_name'];
-                send_email($untagged_notification_message, $untagged_receiver_emails, 'You have been untagged');
+                $untagged_notification_message = 'You have been untagged from document "'.$row['document_name'].'".';
+                send_email($untagged_notification_message, $untagged_receiver_emails, 'CRM ALERT - Untagged');
             }
 
 

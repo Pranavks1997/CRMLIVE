@@ -33,6 +33,31 @@ class activity_assign
             else{ 
                
                $bean->db->query("INSERT INTO `activity_assign_flow`(`acc_id`, `assigned_by`, `assigned_to_id`, `approver_ids`,`status`,`acc_type`) VALUES ('".$id."','".$assigned_by."','".$assigned_to."','".$approvers."','".$acc_status."','".$acc_type."')");
+
+               
+                if(!(bool)$bean->fetched_row){
+                    // Send Notification To Respective Approver 
+                    $sql = "SELECT * FROM users WHERE id='".$bean->user_id_c."'";
+                    $result = $GLOBALS['db']->query($sql);
+
+                    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+                        $alert = BeanFactory::newBean('Alerts');
+                        $alert->name = '';
+                        $alert->description = 'New Activity "'.$bean->name.'" Created by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+                        $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$bean->id;
+                        $alert->target_module = 'Activities';
+                        $alert->assigned_user_id = $bean->user_id_c;
+                        $alert->type = 'info';
+                        $alert->is_read = 0;
+                        $alert->save();
+
+                        // Setting session data for alert
+                        $_SESSION['flash'][$current_user->id] = [
+                            'message' => 'Activity "'.$bean->name.'" created successfully.'
+                        ];  
+                    }
+                }
+                    
             }
             
              

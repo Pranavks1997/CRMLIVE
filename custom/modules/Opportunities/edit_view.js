@@ -1,5 +1,10 @@
 $(document).ready(function(){
  
+ 
+//  $(document).bind("contextmenu",function(e) {
+//  e.preventDefault();
+// });
+ 
   setTimeout(function() {
       $('#check a').hide();
       //console.log('sad');
@@ -8133,6 +8138,7 @@ $(document).ready(function(){
        }
        
          var assigned_name = $("#assigned_user_name").val();
+          var opp_name = $("#name").val();
    var assigned_id = $("#assigned_user_id").val();
   
     var s=data.next_status;
@@ -8198,14 +8204,18 @@ $(document).ready(function(){
                   }
                 }
                 
-                 
+               
                 
                } 
             });
   
-        
+         
       
          }
+         var assigned_name = $("#assigned_user_name").val();
+          var opp_name = $("#name").val();
+        
+         alert('Opprotunity "'+opp_name+'" assigned to "'+assigned_name+'" has been Approved')
          
            setTimeout(function() {
       $('#SAVE_HEADER').trigger('click');
@@ -8267,6 +8277,11 @@ $(document).ready(function(){
            
              $('#approve').hide();
             $('#reject').hide();
+             var assigned_name = $("#assigned_user_name").val();
+          var opp_name = $("#name").val();
+            
+          alert('Opprotunity "'+opp_name+'" assigned to "'+assigned_name+'" has been Rejected')
+
              $('#SAVE_HEADER').trigger('click');
           
         }
