@@ -454,7 +454,7 @@ function activityReminder()
   //  $start = date('G:i:s',$startTime);
     //$end = date('G:i:s', $endTime)
 
-    // $now_time = "15:53:00";
+    // $now_time = "19:21:00";
     $now_time =  $dt->format('G:i:00');
     $GLOBALS['log']->info("--------> Schedular present time for the activity : '.$now_time.'");
     $now_date = $dt->format('Y-m-d');
@@ -516,9 +516,9 @@ function activityReminder()
     $result1 = $db->query($get_user_email);
     $data = $GLOBALS['db']->fetchByAssoc($result1);
   send_email($row['name'], $data['user_name']);
-  $description = "Reminder";
+  $description = "Reminder for '".$row['name']."' is to be completed";
   $link = "index.php?module=Calls&action=DetailView&record=".$row['id'];
-  send_notification('activity',$row['name'],$description,[$row['assigned_user_id']],$link);
+  send_notification('Activities',$row['name'],$description,[$row['assigned_user_id']],$link);
 }
  function send_email($activity_name,$email){
      		$template = "Reminder for '$activity_name' is to be completed";
@@ -613,7 +613,7 @@ function activityDate(){
             		$result_audit = $GLOBALS['db']->query($sql_insert_audit);
 
                     //Send Over Due Reminders
-                    sendOverDueNotificationAndMail($rows['acc_id']);
+                    sendOverDueNotificationAndMail($rows['id']);
 				
 				}
     		}
@@ -668,7 +668,7 @@ function activityDate(){
             $alert = BeanFactory::newBean('Alerts');
             $alert->name = '';
             $alert->description = 'Activity "'.$activity['name'].'" is overdue';
-            $alert->url_redirect = 'index.php?action=DetailView&module=Calls&record='.$rows['acc_id'];
+            $alert->url_redirect = 'index.php?action=DetailView&module=Calls&record='.$acc_id;
             $alert->target_module = 'Activities';
             $alert->assigned_user_id = $user_id;
             $alert->type = 'info';
