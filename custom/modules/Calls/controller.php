@@ -2,6 +2,8 @@
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 require_once('include/MVC/Controller/SugarController.php');
+require_once('include/SugarPHPMailer.php');
+include_once('include/utils/db_utils.php');
 
 class CallsController extends SugarController
 {
@@ -10,31 +12,31 @@ class CallsController extends SugarController
             $opp_id = $_POST['opp_id'];
         
              $name = array();
-    		    $date=array();
-    		    $description=array();
+            $date=array();
+            $description=array();
             
             
             $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-        	$sql = 'SELECT CONCAT(users.first_name," ",users.last_name) as name,DATE_FORMAT(description_activity.date_time, "%d/%m/%Y %H:%i:%s") as "date_time",description_activity.description   FROM description_activity INNER JOIN users on users.id=description_activity.user_id WHERE description_activity.opp_id="'.$opp_id.'" ORDER BY `date_time` DESC';
-    		
-    		$result = $GLOBALS['db']->query($sql);
-    		
-    		while($row = $GLOBALS['db']->fetchByAssoc($result) )
-    		{
-    		  array_push($name, $row['name']);
-    		  array_push($date,$row['date_time']);
-    		  array_push($description,$row['description']);
-    		}
-    		
-    		 $combined = array_map(function($b,$c,$d) { return  '['.$b.' : '.$c.' ] :- '.$d; }, $name,$date, $description);
-    		
-    		
-    		
-    			echo json_encode(array("status"=>true, "opp_status" => $combined));
-    	}catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
+          $GLOBALS['db'];
+          $sql = 'SELECT CONCAT(users.first_name," ",users.last_name) as name,DATE_FORMAT(description_activity.date_time, "%d/%m/%Y %H:%i:%s") as "date_time",description_activity.description   FROM description_activity INNER JOIN users on users.id=description_activity.user_id WHERE description_activity.opp_id="'.$opp_id.'" ORDER BY `date_time` DESC';
+        
+        $result = $GLOBALS['db']->query($sql);
+        
+        while($row = $GLOBALS['db']->fetchByAssoc($result) )
+        {
+          array_push($name, $row['name']);
+          array_push($date,$row['date_time']);
+          array_push($description,$row['description']);
+        }
+        
+         $combined = array_map(function($b,$c,$d) { return  '['.$b.' : '.$c.' ] :- '.$d; }, $name,$date, $description);
+        
+        
+        
+          echo json_encode(array("status"=>true, "opp_status" => $combined));
+      }catch(Exception $e){
+        echo json_encode(array("status"=>false, "message" => "Some error occured"));
+      }
             die();
     }
     
@@ -45,20 +47,20 @@ class CallsController extends SugarController
         try{
             $date = date('yy-m-d');
             $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-    		$sql = 'SELECT calls.status, calls_cstm.id_c, calls_cstm.activity_date_c FROM calls_cstm INNER JOIN calls ON calls_cstm.id_c= calls.id WHERE calls.status="Planned" AND calls_cstm.activity_date_c IS NOT NULL AND calls_cstm.activity_date_c < "'.$date.'"';
-    		$result = $GLOBALS['db']->query($sql);
-    		if($result->num_rows>0){
-				while($row = $GLOBALS['db']->fetchByAssoc($result) )
-				{
-				  	$update_query="UPDATE calls SET status ='Delayed' WHERE id='".$row['id_c']."'";
-					$res_update = $db->query($update_query);
-				}
-    		}
-    		var_dump($res_update);
-    	}catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
+          $GLOBALS['db'];
+        $sql = 'SELECT calls.status, calls_cstm.id_c, calls_cstm.activity_date_c FROM calls_cstm INNER JOIN calls ON calls_cstm.id_c= calls.id WHERE calls.status="Planned" AND calls_cstm.activity_date_c IS NOT NULL AND calls_cstm.activity_date_c < "'.$date.'"';
+        $result = $GLOBALS['db']->query($sql);
+        if($result->num_rows>0){
+        while($row = $GLOBALS['db']->fetchByAssoc($result) )
+        {
+            $update_query="UPDATE calls SET status ='Delayed' WHERE id='".$row['id_c']."'";
+          $res_update = $db->query($update_query);
+        }
+        }
+        var_dump($res_update);
+      }catch(Exception $e){
+        echo json_encode(array("status"=>false, "message" => "Some error occured"));
+      }
     }
     
 
@@ -70,40 +72,40 @@ public function action_untagged_users_list(){
      try{  
         global $current_user;
         $acc_id = $_POST['acc_id'];
-    	  $log_in_user_id = $current_user->id;
+        $log_in_user_id = $current_user->id;
    
-    	  $db = \DBManagerFactory::getInstance();
+        $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
         
         $id_array=array();
         $team_func_array=array();
        
       
-			
-			$email_id = array();
-        	$full_name = array();
+      
+      $email_id = array();
+          $full_name = array();
             $users_id = array();
             
              $reporting=array();
             array_push($reporting,'1');
             
-		
-		$sql1 = "SELECT  id, user_name,CONCAT(IFNULL(first_name,''), ' ', IFNULL(last_name,'')) AS fullname FROM users WHERE id NOT IN ('".implode("','",$reporting)."') ORDER BY first_name ASC";
-		 	$result1 = $GLOBALS['db']->query($sql1);
-			while($row1 = $GLOBALS['db']->fetchByAssoc($result1))
-			{
-	    		    array_push($users_id,$row1['id']);
-	    			array_push($email_id,$row1['user_name']);
-	    		   array_push($full_name,$row1['fullname']);
-			}
-				$sql = "SELECT  * FROM calls_cstm WHERE id_c='".$acc_id."' ";
-		 	$result = $GLOBALS['db']->query($sql);
-			while($row = $GLOBALS['db']->fetchByAssoc($result))
-			{
-	    		    $others=$row['untag_hidden_c'];
-			}	
+    
+    $sql1 = "SELECT  id, user_name,CONCAT(IFNULL(first_name,''), ' ', IFNULL(last_name,'')) AS fullname FROM users WHERE id NOT IN ('".implode("','",$reporting)."') ORDER BY first_name ASC";
+      $result1 = $GLOBALS['db']->query($sql1);
+      while($row1 = $GLOBALS['db']->fetchByAssoc($result1))
+      {
+              array_push($users_id,$row1['id']);
+            array_push($email_id,$row1['user_name']);
+             array_push($full_name,$row1['fullname']);
+      }
+        $sql = "SELECT  * FROM calls_cstm WHERE id_c='".$acc_id."' ";
+      $result = $GLOBALS['db']->query($sql);
+      while($row = $GLOBALS['db']->fetchByAssoc($result))
+      {
+              $others=$row['untag_hidden_c'];
+      } 
              
-		$others_id_array = explode(",",$others);
+    $others_id_array = explode(",",$others);
 
         
         echo json_encode(array("status"=>true,  "user_id" => $users_id,"email" => $email_id, "name" => $full_name,"other_user_id" => $others_id_array));
@@ -124,10 +126,10 @@ public function action_tagged_users_list(){
      try{  
         global $current_user;
        $acc_id = $_POST['acc_id'];
-    	  $log_in_user_id = $current_user->id;
+        $log_in_user_id = $current_user->id;
       $assigned_id=$_POST['assigned_id'];
       $approver_id=$_POST['approver_id'];
-    	  $db = \DBManagerFactory::getInstance();
+        $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
         
         $id_array=array();
@@ -135,21 +137,21 @@ public function action_tagged_users_list(){
        
        
      
-			
-			$email_id = array();
-        	$full_name = array();
+      
+      $email_id = array();
+          $full_name = array();
             $users_id = array();
             
             $reporting=array();
             
-            	$id_mc = array();
-		 $sql_mc = "SELECT * FROM users_cstm WHERE mc_c='yes'";
+              $id_mc = array();
+     $sql_mc = "SELECT * FROM users_cstm WHERE mc_c='yes'";
         $result_mc = $GLOBALS['db']->query($sql_mc);
         while($row_mc= $GLOBALS['db']->fetchByAssoc($result_mc)) 
         {
         
         array_push($id_mc,$row_mc['id_c']);
-     	
+      
         }
     
             
@@ -159,24 +161,24 @@ public function action_tagged_users_list(){
             array_push($reporting,$approver_id);
             $reporting=array_merge($reporting,$id_mc);
            
-		
-		$sql1 = "SELECT  id, user_name,CONCAT(IFNULL(first_name,''), ' ', IFNULL(last_name,'')) AS fullname FROM users WHERE id NOT IN ('".implode("','",$reporting)."') ORDER BY first_name ASC";
-		 	$result1 = $GLOBALS['db']->query($sql1);
-			while($row1 = $GLOBALS['db']->fetchByAssoc($result1))
-			{
-	    		    array_push($users_id,$row1['id']);
-	    			array_push($email_id,$row1['user_name']);
-	    		   array_push($full_name,$row1['fullname']);
-			}
-			
-			$sql = "SELECT  * FROM calls_cstm WHERE id_c='".$acc_id."'";
-		 	$result = $GLOBALS['db']->query($sql);
-			while($row = $GLOBALS['db']->fetchByAssoc($result))
-			{
-	    		    $others=$row['tag_hidden_c'];
-			}	
+    
+    $sql1 = "SELECT  id, user_name,CONCAT(IFNULL(first_name,''), ' ', IFNULL(last_name,'')) AS fullname FROM users WHERE id NOT IN ('".implode("','",$reporting)."') ORDER BY first_name ASC";
+      $result1 = $GLOBALS['db']->query($sql1);
+      while($row1 = $GLOBALS['db']->fetchByAssoc($result1))
+      {
+              array_push($users_id,$row1['id']);
+            array_push($email_id,$row1['user_name']);
+             array_push($full_name,$row1['fullname']);
+      }
+      
+      $sql = "SELECT  * FROM calls_cstm WHERE id_c='".$acc_id."'";
+      $result = $GLOBALS['db']->query($sql);
+      while($row = $GLOBALS['db']->fetchByAssoc($result))
+      {
+              $others=$row['tag_hidden_c'];
+      } 
              
-		$others_id_array = explode(",",$others);
+    $others_id_array = explode(",",$others);
        
         
         echo json_encode(array("status"=>true,  "user_id" => $users_id,"email" => $email_id, "name" => $full_name,"other_user_id" => $others_id_array));
@@ -198,17 +200,17 @@ public function action_tagged_users_list(){
 public function action_new_assigned_list(){
      try{
          $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-        	  
-        	   global $current_user; 
-        	   
-        	  $acc_id=$_POST['acc_id'];
-        	   $combined=array();
-        	  $id_array1=array();
-        	  $id_array=array();
-        	  $name_array=array();
-        	  $func_array=array();
-        	 $func1_array=array();
+          $GLOBALS['db'];
+            
+             global $current_user; 
+             
+            $acc_id=$_POST['acc_id'];
+             $combined=array();
+            $id_array1=array();
+            $id_array=array();
+            $name_array=array();
+            $func_array=array();
+           $func1_array=array();
               $h_array=array();
               $r_name=array();
               $number=array();
@@ -219,18 +221,18 @@ public function action_new_assigned_list(){
               $h1_array=array();
               $rr_name=array();
                $n=1;
-    	  $log_in_user_id = $current_user->id;
-    	  
-    	  
-    	 	
+        $log_in_user_id = $current_user->id;
+        
+        
+        
         $sql7="SELECT CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS name FROM users WHERE id='".$log_in_user_id."'";
-    	    $result7 = $GLOBALS['db']->query($sql7);
+          $result7 = $GLOBALS['db']->query($sql7);
         while($row7 = $GLOBALS['db']->fetchByAssoc($result7)) 
         {
-    	       $mc_name=$row7['name'];  
-    	       
+             $mc_name=$row7['name'];  
+             
         }
-        	
+          
          $sql = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
         $result = $GLOBALS['db']->query($sql);
         while($row = $GLOBALS['db']->fetchByAssoc($result)) 
@@ -400,9 +402,9 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
         
    
      }catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
-		die();
+        echo json_encode(array("status"=>false, "message" => "Some error occured"));
+      }
+    die();
 }
 
 
@@ -415,19 +417,19 @@ else if($check_team_lead=='team_member_l1'||$check_team_lead=='team_member_l2'||
 public function action_fetch_assigned_id(){
      try{
          $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-        	  
-        	   global $current_user; 
-        	    $log_in_user_id = $current_user->id;
-        	    $assigned_name=$_POST['f'];
-        	    $f_name=$_POST['f_name'];
-        	    $l_name=$_POST['l_name'];
-        	    
-        	   
-        	     $sql="SELECT id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
-        	    
-        	     $result = $GLOBALS['db']->query($sql);
-        	     
+          $GLOBALS['db'];
+            
+             global $current_user; 
+              $log_in_user_id = $current_user->id;
+              $assigned_name=$_POST['f'];
+              $f_name=$_POST['f_name'];
+              $l_name=$_POST['l_name'];
+              
+             
+               $sql="SELECT id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
+              
+               $result = $GLOBALS['db']->query($sql);
+               
         while($row = $GLOBALS['db']->fetchByAssoc($result)) 
         {
             
@@ -445,9 +447,9 @@ public function action_fetch_assigned_id(){
         
         echo $a_id;
      }catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
-		die();
+        echo json_encode(array("status"=>false, "message" => "Some error occured"));
+      }
+    die();
 }
 
 
@@ -471,15 +473,15 @@ public function action_fetch_reporting_manager()
           
           
             global $current_user;
-          	$log_in_user_id = $current_user->id;
-          	
-          	
-          	if($assigned_id==""){
+            $log_in_user_id = $current_user->id;
+            
+            
+            if($assigned_id==""){
              
                $sql2="SELECT id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
-        	    
-        	     $result2 = $GLOBALS['db']->query($sql2);
-        	     
+              
+               $result2 = $GLOBALS['db']->query($sql2);
+               
         while($row2= $GLOBALS['db']->fetchByAssoc($result2)) 
         {
             
@@ -494,17 +496,17 @@ public function action_fetch_reporting_manager()
         }
         
           }
-          	
-          	
+            
+            
             $sql7="SELECT CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS name FROM users WHERE id='".$log_in_user_id."'";
-    	    $result7 = $GLOBALS['db']->query($sql7);
+          $result7 = $GLOBALS['db']->query($sql7);
         while($row7 = $GLOBALS['db']->fetchByAssoc($result7)) 
         {
-    	       $mc_name=$row7['name'];  
-    	       
-        }	
-          	
-          	 	
+             $mc_name=$row7['name'];  
+             
+        } 
+            
+              
          $sql = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
         $result = $GLOBALS['db']->query($sql);
         while($row = $GLOBALS['db']->fetchByAssoc($result)) 
@@ -561,7 +563,7 @@ public function action_fetch_reporting_manager()
             
         
        
-          	
+            
             }
             
         }else{
@@ -590,7 +592,7 @@ public function action_fetch_reporting_manager()
         }
         }
        
-          	
+            
            
           
         
@@ -618,8 +620,8 @@ public function action_follow_up_activity_check()
           
           
             global $current_user;
-          	$log_in_user_id = $current_user->id;
-          	
+            $log_in_user_id = $current_user->id;
+            
           $sql11='SELECT * FROM `calls` WHERE `parent_id`="'.$p_id.'"';
           
            $result11 = $GLOBALS['db']->query($sql11);
@@ -698,8 +700,8 @@ public function action_follow_up_opp_check()
           
           
             global $current_user;
-          	$log_in_user_id = $current_user->id;
-          	
+            $log_in_user_id = $current_user->id;
+            
         
     $sql_lineage ='SELECT opportunities.assigned_user_id,users_cstm.user_lineage, tagged_user.user_id FROM opportunities LEFT JOIN users_cstm ON users_cstm.id_c=opportunities.assigned_user_id LEFT JOIN tagged_user ON tagged_user.opp_id=opportunities.id WHERE opportunities.id="'.$p_id.'"';
     $result_lineage = $GLOBALS['db']->query($sql_lineage);
@@ -755,12 +757,12 @@ public function action_status_change()
           
           
             global $current_user;
-          	$log_in_user_id = $current_user->id;
-          	
-          	
-          	
-          	
-          	 	
+            $log_in_user_id = $current_user->id;
+            
+            
+            
+            
+              
          $sql = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
         $result = $GLOBALS['db']->query($sql);
         while($row = $GLOBALS['db']->fetchByAssoc($result)) 
@@ -802,7 +804,7 @@ public function action_status_change()
         }
          
        
-          	
+            
            
           
         
@@ -819,15 +821,15 @@ public function action_status_change()
 public function action_approval_buttons(){
      try{
          $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-        	  
-        	   global $current_user; 
-        	    $log_in_user_id = $current_user->id;
-        	     
+          $GLOBALS['db'];
+            
+             global $current_user; 
+              $log_in_user_id = $current_user->id;
+               
                   $assigned_id = $_POST['assigned_id'];
                   $acc_id = $_POST['acc_id'];
                  $approver_id=$_POST['approver_id'];
-                 $status=$_POST['status']; 	
+                 $status=$_POST['status'];  
                  
                  
                  $sql_delegate="SELECT * FROM `calls_cstm` WHERE `id_c`='".$acc_id."';";
@@ -949,11 +951,11 @@ public function action_approval_buttons(){
            
            
             
-        	    
+              
      }catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
-		die();
+        echo json_encode(array("status"=>false, "message" => "Some error occured"));
+      }
+    die();
 }
 
 
@@ -963,61 +965,125 @@ public function action_approval_buttons(){
 //----------------------send approval/apply for complete ---------------------------------------------------
 
 public function action_send_approval(){
-     try{
-         $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-        	  
-        	   global $current_user; 
-        	    $log_in_user_id = $current_user->id;
-        	      $status = $_POST['status'];
-                  $sender = $_POST['sender'];
-                  $date = $_POST['date'];
-                  $approver = $_POST['approver'];
-                  $acc_id = $_POST['acc_id'];
-                  $acc_type = $_POST['acc_type'];
+  try{
+    $db = \DBManagerFactory::getInstance();
+    $GLOBALS['db'];
+            
+    global $current_user; 
+    $log_in_user_id = $current_user->id;
+    $status = $_POST['status'];
+    $sender = $_POST['sender'];
+    // $date = $_POST['date'];
+    $date = date('Y-m-d');
+    $approver = $_POST['approver'];
+    $acc_id = $_POST['acc_id'];
+    $acc_type = $_POST['acc_type'];
                   
-               if($status == "Upcoming"){
-                   $status = 'Apply For Completed';
-               }
+    if($status == "Upcoming"){
+      $status = 'Apply For Completed';
+    }
                   
-            $sql_approval_status = "SELECT * FROM activity_approval_table WHERE id=(SELECT MAX(id) FROM activity_approval_table WHERE acc_id ='".$acc_id."' ) ";
-            $result_approval_status = $GLOBALS['db']->query($sql_approval_status);
-            while($row_approval_status=$GLOBALS['db']->fetchByAssoc($result_approval_status)){
-                $approval_status = $row_approval_status['approval_status'];
+    $sql_approval_status = "SELECT * FROM activity_approval_table WHERE id=(SELECT MAX(id) FROM activity_approval_table WHERE acc_id ='".$acc_id."' ) ";
+    
+    $result_approval_status = $GLOBALS['db']->query($sql_approval_status);
+    
+    while($row_approval_status=$GLOBALS['db']->fetchByAssoc($result_approval_status)){
+      $approval_status = $row_approval_status['approval_status'];          
+    }
+    
+    if($approval_status == '0'){
+      exit(json_encode(array("status"=>"Pending" ))); 
+    }
+    else if($approval_status == '1'){
+      exit(json_encode(array("status"=>"approved" )));
+    }
+    else if($approval_status == '2'){
+      $sql_insert_activity = "INSERT INTO `activity_approval_table`( `acc_id`, `acc_type`, `status`, `sender`, `sent_time`, `approval_status`,`approver`) VALUES ('".$acc_id."','".$acc_type."','".$status."','".$sender."','".$date."','0','".$approver."')";
+      
+      if($GLOBALS['db']->query($sql_insert_activity)==TRUE){
+        $update_calls_cstm = "UPDATE `calls_cstm` SET `status_new_c`='".$status."' WHERE `id_c`='".$acc_id."'";
+      
+        $GLOBALS['db']->query($update_calls_cstm);
+      }
+    }
+    else{
+      $sql_max_id = "SELECT MAX(id) as id FROM activity_approval_table";
+
+      $result_max_id = $GLOBALS['db']->query($sql_max_id);
+
+      while ($row = $GLOBALS['db']->fetchByAssoc($result_max_id)) {
+        $id = ++$row['id'];
+      }
+
+      $sql_insert_activity = "INSERT INTO `activity_approval_table`(`id`, `acc_id`, `acc_type`, `status`, `sender`, `sent_time`, `approval_status`,`approver`) VALUES ('".$id."', '".$acc_id."','".$acc_type."','".$status."','".$sender."','".$date."','0','".$approver."')";
+      
+      // $GLOBALS['db']->query($sql_insert_activity);
+      $GLOBALS['db']->query($sql_insert_activity);
+                    
+                    
+    }
+
+
+    // Get Activity Details
+    $sql = "SELECT * FROM `calls` WHERE `id`='".$acc_id."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to = $row['assigned_user_id'];
+      $activity_name = $row['name']; 
+      $activity_id = $row['id'];
+    }
+
+    // Get approver name
+    $sql = "SELECT * FROM `users` WHERE `id`='".$approver."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $approver = $row['first_name'].' '.$row['last_name'];
+      $approver_id = $row['id'];
+      $approver_email = $row['user_name'];
+    }
+
+    //Send Notification to approver
+    $alert = BeanFactory::newBean('Alerts');
+    $alert->name = '';
+    
+    $alert->description = 'Activity "'.$activity_name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'" is pending for your approval.';
+
+    $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
+    $alert->target_module = 'Activities';
+    $alert->assigned_user_id = $approver_id;
+    $alert->type = 'info';
+    $alert->is_read = 0;
+    $alert->save();
+
+    // Send email to approver
+    $template = 'Activity "'.$activity_name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'" is pending for your approval.';
+
+    $emailObj = new Email();  
+    $defaults = $emailObj->getSystemDefaultEmail();
+
+    $mail = new SugarPHPMailer();  
+    $mail->setMailerForSystem();  
+    $mail->From = $defaults['email'];  
+    $mail->FromName = $defaults['name'];  
+    $mail->Subject = 'Activity '.$activity_name.' approval request';
+    $mail->Body =$template;
+    $mail->IsHTML(true); 
+    $mail->prepForOutbound();  
+    $mail->AddAddress($approver_email);
+    @$mail->Send();    
+
+    echo json_encode([
+      "button" => "hide",
+      "message" => "Approval request has been sent to ".$approver
+    ]);
               
-            }
-            if($approval_status == '0'){
-               echo json_encode(array("status"=>"Pending" )); 
-            }else if($approval_status == '1'){
-                echo json_encode(array("status"=>"approved" ));
-            }else if($approval_status == '2'){
-                $sql_insert_activity = "INSERT INTO `activity_approval_table`( `acc_id`, `acc_type`, `status`, `sender`, `sent_time`, `approval_status`,`approver`) VALUES ('".$acc_id."','".$acc_type."','".$status."','".$sender."','".$date."','0','".$approver."')";
-                if($GLOBALS['db']->query($sql_insert_activity)==TRUE){
-                    $update_calls_cstm = "UPDATE `calls_cstm` SET `status_new_c`='".$status."' WHERE `id_c`='".$acc_id."'";
-                    if($GLOBALS['db']->query($update_calls_cstm)==TRUE){
-                         echo json_encode(array("button"=>"hide"));
-                    }
-                      
-                  }
-            }else{
-                $sql_insert_activity = "INSERT INTO `activity_approval_table`( `acc_id`, `acc_type`, `status`, `sender`, `sent_time`, `approval_status`,`approver`) VALUES ('".$acc_id."','".$acc_type."','".$status."','".$sender."','".$date."','0','".$approver."')";
-                // $GLOBALS['db']->query($sql_insert_activity);
-                  if($GLOBALS['db']->query($sql_insert_activity)==TRUE){
-                       
-                    //   $update_calls_cstm = "UPDATE `calls_cstm` SET `status_new_c`='".$status."' WHERE `id_c`='".$acc_id."'";
-                    // if($GLOBALS['db']->query($update_calls_cstm)==TRUE){
-                        
-                    // }
-                     echo json_encode(array("button"=>"hide"));
-                    
-                    
-                  }
-            }
-        	    
-     }catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
-		die();
+  }
+  catch(Exception $e){
+    echo json_encode(array("status"=>false, "message" => "Some error occured"));
+  }
+  die();
 }
 
 //----------------------send approval/apply for complete ----------END---------------------------------------
@@ -1026,13 +1092,13 @@ public function action_send_approval(){
 public function action_editView_access(){
     try{
          $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-        	
-            	global $current_user; 
-        	    $log_in_user_id = $current_user->id;
-        	    $acc_id =$_POST['acc_id'];
-        	    $assigned_id = $_POST['assigned_id'];
-        	    
+          $GLOBALS['db'];
+          
+              global $current_user; 
+              $log_in_user_id = $current_user->id;
+              $acc_id =$_POST['acc_id'];
+              $assigned_id = $_POST['assigned_id'];
+              
       $sql_logged_user = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
         $result_logged_user = $GLOBALS['db']->query($sql_logged_user);
         while($row_logged_user = $GLOBALS['db']->fetchByAssoc($result_logged_user)) 
@@ -1066,59 +1132,59 @@ public function action_editView_access(){
         }        
         
         $tagged_users_array=explode(',',$tagged_users);
-        	    
-        	    if($acc_id==""){
-        	        
-        	        if($check_mc=="yes"||$check_team_lead=="team_lead"){
-        	            echo json_encode(array('message'=>"no_acc_id_view_all"));
-        	            
-        	        }else{
-        	             echo json_encode(array('message'=>"no_acc_id_view_few"));
-        	        }
-        	        
-        	    }
-        	    
-        	    else{
-        	       
-        	            
-        	        if($check_mc=="yes"){
-        	            
-        	        }
-        	        
-        	        else if(in_array($log_in_user_id,$lineage_array)){
-        	             
-        	            if($check_team_lead=="team_lead"){
-        	                
-        	            }
-        	            else{
-        	                 echo json_encode(array('message'=>"acc_id_view_no"));
-        	            }
-        	            
-        	        }
-        	        else if(in_array($log_in_user_id,$tagged_users_array)){
-        	            
-        	            if($check_team_lead=="team_lead"){
-        	                echo json_encode(array('message'=>"acc_id_view_few"));
-        	            }
-        	            else{
-        	                  echo json_encode(array('message'=>"acc_id_view_no"));
-        	            }
-        	            
-        	        } 
-        	         else if($log_in_user_id==$assigned_id){
-        	            
-        	            if($check_team_lead=="team_lead"){
-        	               
-        	            }
-        	            else{
-        	                  echo json_encode(array('message'=>"acc_id_view_no"));
-        	            }
-        	            
-        	        } 
-        	    }
-        	    
+              
+              if($acc_id==""){
+                  
+                  if($check_mc=="yes"||$check_team_lead=="team_lead"){
+                      echo json_encode(array('message'=>"no_acc_id_view_all"));
+                      
+                  }else{
+                       echo json_encode(array('message'=>"no_acc_id_view_few"));
+                  }
+                  
+              }
+              
+              else{
+                 
+                      
+                  if($check_mc=="yes"){
+                      
+                  }
+                  
+                  else if(in_array($log_in_user_id,$lineage_array)){
+                       
+                      if($check_team_lead=="team_lead"){
+                          
+                      }
+                      else{
+                           echo json_encode(array('message'=>"acc_id_view_no"));
+                      }
+                      
+                  }
+                  else if(in_array($log_in_user_id,$tagged_users_array)){
+                      
+                      if($check_team_lead=="team_lead"){
+                          echo json_encode(array('message'=>"acc_id_view_few"));
+                      }
+                      else{
+                            echo json_encode(array('message'=>"acc_id_view_no"));
+                      }
+                      
+                  } 
+                   else if($log_in_user_id==$assigned_id){
+                      
+                      if($check_team_lead=="team_lead"){
+                         
+                      }
+                      else{
+                            echo json_encode(array('message'=>"acc_id_view_no"));
+                      }
+                      
+                  } 
+              }
+              
          
-        	  
+            
     }catch(Exception $e) {
           echo json_encode(array("status"=>false, "message"=>"some error occured"));
       }
@@ -1133,57 +1199,157 @@ public function action_editView_access(){
 
 
 public function action_approve(){
-     try{
-         $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-        	  
-        	   global $current_user; 
-        	    $log_in_user_id = $current_user->id;
-        	      
-                  $sender = $_POST['assigned_id'];
-                  $date = $_POST['date'];
-                  $approver = $_POST['approver_id'];
-                  $acc_id = $_POST['acc_id'];
-                 $comments=$_POST['comments'];
-                 $status='Completed';
-                 
-                 
-                   $sql_delegate="SELECT * FROM `calls_cstm` WHERE `id_c`='".$acc_id."';";
-                  $result_delegate = $GLOBALS['db']->query($sql_delegate);
-                    while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)) 
-                    {
-                        $delegate_id=$row_delegate['delegate_id'];
-                        
-                    }
-                    
-                    if($log_in_user_id==$delegate_id){
-                        
-                          $update_query="UPDATE `activity_approval_table` SET `approval_status`='1',delegate_approve_reject_date='".$date."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
-                   if($GLOBALS['db']->query($update_query)==TRUE){
-                       
-                    
-                       
-                          echo json_encode(array("button"=>"hide"));
-                    }
-                        }
-                        
-                    else{
-                  
-              $update_query="UPDATE `activity_approval_table` SET `approval_status`='1',`approve_reject_date`='".$date."',`approver_comment`='".$comments."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
-                   if($GLOBALS['db']->query($update_query)==TRUE){
-                       
-                    
-                       
-                          echo json_encode(array("button"=>"hide"));
-                    }
-           
-                    }
-                    
-                    
-     }catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
-		die();
+  try{
+    $db = \DBManagerFactory::getInstance();
+    $GLOBALS['db'];
+              
+    global $current_user; 
+    $log_in_user_id = $current_user->id;
+
+    $sender = $_POST['assigned_id'];
+    $date = $_POST['date'];
+    $approver = $_POST['approver_id'];
+    $acc_id = $_POST['acc_id'];
+    $comments=$_POST['comments'];
+    $status='Completed';
+                   
+                   
+    $sql_delegate="SELECT * FROM `calls_cstm` WHERE `id_c`='".$acc_id."';";
+    $result_delegate = $GLOBALS['db']->query($sql_delegate);
+
+    while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)) {
+      $delegate_id=$row_delegate['delegate_id'];
+    }
+
+    if($log_in_user_id==$delegate_id){                      
+      $update_query="UPDATE `activity_approval_table` SET `approval_status`='1',delegate_approve_reject_date='".$date."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
+                     
+      $GLOBALS['db']->query($update_query);
+    }
+    else{
+      $update_query="UPDATE `activity_approval_table` SET `approval_status`='1',`approve_reject_date`='".$date."',`approver_comment`='".$comments."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
+      
+      $GLOBALS['db']->query($update_query);
+    }
+
+    // Get assigned to user id
+    $sql = "SELECT * FROM `calls` WHERE `id`='".$acc_id."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to = $row['assigned_user_id'];
+      $activity_name = $row['name']; 
+      $activity_id = $row['id'];
+    }
+
+    // Get assigned user name
+    $sql = "SELECT * FROM `users` WHERE `id`='".$assigned_to."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to_name = $row['first_name'].' '.$row['last_name'];
+      $assigned_to_email = $row['user_name'];
+    }
+
+    // Get Tagged Users
+    $sql = "SELECT * FROM `calls_cstm` WHERE id_c='".$acc_id."'";
+    $result = $GLOBALS['db']->query($sql);
+    
+    while($row = $GLOBALS['db']->fetchByAssoc($result)){
+      $tagged_ids = $row['tag_hidden_c'];
+    }
+
+    $tagged_id_array = explode(',', $tagged_ids);
+
+    $tagged_users = [];
+    foreach ($tagged_id_array as $key => $user_id) {
+      $sql = 'SELECT * FROM `users` WHERE id="'.$user_id.'"';
+      $result = $GLOBALS['db']->query($sql);
+
+      while($row = $GLOBALS['db']->fetchByAssoc($result)){
+        $tagged_users[] = $row;
+      }
+      
+    }
+
+    // If assigned to user exists
+    if((bool)$assigned_to_name){
+      // Send Notification to assigned user
+      $alert = BeanFactory::newBean('Alerts');
+      $alert->name = '';
+
+      $alert->description = 'Activity "'.$activity_name.'" is approved for "Completed" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
+      $alert->target_module = 'Activities';
+      $alert->assigned_user_id = $assigned_to;
+      $alert->type = 'info';
+      $alert->is_read = 0;
+      $alert->save();
+
+      // Send email to assigned user
+      $template = 'Activity "'.$activity_name.'" is approved for "Completed" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $emailObj = new Email();  
+      $defaults = $emailObj->getSystemDefaultEmail();
+
+      $mail = new SugarPHPMailer();  
+      $mail->setMailerForSystem();  
+      $mail->From = $defaults['email'];  
+      $mail->FromName = $defaults['name'];  
+      $mail->Subject = 'Activity '.$activity_name.' approval mail';
+      $mail->Body =$template;
+      $mail->IsHTML(true); 
+      $mail->prepForOutbound();  
+      $mail->AddAddress($assigned_to_email);
+      @$mail->Send();
+
+      // Send Notifications and email to tagged users
+      foreach ($tagged_users as $key => $user) {
+        // Send Notification to tagged user
+        $alert = BeanFactory::newBean('Alerts');
+        $alert->name = '';
+        
+        $alert->description = 'Activity "'.$activity_name.'" assigned to "'.$assigned_to_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+        $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
+        $alert->target_module = 'Activities';
+        $alert->assigned_user_id = $user['id'];
+        $alert->type = 'info';
+        $alert->is_read = 0;
+        $alert->save();
+
+        // Send Email to tagged user
+        $template = 'Activity - '.$activity_name.' has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+        $emailObj = new Email();  
+        $defaults = $emailObj->getSystemDefaultEmail();
+
+        $mail = new SugarPHPMailer();  
+        $mail->setMailerForSystem();  
+        $mail->From = $defaults['email'];  
+        $mail->FromName = $defaults['name'];  
+        $mail->Subject = 'Activity '.$activity_name.' approval mail';
+        $mail->Body =$template;
+        $mail->IsHTML(true); 
+        $mail->prepForOutbound();  
+        $mail->AddAddress($user['user_name']);
+        @$mail->Send();
+
+      }
+
+    }
+
+    echo json_encode([
+        'button'=>'hide', 
+        'message' => 'Activity "'.$activity_name.'" approved successfully.'
+    ]);
+
+  }
+  catch(Exception $e){
+    echo json_encode(array("status"=>false, "message" => "Some error occured"));
+  }
+  die();
 }
 
 //---------------------------Approve-------------END--------------------------------------------------------------
@@ -1193,66 +1359,153 @@ public function action_approve(){
 
 
 public function action_reject(){
-     try{
-         $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-        	  
-        	   global $current_user; 
-        	    $log_in_user_id = $current_user->id;
-        	      
-                  $sender = $_POST['assigned_id'];
-                  $date = $_POST['date'];
-                  $approver = $_POST['approver_id'];
-                  $acc_id = $_POST['acc_id'];
-                 $comments=$_POST['comment_reject'];
-                 
-                 
-                    $sql_delegate="SELECT * FROM `calls_cstm` WHERE `id_c`='".$acc_id."';";
-                  $result_delegate = $GLOBALS['db']->query($sql_delegate);
-                    while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)) 
-                    {
-                        $delegate_id=$row_delegate['delegate_id'];
-                        
-                    }
-                    
-                    if($log_in_user_id==$delegate_id){
-                       
-                        
-                          $update_query="UPDATE `activity_approval_table` SET `approval_status`='2',delegate_approve_reject_date='".$date."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
-                   if($GLOBALS['db']->query($update_query)==TRUE){
-                       
-                    
-                       
-                          echo json_encode(array("button"=>"hide"));
-                    }
-                        }
-                        
-                    else{
-                  
-              $update_query="UPDATE `activity_approval_table` SET `approval_status`='2',`approve_reject_date`='".$date."',`approver_comment`='".$comments."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
-                   if($GLOBALS['db']->query($update_query)==TRUE){
-                       
-                    
-                       
-                          echo json_encode(array("button"=>"hide"));
-                    }
-           
-                    }
+  try{
+    $db = \DBManagerFactory::getInstance();
+    $GLOBALS['db'];
+            
+    global $current_user; 
+    $log_in_user_id = $current_user->id;
+
+    $sender = $_POST['assigned_id'];
+    $date = $_POST['date'];
+    $approver = $_POST['approver_id'];
+    $acc_id = $_POST['acc_id'];
+    $comments=$_POST['comment_reject'];
+                              
+    $sql_delegate="SELECT * FROM `calls_cstm` WHERE `id_c`='".$acc_id."';";
+    $result_delegate = $GLOBALS['db']->query($sql_delegate);
+    while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)) { 
+      $delegate_id=$row_delegate['delegate_id'];
+    }
+    if($log_in_user_id==$delegate_id){                   
+      $update_query="UPDATE `activity_approval_table` SET `approval_status`='2',delegate_approve_reject_date='".$date."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
+                   
+      $GLOBALS['db']->query($update_query);
+    }                    
+    else{              
+      $update_query="UPDATE `activity_approval_table` SET `approval_status`='2',`approve_reject_date`='".$date."',`approver_comment`='".$comments."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
+      
+      $GLOBALS['db']->query($update_query);    
+    }
                 
-               
+    // Get assigned to user id
+    $sql = "SELECT * FROM `calls` WHERE `id`='".$acc_id."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to = $row['assigned_user_id'];
+      $activity_name = $row['name']; 
+      $activity_id = $row['id'];
+    }
+
+    // Get assigned user name
+    $sql = "SELECT * FROM `users` WHERE `id`='".$assigned_to."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to_name = $row['first_name'].' '.$row['last_name'];
+      $assigned_to_email = $row['user_name'];
+    }
+
+    // Get Tagged Users
+    $sql = "SELECT * FROM `calls_cstm` WHERE id_c='".$acc_id."'";
+    $result = $GLOBALS['db']->query($sql);
+    
+    while($row = $GLOBALS['db']->fetchByAssoc($result)){
+      $tagged_ids = $row['tag_hidden_c'];
+    }
+
+    $tagged_id_array = explode(',', $tagged_ids);
+
+    $tagged_users = [];
+    foreach ($tagged_id_array as $key => $user_id) {
+      $sql = 'SELECT * FROM `users` WHERE id="'.$user_id.'"';
+      $result = $GLOBALS['db']->query($sql);
+
+      while($row = $GLOBALS['db']->fetchByAssoc($result)){
+        $tagged_users[] = $row;
+      }
+      
+    }
+
+    // If assigned to user exists
+    if((bool)$assigned_to_name){
+      // Send Notification to assigned user
+      $alert = BeanFactory::newBean('Alerts');
+      $alert->name = '';
+      
+      // $alert->description = 'Activity "'.$activity_name.'" assigned to "'.$assigned_to_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $alert->description = 'Activity "'.$activity_name.'" is rejected for "Apply for Complete" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
+      $alert->target_module = 'Activities';
+      $alert->assigned_user_id = $assigned_to;
+      $alert->type = 'info';
+      $alert->is_read = 0;
+      $alert->save();
+
+      // Send email to assigned user
+      $template = 'Activity "'.$activity_name.'" is rejected for "Apply for Complete" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $emailObj = new Email();  
+      $defaults = $emailObj->getSystemDefaultEmail();  
+      $mail = new SugarPHPMailer();  
+      $mail->setMailerForSystem();  
+      $mail->From = $defaults['email'];  
+      $mail->FromName = $defaults['name'];  
+      $mail->Subject = 'Activity '.$activity_name.' rejection mail';
+      $mail->Body =$template;
+      $mail->IsHTML(true); 
+      $mail->prepForOutbound();  
+      $mail->AddAddress($assigned_to_email);
+      @$mail->Send();
+
+      // Send Notifications and email to tagged users
+      foreach ($tagged_users as $key => $user) {
+        // Send Notification to tagged user
+        $alert = BeanFactory::newBean('Alerts');
+        $alert->name = '';
+        
+        $alert->description = 'Activity "'.$activity_name.'" assigned to "'.$assigned_to_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+        $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
+        $alert->target_module = 'Activities';
+        $alert->assigned_user_id = $user['id'];
+        $alert->type = 'info';
+        $alert->is_read = 0;
+        $alert->save();
+
+        // Send Email to tagged user
+        $template = 'Activity - "'.$activity_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+        $emailObj = new Email();  
+        $defaults = $emailObj->getSystemDefaultEmail();
+
+        $mail = new SugarPHPMailer();  
+        $mail->setMailerForSystem();  
+        $mail->From = $defaults['email'];  
+        $mail->FromName = $defaults['name'];  
+        $mail->Subject = 'Activity '.$activity_name.' rejection mail';
+        $mail->Body =$template;
+        $mail->IsHTML(true); 
+        $mail->prepForOutbound();  
+        $mail->AddAddress($user['user_name']);
+        @$mail->Send();
+
+      }
+    }           
                   
-            //   $update_query="UPDATE `activity_approval_table` SET `approval_status`='2',`approve_reject_date`='".$date."',`approver_comment`='".$comments."' WHERE acc_id ='".$acc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
+    
+    echo json_encode([
+      'button'=>'hide', 
+      'message' => 'Activity "'.$activity_name.'" rejected successfully.'
+    ]);     
               
-            //       if($GLOBALS['db']->query($update_query)==TRUE){
-                       
-            //              echo json_encode(array("button"=>"hide"));
-            //         }
-           
-        	    
-     }catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
-		die();
+  }catch(Exception $e){
+        echo json_encode(array("status"=>false, "message" => "Some error occured"));
+  }
+  die();
 }
 
 
@@ -1263,11 +1516,11 @@ public function action_reject(){
    public function action_completed(){
      try{
          $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-        	  
-        	   global $current_user; 
-        	    $log_in_user_id = $current_user->id;
-        	      $acc_type=$_POST['acc_type'];
+          $GLOBALS['db'];
+            
+             global $current_user; 
+              $log_in_user_id = $current_user->id;
+                $acc_type=$_POST['acc_type'];
                   $sender = $_POST['assigned_id'];
                   $date = $_POST['date'];
                   $approver = $_POST['approver_id'];
@@ -1283,11 +1536,11 @@ public function action_reject(){
                           echo json_encode(array("button"=>"hide"));
                     }
            
-        	    
+              
      }catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
-		die();
+        echo json_encode(array("status"=>false, "message" => "Some error occured"));
+      }
+    die();
 }
 
 
@@ -1304,80 +1557,80 @@ function action_insert(){
             $id = create_guid();
             $created_date= date("Y-m-d H:i:s", time());
             $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-    		$sql = 'INSERT INTO `calls_audit`(`id`, `parent_id`, `date_created`, `created_by`, `field_name`, `data_type`, `before_value_string`, `after_value_string`, `before_value_text`, `after_value_text`) VALUES ("'.$id.'","'.$activity_id.'","'.$created_date.'","'.$log_in_user_id.'","status_new_c","varchar"," "," "," "," ")';
-    		$result = $GLOBALS['db']->query($sql);
-    	}catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
+          $GLOBALS['db'];
+        $sql = 'INSERT INTO `calls_audit`(`id`, `parent_id`, `date_created`, `created_by`, `field_name`, `data_type`, `before_value_string`, `after_value_string`, `before_value_text`, `after_value_text`) VALUES ("'.$id.'","'.$activity_id.'","'.$created_date.'","'.$log_in_user_id.'","status_new_c","varchar"," "," "," "," ")';
+        $result = $GLOBALS['db']->query($sql);
+      }catch(Exception $e){
+        echo json_encode(array("status"=>false, "message" => "Some error occured"));
+      }
     }
     
 //      function action_hide_user_subpanel_for_view_only_user(){
 //         try{
 //             global $current_user;
-//     		$log_in_user_id = $current_user->id;
+//        $log_in_user_id = $current_user->id;
 //             $db = \DBManagerFactory::getInstance();
-//         	$GLOBALS['db'];
+//          $GLOBALS['db'];
 //             $view_only_user = array();
-// 			$sql = 'SELECT role_id, user_id FROM acl_roles_users where role_id="af3c481e-708f-64e1-f795-5f896b40d41c" AND deleted="0"';
-// 			$result = $GLOBALS['db']->query($sql);
-			
-// 			while($row = $GLOBALS['db']->fetchByAssoc($result) )
-// 			{
-// 			    array_push($view_only_user,$row['user_id']);
-// 			}
-// 			if(in_array($log_in_user_id, $view_only_user)) {
-// 			    echo json_encode(array("status"=>true, "access" => 'no'));
-// 			}else{
-// 			    echo json_encode(array("status"=>true, "access" => 'yes'));
-// 			}
-//     	}catch(Exception $e){
-//     		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-//     	}
-//     	die();
+//      $sql = 'SELECT role_id, user_id FROM acl_roles_users where role_id="af3c481e-708f-64e1-f795-5f896b40d41c" AND deleted="0"';
+//      $result = $GLOBALS['db']->query($sql);
+      
+//      while($row = $GLOBALS['db']->fetchByAssoc($result) )
+//      {
+//          array_push($view_only_user,$row['user_id']);
+//      }
+//      if(in_array($log_in_user_id, $view_only_user)) {
+//          echo json_encode(array("status"=>true, "access" => 'no'));
+//      }else{
+//          echo json_encode(array("status"=>true, "access" => 'yes'));
+//      }
+//      }catch(Exception $e){
+//        echo json_encode(array("status"=>false, "message" => "Some error occured"));
+//      }
+//      die();
 //      }
 // public function action_activityDate(){
 //         try{
 //             $db = \DBManagerFactory::getInstance();
-//         	$GLOBALS['db'];
-//     		$sql = 'SELECT * FROM `activity_approval_table` WHERE `approval_status`="0" AND status="Apply For Completed" AND CURRENT_DATE > sent_time + INTERVAL 7 day';
-//     		$result = $GLOBALS['db']->query($sql);
-//     		if($result->num_rows>0){
-// 				while($rows = $GLOBALS['db']->fetchByAssoc($result) )
-// 				{
-// 					$update_calls_query="UPDATE calls_cstm SET status_new_c ='Overdue' WHERE id_c='".$rows['acc_id']."'";
-// 					$res_update = $db->query($update_calls_query);
-// 					$update_activity_query="UPDATE activity_approval_table SET approval_status ='3' WHERE acc_id='".$rows['acc_id']."'";
-// 					$res_calls_update = $db->query($update_activity_query);
-// 				}
-//     		}
-//     	    $sql1 = 'SELECT t1.acc_id,t2.activity_date_c FROM activity_approval_table as t1 LEFT JOIN calls_cstm as t2 ON t2.id_c = t1.acc_id WHERE t1.approval_status="2" AND t1.status="Apply For Completed" AND t2.activity_date_c < CURRENT_DATE';
-//     		$result1 = $GLOBALS['db']->query($sql1);
-//     		if($result1->num_rows>0){
-// 				while($rows = $GLOBALS['db']->fetchByAssoc($result1) )
-// 				{
-// 				    $update_calls_query1="UPDATE calls_cstm SET status_new_c ='Overdue' WHERE id_c='".$rows['acc_id']."'";
-// 					$res_update1 = $db->query($update_calls_query1);
-				
-// 				}
-//     		}
-    		
-//     		$sql2 = 'SELECT t1.id, t2.id_c,t2.status_new_c,t2.activity_date_c FROM calls as t1 LEFT JOIN calls_cstm as t2 ON t2.id_c = t1.id WHERE deleted=0 AND t2.status_new_c="Upcoming" AND t2.activity_date_c < CURRENT_DATE AND t2.id_c NOT IN (SELECT acc_id FROM activity_approval_table)';
-//     		$result2 = $GLOBALS['db']->query($sql2);
-//     		if($result2->num_rows>0){
-// 				while($rows = $GLOBALS['db']->fetchByAssoc($result2) )
-// 				{
-// 				    $update_calls_query2="UPDATE calls_cstm SET status_new_c ='Overdue' WHERE id_c='".$rows['id_c']."'";
-// 					$res_update2 = $db->query($update_calls_query2);
-				
-// 				}
-//     		}
-    		
-//     		var_dump($res_update1);
-//     	}catch(Exception $e){
-//     		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-//     	}
-//     	return true;
+//          $GLOBALS['db'];
+//        $sql = 'SELECT * FROM `activity_approval_table` WHERE `approval_status`="0" AND status="Apply For Completed" AND CURRENT_DATE > sent_time + INTERVAL 7 day';
+//        $result = $GLOBALS['db']->query($sql);
+//        if($result->num_rows>0){
+//        while($rows = $GLOBALS['db']->fetchByAssoc($result) )
+//        {
+//          $update_calls_query="UPDATE calls_cstm SET status_new_c ='Overdue' WHERE id_c='".$rows['acc_id']."'";
+//          $res_update = $db->query($update_calls_query);
+//          $update_activity_query="UPDATE activity_approval_table SET approval_status ='3' WHERE acc_id='".$rows['acc_id']."'";
+//          $res_calls_update = $db->query($update_activity_query);
+//        }
+//        }
+//          $sql1 = 'SELECT t1.acc_id,t2.activity_date_c FROM activity_approval_table as t1 LEFT JOIN calls_cstm as t2 ON t2.id_c = t1.acc_id WHERE t1.approval_status="2" AND t1.status="Apply For Completed" AND t2.activity_date_c < CURRENT_DATE';
+//        $result1 = $GLOBALS['db']->query($sql1);
+//        if($result1->num_rows>0){
+//        while($rows = $GLOBALS['db']->fetchByAssoc($result1) )
+//        {
+//            $update_calls_query1="UPDATE calls_cstm SET status_new_c ='Overdue' WHERE id_c='".$rows['acc_id']."'";
+//          $res_update1 = $db->query($update_calls_query1);
+        
+//        }
+//        }
+        
+//        $sql2 = 'SELECT t1.id, t2.id_c,t2.status_new_c,t2.activity_date_c FROM calls as t1 LEFT JOIN calls_cstm as t2 ON t2.id_c = t1.id WHERE deleted=0 AND t2.status_new_c="Upcoming" AND t2.activity_date_c < CURRENT_DATE AND t2.id_c NOT IN (SELECT acc_id FROM activity_approval_table)';
+//        $result2 = $GLOBALS['db']->query($sql2);
+//        if($result2->num_rows>0){
+//        while($rows = $GLOBALS['db']->fetchByAssoc($result2) )
+//        {
+//            $update_calls_query2="UPDATE calls_cstm SET status_new_c ='Overdue' WHERE id_c='".$rows['id_c']."'";
+//          $res_update2 = $db->query($update_calls_query2);
+        
+//        }
+//        }
+        
+//        var_dump($res_update1);
+//      }catch(Exception $e){
+//        echo json_encode(array("status"=>false, "message" => "Some error occured"));
+//      }
+//      return true;
 //     }
 
 

@@ -60,34 +60,46 @@ class DocumentsViewDetail extends ViewDetail
 
     public function display()
     {
+
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+
+        if(isset($_SESSION['flash'][$log_in_user_id])){
+            echo '<script>
+                alert(\''.$_SESSION['flash'][$log_in_user_id]['message'].'\')
+            </script>';
+
+            unset($_SESSION['flash'][$log_in_user_id]);
+        }
+
         echo '<script type="text/javascript" src="custom/modules/Documents/view_detail.js"></script>';
         //check to see if the file field is empty.  This should not occur and would only happen when an error has ocurred during upload, or from db manipulation of record.
         if (empty($this->bean->filename)) {
             //print error to screen
             $this->errors[] = $GLOBALS['mod_strings']['ERR_MISSING_FILE'];
             $this->displayErrors();
-		}
-		if(!empty($this->bean->id)){
-			$this->ss->assign('ATTACHMENTS',$this->getAttachments($this->bean->id,'Document'));
-		$this->ss->assign('FILEUPLOAD','custom/include/tpls/detailview1.tpl');
-	
+        }
+        if(!empty($this->bean->id)){
+            $this->ss->assign('ATTACHMENTS',$this->getAttachments($this->bean->id,'Document'));
+        $this->ss->assign('FILEUPLOAD','custom/include/tpls/detailview1.tpl');
+    
         }
         parent::display();
     }
     function getAttachments($module_id,$module_name){
-	global $db;
-	if(isset($module_id)){
-		$sql = 'SELECT id,filename,value FROM custom_documents WHERE module_name = "'.$module_name.'" AND module_id = "'.$module_id.'" AND deleted = 0';
-		$res = $GLOBALS['db']->query($sql);
-		$attachments = array();
-		while($row = $db->fetchByAssoc($res)){
-			$attachments[] = $row;
-		}
-		return $attachments;
-	}
-	
-// 	$this->ss->assign('FILEUPLOAD','custom/include/tpls/detailview.tpl');
-// 		parent::display();
+    global $db;
+    if(isset($module_id)){
+        $sql = 'SELECT id,filename,value FROM custom_documents WHERE module_name = "'.$module_name.'" AND module_id = "'.$module_id.'" AND deleted = 0';
+        $res = $GLOBALS['db']->query($sql);
+        $attachments = array();
+        while($row = $db->fetchByAssoc($res)){
+            $attachments[] = $row;
+        }
+        return $attachments;
+    }
+    
+//  $this->ss->assign('FILEUPLOAD','custom/include/tpls/detailview.tpl');
+//      parent::display();
 }
     
 }

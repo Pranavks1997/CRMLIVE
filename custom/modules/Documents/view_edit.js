@@ -315,37 +315,42 @@ $(document).on('click', function () {
 
 //----------------------send approval/apply for complete ---------------------------------------------------
      
-      $("#apply_for_complete").on("click",function() {
+$("#apply_for_complete").on("click",function() {
+  let sender = assigned_id;
+  let m= new Date();
+  let date  = m.getUTCFullYear() +"/"+ (m.getUTCMonth()+1) +"/"+ m.getUTCDate() + " " + m.getUTCHours() + ":" + m.getUTCMinutes() + ":" + m.getUTCSeconds();
+  let approver = $('#user_id_c').val();
           
-           
-           let sender = assigned_id;
-           let m= new Date();
-           let date  = m.getUTCFullYear() +"/"+ (m.getUTCMonth()+1) +"/"+ m.getUTCDate() + " " + m.getUTCHours() + ":" + m.getUTCMinutes() + ":" + m.getUTCSeconds();
-           let approver = $('#user_id_c').val();
-          
-           $.ajax({
-                url : 'index.php?module=Documents&action=send_approval',
-                type : 'POST',
-                dataType: "json",
-                 data:{
-                  doc_id,
-                  doc_type,
-                  status,
-                  sender,
-                  date,
-                  approver
-                 },
-                success : function(data){
-                if(data.button == 'hide'){
-                    $("#status_c").val("Approval Pending");
-                    $("#apply_for_complete").hide();
-                   $("#SAVE_HEADER").trigger("click");
-                }
-            
-            }
-     
-           });
-      })
+  $.ajax({
+    url : 'index.php?module=Documents&action=send_approval',
+    type : 'POST',
+    dataType: "json",
+    data:{
+      doc_id,
+      doc_type,
+      status,
+      sender,
+      date,
+      approver
+    },
+    beforeSend: function(){
+      $("#apply_for_complete").attr('disabled', true).val("Loading..");
+    },
+    success : function(data){
+      if(data.message !== undefined){
+        alert(data.message)
+      }
+      if(data.button == 'hide'){
+        $("#status_c").val("Approval Pending");
+        $("#apply_for_complete").hide();
+        $("#SAVE_HEADER").trigger("click");
+      } 
+      else{
+        $("#apply_for_complete").attr('disabled', false).val("send for approval");
+      }     
+    } 
+  });
+})
      
        
 
@@ -401,6 +406,10 @@ $(document).on('click', function () {
                  
                  },
                 success : function(data){
+
+                if(data.message !== undefined){
+                    alert(data.message)
+                }
                 
                 if(data.button == 'hide'){
                     $("#approve_document").hide();
@@ -447,6 +456,10 @@ $(document).on('click', function () {
                  
                  },
                 success : function(data){
+
+                if(data.message !== undefined){
+                    alert(data.message)
+                }
                 
                 if(data.button == 'hide'){
                     $("#approve_document").hide();
@@ -714,16 +727,16 @@ $(document).on('click', function () {
  //---------------------------multiple file upload -------------------------------------------------     
  
  
-	var record_id = $('input[name="record"]').val();
-	$('#EditView').attr('enctype','multipart/form-data');
-	var x = 1; //initlal text box count
-	
-		
+  var record_id = $('input[name="record"]').val();
+  $('#EditView').attr('enctype','multipart/form-data');
+  var x = 1; //initlal text box count
+  
+    
     $(".input_fields_wrap").on("click",".remove_field", function(e){ //user click on remove text
         e.preventDefault(); $(this).parent('div').remove(); x--;
     });
-	
-	$(".downloadAttachment").click(function(e) {
+  
+  $(".downloadAttachment").click(function(e) {
         var fileName = $(this).attr("name");
         var name = $(this).text();
         
@@ -740,8 +753,8 @@ $(document).on('click', function () {
         
         
     });
-	
-	$(".remove_attachment").click(function(e) {
+  
+  $(".remove_attachment").click(function(e) {
         var fileName = $(this).attr("name");
         var name = $(this).prev().text();
         var extension = name.substr((name.lastIndexOf('.') + 1));
@@ -749,7 +762,7 @@ $(document).on('click', function () {
         if (flag) {
             removeAttachment(fileName, extension)
         }
-    });	
+    }); 
 
 
 function downloadAttachment(data) {
@@ -777,8 +790,8 @@ function removeAttachment(fileName, extension) {
             id: fileName,
             extension: extension,
             module: 'Document',
-         			folder: 'Document',
-         			action_type: "remove"
+              folder: 'Document',
+              action_type: "remove"
         },
         success: function(result) {
             var data = $.parseJSON(result);
