@@ -1063,7 +1063,7 @@
     function send_notification($module,$name,$description,$users,$redirectUrl){
         foreach($users as $id) {
             $alert = BeanFactory::newBean('Alerts');
-            $alert->name =$name;
+            // $alert->name =$name;
             $alert->description = $description;
             $alert->url_redirect = $redirectUrl;
             $alert->target_module = $module;

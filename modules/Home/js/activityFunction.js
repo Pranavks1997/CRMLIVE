@@ -707,7 +707,7 @@ function getDelegateMembersActivity() {
 function fetchActivityDelegateDialog() {
     var response_state = $('.activity_dele_count').val()
     var dialog = document.getElementById('activityDelegatemyModel');
-    if (response_state != 0) {
+    if (response_state != '0') {
         dialog.style.display = "block";
         $.ajax({
             url: 'index.php?module=Home&action=activity_delegated_dialog_info',
