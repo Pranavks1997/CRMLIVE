@@ -2,6 +2,8 @@
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 require_once('include/MVC/Controller/SugarController.php');
+require_once('include/SugarPHPMailer.php');
+include_once('include/utils/db_utils.php');
 
 class DocumentsController extends SugarController
 {
@@ -18,15 +20,15 @@ class DocumentsController extends SugarController
           
           
             global $current_user;
-          	$log_in_user_id = $current_user->id;
-          	
-          	
-          	if($assigned_id==""){
+            $log_in_user_id = $current_user->id;
+            
+            
+            if($assigned_id==""){
              
                $sql2="SELECT id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
-        	    
-        	     $result2 = $GLOBALS['db']->query($sql2);
-        	     
+              
+               $result2 = $GLOBALS['db']->query($sql2);
+               
         while($row2= $GLOBALS['db']->fetchByAssoc($result2)) 
         {
             
@@ -41,17 +43,17 @@ class DocumentsController extends SugarController
         }
         
           }
-          	
-          	
+            
+            
             $sql7="SELECT CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS name FROM users WHERE id='".$log_in_user_id."'";
-    	    $result7 = $GLOBALS['db']->query($sql7);
+          $result7 = $GLOBALS['db']->query($sql7);
         while($row7 = $GLOBALS['db']->fetchByAssoc($result7)) 
         {
-    	       $mc_name=$row7['name'];  
-    	       
-        }	
-          	
-          	 	
+             $mc_name=$row7['name'];  
+             
+        } 
+            
+              
          $sql = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
         $result = $GLOBALS['db']->query($sql);
         while($row = $GLOBALS['db']->fetchByAssoc($result)) 
@@ -108,7 +110,7 @@ class DocumentsController extends SugarController
             
         
        
-          	
+            
             }
             
         }else{
@@ -137,7 +139,7 @@ class DocumentsController extends SugarController
         }
         }
        
-          	
+            
            
           
         
@@ -154,10 +156,10 @@ class DocumentsController extends SugarController
      try{  
         global $current_user;
        $doc_id = $_POST['doc_id'];
-    	  $log_in_user_id = $current_user->id;
+        $log_in_user_id = $current_user->id;
       $assigned_id=$_POST['assigned_id'];
       $approver_id=$_POST['approver_id'];
-    	  $db = \DBManagerFactory::getInstance();
+        $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
        
         $id_array=array();
@@ -165,21 +167,21 @@ class DocumentsController extends SugarController
        
        
      
-			
-			$email_id = array();
-        	$full_name = array();
+      
+      $email_id = array();
+          $full_name = array();
             $users_id = array();
             
             $reporting=array();
             
-            	$id_mc = array();
-		 $sql_mc = "SELECT * FROM users_cstm WHERE mc_c='yes'";
+              $id_mc = array();
+     $sql_mc = "SELECT * FROM users_cstm WHERE mc_c='yes'";
         $result_mc = $GLOBALS['db']->query($sql_mc);
         while($row_mc= $GLOBALS['db']->fetchByAssoc($result_mc)) 
         {
         
         array_push($id_mc,$row_mc['id_c']);
-     	
+      
         }
     
             
@@ -189,24 +191,24 @@ class DocumentsController extends SugarController
             array_push($reporting,$approver_id);
             $reporting=array_merge($reporting,$id_mc);
            
-		
-		$sql1 = "SELECT  id, user_name,CONCAT(IFNULL(first_name,''), ' ', IFNULL(last_name,'')) AS fullname FROM users WHERE id NOT IN ('".implode("','",$reporting)."') ORDER BY first_name ASC";
-		 	$result1 = $GLOBALS['db']->query($sql1);
-			while($row1 = $GLOBALS['db']->fetchByAssoc($result1))
-			{
-	    		    array_push($users_id,$row1['id']);
-	    			array_push($email_id,$row1['user_name']);
-	    		   array_push($full_name,$row1['fullname']);
-			}
-			
-			$sql = "SELECT  * FROM documents_cstm WHERE id_c='".$doc_id."'";
-		 	$result = $GLOBALS['db']->query($sql);
-			while($row = $GLOBALS['db']->fetchByAssoc($result))
-			{
-	    		    $others=$row['tagged_hidden_c'];
-			}	
+    
+    $sql1 = "SELECT  id, user_name,CONCAT(IFNULL(first_name,''), ' ', IFNULL(last_name,'')) AS fullname FROM users WHERE id NOT IN ('".implode("','",$reporting)."') ORDER BY first_name ASC";
+      $result1 = $GLOBALS['db']->query($sql1);
+      while($row1 = $GLOBALS['db']->fetchByAssoc($result1))
+      {
+              array_push($users_id,$row1['id']);
+            array_push($email_id,$row1['user_name']);
+             array_push($full_name,$row1['fullname']);
+      }
+      
+      $sql = "SELECT  * FROM documents_cstm WHERE id_c='".$doc_id."'";
+      $result = $GLOBALS['db']->query($sql);
+      while($row = $GLOBALS['db']->fetchByAssoc($result))
+      {
+              $others=$row['tagged_hidden_c'];
+      } 
              
-		$others_id_array = explode(",",$others);
+    $others_id_array = explode(",",$others);
        
         
         echo json_encode(array("status"=>true,  "user_id" => $users_id,"email" => $email_id, "name" => $full_name,"other_user_id" => $others_id_array));
@@ -227,9 +229,9 @@ class DocumentsController extends SugarController
      
      try{
          $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-        	
-        	$sql='SELECT * FROM documents_category';
+          $GLOBALS['db'];
+          
+          $sql='SELECT * FROM documents_category';
         
         $result = $GLOBALS['db']->query($sql);
         
@@ -244,9 +246,9 @@ class DocumentsController extends SugarController
         
       
      }catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
-		die();
+        echo json_encode(array("status"=>false, "message" => "Some error occured"));
+      }
+    die();
   }
    
     public function action_subCategory() 
@@ -260,9 +262,9 @@ class DocumentsController extends SugarController
 
          try{
         $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-        	
-        	$sql='SELECT document_sub_category.name,document_sub_category.category_id FROM  document_sub_category INNER JOIN documents_category ON document_sub_category.category_id=documents_category.id WHERE documents_category.name="'.$category.'"';
+          $GLOBALS['db'];
+          
+          $sql='SELECT document_sub_category.name,document_sub_category.category_id FROM  document_sub_category INNER JOIN documents_category ON document_sub_category.category_id=documents_category.id WHERE documents_category.name="'.$category.'"';
         
         $result = $GLOBALS['db']->query($sql);
         
@@ -277,9 +279,9 @@ class DocumentsController extends SugarController
    echo json_encode( $subCategory_list);
       
          }catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
-		die();
+        echo json_encode(array("status"=>false, "message" => "Some error occured"));
+      }
+    die();
         
   }
 
@@ -287,165 +289,451 @@ class DocumentsController extends SugarController
 
 
 //------------------------------Send Approval----------------------------------------
-    public function action_send_approval(){
-     try{
-        $db = \DBManagerFactory::getInstance();
-        $GLOBALS['db'];
-        	  
-       	global $current_user; 
-       	$log_in_user_id = $current_user->id;
+  public function action_send_approval(){
+    try{
+      $db = \DBManagerFactory::getInstance();
+      $GLOBALS['db'];
+            
+      global $current_user; 
+      $log_in_user_id = $current_user->id;
 
-       	$status = $_POST['status'];
-        $sender = $_POST['sender'];
-        $date = $_POST['date'];
-        $approver = $_POST['approver'];
-        $doc_id = $_POST['doc_id'];
-        $doc_type = $_POST['doc_type'];
+      $status = $_POST['status'];
+      $sender = $_POST['sender'];
+      // $date = $_POST['date'];
+      $date = date('Y-m-d');
+      $approver = $_POST['approver'];
+      $doc_id = $_POST['doc_id'];
+      $doc_type = $_POST['doc_type'];
                   
-		/*if($status == "Upcoming"){
-		   $status = 'Apply For Completed';
-		}*/
-		$status = "Pending Approval";
+      /*if($status == "Upcoming"){
+         $status = 'Apply For Completed';
+      }*/
+      $status = "Pending Approval";
                   
-        $sql_approval_status = "SELECT * FROM document_approval_table WHERE id=(SELECT MAX(id) FROM document_approval_table WHERE doc_id ='".$doc_id."' ) ";
+      $sql_approval_status = "SELECT * FROM document_approval_table WHERE id=(SELECT MAX(id) FROM document_approval_table WHERE doc_id ='".$doc_id."' ) ";
         
-        $result_approval_status = $GLOBALS['db']->query($sql_approval_status);
-        while($row_approval_status=$GLOBALS['db']->fetchByAssoc($result_approval_status)){
-            $approval_status = $row_approval_status['approval_status'];      
-        }
+      $result_approval_status = $GLOBALS['db']->query($sql_approval_status);
+      while($row_approval_status=$GLOBALS['db']->fetchByAssoc($result_approval_status)){
+        $approval_status = $row_approval_status['approval_status'];      
+      }
 
-        if($approval_status == '0'){
-           echo json_encode(array("status"=>"Pending" )); 
-        }else if($approval_status == '1'){
-            echo json_encode(array("status"=>"approved" ));
-        }else if($approval_status == '2'){
-            $sql_insert_activity = "INSERT INTO `document_approval_table`( `doc_id`, `doc_type`, `status`, `sender`, `sent_time`, `approval_status`,`approver`) VALUES ('".$doc_id."','".$doc_type."','".$status."','".$sender."','".$date."','0','".$approver."')";
-            if($GLOBALS['db']->query($sql_insert_activity)==TRUE){
-                $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
-                if($GLOBALS['db']->query($update_documents_cstm)==TRUE){
-                     echo json_encode(array("button"=>"hide"));
-                }
+      if($approval_status == '0'){
+        exit(json_encode(array("status"=>"Pending" ))); 
+      }
+      else if($approval_status == '1'){
+        exit(json_encode(array("status"=>"approved" )));
+      }
+      else if($approval_status == '2'){
+        $sql_insert_activity = "INSERT INTO `document_approval_table`( `doc_id`, `doc_type`, `status`, `sender`, `sent_time`, `approval_status`,`approver`) VALUES ('".$doc_id."','".$doc_type."','".$status."','".$sender."','".$date."','0','".$approver."')";
+      if($GLOBALS['db']->query($sql_insert_activity)==TRUE){
+        $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+        $GLOBALS['db']->query($update_documents_cstm);
                   
-              }
-        }else{
-            $sql_insert_activity = "INSERT INTO `document_approval_table`( `doc_id`, `doc_type`, `status`, `sender`, `sent_time`, `approval_status`,`approver`) VALUES ('".$doc_id."','".$doc_type."','".$status."','".$sender."','".$date."','0','".$approver."')";
+      }
+    }
+    else{
+      $sql_max_id = "SELECT MAX(id) as id FROM document_approval_table";
 
-            $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+      $result_max_id = $GLOBALS['db']->query($sql_max_id);
+
+      while ($row = $GLOBALS['db']->fetchByAssoc($result_max_id)) {
+        $id = ++$row['id'];
+      }
+      $sql_insert_activity = "INSERT INTO `document_approval_table`(`id`, `doc_id`, `doc_type`, `status`, `sender`, `sent_time`, `approval_status`,`approver`) VALUES ('".$id."', '".$doc_id."','".$doc_type."','".$status."','".$sender."','".$date."','0','".$approver."')";
+
+      $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
 
             // die($update_documents_cstm);
 
-            if($GLOBALS['db']->query($sql_insert_activity) && $GLOBALS['db']->query($update_documents_cstm)){
-                echo json_encode(array("button"=>"hide"));
-            }
-        }
-        	    
-     }catch(Exception $e){
-    		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-    	}
-		die();
-	}
+      $GLOBALS['db']->query($sql_insert_activity);
+      $GLOBALS['db']->query($update_documents_cstm);
+    }
+
+    // Get Document Details
+    $sql = "SELECT * FROM `documents` WHERE `id`='".$doc_id."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to = $row['assigned_user_id'];
+      $document_name = $row['document_name']; 
+      $document_id = $row['id'];
+    }
+
+    // Get approver name
+    $sql = "SELECT * FROM `users` WHERE `id`='".$approver."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $approver = $row['first_name'].' '.$row['last_name'];
+      $approver_id = $row['id'];
+      $approver_email = $row['user_name'];
+    }
+
+    //Send Notification to approver
+    $alert = BeanFactory::newBean('Alerts');
+    $alert->name = '';
+    
+    $alert->description = 'Document "'.$document_name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'" is pending for your approval.';
+
+    $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Documents&record='.$document_id;
+    $alert->target_module = 'Documents';
+    $alert->assigned_user_id = $approver_id;
+    $alert->type = 'info';
+    $alert->is_read = 0;
+    $alert->save();
+
+    // Send email to approver
+    $template = 'Document "'.$document_name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'" is pending for your approval.';
+
+    $emailObj = new Email();  
+    $defaults = $emailObj->getSystemDefaultEmail();
+
+    $mail = new SugarPHPMailer();  
+    $mail->setMailerForSystem();  
+    $mail->From = $defaults['email'];  
+    $mail->FromName = $defaults['name'];  
+    $mail->Subject = 'Document '.$document_name.' approval request';
+    $mail->Body =$template;
+    $mail->IsHTML(true); 
+    $mail->prepForOutbound();  
+    $mail->AddAddress($approver_email);
+    @$mail->Send(); 
+
+    echo json_encode([
+      "button" => "hide",
+      "message" => "Approval request has been sent to ".$approver
+    ]);
+              
+  }
+  catch(Exception $e){
+    echo json_encode(array("status"=>false, "message" => "Some error occured"));
+  }
+  die();
+  }
 //------------------------------Send Approval------------------END-------------------
 
 
 //-----------------------------Approve----------------------------------------------
 public function action_approve(){
- 	try{
-    	$db = \DBManagerFactory::getInstance();
-    	$GLOBALS['db'];
-    	  
-    	global $current_user; 
-    	$log_in_user_id = $current_user->id;
-    	      
-        $sender = $_POST['assigned_id'];
-        $date = $_POST['date'];
-        $approver = $_POST['approver_id'];
-        $doc_id = $_POST['doc_id'];
-        $comments=$_POST['comments'];
-        $status='Approved';
-
-        $sql_delegate="SELECT * FROM `documents_cstm` WHERE `id_c`='".$doc_id."';";
-        $result_delegate = $GLOBALS['db']->query($sql_delegate);
+  try{
+    $db = \DBManagerFactory::getInstance();
+    $GLOBALS['db'];
         
-        while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)){
-			$delegate_id=$row_delegate['delegate_id'];            
-        }
+    global $current_user; 
+    $log_in_user_id = $current_user->id;
+            
+    $sender = $_POST['assigned_id'];
+    $date = $_POST['date'];
+    $approver = $_POST['approver_id'];
+    $doc_id = $_POST['doc_id'];
+    $comments=$_POST['comments'];
+    $status='Approved';
 
-        if($log_in_user_id==$delegate_id){
-        	$update_query="UPDATE `document_approval_table` SET `approval_status`='1',delegate_approve_reject_date='".date('Y-m-d H:i:s')."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
+    $sql_delegate="SELECT * FROM `documents_cstm` WHERE `id_c`='".$doc_id."';";
+    $result_delegate = $GLOBALS['db']->query($sql_delegate);
+        
+    while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)){
+      $delegate_id=$row_delegate['delegate_id'];            
+    }
 
-        	$update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+    if($log_in_user_id==$delegate_id){
+      $update_query="UPDATE `document_approval_table` SET `approval_status`='1',delegate_approve_reject_date='".date('Y-m-d H:i:s')."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
 
-        	if($GLOBALS['db']->query($update_query) && $GLOBALS['db']->query($update_documents_cstm)){
-        		echo json_encode(array("button"=>"hide"));
-        	}
-        }
-        else{
-	        $update_query="UPDATE `document_approval_table` SET `approval_status`='1',`approve_reject_date`='".date('Y-m-d H:i:s')."',`approver_comment`='".$comments."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
+      $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
 
-	        $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+      $GLOBALS['db']->query($update_query);
+      $GLOBALS['db']->query($update_documents_cstm);
+    }
+    else{
+      $update_query="UPDATE `document_approval_table` SET `approval_status`='1',`approve_reject_date`='".date('Y-m-d H:i:s')."',`approver_comment`='".$comments."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
 
-	        if($GLOBALS['db']->query($update_query) && $GLOBALS['db']->query($update_documents_cstm)){               
-	              echo json_encode(array("button"=>"hide"));
-	        }
-        }
+      $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+
+      $GLOBALS['db']->query($update_query);
+      $GLOBALS['db']->query($update_documents_cstm);
+    }
+
+    // Get assigned to user id
+    $sql = "SELECT * FROM `documents` WHERE `id`='".$doc_id."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to = $row['assigned_user_id'];
+      $document_name = $row['document_name']; 
+      $document_id = $row['id'];
+    }
+
+    // Get assigned user name
+    $sql = "SELECT * FROM `users` WHERE `id`='".$assigned_to."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to_name = $row['first_name'].' '.$row['last_name'];
+      $assigned_to_email = $row['user_name'];
+    }
+
+    // Get Tagged Users
+    $sql = "SELECT * FROM `documents_cstm` WHERE id_c='".$doc_id."'";
+    $result = $GLOBALS['db']->query($sql);
+    
+    while($row = $GLOBALS['db']->fetchByAssoc($result)){
+      $tagged_ids = $row['tagged_hidden_c'];
+    }
+
+    $tagged_id_array = explode(',', $tagged_ids);
+
+    $tagged_users = [];
+    foreach ($tagged_id_array as $key => $user_id) {
+      $sql = 'SELECT * FROM `users` WHERE id="'.$user_id.'"';
+      $result = $GLOBALS['db']->query($sql);
+
+      while($row = $GLOBALS['db']->fetchByAssoc($result)){
+        $tagged_users[] = $row;
+      }
+      
+    }
+
+    // If assigned to user exists
+    if((bool)$assigned_to_name){
+      // Send Notification to assigned user
+      $alert = BeanFactory::newBean('Alerts');
+      $alert->name = '';
+      
+      // $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $alert->description = 'Document "'.$document_name.'" is approved for "Approved" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$document_id;
+      $alert->target_module = 'Documents';
+      $alert->assigned_user_id = $assigned_to;
+      $alert->type = 'info';
+      $alert->is_read = 0;
+      $alert->save();
+
+      // Send email to assigned user
+      $template = 'Document "'.$document_name.'" is approved for "Approved" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $emailObj = new Email();  
+      $defaults = $emailObj->getSystemDefaultEmail();  
+      $mail = new SugarPHPMailer();  
+      $mail->setMailerForSystem();  
+      $mail->From = $defaults['email'];  
+      $mail->FromName = $defaults['name'];  
+      $mail->Subject = 'Document '.$document_name.' approval mail';
+      $mail->Body =$template;
+      $mail->prepForOutbound();  
+      $mail->AddAddress($assigned_to_email);
+      @$mail->Send();
+
+
+      // Send Notifications and email to tagged users
+      foreach ($tagged_users as $key => $user) {
+        // Send Notification to tagged user
+        $alert = BeanFactory::newBean('Alerts');
+        $alert->name = '';
+        
+        $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+        $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$document_id;
+        $alert->target_module = 'Documents';
+        $alert->assigned_user_id = $user['id'];
+        $alert->type = 'info';
+        $alert->is_read = 0;
+        $alert->save();
+
+        // Send Email to tagged user
+        $template = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+        $emailObj = new Email();  
+        $defaults = $emailObj->getSystemDefaultEmail();
+
+        $mail = new SugarPHPMailer();  
+        $mail->setMailerForSystem();  
+        $mail->From = $defaults['email'];  
+        $mail->FromName = $defaults['name'];  
+        $mail->Subject = 'Document '.$document_name.' approval mail';
+        $mail->Body =$template;
+        $mail->IsHTML(true); 
+        $mail->prepForOutbound();  
+        $mail->AddAddress($user['user_name']);
+        @$mail->Send();
+
+      }
+
+      echo json_encode([
+        'button'=>'hide', 
+        'message' => 'Document "'.$document_name.'" approved successfully.'
+      ]);
+    } 
+
               
        
-    	    
- 	}catch(Exception $e){
-		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-	}
-	die();
+          
+  }catch(Exception $e){
+    echo json_encode(array("status"=>false, "message" => "Some error occured"));
+  }
+  die();
 }
 //-----------------------------Approve-------------------------END------------------
 
 //----------------------------Reject------------------------------------------------
 public function action_reject(){
-    try{
-    	$db = \DBManagerFactory::getInstance();
-    	$GLOBALS['db'];
-    	  
-    	global $current_user; 
-    	$log_in_user_id = $current_user->id;
-    	      
-    	$sender = $_POST['assigned_id'];
-    	$date = $_POST['date'];
-    	$approver = $_POST['approver_id'];
-    	$doc_id = $_POST['doc_id'];
-    	$comments=$_POST['comment_reject'];
+  try{
+    $db = \DBManagerFactory::getInstance();
+    $GLOBALS['db'];
+        
+    global $current_user; 
+    $log_in_user_id = $current_user->id;
+            
+    $sender = $_POST['assigned_id'];
+    $date = $_POST['date'];
+    $approver = $_POST['approver_id'];
+    $doc_id = $_POST['doc_id'];
+    $comments=$_POST['comment_reject'];
 
-    	$status = 'Pending Approval';
+    $status = 'Pending Approval';
              
-    	// echo $sender.'--/--'.$approver.'--/--'.$comments.'--/--'.$doc_id;
+    // echo $sender.'--/--'.$approver.'--/--'.$comments.'--/--'.$doc_id;
 
-    	$sql_delegate="SELECT * FROM `documents_cstm` WHERE `id_c`='".$doc_id."';";
-    	$result_delegate = $GLOBALS['db']->query($sql_delegate);
-    	
-    	while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)) {
-            $delegate_id=$row_delegate['delegate_id'];
-		}
-		if($log_in_user_id==$delegate_id){
-			$update_query="UPDATE `document_approval_table` SET `approval_status`='2',delegate_approve_reject_date='".date('Y-m-d H:i:s')."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
-
-			$update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
-
-			if($GLOBALS['db']->query($update_query) && $GLOBALS['db']->query($update_documents_cstm)){
-				echo json_encode(array("button"=>"hide"));
-			}
-		}
-		else{
-	    	$update_query="UPDATE `document_approval_table` SET `approval_status`='2',`approve_reject_date`='".date('Y-m-d H:i:s')."',`approver_comment`='".$comments."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
-
-	    	$update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
-	    
-	    	if($GLOBALS['db']->query($update_query) && $GLOBALS['db']->query($update_documents_cstm)){
-	        	echo json_encode(array("button"=>"hide"));
-	    	}	    
-		}     
+    $sql_delegate="SELECT * FROM `documents_cstm` WHERE `id_c`='".$doc_id."';";
+    $result_delegate = $GLOBALS['db']->query($sql_delegate);
+      
+    while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)) {
+      $delegate_id=$row_delegate['delegate_id'];
     }
-    catch(Exception $e){
-    	echo json_encode(array("status"=>false, "message" => "Some error occured"));
+    if($log_in_user_id==$delegate_id){
+      $update_query="UPDATE `document_approval_table` SET `approval_status`='2',delegate_approve_reject_date='".date('Y-m-d H:i:s')."',`delegate_comment`='".$comments."',delegate_id='".$log_in_user_id."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."'  AND approval_status='0'";
+
+      $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+
+      $GLOBALS['db']->query($update_query);
+      $GLOBALS['db']->query($update_documents_cstm);
     }
-	die();
+    else{
+      $update_query="UPDATE `document_approval_table` SET `approval_status`='2',`approve_reject_date`='".date('Y-m-d H:i:s')."',`approver_comment`='".$comments."' WHERE doc_id ='".$doc_id."' AND `sender`='".$sender."' AND`approver`='".$approver."' AND approval_status='0'";
+
+      $update_documents_cstm = "UPDATE `documents_cstm` SET `status_c`='".$status."' WHERE `id_c`='".$doc_id."'";
+      
+      $GLOBALS['db']->query($update_query); 
+      $GLOBALS['db']->query($update_documents_cstm);
+    }
+
+    // Get assigned to user id
+    $sql = "SELECT * FROM `documents` WHERE `id`='".$doc_id."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to = $row['assigned_user_id'];
+      $document_name = $row['document_name']; 
+      $document_id = $row['id'];
+    }
+
+    // Get assigned user name
+    $sql = "SELECT * FROM `users` WHERE `id`='".$assigned_to."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $assigned_to_name = $row['first_name'].' '.$row['last_name'];
+      $assigned_to_email = $row['user_name'];
+    }
+
+    $sql = "SELECT * FROM `documents_cstm` WHERE id_c='".$doc_id."'";
+    $result = $GLOBALS['db']->query($sql);
+    
+    while($row = $GLOBALS['db']->fetchByAssoc($result)){
+      $tagged_ids = $row['tagged_hidden_c'];
+    }
+
+    $tagged_id_array = explode(',', $tagged_ids);
+
+    $tagged_users = [];
+    foreach ($tagged_id_array as $key => $user_id) {
+      $sql = 'SELECT * FROM `users` WHERE id="'.$user_id.'"';
+      $result = $GLOBALS['db']->query($sql);
+
+      while($row = $GLOBALS['db']->fetchByAssoc($result)){
+        $tagged_users[] = $row;
+      }
+      
+    }
+
+    // If assigned to user exists
+    if((bool)$assigned_to_name){
+      // Send Notification to assigned user
+      $alert = BeanFactory::newBean('Alerts');
+      $alert->name = '';
+      
+      // $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $alert->description = 'Document "'.$document_name.'" is rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$document_id;
+      $alert->target_module = 'Documents';
+      $alert->assigned_user_id = $assigned_to;
+      $alert->type = 'info';
+      $alert->is_read = 0;
+      $alert->save();
+
+      // Send email to assigned user
+      $template = 'Document "'.$document_name.'" is rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+      $emailObj = new Email();  
+      $defaults = $emailObj->getSystemDefaultEmail();  
+      $mail = new SugarPHPMailer();  
+      $mail->setMailerForSystem();  
+      $mail->From = $defaults['email'];  
+      $mail->FromName = $defaults['name'];  
+      $mail->Subject = 'Document '.$document_name.' rejection mail';
+      $mail->Body =$template;
+      $mail->prepForOutbound();  
+      $mail->AddAddress($assigned_to_email);
+      @$mail->Send();
+
+      // Send Notifications and email to tagged users
+      foreach ($tagged_users as $key => $user) {
+        // Send Notification to tagged user
+        $alert = BeanFactory::newBean('Alerts');
+        $alert->name = '';
+        
+        $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+        $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$document_id;
+        $alert->target_module = 'Documents';
+        $alert->assigned_user_id = $user['id'];
+        $alert->type = 'info';
+        $alert->is_read = 0;
+        $alert->save();
+
+        // Send Email to tagged user
+        $template = 'Document - "'.$document_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+        $emailObj = new Email();  
+        $defaults = $emailObj->getSystemDefaultEmail();
+
+        $mail = new SugarPHPMailer();  
+        $mail->setMailerForSystem();  
+        $mail->From = $defaults['email'];  
+        $mail->FromName = $defaults['name'];  
+        $mail->Subject = 'Document '.$document_name.' rejection mail';
+        $mail->Body =$template;
+        $mail->IsHTML(true); 
+        $mail->prepForOutbound();  
+        $mail->AddAddress($user['user_name']);
+        @$mail->Send();
+
+      }
+
+
+      echo json_encode([
+        'button'=>'hide', 
+        'message' => 'Document "'.$document_name.'" rejected successfully.'
+      ]);   
+    }   
+  }
+  catch(Exception $e){
+    echo json_encode(array("status"=>false, "message" => "Some error occured"));
+  }
+  die();
 }
 //----------------------------Reject---------------------------END------------------
 
@@ -454,22 +742,22 @@ public function action_approval_buttons(){
     try{
         $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
-        	  
-       	global $current_user; 
-       	$log_in_user_id = $current_user->id;
+            
+        global $current_user; 
+        $log_in_user_id = $current_user->id;
 
-		$assigned_id = $_POST['assigned_id'];
-		$doc_id = $_POST['doc_id'];
-		$approver_id=$_POST['approver_id'];
-		$status=$_POST['status'];
+    $assigned_id = $_POST['assigned_id'];
+    $doc_id = $_POST['doc_id'];
+    $approver_id=$_POST['approver_id'];
+    $status=$_POST['status'];
 
-		$sql_delegate="SELECT * FROM `documents_cstm` WHERE `id_c`='".$doc_id."';";
-		$result_delegate = $GLOBALS['db']->query($sql_delegate);
-		while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)){
-			$delegate_id=$row_delegate['delegate_id'];            
-		}
+    $sql_delegate="SELECT * FROM `documents_cstm` WHERE `id_c`='".$doc_id."';";
+    $result_delegate = $GLOBALS['db']->query($sql_delegate);
+    while($row_delegate = $GLOBALS['db']->fetchByAssoc($result_delegate)){
+      $delegate_id=$row_delegate['delegate_id'];            
+    }
 
-      	$sql_logged_user = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
+        $sql_logged_user = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
         
         $result_logged_user = $GLOBALS['db']->query($sql_logged_user);
         
@@ -479,7 +767,7 @@ public function action_approval_buttons(){
             $check_team_lead = $row_logged_user['teamheirarchy_c'];
         }
 
-    	$sql_assigned_user = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c,users.reports_to_id,users_cstm.user_lineage FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$assigned_id."' AND users.deleted = 0";
+      $sql_assigned_user = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c,users.reports_to_id,users_cstm.user_lineage FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$assigned_id."' AND users.deleted = 0";
         
         $result_assigned_user = $GLOBALS['db']->query($sql_assigned_user);
 
@@ -490,9 +778,9 @@ public function action_approval_buttons(){
 
         $lineage_array=explode(',',$lineage);
                   
-		$sql_approval_status = "SELECT * FROM document_approval_table WHERE id=(SELECT MAX(id) FROM document_approval_table WHERE doc_id ='".$doc_id."' ) ";
+    $sql_approval_status = "SELECT * FROM document_approval_table WHERE id=(SELECT MAX(id) FROM document_approval_table WHERE doc_id ='".$doc_id."' ) ";
         
-		$result_approval_status = $GLOBALS['db']->query($sql_approval_status);
+    $result_approval_status = $GLOBALS['db']->query($sql_approval_status);
 
         while($row_approval_status=$GLOBALS['db']->fetchByAssoc($result_approval_status)){                
             $approval_status = $row_approval_status['approval_status'];
@@ -504,18 +792,18 @@ public function action_approval_buttons(){
             
         if($approval_status == '0'){    
             if($log_in_user_id==$sender){
-           		echo json_encode(array("message"=>"Pending" ));
+              echo json_encode(array("message"=>"Pending" ));
             }
             if($log_in_user_id==$approver_rejector){
-           		echo json_encode(array("message"=>"Pending_approve" )); 
+              echo json_encode(array("message"=>"Pending_approve" )); 
             }
             if($log_in_user_id==$delegate_id){
-            	echo json_encode(array("message"=>"Pending_approve" ));
+              echo json_encode(array("message"=>"Pending_approve" ));
             }
         }
 
         else if($approval_status == '1'){        
-           	echo json_encode(array("message"=>"Approved" ));
+            echo json_encode(array("message"=>"Approved" ));
         }
             
         else if($approval_status == '2'){
@@ -525,11 +813,11 @@ public function action_approval_buttons(){
             }
         }
         else {       
-        	if($log_in_user_id==$assigned_id && $log_in_user_id==$approver_id){    
+          if($log_in_user_id==$assigned_id && $log_in_user_id==$approver_id){    
                 echo json_encode(array("message"=>"show_completed"));
             }
             else if($log_in_user_id==$assigned_id){
-            	echo json_encode(array("message"=>"show_send_approval"));
+              echo json_encode(array("message"=>"show_send_approval"));
             }
             else{
                 echo json_encode(array("message"=>"no" )); 
@@ -537,11 +825,11 @@ public function action_approval_buttons(){
 
             /*if($status=='Upcoming'){
 
-               	if($log_in_user_id==$assigned_id && $log_in_user_id==$approver_id){    
+                if($log_in_user_id==$assigned_id && $log_in_user_id==$approver_id){    
                     echo json_encode(array("message"=>"show_completed"));
                 }
                 else if($log_in_user_id==$assigned_id){
-                	echo json_encode(array("message"=>"show_send_approval"));
+                  echo json_encode(array("message"=>"show_send_approval"));
                 }
                 else{
                     echo json_encode(array("message"=>"no" )); 
@@ -549,7 +837,7 @@ public function action_approval_buttons(){
             }
             else if($status=='Apply For Completed'){
                 if($log_in_user_id==$assigned_id){
-                	echo json_encode(array("message"=>"show_send_approval"));
+                  echo json_encode(array("message"=>"show_send_approval"));
                 }
                 else{
                     echo json_encode(array("message"=>"no" )); 
@@ -559,11 +847,11 @@ public function action_approval_buttons(){
             else{
                 echo json_encode(array("message"=>"no" )); 
             }*/
-        }    	    
-	}catch(Exception $e){
-    	echo json_encode(array("status"=>false, "message" => "Some error occured"));
+        }         
+  }catch(Exception $e){
+      echo json_encode(array("status"=>false, "message" => "Some error occured"));
     }
-	die();
+  die();
 }
 //-----------------------Approval Buttons----------END------------------------------------------------------------
 
@@ -571,13 +859,13 @@ public function action_approval_buttons(){
 public function action_editView_access(){
     try{
          $db = \DBManagerFactory::getInstance();
-        	$GLOBALS['db'];
-        	
-            	global $current_user; 
-        	    $log_in_user_id = $current_user->id;
-        	    $doc_id =$_POST['doc_id'];
-        	    $assigned_id = $_POST['assigned_id'];
-        	    
+          $GLOBALS['db'];
+          
+              global $current_user; 
+              $log_in_user_id = $current_user->id;
+              $doc_id =$_POST['doc_id'];
+              $assigned_id = $_POST['assigned_id'];
+              
       $sql_logged_user = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
         $result_logged_user = $GLOBALS['db']->query($sql_logged_user);
         while($row_logged_user = $GLOBALS['db']->fetchByAssoc($result_logged_user)) 
@@ -611,59 +899,59 @@ public function action_editView_access(){
         }        
         
         $tagged_users_array=explode(',',$tagged_users);
-        	    
-        	    if($acc_id==""){
-        	        
-        	        if($check_mc=="yes"||$check_team_lead=="team_lead"){
-        	            echo json_encode(array('message'=>"no_acc_id_view_all"));
-        	            
-        	        }else{
-        	             echo json_encode(array('message'=>"no_acc_id_view_few"));
-        	        }
-        	        
-        	    }
-        	    
-        	    else{
-        	       
-        	            
-        	        if($check_mc=="yes"){
-        	            
-        	        }
-        	        
-        	        else if(in_array($log_in_user_id,$lineage_array)){
-        	             
-        	            if($check_team_lead=="team_lead"){
-        	                
-        	            }
-        	            else{
-        	                 echo json_encode(array('message'=>"acc_id_view_no"));
-        	            }
-        	            
-        	        }
-        	        else if(in_array($log_in_user_id,$tagged_users_array)){
-        	            
-        	            if($check_team_lead=="team_lead"){
-        	                echo json_encode(array('message'=>"acc_id_view_few"));
-        	            }
-        	            else{
-        	                  echo json_encode(array('message'=>"acc_id_view_no"));
-        	            }
-        	            
-        	        } 
-        	         else if($log_in_user_id==$assigned_id){
-        	            
-        	            if($check_team_lead=="team_lead"){
-        	               
-        	            }
-        	            else{
-        	                  echo json_encode(array('message'=>"acc_id_view_no"));
-        	            }
-        	            
-        	        } 
-        	    }
-        	    
+              
+              if($acc_id==""){
+                  
+                  if($check_mc=="yes"||$check_team_lead=="team_lead"){
+                      echo json_encode(array('message'=>"no_acc_id_view_all"));
+                      
+                  }else{
+                       echo json_encode(array('message'=>"no_acc_id_view_few"));
+                  }
+                  
+              }
+              
+              else{
+                 
+                      
+                  if($check_mc=="yes"){
+                      
+                  }
+                  
+                  else if(in_array($log_in_user_id,$lineage_array)){
+                       
+                      if($check_team_lead=="team_lead"){
+                          
+                      }
+                      else{
+                           echo json_encode(array('message'=>"acc_id_view_no"));
+                      }
+                      
+                  }
+                  else if(in_array($log_in_user_id,$tagged_users_array)){
+                      
+                      if($check_team_lead=="team_lead"){
+                          echo json_encode(array('message'=>"acc_id_view_few"));
+                      }
+                      else{
+                            echo json_encode(array('message'=>"acc_id_view_no"));
+                      }
+                      
+                  } 
+                   else if($log_in_user_id==$assigned_id){
+                      
+                      if($check_team_lead=="team_lead"){
+                         
+                      }
+                      else{
+                            echo json_encode(array('message'=>"acc_id_view_no"));
+                      }
+                      
+                  } 
+              }
+              
          
-        	  
+            
     }catch(Exception $e) {
           echo json_encode(array("status"=>false, "message"=>"some error occured"));
       }
@@ -683,17 +971,17 @@ public function action_editView_access(){
             // public function action_new_assigned_list(){
 //      try{
 //          $db = \DBManagerFactory::getInstance();
-//         	$GLOBALS['db'];
-        	  
-//         	   global $current_user; 
-        	   
-//         	  $acc_id=$_POST['acc_id'];
-//         	   $combined=array();
-//         	  $id_array1=array();
-//         	  $id_array=array();
-//         	  $name_array=array();
-//         	  $func_array=array();
-//         	 $func1_array=array();
+//          $GLOBALS['db'];
+            
+//             global $current_user; 
+             
+//            $acc_id=$_POST['acc_id'];
+//             $combined=array();
+//            $id_array1=array();
+//            $id_array=array();
+//            $name_array=array();
+//            $func_array=array();
+//           $func1_array=array();
 //               $h_array=array();
 //               $r_name=array();
 //               $number=array();
@@ -704,18 +992,18 @@ public function action_editView_access(){
 //               $h1_array=array();
 //               $rr_name=array();
 //               $n=1;
-//     	  $log_in_user_id = $current_user->id;
-    	  
-    	  
-    	 	
+//        $log_in_user_id = $current_user->id;
+        
+        
+        
 //         $sql7="SELECT CONCAT(IFNULL(users.first_name,''), ' ', IFNULL(users.last_name,'')) AS name FROM users WHERE id='".$log_in_user_id."'";
-//     	    $result7 = $GLOBALS['db']->query($sql7);
+//          $result7 = $GLOBALS['db']->query($sql7);
 //         while($row7 = $GLOBALS['db']->fetchByAssoc($result7)) 
 //         {
-//     	       $mc_name=$row7['name'];  
-    	       
+//             $mc_name=$row7['name'];  
+             
 //         }
-        	
+          
 //          $sql = "SELECT users.id, users_cstm.teamfunction_c, users_cstm.mc_c, users_cstm.teamheirarchy_c FROM users INNER JOIN users_cstm ON users.id = users_cstm.id_c WHERE users_cstm.id_c = '".$log_in_user_id."' AND users.deleted = 0";
 //         $result = $GLOBALS['db']->query($sql);
 //         while($row = $GLOBALS['db']->fetchByAssoc($result)) 
@@ -885,9 +1173,9 @@ public function action_editView_access(){
         
    
 //      }catch(Exception $e){
-//     		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-//     	}
-// 		die();
+//        echo json_encode(array("status"=>false, "message" => "Some error occured"));
+//      }
+//    die();
 // }
 
 
@@ -900,19 +1188,19 @@ public function action_editView_access(){
         // public function action_fetch_assigned_id(){
 //      try{
 //          $db = \DBManagerFactory::getInstance();
-//         	$GLOBALS['db'];
-        	  
-//         	   global $current_user; 
-//         	    $log_in_user_id = $current_user->id;
-//         	    $assigned_name=$_POST['f'];
-//         	    $f_name=$_POST['f_name'];
-//         	    $l_name=$_POST['l_name'];
-        	    
-        	   
-//         	     $sql="SELECT id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
-        	    
-//         	     $result = $GLOBALS['db']->query($sql);
-        	     
+//          $GLOBALS['db'];
+            
+//             global $current_user; 
+//              $log_in_user_id = $current_user->id;
+//              $assigned_name=$_POST['f'];
+//              $f_name=$_POST['f_name'];
+//              $l_name=$_POST['l_name'];
+              
+             
+//               $sql="SELECT id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
+              
+//               $result = $GLOBALS['db']->query($sql);
+               
 //         while($row = $GLOBALS['db']->fetchByAssoc($result)) 
 //         {
             
@@ -930,9 +1218,9 @@ public function action_editView_access(){
         
 //         echo $a_id;
 //      }catch(Exception $e){
-//     		echo json_encode(array("status"=>false, "message" => "Some error occured"));
-//     	}
-// 		die();
+//        echo json_encode(array("status"=>false, "message" => "Some error occured"));
+//      }
+//    die();
 // }
 
 
