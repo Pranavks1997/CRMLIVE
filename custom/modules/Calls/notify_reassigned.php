@@ -26,7 +26,7 @@ class notify_reassigned
 
 				$alert = BeanFactory::newBean('Alerts');
 	            $alert->name = '';
-	            $alert->description = 'You have been assigned to activity "'.$bean->name.'" by the '.$current_user->first_name.' '.$current_user->last_name.'. Now you can edit / make changes.';
+	            $alert->description = 'You have been assigned to activity "'.$bean->name.'" by '.$current_user->first_name.' '.$current_user->last_name.'. Now you can edit / make changes.';
 
 	            $alert->url_redirect = 'index.php?action=DetailView&module=Calls&record='.$bean->id;
 	            $alert->target_module = 'Activities';
@@ -38,7 +38,7 @@ class notify_reassigned
 	            // Send Email To New Assigned User
 	            $assigned_user = $this->getUserByID($assigned_user_id);
 
-	            $template = 'You have been assigned to activity "'.$bean->name.'" by the '.$current_user->first_name.' '.$current_user->last_name.'. Now you can edit / make changes.';
+	            $template = 'You have been assigned to activity "'.$bean->name.'" by '.$current_user->first_name.' '.$current_user->last_name.'. Now you can edit / make changes. <br><br> Click here to view: www.ampersandcrm.com';
 
 				$emailObj = new Email();  
 				$defaults = $emailObj->getSystemDefaultEmail();  
@@ -49,6 +49,7 @@ class notify_reassigned
 				$mail->Subject = 'CRM ALERT - Reassignment';
 				$mail->Body =$template;
 				$mail->prepForOutbound();  
+				$mail->IsHTML(true);
 				$mail->AddAddress($assigned_user['user_name']);
 				@$mail->Send();
 
