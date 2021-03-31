@@ -3115,11 +3115,12 @@ class HomeController extends SugarController{
             $approvalDelegateUpdateQuery = $GLOBALS['db']->query($approvalDelegateUpdate);
 
             //$fetch_organization_count = $GLOBALS['db']->fetchByAssoc($save_delegate_query_result);
-            $description = "You have been delegated to Opportunities by ".getUserName($log_in_user_id);
-            send_notification('Opportunities','Delegate',$description,[$proxy],'');
+            $description = "You have been delegated to approve & reject Opportunities by "."'".getUserName($log_in_user_id)."'";
+            $description_email = "You have been delegated to approve & reject Opportunities by "."'".getUserName($log_in_user_id)."'"."<br><br>Click here to view: www.ampersandcrm.com";
+            send_notification('Opportunity','Delegate',$description,[$proxy],'');
     
             $reciever_email = getUserEmail($proxy);
-            send_email($description,[$reciever_email],'CRM ALERT - Delegation');
+            send_email($description_email,[$reciever_email],'CRM ALERT - Delegation');
             echo json_encode(array("status"=>true, "message"=>"Data Succesfully updated", "proxy"=> $proxy,"proxy_name"=>getUserName($proxy)));
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
@@ -4111,12 +4112,13 @@ public function action_new_assigned_list(){
                             
                             $link = 'index.php?action=DetailView&module=Opportunities&record='.$row_opp_name['id'];
                             $description ="The Oppurtunity "."'".$row_opp_name['name']."'"." was re-assigned to ".getUserName($assigned_id)." by "."'".getUserName($log_in_user_id)."'";
-                            $description_notification = "You have been assigned to Opportunities "."'".$row_opp_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.";  
-                            $description_for_reassigned_user = getUserEmail($assigned_id)." has been assigned to an Opportunities "."'".$row_opp_name['name']."'"." by "."'".getUserName($log_in_user_id)."'";
-                            send_email($description_for_reassigned_user,[getUserEmail($reports_to_id)],"CRM ALERT - Reassigned");
+                            $description_notification = "You have been assigned to Opportunity "."'".$row_opp_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.";  
+                            $description_for_ex_assigned_user = getUserEmail($assigned_id)." has been assigned to an Opportunity "."'".$row_opp_name['name']."'"." by "."'".getUserName($log_in_user_id)."'";
+                            $description_for_assigned_user_email = "You have been assigned to Opportunity "."'".$row_opp_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.<br><br> Click here to view: www.ampersandcrm.com";
+                            send_email($description_for_ex_assigned_user,[getUserEmail($reports_to_id)],"CRM ALERT - Reassigned");
  
-                             send_notification('Opportunities','Re-assign User',$description_notification,[$assigned_id],$link);
-                             send_email($description_notification,[getUserEmail($assigned_id)],"CRM ALERT - Reassignment"); 
+                             send_notification('Opportunity','Re-assign User',$description_notification,[$assigned_id],$link);
+                             send_email($description_for_assigned_user_email,[getUserEmail($assigned_id)],"CRM ALERT - Reassignment"); 
                              echo json_encode(array("status"=>true, "message" => "Success","description"=>$description,"opp"=>$opportunity_id));
                               
                           }
@@ -4136,12 +4138,13 @@ public function action_new_assigned_list(){
                             
                             $link = 'index.php?action=DetailView&module=Opportunities&record='.$row_opp_name['id'];
                             $description ="The Oppurtunity "."'".$row_opp_name['name']."'"." was re-assigned to ".getUserName($assigned_id)." by "."'".getUserName($log_in_user_id)."'";
-                            $description_notification = "You have been assigned to Opportunities "."'".$row_opp_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.";  
-                            $description_for_reassigned_user = getUserEmail($assigned_id)." has been assigned to an Opportunities "."'".$row_opp_name['name']."'"." by "."'".getUserName($log_in_user_id)."'";
-                            send_email($description_for_reassigned_user,[getUserEmail($reports_to_id)],"CRM ALERT - Reassigned");
+                            $description_notification = "You have been assigned to Opportunity "."'".$row_opp_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.";  
+                            $description_for_ex_assigned_user = getUserEmail($assigned_id)." has been assigned to an Opportunity "."'".$row_opp_name['name']."'"." by "."'".getUserName($log_in_user_id)."'";
+                            $description_for_assigned_user_email = "You have been assigned to Opportunity "."'".$row_opp_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.<br><br> Click here to view: www.ampersandcrm.com";
+                            send_email($description_for_ex_assigned_user,[getUserEmail($reports_to_id)],"CRM ALERT - Reassigned");
  
-                             send_notification('Opportunities','Re-assign User',$description_notification,[$assigned_id],$link);
-                             send_email($description_notification,[getUserEmail($assigned_id)],"CRM ALERT - Reassignment"); 
+                             send_notification('Opportunity','Re-assign User',$description_notification,[$assigned_id],$link);
+                             send_email($description_for_assigned_user_email,[getUserEmail($assigned_id)],"CRM ALERT - Reassignment");
                              echo json_encode(array("status"=>true, "message" => "Success","description"=>$description,"opp"=>$opportunity_id));
                           }
                         }
@@ -5675,26 +5678,28 @@ public function is_activity_reassignment_applicable($activity_id) {
  
                      $description = "Activity "."'".$row['name']."'"." uploaded by "."'".getUsername($row['created_by'])."'"." has been " .$event." by "."'".getUsername($log_in_user_id)."'";
                     
-                     $description_notification = "Activities "."'".$row['name']."'"." is ".$event. " by "."'".getUsername($log_in_user_id)."'";
-                     send_notification('Activities', $row['name'], $description_notification,$assigned_user_id_approve,$link);
+                     $description_notification = "Activity "."'".$row['name']."'"." is ".$event. " by "."'".getUsername($log_in_user_id)."'";
+                     $description_email = "Activity "."'".$row['name']."'"." is ".$event. " by "."'".getUsername($log_in_user_id)."'"."<br><br>Click here to view: www.ampersandcrm.com";
+                     send_notification('Activity', $row['name'], $description_notification,$assigned_user_id_approve,$link);
                      $receiver_emails_approve = []; 
                     foreach($assigned_user_id_approve as $user_id) {
                          array_push($receiver_emails_approve, getUserEmail($user_id));
                         }
                     
-                    send_email($description_notification,$receiver_emails_approve,'CRM ALERT - Approved');
+                    send_email($description_email,$receiver_emails_approve,'CRM ALERT - Approved');
                  }
                  if($event =='Reject'){
                      $assigned_user_id_reject =[$row['created_by'], $row['user_id_c']];
                      $description = "Activity ".$row['name']." uploaded by ".getUsername($row['created_by'])." has been " .$event." by ".getUsername($log_in_user_id);
-                     $description_notification = "Activities "."'".$row['name']."'"." is ".$event. " by "."'".getUsername($log_in_user_id)."'";
-                     send_notification('Activities',$row['name'],$description_notification,$assigned_user_id_reject,$link);
+                     $description_notification = "Activity "."'".$row['name']."'"." is ".$event. " by "."'".getUsername($log_in_user_id)."'";
+                     $description_email = "Activity "."'".$row['name']."'"." is ".$event. " by "."'".getUsername($log_in_user_id)."'"."<br><br>Click here to view: www.ampersandcrm.com";
+                     send_notification('Activity',$row['name'],$description_notification,$assigned_user_id_reject,$link);
                     
                      $receiver_emails_reject = []; 
                     foreach($assigned_user_id_reject as $user_id) {
                          array_push($receiver_emails_reject, getUserEmail($user_id));
                         }
-                    send_email($description_notification,$receiver_emails_reject,'CRM ALERT - Rejected');
+                    send_email($description_email,$receiver_emails_reject,'CRM ALERT - Rejected');
                 }
 
                 echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "description"=>$description,"assigned_user_id_approve"=>$assigned_user_id_approve));
@@ -5810,11 +5815,13 @@ public function is_activity_reassignment_applicable($activity_id) {
 
             //$fetch_organization_count = $GLOBALS['db']->fetchByAssoc($save_delegate_query_result);
             //Notification
-            $description = "You have been delegated to Activities by "."'".getUserName($log_in_user_id)."'";
-            send_notification('Activities','Delegate',$description,[$proxy],'');
+            
+            $description = "You have been delegated to approve & reject Activities by "."'".getUserName($log_in_user_id)."'";
+            $description_email = "You have been delegated to approve & reject Activities by "."'".getUserName($log_in_user_id)."'"."<br><br>Click here to view: www.ampersandcrm.com";
+            send_notification('Activity','Delegate',$description,[$proxy],'');
     
             $reciever_email = getUserEmail($proxy);
-            send_email($description,[$reciever_email],'CRM ALERT - Delegation');
+            send_email($description_email,[$reciever_email],'CRM ALERT - Delegation');
             echo json_encode(array("status"=>true, "message"=>"Data Succesfully updated", "proxy"=> $proxy,"proxy_name"=>getUserName($proxy)));
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
@@ -6352,14 +6359,15 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
 
                            $link = "index.php?module=Calls&action=DetailView&record=".$row_activity_name['id'];
                            
-                           $description ="The Activity ". $row_activity_name['name'] ." was re-assigned to ".getUserName($assigned_id)." by ".getUserName($log_in_user_id);
+                           $description ="The Activity "."'". $row_activity_name['name'] ."'"." was re-assigned to "."'".getUserName($assigned_id)."'"." by "."'".getUserName($log_in_user_id)."'";
                             
-                           $description_notification = "You have been assigned to Activities "."'".$row_activity_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.";  
-                            $description_for_reassigned_user = getUserEmail($assigned_id)." has been assigned to an Activities "."'".$row_activity_name['name']."'"." by "."'".getUserName($log_in_user_id)."'";
-                            send_email($description_for_reassigned_user,[getUserEmail($approver_id)],"CRM ALERT - Reassigned");
+                           $description_notification = "You have been assigned to Activity "."'".$row_activity_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.";  
+                            $description_for_ex_assigned_user = getUserEmail($assigned_id)." has been assigned to an Activity "."'".$row_activity_name['name']."'"." by "."'".getUserName($log_in_user_id)."'";
+                            $description_for_assigned_user_email = "You have been assigned to Activity "."'".$row_activity_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.<br><br> Click here to view: www.ampersandcrm.com";
+                            send_email($description_for_ex_assigned_user,[getUserEmail($approver_id)],"CRM ALERT - Reassigned");
 
-                            send_notification('Activities','Re-assign User',$description_notification,[$assigned_id],$link);
-                            send_email($description_notification,[getUserEmail($assigned_id)],"CRM ALERT-Reassignment"); 
+                            send_notification('Activity','Re-assign User',$description_notification,[$assigned_id],$link);
+                            send_email($description_for_assigned_user_email,[getUserEmail($assigned_id)],"CRM ALERT - Reassignment"); 
                             
                             echo json_encode(array('message'=>true,"description"=>$description));
 	    		             
@@ -7872,12 +7880,14 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
             $approvalDelegateUpdateQuery = $GLOBALS['db']->query($approvalDelegateUpdate);
 
             //$fetch_organization_count = $GLOBALS['db']->fetchByAssoc($save_delegate_query_result);
+        
         //Notification
-        $description = "You have been delegated to Documents by ".getUserName($log_in_user_id);
-        send_notification('Documents','Delegate',$description,[$proxy],'');
+        $description = "You have been delegated to approve & reject Documents by "."'".getUserName($log_in_user_id)."'";
+        $description_email = "You have been delegated to approve & reject Documents by "."'".getUserName($log_in_user_id)."'"."<br><br>Click here to view: www.ampersandcrm.com";
+        send_notification('Document','Delegate',$description,[$proxy],'');
 
         $reciever_email = getUserEmail($proxy);
-        send_email($description,[$reciever_email],'CRM ALERT - Delegation');
+        send_email($description_email,[$reciever_email],'CRM ALERT - Delegation');
         echo json_encode(array("status"=>true, "message"=>"Data Succesfully updated", "proxy"=> $proxy,"proxy_name"=>getUserName($proxy)));
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
@@ -8150,21 +8160,22 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
                     $assigned_user_id_approve = array_diff($assigned_user_id_approve, array($log_in_user_id) );
 
                     $description = "Document "."'".$row['document_name']."'"." uploaded by "."'".getUsername($row['created_by'])."'"." has been " .$event." by "."'".getUsername($log_in_user_id)."'";
-                    $description_notification = "Documents "."'".$row['document_name']."'"." is ".$event. " by "."'".getUsername($log_in_user_id)."'";
-                    send_notification('Documents', $row['document_name'], $description_notification,$assigned_user_id_approve,$link);
+                    $description_notification = "Document "."'".$row['document_name']."'"." is ".$event. " by "."'".getUsername($log_in_user_id)."'";
+                    $description_email = "Document "."'".$row['document_name']."'"." is ".$event. " by "."'".getUsername($log_in_user_id)."'"."<br><br>Click here to view: www.ampersandcrm.com";
+                    send_notification('Document', $row['document_name'], $description_notification,$assigned_user_id_approve,$link);
                     
                     $receiver_emails_approve = []; 
                     foreach($assigned_user_id_approve as $user_id) {
                          array_push($receiver_emails_approve, getUserEmail($user_id));
                         }
                     
-                    send_email($description_notification,$receiver_emails_approve,'CRM ALERT - Approved');
+                    send_email($description_email,$receiver_emails_approve,'CRM ALERT - Approved');
                 }
                 if($event =='Reject'){
                     $assigned_user_id_reject =[$row['created_by'], $row['user_id_c']];
                     $description = "Document "."'".$row['document_name']."'"." uploaded by "."'".getUsername($row['created_by'])."'"." has been " .$event." by "."'".getUsername($log_in_user_id)."'";
-                    $description_notification = "Documents "."'".$row['document_name']."'"." is ".$event. " by "."'".getUsername($log_in_user_id)."'";
-                    send_notification('Documents',$row['document_name'],$description_notification,$assigned_user_id_reject,$link);
+                    $description_notification = "Document "."'".$row['document_name']."'"." is ".$event. " by "."'".getUsername($log_in_user_id)."'";
+                    send_notification('Document',$row['document_name'],$description_notification,$assigned_user_id_reject,$link);
                     
                     $receiver_emails_reject = []; 
                     foreach($assigned_user_id_reject as $user_id) {
