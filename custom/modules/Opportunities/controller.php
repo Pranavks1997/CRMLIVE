@@ -1701,16 +1701,16 @@ public function action_send_for_approval(){
 				    
 				   echo 'Opportunity  "'.$opp_name.'" has been sent to '.$approver_name.' for approval';
 				   	foreach($email_array as $email){
-                                    				$template = 'Opportunity "'.$opp_name.'" is recieved for approval for '. $apply.' by '.$sender_name.' Please Review : "'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id.'"';
+                                    				$template = 'Opportunity "'.$opp_name.'" is recieved for approval for '. $apply.' by '.$sender_name;
                                     						require_once('include/SugarPHPMailer.php');
                                     						include_once('include/utils/db_utils.php');
                                     					    $emailObj = new Email();  
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
                                     					    $mail = new SugarPHPMailer();  
                                     					    $mail->setMailerForSystem();  
-                                    					    $mail->From = $defaults['xelpmoctestmail@gmail.com'];  
-                                    					    $mail->FromName = $defaults['CRM'];  
-                                    					    $mail->Subject = ''. $opp_name.'  is sent for  approval'; 
+                                    					    $mail->From = $defaults['email'];  
+                                                            $mail->FromName = $defaults['name'];   
+                                    					    $mail->Subject = 'CRM ALERT - Approval Request'; 
                                     						$mail->Body =$template;
                                     					    $mail->prepForOutbound();  
                                     					    $mail->AddAddress($email); 
@@ -2078,16 +2078,16 @@ public function action_approve(){
             
             //         		// //emails
                                     					foreach($email_array as $email){
-                                    				$template = 'Opportunity "'.$opp_name.'" is approved for '. $apply.' by '.$approver_name.' Please Review : "'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id.'"';
+                                    				$template = 'Opportunity "'.$opp_name.'" is approved for '. $apply.' by '.$approver_name;
                                     						require_once('include/SugarPHPMailer.php');
                                     						include_once('include/utils/db_utils.php');
                                     					    $emailObj = new Email();  
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
                                     					    $mail = new SugarPHPMailer();  
                                     					    $mail->setMailerForSystem();  
-                                    					    $mail->From = $defaults['xelpmoctestmail@gmail.com'];  
-                                    					    $mail->FromName = $defaults['CRM'];  
-                                    					    $mail->Subject = ''. $opp_name.'  is approved'; 
+                                                            $mail->From = $defaults['email'];  
+                                                            $mail->FromName = $defaults['name']; 
+                                    					    $mail->Subject = 'CRM ALERT - Approved'; 
                                     						$mail->Body =$template;
                                     					    $mail->prepForOutbound();  
                                     					    $mail->AddAddress($email); 
@@ -2175,16 +2175,16 @@ public function action_approve(){
                     			         
             //         			         	// //emails
                                     					foreach($email_array as $email){
-                                    				$template = 'Opportunity "'.$opp_name.'" is approved for '. $apply.' by '.$approver_name.' Please Review : "'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id.'"';
+                                    				$template = 'Opportunity "'.$opp_name.'" is approved for '. $apply.' by '.$approver_name;
                                     						require_once('include/SugarPHPMailer.php');
                                     						include_once('include/utils/db_utils.php');
                                     					    $emailObj = new Email();  
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
                                     					    $mail = new SugarPHPMailer();  
                                     					    $mail->setMailerForSystem();  
-                                    					    $mail->From = $defaults['xelpmoctestmail@gmail.com'];  
-                                    					    $mail->FromName = $defaults['CRM'];  
-                                    					    $mail->Subject = ''. $opp_name.' is approved'; 
+                                                            $mail->From = $defaults['email'];  
+                                                            $mail->FromName = $defaults['name']; 
+                                    					    $mail->Subject = 'CRM ALERT - Approved'; 
                                     						$mail->Body =$template;
                                     					    $mail->prepForOutbound();  
                                     					    $mail->AddAddress($email); 
@@ -2411,16 +2411,16 @@ public function action_reject(){
                     			         
                     			         
                     			         	foreach($email_array as $email){
-                                    				$template = 'Opportunity "'.$opp_name.'" is rejected for '. $apply.' by '.$approver_name.' Please Review : "'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id.'"';
+                                    				$template = 'Opportunity "'.$opp_name.'" is rejected for '. $apply.' by '.$approver_name;
                                     						require_once('include/SugarPHPMailer.php');
                                     						include_once('include/utils/db_utils.php');
                                     					    $emailObj = new Email();  
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
                                     					    $mail = new SugarPHPMailer();  
                                     					    $mail->setMailerForSystem();  
-                                    					    $mail->From = $defaults['xelpmoctestmail@gmail.com'];  
-                                    					    $mail->FromName = $defaults['CRM'];  
-                                    					    $mail->Subject = ''. $opp_name.'  is rejected'; 
+                                    					    $mail->From = $defaults['email'];  
+                                                            $mail->FromName = $defaults['name'];  
+                                    					    $mail->Subject = 'CRM ALERT - Rejected'; 
                                     						$mail->Body =$template;
                                     					    $mail->prepForOutbound();  
                                     					    $mail->AddAddress($email); 
@@ -2459,16 +2459,16 @@ public function action_reject(){
                     			         
                     			         
                     			         	foreach($email_array as $email){
-                                    				$template = 'Opportunity "'.$opp_name.'" is rejected for '. $apply.' by '.$approver_name.' Please Review : "'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id.'"';
+                                    				$template = 'Opportunity "'.$opp_name.'" is rejected for '. $apply.' by '.$approver_name;
                                     						require_once('include/SugarPHPMailer.php');
                                     						include_once('include/utils/db_utils.php');
                                     					    $emailObj = new Email();  
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
                                     					    $mail = new SugarPHPMailer();  
                                     					    $mail->setMailerForSystem();  
-                                    					    $mail->From = $defaults['xelpmoctestmail@gmail.com'];  
-                                    					    $mail->FromName = $defaults['CRM'];  
-                                    					    $mail->Subject = ''. $opp_name.'  is rejected'; 
+                                    					    $mail->From = $defaults['email'];  
+                                                            $mail->FromName = $defaults['name']; 
+                                    					    $mail->Subject = 'CRM ALERT - Rejected'; 
                                     						$mail->Body =$template;
                                     					    $mail->prepForOutbound();  
                                     					    $mail->AddAddress($email); 
@@ -3475,9 +3475,9 @@ public function action_save_tagged_users_list(){
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
                                     					    $mail = new SugarPHPMailer();  
                                     					    $mail->setMailerForSystem();  
-                                    					    $mail->From = $defaults['xelpmoctestmail@gmail.com'];  
-                                    					    $mail->FromName = $defaults['CRM'];  
-                                    					    $mail->Subject = 'You have been Untagged for opportunity "'.$opp_name.'"'; 
+                                    					    $mail->From = $defaults['email'];  
+                                                            $mail->FromName = $defaults['name']; 
+                                    					    $mail->Subject = 'CRM ALERT - Untagged'; 
                                     						$mail->Body =$template;
                                     					    $mail->prepForOutbound();  
                                     					    $mail->AddAddress($email); 
@@ -3487,20 +3487,21 @@ public function action_save_tagged_users_list(){
                                     						foreach($email_array as $email1){
     
     
-                                    			        	$template = 'You have been tagged for opportunity "'.$opp_name.'" Please Review : "'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$op_id.'"';
+                                    			        	$template = 'You have been tagged for opportunity "'.$opp_name.'".Now you can edit/make changes.';
                                     						require_once('include/SugarPHPMailer.php');
                                     						include_once('include/utils/db_utils.php');
                                     					    $emailObj = new Email();  
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
                                     					    $mail = new SugarPHPMailer();  
                                     					    $mail->setMailerForSystem();  
-                                    					    $mail->From = $defaults['xelpmoctestmail@gmail.com'];  
-                                    					    $mail->FromName = $defaults['CRM'];  
-                                    					    $mail->Subject = 'You have been tagged for opportunity "'.$opp_name.'"'; 
+                                    					    $mail->From = $defaults['email'];  
+                                                            $mail->FromName = $defaults['name'];  
+                                    					    $mail->Subject = 'CRM ALERT - Tagged'; 
                                     						$mail->Body =$template;
                                     					    $mail->prepForOutbound();  
                                     					    $mail->AddAddress($email1); 
                                     					    @$mail->Send();
+                                    					    
                                     				}			
 			}
 			
@@ -3523,34 +3524,41 @@ public function action_save_tagged_users_list(){
 			}
 				 if($db->query($insert_query)==TRUE){
 				 //alerts
-                    			         //foreach($tagged_array as $user){
-                                //     			   $alert = BeanFactory::newBean('Alerts');
-                                //     						//$alert->name =$opp_name;
-                                //     						$alert->description = 'You have been tagged for opportunity "'.$opp_name.'"';
-                                //     						$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$op_id;
-                                //     						$alert->target_module = 'Opportunities';
-                                //     						$alert->assigned_user_id = $user;
-                                //     						$alert->type = 'info';
-                                //     						$alert->is_read = 0;
-                                //     						$alert->save();
-                                //     						}
+                    			         foreach($tagged_array as $user){
+                    			             
+                                    			   $alert = BeanFactory::newBean('Alerts');
+                                    						//$alert->name =$opp_name;
+                                    						$alert->description = 'You have been tagged. Now you can edit /make changes to opportunity "'.$opp_name.'"';
+                                    						$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$op_id;
+                                    						$alert->target_module = 'Opportunities';
+                                    						$alert->assigned_user_id = $user;
+                                    						$alert->type = 'info';
+                                    						$alert->is_read = 0;
+                                    						$alert->save();			
+                                    						}
+                                
+                                
                                 //     							// //emails
-                                //     					foreach($email_array as $email){
-                                //     				$template = 'You have been tagged for opportunity "'.$opp_name.'"  Please Review : <a href="'.$base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$op_id.'">Click Here</a>';
-                                //     						require_once('include/SugarPHPMailer.php');
-                                //     						include_once('include/utils/db_utils.php');
-                                //     					    $emailObj = new Email();  
-                                //     					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                //     					    $mail = new SugarPHPMailer();  
-                                //     					    $mail->setMailerForSystem();  
-                                //     					    $mail->From = $defaults['xelpmoctestmail@gmail.com'];  
-                                //     					    $mail->FromName = $defaults['CRM'];  
-                                //     					    $mail->Subject = 'You have been tagged for opportunity "'.$opp_name.'"'; 
-                                //     						$mail->Body =$template;
-                                //     					    $mail->prepForOutbound();  
-                                //     					    $mail->AddAddress($email); 
-                                //     					    @$mail->Send();
-                                //     				}
+                                
+                                    					foreach($email_array as $email){
+                                    					    
+                                    				
+                                    			        	$template = 'You have been tagged for opportunity "'.$opp_name.'".Now you can edit/make changes.';
+                                    						require_once('include/SugarPHPMailer.php');
+                                    						include_once('include/utils/db_utils.php');
+                                    					    $emailObj = new Email();  
+                                    					    $defaults = $emailObj->getSystemDefaultEmail();  
+                                    					    $mail = new SugarPHPMailer();  
+                                    					    $mail->setMailerForSystem();  
+                                    					    $mail->From = $defaults['email'];  
+                                                            $mail->FromName = $defaults['name'];  
+                                    					    $mail->Subject = 'CRM ALERT - Tagged'; 
+                                    						$mail->Body =$template;
+                                    					    $mail->prepForOutbound();  
+                                    					    $mail->AddAddress($email1); 
+                                    					    @$mail->Send();
+                                    				}
+                                
 				 }
 			}
         

@@ -54,7 +54,7 @@ class notify_reassigned
 
 				// Send Email To Old Assigned User
 				$old_assigned_user = $this->getUserByID($old_assigned_user_id);
-				$template = $old_assigned_user['first_name'].' '.$old_assigned_user['last_name'].' has been assigned to an activity "'.$bean->name.'" by '.$current_user->first_name.' '.$current_user->last_name;
+				$template = $assigned_user['first_name'].' '.$assigned_user['last_name'].' has been assigned to an activity "'.$bean->name.'" by '.$current_user->first_name.' '.$current_user->last_name;
 
 				$emailObj = new Email();  
 				$defaults = $emailObj->getSystemDefaultEmail();  
@@ -62,7 +62,7 @@ class notify_reassigned
 				$mail->setMailerForSystem();  
 				$mail->From = $defaults['email'];  
 				$mail->FromName = $defaults['name'];  
-				$mail->Subject = 'CRM ALERT - Reassigned';
+				$mail->Subject = 'CRM ALERT - Reassignment';
 				$mail->Body =$template;
 				$mail->prepForOutbound();  
 				$mail->AddAddress($old_assigned_user['user_name']);
