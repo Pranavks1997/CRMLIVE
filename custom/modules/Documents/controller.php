@@ -373,7 +373,7 @@ class DocumentsController extends SugarController
     $alert = BeanFactory::newBean('Alerts');
     $alert->name = '';
     
-    $alert->description = 'Document "'.$document_name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'" is pending for your approval.';
+    $alert->description = 'Document "'.$document_name.'" is received for approval from "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
     $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Documents&record='.$document_id;
     $alert->target_module = 'Documents';
@@ -383,7 +383,7 @@ class DocumentsController extends SugarController
     $alert->save();
 
     // Send email to approver
-    $template = 'Document "'.$document_name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'" is pending for your approval.';
+    $template = 'Document "'.$document_name.'" is received for approval from "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
 
     $emailObj = new Email();  
     $defaults = $emailObj->getSystemDefaultEmail();
@@ -511,7 +511,7 @@ public function action_approve(){
       $alert->save();
 
       // Send email to assigned user
-      $template = 'Document "'.$document_name.'" is approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $template = 'Document "'.$document_name.'" is approved by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
 
       $emailObj = new Email();  
       $defaults = $emailObj->getSystemDefaultEmail();  
@@ -522,6 +522,7 @@ public function action_approve(){
       $mail->Subject = 'CRM ALERT - Approved';
       $mail->Body =$template;
       $mail->prepForOutbound();  
+      $mail->IsHTML(true);
       $mail->AddAddress($assigned_to_email);
       @$mail->Send();
 
@@ -542,7 +543,7 @@ public function action_approve(){
         $alert->save();
 
         // Send Email to tagged user
-        $template = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+        $template = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been approved by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
 
         $emailObj = new Email();  
         $defaults = $emailObj->getSystemDefaultEmail();
@@ -675,7 +676,7 @@ public function action_reject(){
       $alert->save();
 
       // Send email to assigned user
-      $template = 'Document "'.$document_name.'" is rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $template = 'Document "'.$document_name.'" is rejected by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
 
       $emailObj = new Email();  
       $defaults = $emailObj->getSystemDefaultEmail();  
@@ -686,6 +687,7 @@ public function action_reject(){
       $mail->Subject = 'CRM ALERT - Rejected';
       $mail->Body =$template;
       $mail->prepForOutbound();  
+      $mail->IsHTML(true);
       $mail->AddAddress($assigned_to_email);
       @$mail->Send();
 
@@ -705,7 +707,7 @@ public function action_reject(){
         $alert->save();
 
         // Send Email to tagged user
-        $template = 'Document - "'.$document_name.'" has been rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+        $template = 'Document - "'.$document_name.'" has been rejected by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
 
         $emailObj = new Email();  
         $defaults = $emailObj->getSystemDefaultEmail();

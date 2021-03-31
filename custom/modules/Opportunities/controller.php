@@ -1637,7 +1637,7 @@ public function action_send_for_approval(){
                                     		//alerts
                                     			            $alert = BeanFactory::newBean('Alerts');
                                     						$alert->name ='Opportunity "'.$opp_name.'"';
-                                    						$alert->description = ' is recieved for approval to '. $apply.' by '.$sender_name.'';
+                                    						$alert->description = ' is recieved for approval to "'. $apply.'" from '.$sender_name.'';
                                     						$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id;
                                     						$alert->target_module = 'Opportunities';
                                     						$alert->assigned_user_id = $approvers;
@@ -1670,7 +1670,7 @@ public function action_send_for_approval(){
                                     	            	//alerts
                                     		                $alert = BeanFactory::newBean('Alerts');
                                     						$alert->name ='Opportunity "'.$opp_name.'"';
-                                    						$alert->description = ' is recieved for approval to '. $apply.' by '.$sender_name.'';
+                                    						$alert->description = ' is received for approval to "'. $apply.'" from '.$sender_name.'';
                                     						$alert->url_redirect = $base_url.'?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$opportunity_id;
                                     						$alert->target_module = 'Opportunities';
                                     						$alert->assigned_user_id = $approvers;
@@ -1701,12 +1701,13 @@ public function action_send_for_approval(){
 				    
 				   echo 'Opportunity  "'.$opp_name.'" has been sent to '.$approver_name.' for approval';
 				   	foreach($email_array as $email){
-                                    				$template = 'Opportunity "'.$opp_name.'" is recieved for approval for '. $apply.' by '.$sender_name;
+                                    				        $template = 'Opportunity "'.$opp_name.'" is received for approval to "'. $apply.'" from '.$sender_name.'<br><br>Click here to view: www.ampersandcrm.com';
                                     						require_once('include/SugarPHPMailer.php');
                                     						include_once('include/utils/db_utils.php');
                                     					    $emailObj = new Email();  
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                    					    $mail = new SugarPHPMailer();  
+                                    					    $mail = new SugarPHPMailer(); 
+                                    					    $mail->IsHTML(true);
                                     					    $mail->setMailerForSystem();  
                                     					    $mail->From = $defaults['email'];  
                                                             $mail->FromName = $defaults['name'];   
@@ -2078,12 +2079,13 @@ public function action_approve(){
             
             //         		// //emails
                                     					foreach($email_array as $email){
-                                    				$template = 'Opportunity "'.$opp_name.'" is approved for '. $apply.' by '.$approver_name;
+                                    				$template = 'Opportunity "'.$opp_name.'" is approved for '. $apply.' by '.$approver_name.'<br><br>Click here to view: www.ampersandcrm.com';
                                     						require_once('include/SugarPHPMailer.php');
                                     						include_once('include/utils/db_utils.php');
                                     					    $emailObj = new Email();  
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                    					    $mail = new SugarPHPMailer();  
+                                    					    $mail = new SugarPHPMailer(); 
+                                    					    $mail->IsHTML(true);
                                     					    $mail->setMailerForSystem();  
                                                             $mail->From = $defaults['email'];  
                                                             $mail->FromName = $defaults['name']; 
@@ -2175,12 +2177,13 @@ public function action_approve(){
                     			         
             //         			         	// //emails
                                     					foreach($email_array as $email){
-                                    				$template = 'Opportunity "'.$opp_name.'" is approved for '. $apply.' by '.$approver_name;
+                                    				$template = 'Opportunity "'.$opp_name.'" is approved for '. $apply.' by '.$approver_name.'<br><br>Click here to view: www.ampersandcrm.com';
                                     						require_once('include/SugarPHPMailer.php');
                                     						include_once('include/utils/db_utils.php');
                                     					    $emailObj = new Email();  
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                    					    $mail = new SugarPHPMailer();  
+                                    					    $mail = new SugarPHPMailer(); 
+                                    					    $mail->IsHTML(true);
                                     					    $mail->setMailerForSystem();  
                                                             $mail->From = $defaults['email'];  
                                                             $mail->FromName = $defaults['name']; 
@@ -2411,12 +2414,13 @@ public function action_reject(){
                     			         
                     			         
                     			         	foreach($email_array as $email){
-                                    				$template = 'Opportunity "'.$opp_name.'" is rejected for '. $apply.' by '.$approver_name;
+                                    				$template = 'Opportunity "'.$opp_name.'" is rejected for '. $apply.' by '.$approver_name.'<br><br>Click here to view: www.ampersandcrm.com';
                                     						require_once('include/SugarPHPMailer.php');
                                     						include_once('include/utils/db_utils.php');
                                     					    $emailObj = new Email();  
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                    					    $mail = new SugarPHPMailer();  
+                                    					    $mail = new SugarPHPMailer();
+                                    					    $mail->IsHTML(true);
                                     					    $mail->setMailerForSystem();  
                                     					    $mail->From = $defaults['email'];  
                                                             $mail->FromName = $defaults['name'];  
@@ -2459,12 +2463,13 @@ public function action_reject(){
                     			         
                     			         
                     			         	foreach($email_array as $email){
-                                    				$template = 'Opportunity "'.$opp_name.'" is rejected for '. $apply.' by '.$approver_name;
+                                    				$template = 'Opportunity "'.$opp_name.'" is rejected for '. $apply.' by '.$approver_name.'<br><br>Click here to view: www.ampersandcrm.com';
                                     						require_once('include/SugarPHPMailer.php');
                                     						include_once('include/utils/db_utils.php');
                                     					    $emailObj = new Email();  
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                    					    $mail = new SugarPHPMailer();  
+                                    					    $mail = new SugarPHPMailer();
+                                    					    $mail->IsHTML(true); 
                                     					    $mail->setMailerForSystem();  
                                     					    $mail->From = $defaults['email'];  
                                                             $mail->FromName = $defaults['name']; 
@@ -3468,12 +3473,13 @@ public function action_save_tagged_users_list(){
                                     				foreach($email_array_old as $email){
     
     
-                                    			        	$template = 'You have been untagged for opportunity "'.$opp_name.'"';
+                                    			        	$template = 'You have been untagged from opportunity "'.$opp_name.'"';
                                     						require_once('include/SugarPHPMailer.php');
                                     						include_once('include/utils/db_utils.php');
                                     					    $emailObj = new Email();  
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                    					    $mail = new SugarPHPMailer();  
+                                    					    $mail = new SugarPHPMailer();
+                                    					    $mail->IsHTML(true); 
                                     					    $mail->setMailerForSystem();  
                                     					    $mail->From = $defaults['email'];  
                                                             $mail->FromName = $defaults['name']; 
@@ -3487,12 +3493,13 @@ public function action_save_tagged_users_list(){
                                     						foreach($email_array as $email1){
     
     
-                                    			        	$template = 'You have been tagged for opportunity "'.$opp_name.'".Now you can edit/make changes.';
+                                    			        	$template = 'You have been tagged to opportunity "'.$opp_name.'".Now you can edit/make changes.<br><br>Click here to view: www.ampersandcrm.com';
                                     						require_once('include/SugarPHPMailer.php');
                                     						include_once('include/utils/db_utils.php');
                                     					    $emailObj = new Email();  
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                    					    $mail = new SugarPHPMailer();  
+                                    					    $mail = new SugarPHPMailer();
+                                    					    $mail->IsHTML(true); 
                                     					    $mail->setMailerForSystem();  
                                     					    $mail->From = $defaults['email'];  
                                                             $mail->FromName = $defaults['name'];  
@@ -3543,12 +3550,13 @@ public function action_save_tagged_users_list(){
                                     					foreach($email_array as $email){
                                     					    
                                     				
-                                    			        	$template = 'You have been tagged for opportunity "'.$opp_name.'".Now you can edit/make changes.';
+                                    			        	$template = 'You have been tagged for opportunity "'.$opp_name.'".Now you can edit/make changes.<br><br>Click here to view: www.ampersandcrm.com';
                                     						require_once('include/SugarPHPMailer.php');
                                     						include_once('include/utils/db_utils.php');
                                     					    $emailObj = new Email();  
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                    					    $mail = new SugarPHPMailer();  
+                                    					    $mail = new SugarPHPMailer();
+                                    					    $mail->IsHTML(true);
                                     					    $mail->setMailerForSystem();  
                                     					    $mail->From = $defaults['email'];  
                                                             $mail->FromName = $defaults['name'];  

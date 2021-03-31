@@ -1048,7 +1048,7 @@ public function action_send_approval(){
     $alert = BeanFactory::newBean('Alerts');
     $alert->name = '';
     
-    $alert->description = 'Activity "'.$activity_name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'" is pending for your approval.';
+    $alert->description = 'Activity "'.$activity_name.'" is received for approval from "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
     $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
     $alert->target_module = 'Activities';
@@ -1058,7 +1058,7 @@ public function action_send_approval(){
     $alert->save();
 
     // Send email to approver
-    $template = 'Activity "'.$activity_name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'" is pending for your approval.';
+    $template = 'Activity "'.$activity_name.'" is received for approval from "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
 
     $emailObj = new Email();  
     $defaults = $emailObj->getSystemDefaultEmail();
@@ -1288,7 +1288,7 @@ public function action_approve(){
       $alert->save();
 
       // Send email to assigned user
-      $template = 'Activity "'.$activity_name.'" is approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $template = 'Activity "'.$activity_name.'" is approved by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
 
       $emailObj = new Email();  
       $defaults = $emailObj->getSystemDefaultEmail();
@@ -1320,7 +1320,7 @@ public function action_approve(){
         $alert->save();
 
         // Send Email to tagged user
-        $template = 'Activity - '.$activity_name.' has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+        $template = 'Activity - '.$activity_name.' has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
 
         $emailObj = new Email();  
         $defaults = $emailObj->getSystemDefaultEmail();
@@ -1446,7 +1446,7 @@ public function action_reject(){
       $alert->save();
 
       // Send email to assigned user
-      $template = 'Activity "'.$activity_name.'" is rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $template = 'Activity "'.$activity_name.'" is rejected by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
 
       $emailObj = new Email();  
       $defaults = $emailObj->getSystemDefaultEmail();  
@@ -1477,7 +1477,7 @@ public function action_reject(){
         $alert->save();
 
         // Send Email to tagged user
-        $template = 'Activity - "'.$activity_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+        $template = 'Activity - "'.$activity_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
 
         $emailObj = new Email();  
         $defaults = $emailObj->getSystemDefaultEmail();

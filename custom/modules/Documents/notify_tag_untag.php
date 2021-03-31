@@ -49,7 +49,7 @@ class notify_tag_untag
 				    	// Send Notification to newly tagged member
 				    	$alert = BeanFactory::newBean('Alerts');
 		                $alert->name = '';
-		                $alert->description = 'You have been tagged for document "'.$bean->document_name.'".Now you can edit / make changes';
+		                $alert->description = 'You have been tagged to document "'.$bean->document_name.'".Now you can edit / make changes';
 		                $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$bean->id;
 		                $alert->target_module = 'Documents';
 		                $alert->assigned_user_id = $user_id;
@@ -58,7 +58,7 @@ class notify_tag_untag
 		                $alert->save();
 
 		                // Send email to newly tagged member
-						$template = 'You have been tagged for document "'.$bean->document_name.'".Now you can edit / make changes';
+						$template = 'You have been tagged to document "'.$bean->document_name.'".Now you can edit / make changes <br><br> Click here to view: www.ampersandcrm.com';
 
 						$emailObj = new Email();  
 						$defaults = $emailObj->getSystemDefaultEmail();  
@@ -69,6 +69,7 @@ class notify_tag_untag
 						$mail->Subject = 'CRM ALERT - Tagged';
 						$mail->Body =$template;
 						$mail->prepForOutbound();  
+						$mail->IsHTML(true);
 						$mail->AddAddress($user['user_name']);
 						@$mail->Send();
 				    }

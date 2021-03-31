@@ -58,7 +58,7 @@ class activity_assign
                         $user = $this->getUserByID($bean->user_id_c);
 
                         // Send mail to approver
-                        $template = 'New activity "'.$bean->name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+                        $template = 'New activity "'.$bean->name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br>Click here to view: www.ampersandcrm.com';
 
                         $emailObj = new Email();  
                         $defaults = $emailObj->getSystemDefaultEmail();  
@@ -68,12 +68,13 @@ class activity_assign
                         $mail->FromName = $defaults['name'];  
                         $mail->Subject = 'CRM ALERT - Activity created.';
                         $mail->Body =$template;
-                        $mail->prepForOutbound();  
+                        $mail->prepForOutbound();
+                        $mail->IsHTML(true);
                         $mail->AddAddress($user['user_name']);
                         @$mail->Send();
 
                         // Send mail to creator
-                        $template = 'You have created activity "'.$bean->name.'".';
+                        $template = 'You have created activity "'.$bean->name.'". <br><br>Click here to view: www.ampersandcrm.com';
 
                         $emailObj = new Email();  
                         $defaults = $emailObj->getSystemDefaultEmail();  
@@ -83,7 +84,8 @@ class activity_assign
                         $mail->FromName = $defaults['name'];  
                         $mail->Subject = 'CRM ALERT - Activity created.';
                         $mail->Body =$template;
-                        $mail->prepForOutbound();  
+                        $mail->prepForOutbound(); 
+                        $mail->IsHTML(true);
                         $mail->AddAddress($current_user->user_name);
                         @$mail->Send();
 

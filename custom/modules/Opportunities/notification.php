@@ -33,11 +33,12 @@ class notification{
                         $user = $this->getUserByID($approver);
                         
                         // Send mail to approver
-                        $template = 'New opportunity "'.$bean->name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+                        $template = 'New opportunity "'.$bean->name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'".<br><br>Click here to view: www.ampersandcrm.com';
 
                         $emailObj = new Email();  
                         $defaults = $emailObj->getSystemDefaultEmail();  
-                        $mail = new SugarPHPMailer();  
+                        $mail = new SugarPHPMailer(); 
+                        $mail->IsHTML(true);
                         $mail->setMailerForSystem();  
                         $mail->From = $defaults['email'];  
                         $mail->FromName = $defaults['name'];  
@@ -49,15 +50,16 @@ class notification{
         		    }
         		    
         		    // Send Mail To Creator
-        		    $template = 'You have created opportunity "'.$bean->name.'".';
+        		    $template = 'You have created opportunity "'.$bean->name.'".<br><br>Click here to view: www.ampersandcrm.com';
 
                     $emailObj = new Email();  
                     $defaults = $emailObj->getSystemDefaultEmail();  
                     $mail = new SugarPHPMailer();  
+                    $mail->IsHTML(true);
                     $mail->setMailerForSystem();  
                     $mail->From = $defaults['email'];  
                     $mail->FromName = $defaults['name'];  
-                    $mail->Subject = 'CRM ALERT - Activity created.';
+                    $mail->Subject = 'CRM ALERT - Opportunity created.';
                     $mail->Body =$template;
                     $mail->prepForOutbound();  
                     $mail->AddAddress($current_user->user_name);

@@ -91,12 +91,13 @@ class updateHistory
                                     					
     
     
-                                    			        	$template = 'You have been assigned to an opportunity "'.$name.'" by "'.$log_in_user_name.'". Now you can edit /make changes.';
+                                    			        	$template = 'You have been assigned to an opportunity "'.$name.'" by "'.$log_in_user_name.'". Now you can edit /make changes.<br><br>Click here to view: www.ampersandcrm.com';
                                     						require_once('include/SugarPHPMailer.php');
                                     						include_once('include/utils/db_utils.php');
                                     					    $emailObj = new Email();  
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                    					    $mail = new SugarPHPMailer();  
+                                    					    $mail = new SugarPHPMailer(); 
+                                    					    $mail->IsHTML(true);
                                     					    $mail->setMailerForSystem();  
                                     					    $mail->From = $defaults['email'];  
                                                             $mail->FromName = $defaults['name']; 
@@ -106,12 +107,13 @@ class updateHistory
                                     					    $mail->AddAddress($email); 
                                     					    @$mail->Send();
                                     							
-                                    			            	$template = $assigned_name.' has been assigned to an opportunity "'.$name.'" by "'.$log_in_user_name.'"';
+                                    			            $template = $assigned_name.' has been assigned to an opportunity "'.$name.'" by "'.$log_in_user_name.'"';
                                     						require_once('include/SugarPHPMailer.php');
                                     						include_once('include/utils/db_utils.php');
                                     					    $emailObj = new Email();  
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                    					    $mail = new SugarPHPMailer();  
+                                    					    $mail = new SugarPHPMailer();
+                                    					    $mail->IsHTML(true);
                                     					    $mail->setMailerForSystem();  
                                     					    $mail->From = $defaults['email'];  
                                                             $mail->FromName = $defaults['name']; 
