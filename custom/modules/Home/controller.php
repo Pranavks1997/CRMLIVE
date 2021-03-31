@@ -3959,6 +3959,13 @@ public function action_new_assigned_list(){
                    $log_in_user_id = $current_user->id;
                    $assigned_name=$_POST['assigned_name'];
                    $opportunity_id=$_POST['opp_id'];
+
+                   $opp_ex_assign_query = "SELECT * FROM `opportunities` where id ='".$opportunity_id."'";
+                   $result_opp_ex_assign = $GLOBALS['db']->query($opp_ex_assign_query);
+                   $row_opp_ex_assign = $GLOBALS['db']->fetchByAssoc($result_opp_ex_assign);
+
+                   $ex_assigne_id = $row_opp_ex_assign['assigned_user_id'];
+
                     $sql="SELECT id,reports_to_id  FROM users WHERE CONCAT(first_name, ' ', last_name) ='".$assigned_name."' ";
                    
                     $result = $GLOBALS['db']->query($sql);
@@ -3973,6 +3980,7 @@ public function action_new_assigned_list(){
        
                
            }
+           $testing_id = $assigned_id;
            
                $sql_tl="SELECT case when teamheirarchy_c='team_member_l1' then 'l1' when teamheirarchy_c ='team_member_l2' then 'l2' when teamheirarchy_c ='team_member_l3' then 'l3' when teamheirarchy_c='team_lead' then 'tl' end AS 'heirarchy' FROM users_cstm WHERE id_c='".$assigned_id."'";
            
@@ -4117,11 +4125,11 @@ public function action_new_assigned_list(){
                             $description_notification = "You have been assigned to Opportunity "."'".$row_opp_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.";  
                             $description_for_ex_assigned_user = getUserName($assigned_id)." has been assigned to an Opportunity "."'".$row_opp_name['name']."'"." by "."'".getUserName($log_in_user_id)."'";
                             $description_for_assigned_user_email = "You have been assigned to Opportunity "."'".$row_opp_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.<br><br> Click here to view: www.ampersandcrm.com";
-                            send_email($description_for_ex_assigned_user,[getUserEmail($reports_to_id)],"CRM ALERT - Reassigned");
+                            send_email($description_for_ex_assigned_user,[getUserEmail($ex_assigne_id)],"CRM ALERT - Reassigned");
  
                              send_notification('Opportunity','Re-assign User',$description_notification,[$assigned_id],$link);
                              send_email($description_for_assigned_user_email,[getUserEmail($assigned_id)],"CRM ALERT - Reassignment"); 
-                             echo json_encode(array("status"=>true, "message" => "Success","description"=>$description,"opp"=>$opportunity_id));
+                             echo json_encode(array("status"=>true, "message" => "Success","description"=>$description,"opp"=>$opportunity_id,"testing_id" =>$testing_id));
                               
                           }
                                  
@@ -4143,11 +4151,11 @@ public function action_new_assigned_list(){
                             $description_notification = "You have been assigned to Opportunity "."'".$row_opp_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.";  
                             $description_for_ex_assigned_user = getUserName($assigned_id)." has been assigned to an Opportunity "."'".$row_opp_name['name']."'"." by "."'".getUserName($log_in_user_id)."'";
                             $description_for_assigned_user_email = "You have been assigned to Opportunity "."'".$row_opp_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.<br><br> Click here to view: www.ampersandcrm.com";
-                            send_email($description_for_ex_assigned_user,[getUserEmail($reports_to_id)],"CRM ALERT - Reassigned");
+                            send_email($description_for_ex_assigned_user,[getUserEmail($ex_assigne_id)],"CRM ALERT - Reassigned");
  
                              send_notification('Opportunity','Re-assign User',$description_notification,[$assigned_id],$link);
                              send_email($description_for_assigned_user_email,[getUserEmail($assigned_id)],"CRM ALERT - Reassignment");
-                             echo json_encode(array("status"=>true, "message" => "Success","description"=>$description,"opp"=>$opportunity_id));
+                             echo json_encode(array("status"=>true, "message" => "Success","description"=>$description,"opp"=>$opportunity_id,"testing_id" =>$testing_id));
                           }
                         }
                     
@@ -5709,7 +5717,7 @@ public function is_activity_reassignment_applicable($activity_id) {
                     send_email($description_email,$receiver_emails_reject,'CRM ALERT - Rejected');
                 }
 
-                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "description"=>$description,"assigned_user_id_approve"=>$assigned_user_id_approve));
+                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "description"=>$description));
             }else{
                 echo json_encode(array("status"=>false, "message" => "Some error occured"));
             }
@@ -6297,8 +6305,11 @@ public function is_activity_reassignment_applicable($activity_id) {
         	   $activity_id=$_POST['opp_id'];  // fetch the activity id to update the table
         	 //  $tagged_user_frontend=$_POST[''];// fetch tagged users id from frontend in comma separated string
         	   
-        	   
+             $activity_ex_assigne_query = "SELECT * FROM `calls` where id ='".$activity_id."'";
+             $result_activity_ex_assigne = $GLOBALS['db']->query($activity_ex_assigne_query);
+             $row_activity_ex_assigne = $GLOBALS['db']->fetchByAssoc($result_activity_ex_assigne);
         	  
+             $ex_assigne_id = $row_activity_ex_assigne['assigned_user_id'];
         	   
         	//    $tagged_user_frontend_array=explode(',',$tagged_user_frontend);
         	   
@@ -6372,7 +6383,7 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
                            $description_notification = "You have been assigned to Activity "."'".$row_activity_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.";  
                             $description_for_ex_assigned_user = getUserName($assigned_id)." has been assigned to an Activity "."'".$row_activity_name['name']."'"." by "."'".getUserName($log_in_user_id)."'";
                             $description_for_assigned_user_email = "You have been assigned to Activity "."'".$row_activity_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.<br><br> Click here to view: www.ampersandcrm.com";
-                            send_email($description_for_ex_assigned_user,[getUserEmail($approver_id)],"CRM ALERT - Reassigned");
+                            send_email($description_for_ex_assigned_user,[getUserEmail($ex_assigne_id)],"CRM ALERT - Reassigned");
 
                             send_notification('Activity','Re-assign User',$description_notification,[$assigned_id],$link);
                             send_email($description_for_assigned_user_email,[getUserEmail($assigned_id)],"CRM ALERT - Reassignment"); 
