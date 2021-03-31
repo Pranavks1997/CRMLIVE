@@ -5710,7 +5710,7 @@ public function is_activity_reassignment_applicable($activity_id) {
                     send_email($description_email,$receiver_emails_reject,'CRM ALERT - Rejected');
                 }
 
-                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "description"=>$description,"assigned_user_id_approve"=>$assigned_user_id_approve));
+                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "description"=>$description));
             }else{
                 echo json_encode(array("status"=>false, "message" => "Some error occured"));
             }
