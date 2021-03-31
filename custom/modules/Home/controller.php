@@ -4113,7 +4113,7 @@ public function action_new_assigned_list(){
                             $link = 'index.php?action=DetailView&module=Opportunities&record='.$row_opp_name['id'];
                             $description ="The Oppurtunity "."'".$row_opp_name['name']."'"." was re-assigned to ".getUserName($assigned_id)." by "."'".getUserName($log_in_user_id)."'";
                             $description_notification = "You have been assigned to Opportunity "."'".$row_opp_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.";  
-                            $description_for_ex_assigned_user = getUserEmail($assigned_id)." has been assigned to an Opportunity "."'".$row_opp_name['name']."'"." by "."'".getUserName($log_in_user_id)."'";
+                            $description_for_ex_assigned_user = getUserName($assigned_id)." has been assigned to an Opportunity "."'".$row_opp_name['name']."'"." by "."'".getUserName($log_in_user_id)."'";
                             $description_for_assigned_user_email = "You have been assigned to Opportunity "."'".$row_opp_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.<br><br> Click here to view: www.ampersandcrm.com";
                             send_email($description_for_ex_assigned_user,[getUserEmail($reports_to_id)],"CRM ALERT - Reassigned");
  
@@ -4139,7 +4139,7 @@ public function action_new_assigned_list(){
                             $link = 'index.php?action=DetailView&module=Opportunities&record='.$row_opp_name['id'];
                             $description ="The Oppurtunity "."'".$row_opp_name['name']."'"." was re-assigned to ".getUserName($assigned_id)." by "."'".getUserName($log_in_user_id)."'";
                             $description_notification = "You have been assigned to Opportunity "."'".$row_opp_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.";  
-                            $description_for_ex_assigned_user = getUserEmail($assigned_id)." has been assigned to an Opportunity "."'".$row_opp_name['name']."'"." by "."'".getUserName($log_in_user_id)."'";
+                            $description_for_ex_assigned_user = getUserName($assigned_id)." has been assigned to an Opportunity "."'".$row_opp_name['name']."'"." by "."'".getUserName($log_in_user_id)."'";
                             $description_for_assigned_user_email = "You have been assigned to Opportunity "."'".$row_opp_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.<br><br> Click here to view: www.ampersandcrm.com";
                             send_email($description_for_ex_assigned_user,[getUserEmail($reports_to_id)],"CRM ALERT - Reassigned");
  
@@ -6362,7 +6362,7 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
                            $description ="The Activity "."'". $row_activity_name['name'] ."'"." was re-assigned to "."'".getUserName($assigned_id)."'"." by "."'".getUserName($log_in_user_id)."'";
                             
                            $description_notification = "You have been assigned to Activity "."'".$row_activity_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.";  
-                            $description_for_ex_assigned_user = getUserEmail($assigned_id)." has been assigned to an Activity "."'".$row_activity_name['name']."'"." by "."'".getUserName($log_in_user_id)."'";
+                            $description_for_ex_assigned_user = getUserName($assigned_id)." has been assigned to an Activity "."'".$row_activity_name['name']."'"." by "."'".getUserName($log_in_user_id)."'";
                             $description_for_assigned_user_email = "You have been assigned to Activity "."'".$row_activity_name['name']."'"." by the "."'".getUserName($log_in_user_id)."'"." Now you can edit /make changes.<br><br> Click here to view: www.ampersandcrm.com";
                             send_email($description_for_ex_assigned_user,[getUserEmail($approver_id)],"CRM ALERT - Reassigned");
 
