@@ -392,7 +392,7 @@ class DocumentsController extends SugarController
     $mail->setMailerForSystem();  
     $mail->From = $defaults['email'];  
     $mail->FromName = $defaults['name'];  
-    $mail->Subject = 'Document '.$document_name.' approval request';
+    $mail->Subject = 'CRM ALERT - Approval Request';
     $mail->Body =$template;
     $mail->IsHTML(true); 
     $mail->prepForOutbound();  
@@ -501,7 +501,7 @@ public function action_approve(){
       
       // $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
-      $alert->description = 'Document "'.$document_name.'" is approved for "Approved" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $alert->description = 'Document "'.$document_name.'" is approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
       $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$document_id;
       $alert->target_module = 'Documents';
@@ -511,7 +511,7 @@ public function action_approve(){
       $alert->save();
 
       // Send email to assigned user
-      $template = 'Document "'.$document_name.'" is approved for "Approved" by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+      $template = 'Document "'.$document_name.'" is approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
       $emailObj = new Email();  
       $defaults = $emailObj->getSystemDefaultEmail();  
@@ -519,7 +519,7 @@ public function action_approve(){
       $mail->setMailerForSystem();  
       $mail->From = $defaults['email'];  
       $mail->FromName = $defaults['name'];  
-      $mail->Subject = 'Document '.$document_name.' approval mail';
+      $mail->Subject = 'CRM ALERT - Approved';
       $mail->Body =$template;
       $mail->prepForOutbound();  
       $mail->AddAddress($assigned_to_email);
@@ -532,7 +532,7 @@ public function action_approve(){
         $alert = BeanFactory::newBean('Alerts');
         $alert->name = '';
         
-        $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+        $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
         $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$document_id;
         $alert->target_module = 'Documents';
@@ -542,7 +542,7 @@ public function action_approve(){
         $alert->save();
 
         // Send Email to tagged user
-        $template = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+        $template = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
         $emailObj = new Email();  
         $defaults = $emailObj->getSystemDefaultEmail();
@@ -551,7 +551,7 @@ public function action_approve(){
         $mail->setMailerForSystem();  
         $mail->From = $defaults['email'];  
         $mail->FromName = $defaults['name'];  
-        $mail->Subject = 'Document '.$document_name.' approval mail';
+        $mail->Subject = 'CRM ALERT - Approved';
         $mail->Body =$template;
         $mail->IsHTML(true); 
         $mail->prepForOutbound();  
@@ -683,7 +683,7 @@ public function action_reject(){
       $mail->setMailerForSystem();  
       $mail->From = $defaults['email'];  
       $mail->FromName = $defaults['name'];  
-      $mail->Subject = 'Document '.$document_name.' rejection mail';
+      $mail->Subject = 'CRM ALERT - Rejected';
       $mail->Body =$template;
       $mail->prepForOutbound();  
       $mail->AddAddress($assigned_to_email);
@@ -695,7 +695,7 @@ public function action_reject(){
         $alert = BeanFactory::newBean('Alerts');
         $alert->name = '';
         
-        $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+        $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
         $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$document_id;
         $alert->target_module = 'Documents';
@@ -705,7 +705,7 @@ public function action_reject(){
         $alert->save();
 
         // Send Email to tagged user
-        $template = 'Document - "'.$document_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+        $template = 'Document - "'.$document_name.'" has been rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
         $emailObj = new Email();  
         $defaults = $emailObj->getSystemDefaultEmail();
@@ -714,7 +714,7 @@ public function action_reject(){
         $mail->setMailerForSystem();  
         $mail->From = $defaults['email'];  
         $mail->FromName = $defaults['name'];  
-        $mail->Subject = 'Document '.$document_name.' rejection mail';
+        $mail->Subject = 'CRM ALERT - Rejected';
         $mail->Body =$template;
         $mail->IsHTML(true); 
         $mail->prepForOutbound();  

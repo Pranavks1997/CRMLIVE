@@ -61,10 +61,16 @@ class updateHistory
             else{ 
                
                $bean->db->query("INSERT INTO `assign_flow`(`opp_id`, `assigned_by`, `assigned_to_id`, `approver_ids`,`status`,`rfp_eoi`) VALUES ('".$id."','".$assigned_by."','".$assigned_to."','".$approvers."','".$opp_status."','".$rfp."')");
-            
-                                                             $alert = BeanFactory::newBean('Alerts');
+               
+            	if((bool)$bean->fetched_row){
+            	    $assigned_user = $this->getUserByID($assigned_to);
+            	    	$_SESSION['flash'][$current_user->id] = [
+			        'message' => 'The opportunity "'.$bean->name.'" was re-assigned to "'.$assigned_user['first_name'].' '.$assigned_user['last_name'].'" by "'.$current_user->first_name.' '.$current_user->last_name.'"'
+			    ];
+            	    
+                                                            $alert = BeanFactory::newBean('Alerts');
                                     						//$alert->name =$opp_name;
-                                    						$alert->description = 'You have been assigned to an opportunity. Now you can edit /make changes to opportunity "'.$name.'" by "'.$log_in_user_name.'"';
+                                    						$alert->description = 'You have been assigned to an opportunity "'.$name.'" by "'.$log_in_user_name.'". Now you can edit /make changes.';
                                     						$alert->url_redirect = 'index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DOpportunities%26offset%3D7%26stamp%3D1595474141045235900%26return_module%3DOpportunities%26action%3DDetailView%26record%3D'.$id;
                                     						$alert->target_module = 'Opportunities';
                                     						$alert->assigned_user_id = $assigned_to;
@@ -72,7 +78,7 @@ class updateHistory
                                     						$alert->is_read = 0;
                                     						$alert->save();
                                     						
-                                    		  //          	$alert = BeanFactory::newBean('Alerts');
+                                    		         //     $alert = BeanFactory::newBean('Alerts');
                                     				// 		//$alert->name =$opp_name;
                                     				// 		$alert->description = $assigned_name.' have been assigned to an opportunity. Now you can\'t edit /make changes to opportunity "'.$name.'" ';
                                     				// 		$alert->url_redirect = '';
@@ -85,37 +91,37 @@ class updateHistory
                                     					
     
     
-                                    			        	$template = 'You have been assigned to an opportunity. Now you can edit /make changes to opportunity "'.$name.'" by "'.$log_in_user_name.'"';
+                                    			        	$template = 'You have been assigned to an opportunity "'.$name.'" by "'.$log_in_user_name.'". Now you can edit /make changes.';
                                     						require_once('include/SugarPHPMailer.php');
                                     						include_once('include/utils/db_utils.php');
                                     					    $emailObj = new Email();  
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
                                     					    $mail = new SugarPHPMailer();  
                                     					    $mail->setMailerForSystem();  
-                                    					    $mail->From = $defaults['xelpmoctestmail@gmail.com'];  
-                                    					    $mail->FromName = $defaults['CRM'];  
-                                    					    $mail->Subject = 'You have been assigned for opportunity "'.$name.'"'; 
+                                    					    $mail->From = $defaults['email'];  
+                                                            $mail->FromName = $defaults['name']; 
+                                    					    $mail->Subject = 'CRM ALERT - Reassignment'; 
                                     						$mail->Body =$template;
                                     					    $mail->prepForOutbound();  
                                     					    $mail->AddAddress($email); 
                                     					    @$mail->Send();
                                     							
-                                    			            	$template = $assigned_name.' have been assigned to an opportunity "'.$name.'" by "'.$log_in_user_name.'"';
+                                    			            	$template = $assigned_name.' has been assigned to an opportunity "'.$name.'" by "'.$log_in_user_name.'"';
                                     						require_once('include/SugarPHPMailer.php');
                                     						include_once('include/utils/db_utils.php');
                                     					    $emailObj = new Email();  
                                     					    $defaults = $emailObj->getSystemDefaultEmail();  
                                     					    $mail = new SugarPHPMailer();  
                                     					    $mail->setMailerForSystem();  
-                                    					    $mail->From = $defaults['xelpmoctestmail@gmail.com'];  
-                                    					    $mail->FromName = $defaults['CRM'];  
-                                    					    $mail->Subject = 'You have been assigned for opportunity "'.$name.'"'; 
+                                    					    $mail->From = $defaults['email'];  
+                                                            $mail->FromName = $defaults['name']; 
+                                    					    $mail->Subject = 'CRM ALERT - Reassignment'; 
                                     						$mail->Body =$template;
                                     					    $mail->prepForOutbound();  
                                     					    $mail->AddAddress($email_old); 
                                     					    @$mail->Send();
                                     					
-                                    			
+            	}                   			
 
             }
             
@@ -124,5 +130,16 @@ class updateHistory
         
     }
     
+    	private function getUserByID($user_id){
+		$sql = "SELECT * FROM `users` WHERE id='".$user_id."'";
+		$result = $GLOBALS['db']->query($sql);
+		
+		$data = [];
+		while($row = $GLOBALS['db']->fetchByAssoc($result)){
+			$data = $row;
+		}
+
+		return $data;
+	}
     
 }

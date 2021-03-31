@@ -576,7 +576,7 @@ function activityDate(){
 
                 }
             }
-            $sql1 = 'SELECT t1.acc_id,t2.activity_date_c FROM activity_approval_table as t1 LEFT JOIN calls_cstm as t2 ON t2.id_c = t1.acc_id WHERE t1.approval_status="2" AND t1.status="Apply For Completed" AND t2.activity_date_c < CURRENT_DATE';
+            $sql1 = 'SELECT t1.acc_id,t2.activity_date_c FROM activity_approval_table as t1 LEFT JOIN calls_cstm as t2 ON t2.id_c = t1.acc_id WHERE t1.approval_status="2" AND t2.status_new_c!="Overdue" AND t2.activity_date_c < CURRENT_DATE';
             $result1 = $GLOBALS['db']->query($sql1);
             if($result1->num_rows>0){
                 while($rows = $GLOBALS['db']->fetchByAssoc($result1) )
