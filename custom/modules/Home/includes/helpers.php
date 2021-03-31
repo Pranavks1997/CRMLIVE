@@ -1085,6 +1085,7 @@
            $emailObj = new Email();  
            $defaults = $emailObj->getSystemDefaultEmail();  
            $mail = new SugarPHPMailer();  
+           $mail->IsHTML(true);
            $mail->setMailerForSystem();  
            $mail->From = $defaults['email'];  
            $mail->FromName = $defaults['name'];  
