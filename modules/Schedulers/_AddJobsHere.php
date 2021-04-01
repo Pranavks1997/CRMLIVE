@@ -515,22 +515,23 @@ function activityReminder()
     $get_user_email = 'SELECT user_name from users where id = "'.$created_by.'"' ;
     $result1 = $db->query($get_user_email);
     $data = $GLOBALS['db']->fetchByAssoc($result1);
-  send_email($row['name'], $data['user_name']);
+  send_email($row['name'], $data['user_name'],'CRM ALERT- Activity Reminder');
   $description = "Reminder for '".$row['name']."' is to be completed";
   $link = "index.php?module=Calls&action=DetailView&record=".$row['id'];
   send_notification('Activities',$row['name'],$description,[$row['assigned_user_id']],$link);
 }
- function send_email($activity_name,$email){
-            $template = "Reminder for '$activity_name' is to be completed";
+ function send_email($activity_name,$email,$subject){
+            $template = "Reminder for '$activity_name' is to be completed<br><br>Click here to view: www.ampersandcrm.com";
             require_once('include/SugarPHPMailer.php');
             include_once('include/utils/db_utils.php');
             $emailObj = new Email();  
             $defaults = $emailObj->getSystemDefaultEmail();  
             $mail = new SugarPHPMailer();  
+            $mail->IsHTML(true);
             $mail->setMailerForSystem();  
             $mail->From = $defaults['email'];  
             $mail->FromName = $defaults['name'];  
-            $mail->Subject = "Reminder for activity"; 
+            $mail->Subject = $subject; 
             $mail->Body =$template;
             $mail->prepForOutbound();  
             $mail->AddAddress($email); 
