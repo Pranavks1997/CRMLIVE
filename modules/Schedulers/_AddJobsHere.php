@@ -644,7 +644,7 @@ function activityDate(){
         $alert->save();
 
         // Send email to assigned user
-        $template = 'Activity "'.$activity['name'].'" is overdue';
+        $template = 'Activity "'.$activity['name'].'" is overdue. <br><br>Click here to view: www.ampersandcrm.com';
 
         $emailObj = new Email();  
         $defaults = $emailObj->getSystemDefaultEmail();
@@ -653,7 +653,7 @@ function activityDate(){
         $mail->setMailerForSystem();  
         $mail->From = $defaults['email'];  
         $mail->FromName = $defaults['name'];  
-        $mail->Subject = 'Activity "'.$activity['name'].'" overdue reminder';
+        $mail->Subject = 'CRM ALERT - Activity Reminder';
         $mail->Body =$template;
         $mail->IsHTML(true); 
         $mail->prepForOutbound();  
