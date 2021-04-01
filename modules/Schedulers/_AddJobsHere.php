@@ -86,6 +86,7 @@ $job_strings = array(
     17 => 'syncGoogleCalendar',
     18 => 'runElasticSearchIndexerScheduler',
     19 => 'activityDate',
+    20 => 'sendEmailQueue'
 );
 
 /**
@@ -618,7 +619,6 @@ function activityDate(){
                 }
             }
             
-            var_dump($res_update1);
         }catch(Exception $e){
             echo json_encode(array("status"=>false, "message" => "Some error occured"));
         }
@@ -653,7 +653,7 @@ function activityDate(){
         $mail->setMailerForSystem();  
         $mail->From = $defaults['email'];  
         $mail->FromName = $defaults['name'];  
-        $mail->Subject = 'Activity "'.$activity['name'].'" overdue reminder';
+        $mail->Subject = 'CRM ALERT - Activity Reminder';
         $mail->Body =$template;
         $mail->IsHTML(true); 
         $mail->prepForOutbound();  
@@ -676,7 +676,7 @@ function activityDate(){
             $alert->save();
 
             //Send Email to linage user
-            $template = 'Activity "'.$activity['name'].'" is overdue';
+            $template = 'Activity "'.$activity['name'].'" is overdue. <br><br>Click here to view: www.ampersandcrm.com';
 
             $emailObj = new Email();  
             $defaults = $emailObj->getSystemDefaultEmail();
@@ -685,7 +685,7 @@ function activityDate(){
             $mail->setMailerForSystem();  
             $mail->From = $defaults['email'];  
             $mail->FromName = $defaults['name'];  
-            $mail->Subject = 'Activity "'.$activity['name'].'" overdue reminder';
+            $mail->Subject = 'CRM ALERT - Activity Reminder';
             $mail->Body =$template;
             $mail->IsHTML(true); 
             $mail->prepForOutbound();  
@@ -724,6 +724,33 @@ function activityDate(){
         }
 
         return $data;
+    }
+
+    function sendEmailQueue(){
+        $sql = "SELECT * FROM `email_queue` WHERE `send_status`='0';";
+        $result = $GLOBALS['db']->query($sql);
+
+        while($row = $GLOBALS['db']->fetchByAssoc($result)){
+
+            $emailObj = new Email();  
+            $defaults = $emailObj->getSystemDefaultEmail();  
+            $mail = new SugarPHPMailer();  
+            $mail->setMailerForSystem();  
+            $mail->From = $defaults['email'];  
+            $mail->FromName = $defaults['name'];  
+            $mail->Subject = $row['subject'];
+            $mail->Body = $row['body'];
+            $mail->prepForOutbound();  
+            $mail->IsHTML(true);
+            $mail->AddAddress($row['to']);
+            @$mail->Send();
+
+            $send_at = date('Y-m-d H:i:s');
+            $sql = "UPDATE `email_queue` SET `send_at` = '$send_at', `send_status` = '1' WHERE id='".$row['id']."'";
+            $GLOBALS['db']->query($sql);
+        }
+
+        echo "Email Queue done";
     }
 
 function removeDocumentsFromFS()

@@ -383,21 +383,14 @@ class DocumentsController extends SugarController
     $alert->save();
 
     // Send email to approver
-    $template = 'Document "'.$document_name.'" is received for approval from "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
+    $subject = 'CRM ALERT - Approval Request';
+    $body = 'Document "'.$document_name.'" is received for approval from "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
+    $to = $approver_email;
+    $created_at = date('Y-m-d H:i:s');
 
-    $emailObj = new Email();  
-    $defaults = $emailObj->getSystemDefaultEmail();
+    $sql="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('$subject', '$body', '$to', '$created_at')";
 
-    $mail = new SugarPHPMailer();  
-    $mail->setMailerForSystem();  
-    $mail->From = $defaults['email'];  
-    $mail->FromName = $defaults['name'];  
-    $mail->Subject = 'CRM ALERT - Approval Request';
-    $mail->Body =$template;
-    $mail->IsHTML(true); 
-    $mail->prepForOutbound();  
-    $mail->AddAddress($approver_email);
-    @$mail->Send(); 
+    $GLOBALS['db']->query($sql);
 
     echo json_encode([
       "button" => "hide",
@@ -511,20 +504,14 @@ public function action_approve(){
       $alert->save();
 
       // Send email to assigned user
-      $template = 'Document "'.$document_name.'" is approved by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
+      $subject = 'CRM ALERT - Approved';
+      $body = 'Document "'.$document_name.'" is approved by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
+      $to = $assigned_to_email;
+      $created_at = date('Y-m-d H:i:s');
 
-      $emailObj = new Email();  
-      $defaults = $emailObj->getSystemDefaultEmail();  
-      $mail = new SugarPHPMailer();  
-      $mail->setMailerForSystem();  
-      $mail->From = $defaults['email'];  
-      $mail->FromName = $defaults['name'];  
-      $mail->Subject = 'CRM ALERT - Approved';
-      $mail->Body =$template;
-      $mail->prepForOutbound();  
-      $mail->IsHTML(true);
-      $mail->AddAddress($assigned_to_email);
-      @$mail->Send();
+      $sql="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('$subject', '$body', '$to', '$created_at')";
+
+      $GLOBALS['db']->query($sql);
 
 
       // Send Notifications and email to tagged users
@@ -543,21 +530,14 @@ public function action_approve(){
         $alert->save();
 
         // Send Email to tagged user
-        $template = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been approved by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
+        $subject = 'CRM ALERT - Approved';
+        $body = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been approved by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
+        $to = $user['user_name'];
+        $created_at = date('Y-m-d H:i:s');
 
-        $emailObj = new Email();  
-        $defaults = $emailObj->getSystemDefaultEmail();
+        $sql="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('$subject', '$body', '$to', '$created_at')";
 
-        $mail = new SugarPHPMailer();  
-        $mail->setMailerForSystem();  
-        $mail->From = $defaults['email'];  
-        $mail->FromName = $defaults['name'];  
-        $mail->Subject = 'CRM ALERT - Approved';
-        $mail->Body =$template;
-        $mail->IsHTML(true); 
-        $mail->prepForOutbound();  
-        $mail->AddAddress($user['user_name']);
-        @$mail->Send();
+        $GLOBALS['db']->query($sql);
 
       }
 
@@ -676,20 +656,14 @@ public function action_reject(){
       $alert->save();
 
       // Send email to assigned user
-      $template = 'Document "'.$document_name.'" is rejected by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
+      $subject = 'CRM ALERT - Rejected';
+      $body = 'Document "'.$document_name.'" is rejected by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
+      $to = $assigned_to_email;
+      $created_at = date('Y-m-d H:i:s');
 
-      $emailObj = new Email();  
-      $defaults = $emailObj->getSystemDefaultEmail();  
-      $mail = new SugarPHPMailer();  
-      $mail->setMailerForSystem();  
-      $mail->From = $defaults['email'];  
-      $mail->FromName = $defaults['name'];  
-      $mail->Subject = 'CRM ALERT - Rejected';
-      $mail->Body =$template;
-      $mail->prepForOutbound();  
-      $mail->IsHTML(true);
-      $mail->AddAddress($assigned_to_email);
-      @$mail->Send();
+      $sql="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('$subject', '$body', '$to', '$created_at')";
+
+      $GLOBALS['db']->query($sql);
 
       // Send Notifications and email to tagged users
       foreach ($tagged_users as $key => $user) {
@@ -707,21 +681,14 @@ public function action_reject(){
         $alert->save();
 
         // Send Email to tagged user
-        $template = 'Document - "'.$document_name.'" has been rejected by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
+        $subject = 'CRM ALERT - Rejected';
+        $body = 'Document - "'.$document_name.'" has been rejected by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
+        $to = $user['user_name'];
+        $created_at = date('Y-m-d H:i:s');
 
-        $emailObj = new Email();  
-        $defaults = $emailObj->getSystemDefaultEmail();
+        $sql="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('$subject', '$body', '$to', '$created_at')";
 
-        $mail = new SugarPHPMailer();  
-        $mail->setMailerForSystem();  
-        $mail->From = $defaults['email'];  
-        $mail->FromName = $defaults['name'];  
-        $mail->Subject = 'CRM ALERT - Rejected';
-        $mail->Body =$template;
-        $mail->IsHTML(true); 
-        $mail->prepForOutbound();  
-        $mail->AddAddress($user['user_name']);
-        @$mail->Send();
+        $GLOBALS['db']->query($sql);
 
       }
 

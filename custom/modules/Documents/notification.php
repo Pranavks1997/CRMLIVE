@@ -33,36 +33,24 @@ class notification{
                     $user = $this->getUserByID($row['user_id_c']);
 
                     // Send mail to approver
-                    $template = 'New document "'.$bean->document_name.'" uploaded by "'.$current_user->first_name.' '.$current_user->last_name.'". <br><br>Click here to view: www.ampersandcrm.com';
+                    $subject = 'CRM ALERT - Document uploaded';
+                    $body = 'New document "'.$bean->document_name.'" uploaded by "'.$current_user->first_name.' '.$current_user->last_name.'". <br><br>Click here to view: www.ampersandcrm.com';
+                    $to = $user['user_name'];
+                    $created_at = date('Y-m-d H:i:s');
 
-                    $emailObj = new Email();  
-                    $defaults = $emailObj->getSystemDefaultEmail();  
-                    $mail = new SugarPHPMailer();  
-                    $mail->setMailerForSystem();  
-                    $mail->From = $defaults['email'];  
-                    $mail->FromName = $defaults['name'];  
-                    $mail->Subject = 'CRM ALERT - Document uploaded.';
-                    $mail->Body =$template;
-                    $mail->prepForOutbound();  
-                    $mail->IsHTML(true);
-                    $mail->AddAddress($user['user_name']);
-                    @$mail->Send();
+                    $sql="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('$subject', '$body', '$to', '$created_at')";
+
+                    $GLOBALS['db']->query($sql);
 
                     // Send mail to creator
-                    $template = 'You have uploaded document "'.$bean->document_name.'". <br><br>Click here to view: www.ampersandcrm.com';
+                    $subject = 'CRM ALERT - Document uploaded';
+                    $body = 'You have uploaded document "'.$bean->document_name.'". <br><br>Click here to view: www.ampersandcrm.com';
+                    $to = $current_user->user_name;
+                    $created_at = date('Y-m-d H:i:s');
 
-                    $emailObj = new Email();  
-                    $defaults = $emailObj->getSystemDefaultEmail();  
-                    $mail = new SugarPHPMailer();  
-                    $mail->setMailerForSystem();  
-                    $mail->From = $defaults['email'];  
-                    $mail->FromName = $defaults['name'];  
-                    $mail->Subject = 'CRM ALERT - Document uploaded.';
-                    $mail->Body =$template;
-                    $mail->prepForOutbound();  
-                    $mail->IsHTML(true);
-                    $mail->AddAddress($current_user->user_name);
-                    @$mail->Send();
+                    $sql="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('$subject', '$body', '$to', '$created_at')";
+
+                    $GLOBALS['db']->query($sql);
 
                     // Setting session data for alert
                     $_SESSION['flash'][$current_user->id] = [
