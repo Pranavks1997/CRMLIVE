@@ -271,7 +271,6 @@ $( document ).ready(function() {
 
 $(document).on('click', function () {
 
-
        var tag1=$("#tag_c").val();
        
        if(tag1!=null){
@@ -284,6 +283,8 @@ $(document).on('click', function () {
            
             $('#tag_hidden_c').val('');
        }
+       
+       
 });
 //-----------------------tag and untag users id--------------END---------------------------------  
 

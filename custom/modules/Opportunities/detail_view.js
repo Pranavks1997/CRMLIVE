@@ -2,6 +2,23 @@ $(document).ready(function() {
  
  
   $('.paginationWrapper').hide();
+  
+  setTimeout(function() {
+     $('#opportunities_documents_1_create_button').text('Upload');
+ }, 10);
+  
+//   $(document).on("click",".panel-heading:contains(Documents)",function() {
+   
+//      setTimeout(function() {
+     
+   
+//      $('#opportunities_documents_1_create_button').text('Upload');
+     
+//  }, 5);
+    
+// });
+  
+ 
  
 $('#whole_subpanel_history').remove();
 
@@ -13,6 +30,7 @@ $('#whole_subpanel_history').remove();
  //--------------------hiding critical-----------------------------------------------------
  
  $(".label:contains(Critical:),[field=critical_c]").hide()
+
  
  //---------------------hiding critical-------END-------------------------------------------
  

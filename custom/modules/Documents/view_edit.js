@@ -300,13 +300,14 @@ $(document).on('click', function () {
        
        if(tag1!=null){
         
-       var tag=tag1.join();
+        var tag=tag1.join();
        
-       $('#tagged_hidden_c').val(tag);
+        $('#tagged_hidden_c').val(tag);
        
-       }else{
+       }
+       else{
            
-            $('#tag_hidden_c').val('');
+            $('#tagged_hidden_c').val('');
        }
   }
   

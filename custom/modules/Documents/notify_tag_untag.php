@@ -49,7 +49,7 @@ class notify_tag_untag
 				    	// Send Notification to newly tagged member
 				    	$alert = BeanFactory::newBean('Alerts');
 		                $alert->name = '';
-		                $alert->description = 'You have been tagged for document "'.$bean->document_name.'".Now you can edit / make changes';
+		                $alert->description = 'You have been tagged to document "'.$bean->document_name.'".Now you can edit / make changes';
 		                $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$bean->id;
 		                $alert->target_module = 'Documents';
 		                $alert->assigned_user_id = $user_id;
@@ -58,19 +58,14 @@ class notify_tag_untag
 		                $alert->save();
 
 		                // Send email to newly tagged member
-						$template = 'You have been tagged for document "'.$bean->document_name.'".Now you can edit / make changes';
+		                $subject = 'CRM ALERT - Tagged';
+                    	$body = 'You have been tagged to document "'.$bean->document_name.'".Now you can edit / make changes <br><br> Click here to view: www.ampersandcrm.com';
+                    	$to = $user['user_name'];
+                    	$created_at = date('Y-m-d H:i:s');
 
-						$emailObj = new Email();  
-						$defaults = $emailObj->getSystemDefaultEmail();  
-						$mail = new SugarPHPMailer();  
-						$mail->setMailerForSystem();  
-						$mail->From = $defaults['email'];  
-						$mail->FromName = $defaults['name'];  
-						$mail->Subject = 'CRM ALERT - Tagged';
-						$mail->Body =$template;
-						$mail->prepForOutbound();  
-						$mail->AddAddress($user['user_name']);
-						@$mail->Send();
+                    	$sql="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('$subject', '$body', '$to', '$created_at')";
+
+                    	$GLOBALS['db']->query($sql);
 				    }
 				    $message .= $tagged_users.' has been tagged successfully. ';
 			    }
@@ -106,19 +101,14 @@ class notify_tag_untag
 		                $alert->save();
 
 		                // Send email to newly untagged member
-						$template = 'You have been untagged from document "'.$bean->document_name.'"';
+		                $subject = 'CRM ALERT - Untagged';
+                    	$body = 'You have been untagged from document "'.$bean->document_name.'"';
+                    	$to = $user['user_name'];
+                    	$created_at = date('Y-m-d H:i:s');
 
-						$emailObj = new Email();  
-						$defaults = $emailObj->getSystemDefaultEmail();  
-						$mail = new SugarPHPMailer();  
-						$mail->setMailerForSystem();  
-						$mail->From = $defaults['email'];  
-						$mail->FromName = $defaults['name'];  
-						$mail->Subject = 'CRM ALERT - Untagged';
-						$mail->Body =$template;
-						$mail->prepForOutbound();  
-						$mail->AddAddress($user['user_name']);
-						@$mail->Send();
+                    	$sql="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('$subject', '$body', '$to', '$created_at')";
+
+                    	$GLOBALS['db']->query($sql);
 				    }
 
 				    

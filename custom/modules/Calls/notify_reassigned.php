@@ -26,7 +26,7 @@ class notify_reassigned
 
 				$alert = BeanFactory::newBean('Alerts');
 	            $alert->name = '';
-	            $alert->description = 'You have been assigned to activity "'.$bean->name.'" by the '.$current_user->first_name.' '.$current_user->last_name.'. Now you can edit / make changes.';
+	            $alert->description = 'You have been assigned to activity "'.$bean->name.'" by '.$current_user->first_name.' '.$current_user->last_name.'. Now you can edit / make changes.';
 
 	            $alert->url_redirect = 'index.php?action=DetailView&module=Calls&record='.$bean->id;
 	            $alert->target_module = 'Activities';
@@ -38,36 +38,26 @@ class notify_reassigned
 	            // Send Email To New Assigned User
 	            $assigned_user = $this->getUserByID($assigned_user_id);
 
-	            $template = 'You have been assigned to activity "'.$bean->name.'" by the '.$current_user->first_name.' '.$current_user->last_name.'. Now you can edit / make changes.';
+	            $subject = 'CRM ALERT - Reassignment';
+                $body = 'You have been assigned to activity "'.$bean->name.'" by '.$current_user->first_name.' '.$current_user->last_name.'. Now you can edit / make changes. <br><br> Click here to view: www.ampersandcrm.com';
+                $to = $assigned_user['user_name'];
+                $created_at = date('Y-m-d H:i:s');
 
-				$emailObj = new Email();  
-				$defaults = $emailObj->getSystemDefaultEmail();  
-				$mail = new SugarPHPMailer();  
-				$mail->setMailerForSystem();  
-				$mail->From = $defaults['email'];  
-				$mail->FromName = $defaults['name'];  
-				$mail->Subject = 'CRM ALERT - Reassignment';
-				$mail->Body =$template;
-				$mail->prepForOutbound();  
-				$mail->AddAddress($assigned_user['user_name']);
-				@$mail->Send();
+                $sql="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('$subject', '$body', '$to', '$created_at')";
+
+                $GLOBALS['db']->query($sql);
 
 				// Send Email To Old Assigned User
 				$old_assigned_user = $this->getUserByID($old_assigned_user_id);
-				$template = $assigned_user['first_name'].' '.$assigned_user['last_name'].' has been assigned to an activity "'.$bean->name.'" by '.$current_user->first_name.' '.$current_user->last_name;
 
-				$emailObj = new Email();  
-				$defaults = $emailObj->getSystemDefaultEmail();  
-				$mail = new SugarPHPMailer();  
-				$mail->setMailerForSystem();  
-				$mail->From = $defaults['email'];  
-				$mail->FromName = $defaults['name'];  
-				$mail->Subject = 'CRM ALERT - Reassignment';
-				$mail->Body =$template;
-				$mail->prepForOutbound();  
-				$mail->AddAddress($old_assigned_user['user_name']);
-				@$mail->Send();
+				$subject = 'CRM ALERT - Reassignment';
+                $body = $assigned_user['first_name'].' '.$assigned_user['last_name'].' has been assigned to an activity "'.$bean->name.'" by '.$current_user->first_name.' '.$current_user->last_name;
+                $to = $old_assigned_user['user_name'];
+                $created_at = date('Y-m-d H:i:s');
 
+                $sql="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('$subject', '$body', '$to', '$created_at')";
+
+                $GLOBALS['db']->query($sql);
 
 
 				$_SESSION['flash'][$current_user->id] = [

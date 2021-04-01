@@ -1078,22 +1078,13 @@
     }
 
     function send_email($description,$emails,$subject){
-        $template = $description;
-        require_once('include/SugarPHPMailer.php');
-        include_once('include/utils/db_utils.php');
         foreach($emails as $email) {
-           $emailObj = new Email();  
-           $defaults = $emailObj->getSystemDefaultEmail();  
-           $mail = new SugarPHPMailer();  
-           $mail->IsHTML(true);
-           $mail->setMailerForSystem();  
-           $mail->From = $defaults['email'];  
-           $mail->FromName = $defaults['name'];  
-           $mail->Subject = $subject;
-           $mail->Body =$template;
-           $mail->prepForOutbound();  
-           $mail->AddAddress($email);
-           @$mail->Send();
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            $created_at = date('Y-m-d H:i:s');
+
+            $sql="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('$subject', '$description', '$email', '$created_at')";
+            $GLOBALS['db']->query($sql);
         }
     }
 

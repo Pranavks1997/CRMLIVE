@@ -58,34 +58,24 @@ class activity_assign
                         $user = $this->getUserByID($bean->user_id_c);
 
                         // Send mail to approver
-                        $template = 'New activity "'.$bean->name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+                        $subject = 'CRM ALERT - Activity created';
+                        $body = 'New activity "'.$bean->name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br>Click here to view: www.ampersandcrm.com';
+                        $to = $user['user_name'];
+                        $created_at = date('Y-m-d H:i:s');
 
-                        $emailObj = new Email();  
-                        $defaults = $emailObj->getSystemDefaultEmail();  
-                        $mail = new SugarPHPMailer();  
-                        $mail->setMailerForSystem();  
-                        $mail->From = $defaults['email'];  
-                        $mail->FromName = $defaults['name'];  
-                        $mail->Subject = 'CRM ALERT - Activity created.';
-                        $mail->Body =$template;
-                        $mail->prepForOutbound();  
-                        $mail->AddAddress($user['user_name']);
-                        @$mail->Send();
+                        $sql="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('$subject', '$body', '$to', '$created_at')";
+
+                        $GLOBALS['db']->query($sql);
 
                         // Send mail to creator
-                        $template = 'You have created activity "'.$bean->name.'".';
+                        $subject = 'CRM ALERT - Activity created';
+                        $body = 'You have created activity "'.$bean->name.'". <br><br>Click here to view: www.ampersandcrm.com';
+                        $to = $current_user->user_name;
+                        $created_at = date('Y-m-d H:i:s');
 
-                        $emailObj = new Email();  
-                        $defaults = $emailObj->getSystemDefaultEmail();  
-                        $mail = new SugarPHPMailer();  
-                        $mail->setMailerForSystem();  
-                        $mail->From = $defaults['email'];  
-                        $mail->FromName = $defaults['name'];  
-                        $mail->Subject = 'CRM ALERT - Activity created.';
-                        $mail->Body =$template;
-                        $mail->prepForOutbound();  
-                        $mail->AddAddress($current_user->user_name);
-                        @$mail->Send();
+                        $sql="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('$subject', '$body', '$to', '$created_at')";
+
+                        $GLOBALS['db']->query($sql);
 
                         // Setting session data for alert
                         $_SESSION['flash'][$current_user->id] = [
