@@ -1701,21 +1701,28 @@ public function action_send_for_approval(){
 				    
 				   echo 'Opportunity  "'.$opp_name.'" has been sent to '.$approver_name.' for approval';
 				   	foreach($email_array as $email){
-                                    				        $template = 'Opportunity "'.$opp_name.'" is received for approval to "'. $apply.'" from '.$sender_name.'<br><br>Click here to view: www.ampersandcrm.com';
-                                    						require_once('include/SugarPHPMailer.php');
-                                    						include_once('include/utils/db_utils.php');
-                                    					    $emailObj = new Email();  
-                                    					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                    					    $mail = new SugarPHPMailer(); 
-                                    					    $mail->IsHTML(true);
-                                    					    $mail->setMailerForSystem();  
-                                    					    $mail->From = $defaults['email'];  
-                                                            $mail->FromName = $defaults['name'];   
-                                    					    $mail->Subject = 'CRM ALERT - Approval Request'; 
-                                    						$mail->Body =$template;
-                                    					    $mail->prepForOutbound();  
-                                    					    $mail->AddAddress($email); 
-                                    					    @$mail->Send();
+				   	                                        
+                                    				        $template = 'Opportunity "'.$opp_name.'" is received for approval to "'. $apply.'" from '.$sender_name.'.<br><br>Click here to view: www.ampersandcrm.com';
+                                    					
+                                    				// 		require_once('include/SugarPHPMailer.php');
+                                    				// 		include_once('include/utils/db_utils.php');
+                                    				// 	    $emailObj = new Email();  
+                                    				// 	    $defaults = $emailObj->getSystemDefaultEmail();  
+                                    				// 	    $mail = new SugarPHPMailer(); 
+                                    				// 	    $mail->IsHTML(true);
+                                    				// 	    $mail->setMailerForSystem();  
+                                    				// 	    $mail->From = $defaults['email'];  
+                                        //                     $mail->FromName = $defaults['name'];   
+                                    				// 	    $mail->Subject = 'CRM ALERT - Approval Request'; 
+                                    				// 		$mail->Body =$template;
+                                    				// 	    $mail->prepForOutbound();  
+                                    				// 	    $mail->AddAddress($email); 
+                                    				// 	    @$mail->Send();
+                                    					    
+                                    					    $created_at_time = date('Y-m-d H:i:s');
+                                    					      $sql_email="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('CRM ALERT - Approval Request', '$template', '$email', '$created_at_time')";
+
+	                                                                         $GLOBALS['db']->query($sql_email);
                                     				}
 				}
 				
@@ -2079,21 +2086,26 @@ public function action_approve(){
             
             //         		// //emails
                                     					foreach($email_array as $email){
-                                    				$template = 'Opportunity "'.$opp_name.'" is approved for '. $apply.' by '.$approver_name.'<br><br>Click here to view: www.ampersandcrm.com';
-                                    						require_once('include/SugarPHPMailer.php');
-                                    						include_once('include/utils/db_utils.php');
-                                    					    $emailObj = new Email();  
-                                    					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                    					    $mail = new SugarPHPMailer(); 
-                                    					    $mail->IsHTML(true);
-                                    					    $mail->setMailerForSystem();  
-                                                            $mail->From = $defaults['email'];  
-                                                            $mail->FromName = $defaults['name']; 
-                                    					    $mail->Subject = 'CRM ALERT - Approved'; 
-                                    						$mail->Body =$template;
-                                    					    $mail->prepForOutbound();  
-                                    					    $mail->AddAddress($email); 
-                                    					    @$mail->Send();
+                                    				$template = 'Opportunity "'.$opp_name.'" is approved for '. $apply.' by '.$approver_name.'.<br><br>Click here to view: www.ampersandcrm.com';
+                                    				// 		require_once('include/SugarPHPMailer.php');
+                                    				// 		include_once('include/utils/db_utils.php');
+                                    				// 	    $emailObj = new Email();  
+                                    				// 	    $defaults = $emailObj->getSystemDefaultEmail();  
+                                    				// 	    $mail = new SugarPHPMailer(); 
+                                    				// 	    $mail->IsHTML(true);
+                                    				// 	    $mail->setMailerForSystem();  
+                                        //                     $mail->From = $defaults['email'];  
+                                        //                     $mail->FromName = $defaults['name']; 
+                                    				// 	    $mail->Subject = 'CRM ALERT - Approved'; 
+                                    				// 		$mail->Body =$template;
+                                    				// 	    $mail->prepForOutbound();  
+                                    				// 	    $mail->AddAddress($email); 
+                                    				// 	    @$mail->Send();
+                                    					    
+                                    					      $created_at_time = date('Y-m-d H:i:s');
+                                    					      $sql_email="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('CRM ALERT - Approved', '$template', '$email', '$created_at_time')";
+
+	                                                                         $GLOBALS['db']->query($sql_email);
                                     				}		         
               }
              
@@ -2177,21 +2189,26 @@ public function action_approve(){
                     			         
             //         			         	// //emails
                                     					foreach($email_array as $email){
-                                    				$template = 'Opportunity "'.$opp_name.'" is approved for '. $apply.' by '.$approver_name.'<br><br>Click here to view: www.ampersandcrm.com';
-                                    						require_once('include/SugarPHPMailer.php');
-                                    						include_once('include/utils/db_utils.php');
-                                    					    $emailObj = new Email();  
-                                    					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                    					    $mail = new SugarPHPMailer(); 
-                                    					    $mail->IsHTML(true);
-                                    					    $mail->setMailerForSystem();  
-                                                            $mail->From = $defaults['email'];  
-                                                            $mail->FromName = $defaults['name']; 
-                                    					    $mail->Subject = 'CRM ALERT - Approved'; 
-                                    						$mail->Body =$template;
-                                    					    $mail->prepForOutbound();  
-                                    					    $mail->AddAddress($email); 
-                                    					    @$mail->Send();
+                                    				$template = 'Opportunity "'.$opp_name.'" is approved for '. $apply.' by '.$approver_name.'.<br><br>Click here to view: www.ampersandcrm.com';
+                                    				// 		require_once('include/SugarPHPMailer.php');
+                                    				// 		include_once('include/utils/db_utils.php');
+                                    				// 	    $emailObj = new Email();  
+                                    				// 	    $defaults = $emailObj->getSystemDefaultEmail();  
+                                    				// 	    $mail = new SugarPHPMailer(); 
+                                    				// 	    $mail->IsHTML(true);
+                                    				// 	    $mail->setMailerForSystem();  
+                                        //                     $mail->From = $defaults['email'];  
+                                        //                     $mail->FromName = $defaults['name']; 
+                                    				// 	    $mail->Subject = 'CRM ALERT - Approved'; 
+                                    				// 		$mail->Body =$template;
+                                    				// 	    $mail->prepForOutbound();  
+                                    				// 	    $mail->AddAddress($email); 
+                                    				// 	    @$mail->Send();
+                                    					    
+                                    					      $created_at_time = date('Y-m-d H:i:s');
+                                    					      $sql_email="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('CRM ALERT - Approved', '$template', '$email', '$created_at_time')";
+
+	                                                                         $GLOBALS['db']->query($sql_email);
                                     				}
               }
              
@@ -2414,21 +2431,27 @@ public function action_reject(){
                     			         
                     			         
                     			         	foreach($email_array as $email){
-                                    				$template = 'Opportunity "'.$opp_name.'" is rejected for '. $apply.' by '.$approver_name.'<br><br>Click here to view: www.ampersandcrm.com';
-                                    						require_once('include/SugarPHPMailer.php');
-                                    						include_once('include/utils/db_utils.php');
-                                    					    $emailObj = new Email();  
-                                    					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                    					    $mail = new SugarPHPMailer();
-                                    					    $mail->IsHTML(true);
-                                    					    $mail->setMailerForSystem();  
-                                    					    $mail->From = $defaults['email'];  
-                                                            $mail->FromName = $defaults['name'];  
-                                    					    $mail->Subject = 'CRM ALERT - Rejected'; 
-                                    						$mail->Body =$template;
-                                    					    $mail->prepForOutbound();  
-                                    					    $mail->AddAddress($email); 
-                                    					    @$mail->Send();
+                                    				$template = 'Opportunity "'.$opp_name.'" is rejected for '. $apply.' by '.$approver_name.'.<br><br>Click here to view: www.ampersandcrm.com';
+                                    				// 		require_once('include/SugarPHPMailer.php');
+                                    				// 		include_once('include/utils/db_utils.php');
+                                    				// 	    $emailObj = new Email();  
+                                    				// 	    $defaults = $emailObj->getSystemDefaultEmail();  
+                                    				// 	    $mail = new SugarPHPMailer();
+                                    				// 	    $mail->IsHTML(true);
+                                    				// 	    $mail->setMailerForSystem();  
+                                    				// 	    $mail->From = $defaults['email'];  
+                                        //                     $mail->FromName = $defaults['name'];  
+                                    				// 	    $mail->Subject = 'CRM ALERT - Rejected'; 
+                                    				// 		$mail->Body =$template;
+                                    				// 	    $mail->prepForOutbound();  
+                                    				// 	    $mail->AddAddress($email); 
+                                    				// 	    @$mail->Send();
+                                    					    
+                                    					      $created_at_time = date('Y-m-d H:i:s');
+                                    					      $sql_email="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('CRM ALERT - Rejected', '$template', '$email', '$created_at_time')";
+
+	                                                                         $GLOBALS['db']->query($sql_email);
+                                    					    
                                     				}
          }
          
@@ -2463,21 +2486,26 @@ public function action_reject(){
                     			         
                     			         
                     			         	foreach($email_array as $email){
-                                    				$template = 'Opportunity "'.$opp_name.'" is rejected for '. $apply.' by '.$approver_name.'<br><br>Click here to view: www.ampersandcrm.com';
-                                    						require_once('include/SugarPHPMailer.php');
-                                    						include_once('include/utils/db_utils.php');
-                                    					    $emailObj = new Email();  
-                                    					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                    					    $mail = new SugarPHPMailer();
-                                    					    $mail->IsHTML(true); 
-                                    					    $mail->setMailerForSystem();  
-                                    					    $mail->From = $defaults['email'];  
-                                                            $mail->FromName = $defaults['name']; 
-                                    					    $mail->Subject = 'CRM ALERT - Rejected'; 
-                                    						$mail->Body =$template;
-                                    					    $mail->prepForOutbound();  
-                                    					    $mail->AddAddress($email); 
-                                    					    @$mail->Send();
+                                    				$template = 'Opportunity "'.$opp_name.'" is rejected for '. $apply.' by '.$approver_name.'.<br><br>Click here to view: www.ampersandcrm.com';
+                                    				// 		require_once('include/SugarPHPMailer.php');
+                                    				// 		include_once('include/utils/db_utils.php');
+                                    				// 	    $emailObj = new Email();  
+                                    				// 	    $defaults = $emailObj->getSystemDefaultEmail();  
+                                    				// 	    $mail = new SugarPHPMailer();
+                                    				// 	    $mail->IsHTML(true); 
+                                    				// 	    $mail->setMailerForSystem();  
+                                    				// 	    $mail->From = $defaults['email'];  
+                                        //                     $mail->FromName = $defaults['name']; 
+                                    				// 	    $mail->Subject = 'CRM ALERT - Rejected'; 
+                                    				// 		$mail->Body =$template;
+                                    				// 	    $mail->prepForOutbound();  
+                                    				// 	    $mail->AddAddress($email); 
+                                    				// 	    @$mail->Send();
+                                    					    
+                                    					      $created_at_time = date('Y-m-d H:i:s');
+                                    					      $sql_email="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('CRM ALERT - Rejected', '$template', '$email', '$created_at_time')";
+
+	                                                                         $GLOBALS['db']->query($sql_email);
                                     				}
          }
          
@@ -3473,41 +3501,52 @@ public function action_save_tagged_users_list(){
                                     				foreach($email_array_old as $email){
     
     
-                                    			        	$template = 'You have been untagged from opportunity "'.$opp_name.'"';
-                                    						require_once('include/SugarPHPMailer.php');
-                                    						include_once('include/utils/db_utils.php');
-                                    					    $emailObj = new Email();  
-                                    					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                    					    $mail = new SugarPHPMailer();
-                                    					    $mail->IsHTML(true); 
-                                    					    $mail->setMailerForSystem();  
-                                    					    $mail->From = $defaults['email'];  
-                                                            $mail->FromName = $defaults['name']; 
-                                    					    $mail->Subject = 'CRM ALERT - Untagged'; 
-                                    						$mail->Body =$template;
-                                    					    $mail->prepForOutbound();  
-                                    					    $mail->AddAddress($email); 
-                                    					    @$mail->Send();
+                                    			        	$template = 'You have been untagged from opportunity "'.$opp_name.'".';
+                                    				// 		require_once('include/SugarPHPMailer.php');
+                                    				// 		include_once('include/utils/db_utils.php');
+                                    				// 	    $emailObj = new Email();  
+                                    				// 	    $defaults = $emailObj->getSystemDefaultEmail();  
+                                    				// 	    $mail = new SugarPHPMailer();
+                                    				// 	    $mail->IsHTML(true); 
+                                    				// 	    $mail->setMailerForSystem();  
+                                    				// 	    $mail->From = $defaults['email'];  
+                                        //                     $mail->FromName = $defaults['name']; 
+                                    				// 	    $mail->Subject = 'CRM ALERT - Untagged'; 
+                                    				// 		$mail->Body =$template;
+                                    				// 	    $mail->prepForOutbound();  
+                                    				// 	    $mail->AddAddress($email); 
+                                    				// 	    @$mail->Send();
+                                    					    
+                                    					      $created_at_time = date('Y-m-d H:i:s');
+                                    					      $sql_email="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('CRM ALERT - Untagged', '$template', '$email', '$created_at_time')";
+
+	                                                                         $GLOBALS['db']->query($sql_email);
                                     				}			
                                     				
                                     						foreach($email_array as $email1){
     
     
                                     			        	$template = 'You have been tagged to opportunity "'.$opp_name.'".Now you can edit/make changes.<br><br>Click here to view: www.ampersandcrm.com';
-                                    						require_once('include/SugarPHPMailer.php');
-                                    						include_once('include/utils/db_utils.php');
-                                    					    $emailObj = new Email();  
-                                    					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                    					    $mail = new SugarPHPMailer();
-                                    					    $mail->IsHTML(true); 
-                                    					    $mail->setMailerForSystem();  
-                                    					    $mail->From = $defaults['email'];  
-                                                            $mail->FromName = $defaults['name'];  
-                                    					    $mail->Subject = 'CRM ALERT - Tagged'; 
-                                    						$mail->Body =$template;
-                                    					    $mail->prepForOutbound();  
-                                    					    $mail->AddAddress($email1); 
-                                    					    @$mail->Send();
+                                    				// 		require_once('include/SugarPHPMailer.php');
+                                    				// 		include_once('include/utils/db_utils.php');
+                                    				// 	    $emailObj = new Email();  
+                                    				// 	    $defaults = $emailObj->getSystemDefaultEmail();  
+                                    				// 	    $mail = new SugarPHPMailer();
+                                    				// 	    $mail->IsHTML(true); 
+                                    				// 	    $mail->setMailerForSystem();  
+                                    				// 	    $mail->From = $defaults['email'];  
+                                        //                     $mail->FromName = $defaults['name'];  
+                                    				// 	    $mail->Subject = 'CRM ALERT - Tagged'; 
+                                    				// 		$mail->Body =$template;
+                                    				// 	    $mail->prepForOutbound();  
+                                    				// 	    $mail->AddAddress($email1); 
+                                    				// 	    @$mail->Send();
+                                    					    
+                                    					      $created_at_time = date('Y-m-d H:i:s');
+                                    					      
+                                    					      $sql_email="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('CRM ALERT - Tagged', '$template', '$email1', '$created_at_time')";
+
+	                                                                         $GLOBALS['db']->query($sql_email);
                                     					    
                                     				}			
 			}
@@ -3551,20 +3590,27 @@ public function action_save_tagged_users_list(){
                                     					    
                                     				
                                     			        	$template = 'You have been tagged for opportunity "'.$opp_name.'".Now you can edit/make changes.<br><br>Click here to view: www.ampersandcrm.com';
-                                    						require_once('include/SugarPHPMailer.php');
-                                    						include_once('include/utils/db_utils.php');
-                                    					    $emailObj = new Email();  
-                                    					    $defaults = $emailObj->getSystemDefaultEmail();  
-                                    					    $mail = new SugarPHPMailer();
-                                    					    $mail->IsHTML(true);
-                                    					    $mail->setMailerForSystem();  
-                                    					    $mail->From = $defaults['email'];  
-                                                            $mail->FromName = $defaults['name'];  
-                                    					    $mail->Subject = 'CRM ALERT - Tagged'; 
-                                    						$mail->Body =$template;
-                                    					    $mail->prepForOutbound();  
-                                    					    $mail->AddAddress($email1); 
-                                    					    @$mail->Send();
+                                    				// 		require_once('include/SugarPHPMailer.php');
+                                    				// 		include_once('include/utils/db_utils.php');
+                                    				// 	    $emailObj = new Email();  
+                                    				// 	    $defaults = $emailObj->getSystemDefaultEmail();  
+                                    				// 	    $mail = new SugarPHPMailer();
+                                    				// 	    $mail->IsHTML(true);
+                                    				// 	    $mail->setMailerForSystem();  
+                                    				// 	    $mail->From = $defaults['email'];  
+                                        //                     $mail->FromName = $defaults['name'];  
+                                    				// 	    $mail->Subject = 'CRM ALERT - Tagged'; 
+                                    				// 		$mail->Body =$template;
+                                    				// 	    $mail->prepForOutbound();  
+                                    				// 	    $mail->AddAddress($email); 
+                                    				// 	    @$mail->Send();
+                                    					    
+                                    					      $created_at_time = date('Y-m-d H:i:s');
+                                    					      
+                                    					      $sql_email="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('CRM ALERT - Tagged', '$template', '$email', '$created_at_time')";
+
+	                                                                         $GLOBALS['db']->query($sql_email);
+                                    					    
                                     				}
                                 
 				 }
