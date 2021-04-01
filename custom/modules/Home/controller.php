@@ -870,7 +870,7 @@ class HomeController extends SugarController{
 
             if($event == "Approve") {
                 
-                $description = 'Opportunity "'.$row1['name'].'" is approved for "'.$statusForNotification.'" by "'.$approver_name.'"';
+                $description = 'Opportunity "'.$row1['name'].'" is approved for "'.$statusForNotification.'" by "'.$approver_name.'".';
                 send_notification("Opportunity", $row1['name'], $description, [$assigned_user_id], $opportunity_link);
         
                 $receiver_email = getUserEmail($assigned_user_id);
@@ -898,7 +898,7 @@ class HomeController extends SugarController{
                     array_push($receiver_emails, getUserEmail($r));
                 }
 
-                $description = 'Opportunity "'.$row1['name'].'" is rejected for "'.$statusForNotification.'" by "'.$approver_name.'"';
+                $description = 'Opportunity "'.$row1['name'].'" is rejected for "'.$statusForNotification.'" by "'.$approver_name.'".';
 
                 send_notification("Opportunity", $row1['name'], $description, $receivers, $opportunity_link);
         
@@ -7761,7 +7761,7 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
             $row = $result1->fetch_assoc();
 
             if($user_id != $row['created_by']) {
-                $notification_message = '"'.getUsername($user_id).'" has written a note on document "'.$row['document_name'].'"';
+                $notification_message = '"'.getUsername($user_id).'" has written a note on document "'.$row['document_name'].'".';
                 send_notification("Document", $row['document_name'], $notification_message, [$row['created_by']], '');
 
                 $receiver_email = getUserEmail($row['created_by']);
