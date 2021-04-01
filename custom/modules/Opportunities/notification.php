@@ -35,35 +35,47 @@ class notification{
                         // Send mail to approver
                         $template = 'New opportunity "'.$bean->name.'" created by "'.$current_user->first_name.' '.$current_user->last_name.'".<br><br>Click here to view: www.ampersandcrm.com';
 
-                        $emailObj = new Email();  
-                        $defaults = $emailObj->getSystemDefaultEmail();  
-                        $mail = new SugarPHPMailer(); 
-                        $mail->IsHTML(true);
-                        $mail->setMailerForSystem();  
-                        $mail->From = $defaults['email'];  
-                        $mail->FromName = $defaults['name'];  
-                        $mail->Subject = 'CRM ALERT - Opportunity created.';
-                        $mail->Body =$template;
-                        $mail->prepForOutbound();  
-                        $mail->AddAddress($user['user_name']);
-                        @$mail->Send();
+                        // $emailObj = new Email();  
+                        // $defaults = $emailObj->getSystemDefaultEmail();  
+                        // $mail = new SugarPHPMailer(); 
+                        // $mail->IsHTML(true);
+                        // $mail->setMailerForSystem();  
+                        // $mail->From = $defaults['email'];  
+                        // $mail->FromName = $defaults['name'];  
+                        // $mail->Subject = 'CRM ALERT - Opportunity created.';
+                        // $mail->Body =$template;
+                        // $mail->prepForOutbound();  
+                        // $mail->AddAddress($user['user_name']);
+                        // @$mail->Send();
+                        
+                        $email=$user['user_name'];
+                           $created_at_time = date('Y-m-d H:i:s');
+                                    					      $sql_email="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('CRM ALERT - Opportunity created', '$template', '$email', '$created_at_time')";
+
+	                                                                         $GLOBALS['db']->query($sql_email);
         		    }
         		    
         		    // Send Mail To Creator
         		    $template = 'You have created opportunity "'.$bean->name.'".<br><br>Click here to view: www.ampersandcrm.com';
 
-                    $emailObj = new Email();  
-                    $defaults = $emailObj->getSystemDefaultEmail();  
-                    $mail = new SugarPHPMailer();  
-                    $mail->IsHTML(true);
-                    $mail->setMailerForSystem();  
-                    $mail->From = $defaults['email'];  
-                    $mail->FromName = $defaults['name'];  
-                    $mail->Subject = 'CRM ALERT - Opportunity created.';
-                    $mail->Body =$template;
-                    $mail->prepForOutbound();  
-                    $mail->AddAddress($current_user->user_name);
-                    @$mail->Send();
+                    // $emailObj = new Email();  
+                    // $defaults = $emailObj->getSystemDefaultEmail();  
+                    // $mail = new SugarPHPMailer();  
+                    // $mail->IsHTML(true);
+                    // $mail->setMailerForSystem();  
+                    // $mail->From = $defaults['email'];  
+                    // $mail->FromName = $defaults['name'];  
+                    // $mail->Subject = 'CRM ALERT - Opportunity created.';
+                    // $mail->Body =$template;
+                    // $mail->prepForOutbound();  
+                    // $mail->AddAddress($current_user->user_name);
+                    // @$mail->Send();
+                    
+                      $email=$current_user->user_name;
+                           $created_at_time = date('Y-m-d H:i:s');
+                                    					      $sql_email="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('CRM ALERT - Opportunity created', '$template', '$email', '$created_at_time')";
+
+	                                                                         $GLOBALS['db']->query($sql_email);
 
                     // Setting session data for alert
                     $_SESSION['flash'][$current_user->id] = [

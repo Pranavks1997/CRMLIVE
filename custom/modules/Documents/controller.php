@@ -520,7 +520,7 @@ public function action_approve(){
         $alert = BeanFactory::newBean('Alerts');
         $alert->name = '';
         
-        $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+        $alert->description = 'Document "'.$document_name.'" is approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
         $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$document_id;
         $alert->target_module = 'Documents';
@@ -531,7 +531,7 @@ public function action_approve(){
 
         // Send Email to tagged user
         $subject = 'CRM ALERT - Approved';
-        $body = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been approved by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
+        $body = 'Document "'.$document_name.'" is approved by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
         $to = $user['user_name'];
         $created_at = date('Y-m-d H:i:s');
 
@@ -671,7 +671,7 @@ public function action_reject(){
         $alert = BeanFactory::newBean('Alerts');
         $alert->name = '';
         
-        $alert->description = 'Document "'.$document_name.'" assigned to "'.$assigned_to_name.'" has been rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+        $alert->description = 'Document "'.$document_name.'" is rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
         $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$document_id;
         $alert->target_module = 'Documents';
@@ -682,7 +682,7 @@ public function action_reject(){
 
         // Send Email to tagged user
         $subject = 'CRM ALERT - Rejected';
-        $body = 'Document - "'.$document_name.'" has been rejected by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
+        $body = 'Document "'.$document_name.'" is rejected by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
         $to = $user['user_name'];
         $created_at = date('Y-m-d H:i:s');
 
