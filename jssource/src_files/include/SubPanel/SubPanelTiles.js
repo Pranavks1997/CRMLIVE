@@ -261,6 +261,7 @@ function got_data(args, inline) {
 }
 
 function showSubPanel(child_field, url, force_load, layout_def_key) {
+  alert('in');
   var inline = 1;
   if (typeof(force_load) == 'undefined' || force_load == null) {
     force_load = false;
