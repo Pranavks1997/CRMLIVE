@@ -874,6 +874,7 @@ class HomeController extends SugarController{
                 send_notification("Opportunity", $row1['name'], $description, [$assigned_user_id], $opportunity_link);
         
                 $receiver_email = getUserEmail($assigned_user_id);
+                $description = $description."<br><br>Click here to view: www.ampersandcrm.com";
                 send_email($description,[$receiver_email],'CRM ALERT - Approved');
 
             } elseif($event == "Reject") {
@@ -898,8 +899,13 @@ class HomeController extends SugarController{
                 }
 
                 $description = 'Opportunity "'.$row1['name'].'" is rejected for "'.$statusForNotification.'" by "'.$approver_name.'"';
+
                 send_notification("Opportunity", $row1['name'], $description, $receivers, $opportunity_link);
         
+              
+                
+                $description = $description."<br><br>Click here to view: www.ampersandcrm.com";
+
                 send_email($description,$receiver_emails,'CRM ALERT - Rejected');
             }
 
@@ -5122,16 +5128,23 @@ public function is_activity_reassignment_applicable($activity_id) {
             $untagged_users_string = implode(',',$untagged_names_arr);
 
 
-            $notification_message = "You have been tagged. Now you can edit /make changes to opportunities ".$row['name'];
-            send_notification("Opportunity", $row['name'], $notification_message, $tagged_user_ids);
+
+            // $notification_message = "You have been tagged. Now you can edit /make changes to opportunities ".$row['name'];
+            // send_notification("Opportunities", $row['name'], $notification_message, $tagged_user_ids);
+
+            $opportunity_link = "index.php?action=DetailView&module=Opportunities&record=".$opportunity_id;
+            $notification_message = 'You have been tagged for opportunity "'.$row['name'].'". Now you can edit /make changes.';
+            send_notification("Opportunity", $row['name'], $notification_message, $tagged_user_ids, $opportunity_link);
+
 
             $receiver_emails = []; 
             foreach($tagged_user_ids as $user_id) {
                 array_push($receiver_emails, getUserEmail($user_id));
             }
-            // send_email($notification_message, $receiver_emails, 'You have been tagged');
+            
             if(count($receiver_emails) > 0) {
-                send_email($notification_message, $receiver_emails, 'You have been tagged');
+                $notification_message = $notification_message."<br><br>Click here to view: www.ampersandcrm.com";
+                send_email($notification_message, $receiver_emails, 'CRM ALERT - Tagged');
             }
 
             $untagged_receiver_emails = [];
@@ -5139,8 +5152,8 @@ public function is_activity_reassignment_applicable($activity_id) {
                 array_push($untagged_receiver_emails, getUserEmail($user_id));
             }
             if(count($untagged_receiver_emails) > 0) {
-                $untagged_notification_message = "You have been untagged. Now you cannot edit /make changes to opportunities ".$row['name'];
-                send_email($untagged_notification_message, $untagged_receiver_emails, 'You have been untagged');
+                $untagged_notification_message = 'You have been untagged from opportunity "'.$row['name'].'".';
+                send_email($untagged_notification_message, $untagged_receiver_emails, 'CRM ALERT - Untagged');
             }
 
 
@@ -6055,6 +6068,7 @@ public function is_activity_reassignment_applicable($activity_id) {
             // send_email($notification_message, $receiver_emails, 'You have been tagged');
 
             if(count($receiver_emails) > 0) {
+                $notification_message = $notification_message."<br><br>Click here to view: www.ampersandcrm.com";
                 send_email($notification_message, $receiver_emails, 'CRM ALERT - Tagged');
             }
 
@@ -7751,6 +7765,7 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
                 send_notification("Document", $row['document_name'], $notification_message, [$row['created_by']], '');
 
                 $receiver_email = getUserEmail($row['created_by']);
+                $notification_message = $notification_message."<br><br>Click here to view: www.ampersandcrm.com";
                 send_email($notification_message, [$receiver_email], 'CRM ALERT - New Note');  
             }
 
@@ -8322,6 +8337,7 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
                 array_push($receiver_emails, getUserEmail($user_id));
             }
             if(count($receiver_emails) > 0) {
+                $notification_message = $notification_message."<br><br>Click here to view: www.ampersandcrm.com";
                 send_email($notification_message, $receiver_emails, 'CRM ALERT - Tagged');
             }
 
