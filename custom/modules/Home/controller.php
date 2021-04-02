@@ -4134,11 +4134,11 @@ public function action_new_assigned_list(){
                             $row_opp_name = $GLOBALS['db']->fetchByAssoc($result_opp_name);
                             
                             $link = 'index.php?action=DetailView&module=Opportunities&record='.$row_opp_name['id'];
-                            $description ="The oppurtunity ".'"'.$row_opp_name['name'].'"'." was re-assigned to ".getUserName($assigned_id)." by ".'"'.getUserName($log_in_user_id).'".';
+                            $description ="Oppurtunity ".'"'.$row_opp_name['name'].'"'." was re-assigned to ".getUserName($assigned_id)." by ".'"'.getUserName($log_in_user_id).'".';
                             $description_notification = "You have been assigned to opportunity ".'"'.$row_opp_name['name'].'"'." by ".'"'.getUserName($log_in_user_id).'"'.". Now you can edit /make changes.";  
                             $description_for_ex_assigned_user = getUserName($assigned_id)." has been assigned to opportunity ".'"'.$row_opp_name['name'].'"'." by ".'"'.getUserName($log_in_user_id).'".';
                             $description_for_assigned_user_email = "You have been assigned to opportunity ".'"'.$row_opp_name['name'].'"'." by ".'"'.getUserName($log_in_user_id).'"'.". Now you can edit /make changes.<br><br> Click here to view: www.ampersandcrm.com";
-                            send_email($description_for_ex_assigned_user,[getUserEmail($ex_assigne_id)],"CRM ALERT - Reassigned");
+                            send_email($description_for_ex_assigned_user,[getUserEmail($ex_assigne_id)],"CRM ALERT - Reassignment");
  
                              send_notification('Opportunity','Re-assign User',$description_notification,[$assigned_id],$link);
                              send_email($description_for_assigned_user_email,[getUserEmail($assigned_id)],"CRM ALERT - Reassignment"); 
@@ -4160,11 +4160,11 @@ public function action_new_assigned_list(){
                             $row_opp_name = $GLOBALS['db']->fetchByAssoc($result_opp_name);
                             
                             $link = 'index.php?action=DetailView&module=Opportunities&record='.$row_opp_name['id'];
-                            $description ="The oppurtunity ".'"'.$row_opp_name['name'].'"'." was re-assigned to ".getUserName($assigned_id)." by ".'"'.getUserName($log_in_user_id).'".';
+                            $description ="Oppurtunity ".'"'.$row_opp_name['name'].'"'." was re-assigned to ".getUserName($assigned_id)." by ".'"'.getUserName($log_in_user_id).'".';
                             $description_notification = "You have been assigned to opportunity ".'"'.$row_opp_name['name'].'"'." by ".'"'.getUserName($log_in_user_id).'"'.". Now you can edit /make changes.";  
                             $description_for_ex_assigned_user = getUserName($assigned_id)." has been assigned to opportunity ".'"'.$row_opp_name['name'].'"'." by ".'"'.getUserName($log_in_user_id).'".';
                             $description_for_assigned_user_email = "You have been assigned to opportunity ".'"'.$row_opp_name['name'].'"'." by ".'"'.getUserName($log_in_user_id).'"'.". Now you can edit /make changes.<br><br> Click here to view: www.ampersandcrm.com";
-                            send_email($description_for_ex_assigned_user,[getUserEmail($ex_assigne_id)],"CRM ALERT - Reassigned");
+                            send_email($description_for_ex_assigned_user,[getUserEmail($ex_assigne_id)],"CRM ALERT - Reassignment");
  
                              send_notification('Opportunity','Re-assign User',$description_notification,[$assigned_id],$link);
                              send_email($description_for_assigned_user_email,[getUserEmail($assigned_id)],"CRM ALERT - Reassignment");
@@ -5935,21 +5935,17 @@ public function is_activity_reassignment_applicable($activity_id) {
             $fetch_query = "SELECT frequency, time from activity_reminder where created_by = '$log_in_user_id' AND activity_id='$activity_id'";
             $result = $GLOBALS['db']->query($fetch_query);
 
-
-            echo json_encode(array("result "=>$result));
-
             if($result){
                 if ($result->num_rows > 0 ){
                     $query = "UPDATE activity_reminder SET  frequency='$frequency' , time='$time' WHERE created_by='$log_in_user_id' AND activity_id='$activity_id'";
                     $save_reminder_query = $GLOBALS['db']->query($query);
-                    echo json_encode(array('message'=>"Value Updated.","status"=>true));
-
+                    echo json_encode(array('message'=>"Value Updated.", "status"=>true));
                 }
                 else {
                     $query = "INSERT INTO activity_reminder(related_id, related_type,activity_id, frequency, time, created_by, created_at) 
                     VALUES ( '$related_id','$related_type','$activity_id','$frequency','$time','$log_in_user_id',now())";
                     $save_reminder_query = $GLOBALS['db']->query($query);
-                    echo json_encode(array('message'=>"Value Instered.","status"=>true));   
+                    echo json_encode(array('message'=>"Value Instered.", "status"=>true));   
                 }
             }
 
@@ -6395,12 +6391,12 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
 
                            $link = "index.php?module=Calls&action=DetailView&record=".$row_activity_name['id'];
                            
-                           $description ="The Activity ".'"'. $row_activity_name['name'] .'"'." was re-assigned to ".'"'.getUserName($assigned_id).'"'." by ".'"'.getUserName($log_in_user_id).'".';
+                           $description ="Activity ".'"'. $row_activity_name['name'] .'"'." was re-assigned to ".'"'.getUserName($assigned_id).'"'." by ".'"'.getUserName($log_in_user_id).'".';
                             
                            $description_notification = "You have been assigned to activity ".'"'.$row_activity_name['name'].'"'." by ".'"'.getUserName($log_in_user_id).'"'.". Now you can edit /make changes.";  
                             $description_for_ex_assigned_user = getUserName($assigned_id)." has been assigned to activity ".'"'.$row_activity_name['name'].'"'." by ".'"'.getUserName($log_in_user_id).'".';
                             $description_for_assigned_user_email = "You have been assigned to activity ".'"'.$row_activity_name['name'].'"'." by ".'"'.getUserName($log_in_user_id).'"'.". Now you can edit /make changes.<br><br> Click here to view: www.ampersandcrm.com";
-                            send_email($description_for_ex_assigned_user,[getUserEmail($ex_assigne_id)],"CRM ALERT - Reassigned");
+                            send_email($description_for_ex_assigned_user,[getUserEmail($ex_assigne_id)],"CRM ALERT - Reassignment");
 
                             send_notification('Activity','Re-assign User',$description_notification,[$assigned_id],$link);
                             send_email($description_for_assigned_user_email,[getUserEmail($assigned_id)],"CRM ALERT - Reassignment"); 
@@ -8210,7 +8206,8 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
                     send_email($description_email,$receiver_emails_approve,'CRM ALERT - Approved');
                 }
                 if($event =='Reject'){
-                    $assigned_user_id_reject =[$row['created_by'], $row['user_id_c']];
+                    //$assigned_user_id_reject =[$row['created_by'], $row['user_id_c']];
+                    $assigned_user_id_reject =[$row['created_by']];
                     //$description = "Document ".'"'.$row['document_name'].'"'." uploaded by ".'"'.getUsername($row['created_by']).'"'." has been rejected by ".'"'.getUsername($log_in_user_id).'"';
                     $description = "Document ".'"'.$row['document_name'].'"'." has been rejected.";
                     $description_notification = "Document ".'"'.$row['document_name'].'"'." is rejected by ".'"'.getUsername($log_in_user_id).'".';

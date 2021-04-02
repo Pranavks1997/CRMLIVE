@@ -61,7 +61,7 @@ class notify_reassigned
 
 
 				$_SESSION['flash'][$current_user->id] = [
-			        'message' => 'The activity "'.$bean->name.'" was re-assigned to "'.$assigned_user['first_name'].' '.$assigned_user['last_name'].'" by "'.$current_user->first_name.' '.$current_user->last_name.'"'
+			        'message' => 'Activity "'.$bean->name.'" was re-assigned to "'.$assigned_user['first_name'].' '.$assigned_user['last_name'].'" by "'.$current_user->first_name.' '.$current_user->last_name.'"'
 			    ]; 
 			}
 		}

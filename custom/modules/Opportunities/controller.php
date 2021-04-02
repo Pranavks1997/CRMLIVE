@@ -3468,21 +3468,25 @@ public function action_save_tagged_users_list(){
 			
 			
 					$email_array=array();
+					$name_array=array();
 					$email_array_old=array();
-					$sql23 = "SELECT  * FROM users WHERE id IN ('".implode("','",$arr_1)."') ";
+					$name_array_old=array();
+					$sql23 = "SELECT  user_name,CONCAT(first_name,' ',last_name) as name FROM users WHERE id IN ('".implode("','",$arr_1)."') ";
 		            	$result23 = $GLOBALS['db']->query($sql23);
                 			while($row23 = $GLOBALS['db']->fetchByAssoc($result23))
                 			{
                 	    		    
                 	    		  array_push($email_array,$row23['user_name']);
+                	    		   array_push($name_array,$row23['name']);
                 			}
                 			
-                				$sql25 = "SELECT  * FROM users WHERE id IN ('".implode("','",$arr_2)."') ";
+                				$sql25 = "SELECT  user_name,CONCAT(first_name,' ',last_name) as name FROM users WHERE id IN ('".implode("','",$arr_2)."') ";
 		            	$result25 = $GLOBALS['db']->query($sql25);
                 			while($row25 = $GLOBALS['db']->fetchByAssoc($result25))
                 			{
                 	    		    
                 	    		  array_push($email_array_old,$row25['user_name']);
+                	    		  array_push($name_array_old,$row25['name']);
                 			}
 	
 				foreach($arr_1 as $user){
@@ -3548,7 +3552,21 @@ public function action_save_tagged_users_list(){
 
 	                                                                         $GLOBALS['db']->query($sql_email);
                                     					    
-                                    				}			
+                                    				}	
+                                    				
+                                    				$name_new=implode(',',$name_array);
+                                    				$name_old=implode(',',$name_array_old);
+                                    				if($name_new!=""&&$name_old!=""){
+                                    		$echo_name=$name_new.' has been tagged successfully.'.$name_old.' has been untagged successfully.';
+                                    				}
+                                    				if($name_new==""&&$name_old!=""){
+                                    		$echo_name=$name_old.' has been untagged successfully.';
+                                    				}
+                                    				if($name_new!=""&&$name_old==""){
+                                    		$echo_name=$name_new.' has been tagged successfully.';
+                                    				}
+                                    		
+                                    		echo $echo_name;
 			}
 			
 			
@@ -3561,12 +3579,14 @@ public function action_save_tagged_users_list(){
 				$insert_query='INSERT INTO  tagged_user (opp_id,user_id) VALUES ("'.$op_id.'","'.$tagged.'")';
 			//	$res0 = $db->query($insert_query);
 					$email_array=array();
-					$sql23 = "SELECT  * FROM users WHERE id IN ('".implode("','",$tagged_array)."') ";
+					$name_array=array();
+					$sql23 = "SELECT  user_name,CONCAT(first_name,' ',last_name) as name FROM users WHERE id IN ('".implode("','",$tagged_array)."') ";
 		 	$result23 = $GLOBALS['db']->query($sql23);
 			while($row23 = $GLOBALS['db']->fetchByAssoc($result23))
 			{
 	    		    
 	    		  array_push($email_array,$row23['user_name']);
+	    		   array_push($name_array,$row23['name']);
 			}
 				 if($db->query($insert_query)==TRUE){
 				 //alerts
@@ -3612,7 +3632,12 @@ public function action_save_tagged_users_list(){
 	                                                                         $GLOBALS['db']->query($sql_email);
                                     					    
                                     				}
-                                
+                        
+                        	$name_new=implode(',',$name_array);
+                        	$echo_name=$name_new.' has been tagged successfully.';
+                        	if($echo_name!=''){
+                        	echo $echo_name;
+                        	}
 				 }
 			}
         
