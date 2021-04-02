@@ -65,7 +65,7 @@ class updateHistory
             	if((bool)$bean->fetched_row){
             	    $assigned_user = $this->getUserByID($assigned_to);
             	    	$_SESSION['flash'][$current_user->id] = [
-			        'message' => 'The opportunity "'.$bean->name.'" was re-assigned to "'.$assigned_user['first_name'].' '.$assigned_user['last_name'].'" by "'.$current_user->first_name.' '.$current_user->last_name.'"'
+			        'message' => 'Opportunity "'.$bean->name.'" was re-assigned to "'.$assigned_user['first_name'].' '.$assigned_user['last_name'].'" by "'.$current_user->first_name.' '.$current_user->last_name.'"'
 			    ];
             	    
                                                             $alert = BeanFactory::newBean('Alerts');
