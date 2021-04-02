@@ -229,11 +229,21 @@ function updateStatus() {
                 getPendingRequestCount();
                 openApprovalDialog('close');
                 dateBetween('30')
+                // if(data.is_approved == 1) {
+                //     alert('Opportunity approved successfully');
+                // } else {
+                //     alert('Opportunity rejected successfully');
+                // }
+
+                var message = "";
                 if(data.is_approved == 1) {
-                    alert('Opportunity approved successfully');
+                    // message = 'Opportunity "' + data.opp_name + '" assigned to' + data.assigned_name + 'has been approved for "' + data.opp_status + '".';
+                    message = 'Opportunity "' + data.opp_name + '" has been approved for "' + data.opp_status + '".';
                 } else {
-                    alert('Opportunity rejected successfully');
+                    // message = 'Opportunity "' + data.opp_name + '" assigned to' + data.assigned_name + 'has been rejected for "' + data.opp_status + '".';
+                    message = 'Opportunity "' + data.opp_name + '" has been rejected for "' + data.opp_status + '".';
                 }
+                alert(message);
                 
             } else {
                 alert(data.message);
@@ -716,10 +726,31 @@ function openDeselectDialog(event) {
                 var parsed_data = JSON.parse(data);
                 var message = "";
 
+                if(parsed_data.status) {
 
-                if (parsed_data.tagged_users) {
-                    message = message + parsed_data.tagged_users + " have been tagged";
+                    if (parsed_data.tagged_users) {
+                        message = '"'+ parsed_data.tagged_users + '" have been tagged';
+                    } 
+
+                    if(parsed_data.untagged_users !="  " && parsed_data.untagged_users) {
+                        if(parsed_data.tagged_users) {
+                            message = message + ' & "' + parsed_data.untagged_users + '" have been untagged';
+                        } else {
+                            message = '"' + parsed_data.untagged_users + '" have been untagged';
+                        }
+                    }
+
+                    if(!parsed_data.untagged_users && !parsed_data.tagged_users) {
+                        message = "Nothing has been updated";
+                    }
+
+                    message = message + ' in opportunity "' + parsed_data.opp_name + '".';
                     alert(message);
+
+                } else {
+                    message = parsed_data.message + ' in opportunity "' + parsed_data.name + '".';
+                    alert(message);
+                    // alert(parsed_data.message);
                 }
 
                 dialog.style.display = "none";

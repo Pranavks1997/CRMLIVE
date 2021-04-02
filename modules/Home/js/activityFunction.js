@@ -252,8 +252,37 @@ function handleActivityTagDialog(event) {
             success: function (data) {
                 var parsed_data = JSON.parse(data);
                 var message = "";
-                if (parsed_data.tagged_users) {
-                    message = message + parsed_data.tagged_users + " have been tagged";
+                // if (parsed_data.tagged_users) {
+                //     // message = message + parsed_data.tagged_users + " have been tagged";
+                //     message = message + parsed_data.tagged_users + " have been tagged & " + parsed_data.untagged_users + " have been untagged in activity " + parsed_data.act_name;
+                //     alert(message);
+                // }
+
+                if(parsed_data.status) {
+
+                    if (parsed_data.tagged_users) {
+                        message = '"'+ parsed_data.tagged_users + '" have been tagged';
+                        // message = message + ' in activity "' + parsed_data.act_name + '"';
+                    } 
+
+                    if(parsed_data.untagged_users !="  " && parsed_data.untagged_users) {
+                        if(parsed_data.tagged_users) {
+                            message = message + ' & "' + parsed_data.untagged_users + '" have been untagged';
+                        } else {
+                            message = '"' + parsed_data.untagged_users + '" have been untagged';
+                        }
+                        // message = message + ' in activity "' + parsed_data.act_name + '"';
+                    }
+
+                    if(!parsed_data.untagged_users && !parsed_data.tagged_users) {
+                        message = "Nothing has been updated";
+                    }
+
+                    message = message + ' in activity "' + parsed_data.act_name + '"';
+                    alert(message);
+
+                } else {
+                    message = parsed_data.message + ' in activity "' + parsed_data.name + '".';
                     alert(message);
                 }
 
