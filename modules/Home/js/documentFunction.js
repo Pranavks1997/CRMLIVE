@@ -527,10 +527,11 @@ function handleNoteDialog(event) {
             },
             success: function (data) {
                 var parsed_data = JSON.parse(data);
-                alert("Your note has been sent successfully!");
+                var message = 'Your note on document "' + parsed_data.doc_name + '" has been sent successfully.';
+                alert(message);
+
                 dialog.style.display = "none";
                 document.getElementById('note').value = "";
-
             },
             error: function (data, errorThrown) {
                 alert(errorThrown);
@@ -684,12 +685,44 @@ function handleTagDialog(event) {
                 // alert("Your note has been sent successfully!");
                 var parsed_data = JSON.parse(data);
                 var message = "";
+
+
+                if(parsed_data.status) {
+
+                    if (parsed_data.tagged_users) {
+                        message = '"'+ parsed_data.tagged_users + '" have been tagged';
+                    } 
+
+                    if(parsed_data.untagged_users !="  " && parsed_data.untagged_users) {
+                        if(parsed_data.tagged_users) {
+                            message = message + ' & "' + parsed_data.untagged_users + '" have been untagged';
+                        } else {
+                            message = '"' + parsed_data.untagged_users + '" have been untagged';
+                        }
+                    }
+
+                    if(!parsed_data.untagged_users && !parsed_data.tagged_users) {
+                        message = "Nothing has been updated";
+                    }
+
+                    message = message + ' in document "' + parsed_data.doc_name + '".';
+                    alert(message);
+
+                } else {
+                    message = parsed_data.message + ' in document "' + parsed_data.name + '".';
+                    alert(message);
+                    // alert(parsed_data.message);
+                }
+
                 dialog.style.display = "none";
 
-                if (parsed_data.tagged_users) {
-                    message = message + parsed_data.tagged_users + " have been tagged";
-                    alert(message);
-                }
+
+
+                // if (parsed_data.tagged_users) {
+                //     // message = message + parsed_data.tagged_users + " have been tagged";
+                //     message = message + parsed_data.tagged_users + " have been tagged & " + parsed_data.untagged_users + " have been untagged in document " + parsed_data.doc_name;
+                //     alert(message);
+                // }
 
                 // select_dialogue.style.display = "none";
             },

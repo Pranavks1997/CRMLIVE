@@ -1296,7 +1296,7 @@ public function action_approve(){
         $alert = BeanFactory::newBean('Alerts');
         $alert->name = '';
         
-        $alert->description = 'Activity "'.$activity_name.'" assigned to "'.$assigned_to_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+        $alert->description = 'Activity "'.$activity_name.'" is approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
         $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
         $alert->target_module = 'Activities';
@@ -1307,7 +1307,7 @@ public function action_approve(){
 
         // Send Email to tagged user
         $subject = 'CRM ALERT - Approved';
-        $body = 'Activity "'.$activity_name.'" assigned to "'.$assigned_to_name.'" has been Approved by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
+        $body = 'Activity "'.$activity_name.'" is approved by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
         $created_at = date('Y-m-d H:i:s');
         $to = $user['user_name'];
 
@@ -1440,7 +1440,7 @@ public function action_reject(){
         $alert = BeanFactory::newBean('Alerts');
         $alert->name = '';
         
-        $alert->description = 'Activity "'.$activity_name.'" assigned to "'.$assigned_to_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+        $alert->description = 'Activity "'.$activity_name.'" is rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
 
         $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
         $alert->target_module = 'Activities';
@@ -1451,7 +1451,7 @@ public function action_reject(){
 
         // Send Email to tagged user
         $subject = 'CRM ALERT - Rejected';
-        $body = 'Activity "'.$activity_name.'" assigned to "'.$assigned_to_name.'" has been Rejected by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
+        $body = 'Activity "'.$activity_name.'" is rejected by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
         $created_at = date('Y-m-d H:i:s');
         $to = $user['user_name'];
 
