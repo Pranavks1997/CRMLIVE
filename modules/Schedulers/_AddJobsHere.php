@@ -522,7 +522,7 @@ function activityReminder()
   send_notification('Activities',$row['name'],$description,[$row['assigned_user_id']],$link);
 }
  function send_email($activity_name,$email,$subject){
-            $template = "Reminder for '$activity_name' is to be completed<br><br>Click here to view: www.ampersandcrm.com";
+            $template = "Reminder for '$activity_name' is to be completed. <br><br>Click here to view: www.ampersandcrm.com";
             require_once('include/SugarPHPMailer.php');
             include_once('include/utils/db_utils.php');
             $emailObj = new Email();  
@@ -541,7 +541,7 @@ function activityReminder()
 function send_notification($module,$name,$description,$users,$redirectUrl){
     foreach($users as $id) {
         $alert = BeanFactory::newBean('Alerts');
-        $alert->name =$name;
+        // $alert->name =$name;
         $alert->description = $description;
         $alert->url_redirect = $redirectUrl;
         $alert->target_module = $module;

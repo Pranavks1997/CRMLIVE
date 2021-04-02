@@ -418,8 +418,8 @@ value='{$value}' title=''      >
 <div class="col-xs-12 col-sm-8 edit-view-field " type="file" field="filename"  >
 {counter name="panelFieldCount" print=false}
 
-<script type="text/javascript" src='cache/include/externalAPI.cache.js?v=GHQGzJjYGbFyUnVa-1q2dA'></script>
-<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=GHQGzJjYGbFyUnVa-1q2dA'></script>
+<script type="text/javascript" src='cache/include/externalAPI.cache.js?v=Xn22BUIr0zhqxkQiAq0alg'></script>
+<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=Xn22BUIr0zhqxkQiAq0alg'></script>
 {if !empty($fields.filename.value) }
 {assign var=showRemove value=true}
 {else}

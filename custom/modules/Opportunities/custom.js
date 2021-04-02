@@ -138,7 +138,7 @@ if($("#opportunity_type").val()=="global"){
  
  $("#btn_select_approver_c").hide();
  $("#select_approver_c").attr("disabled",true);
- $('#multiple_approver_c').hide();
+$('#multiple_approver_c').hide();
  $("[data-label=LBL_MULTIPLE_APPROVER_C]").hide();
  
  //------------------ aprover default selection  --------------------------
@@ -217,7 +217,7 @@ if($("#opportunity_type").val()=="global"){
  
  
  if(opps_id ==""){
-                          $('#detailpanel_6').hide();
+                         $('#detailpanel_6').hide();
                           $( ".panel-heading:contains('Tag And Untag Users')").hide();
 
            
@@ -7147,9 +7147,9 @@ var base_url = window.location.href.split('?')[0];
                  
                 success : function(data){
                  
-               
-                 //alert(data);
-                 
+               if(data!=''){
+                 alert(data);
+               }
                 }
      
     })
