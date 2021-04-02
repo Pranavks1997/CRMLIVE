@@ -5766,6 +5766,9 @@ public function is_activity_reassignment_applicable($activity_id) {
                  if($row_lineage['user_lineage']!=0){
                     $assigned_user_id_approve =explode(',',$row_lineage['user_lineage']);
                     $team_lead = array_slice($assigned_user_id_approve, -1)[0];
+                    if($team_lead==$log_in_user_id){
+                        $team_lead = null; 
+                    }
                  }else{
                      $team_lead = null;
                  }
@@ -6104,6 +6107,104 @@ public function is_activity_reassignment_applicable($activity_id) {
     }
 
     //----------------------For activity Tag---------------------//
+    // public function action_set_activity_for_tag(){
+    //     try {
+    //         $db = \DBManagerFactory::getInstance();
+    //         $GLOBALS['db'];
+    //         // $activity_id = $_POST['activity_id'];
+    //         $activity_id = $_POST['activity_tag_id'];
+    //         $user_id_list = '';
+            
+       
+    //         // if ($_POST['userIdList']) {
+    //         //     $user_id_list = $_POST['userIdList'];
+    //         // }
+    //         if ($_POST['tag_activity']) {
+    //             $user_id_list = $_POST['tag_activity'];
+    //             $user_id_list = implode(',',$user_id_list);
+    //         }
+
+
+    //         $sql ="SELECT calls.name, calls.created_by, calls_cstm.tag_hidden_c
+    //         FROM calls 
+    //         LEFT JOIN calls_cstm ON calls.id = calls_cstm.id_c
+    //         WHERE id ='$activity_id' ";
+    //         $fetch_activity_info_result = $GLOBALS['db']->query($sql);
+    //         $row = $GLOBALS['db']->fetchByAssoc($fetch_activity_info_result);
+
+            
+    //         $last_users_array = explode(',', $row['tag_hidden_c']);
+    //         $latest_users_array = $_POST['tag_activity'];
+    //         $untagged_user_ids = $tagged_user_ids = $untagged_names_arr = $tagged_names_arr = [];
+
+    //         $untagged_user_ids = array_diff($last_users_array, $latest_users_array);
+    //         $tagged_user_ids = array_diff($latest_users_array, $last_users_array);
+            
+    //         echo "tagged_check";
+    //         echo $tagged_user_ids;
+    //         echo "kalpaj";
+            
+    //         if($untagged_user_ids != [""]) {
+    //             foreach($untagged_user_ids as $id) {
+    //                 array_push($untagged_names_arr, getUsername($id));
+    //             }    
+    //         }
+    //         foreach($tagged_user_ids as $id) {
+    //             array_push($tagged_names_arr, getUsername($id));
+    //         }     
+
+    //         $tagged_users_string = implode(',',$tagged_names_arr);
+    //         $untagged_users_string = implode(',',$untagged_names_arr);
+
+    //         $activity_link = "index.php?action=DetailView&module=Calls&record=".$activity_id;
+    //         $notification_message = 'You have been tagged for activity "'.$row['name'].'". Now you can edit /make changes.';
+    //         send_notification("Activity", $row['name'], $notification_message, $tagged_user_ids, $activity_link);
+            
+    //         echo json_encode(array("Tagged user" => $tagged_user_ids , "tagged user string"=> $tagged_users_string));
+    //         $receiver_emails = []; 
+    //         foreach($tagged_user_ids as $user_id) {
+    //             array_push($receiver_emails, getUserEmail($user_id));
+    //         }
+    //         echo json_encode(array("tagged user reciever mail "=> $receiver_email));
+    //         // die();
+    //         // send_email($notification_message, $receiver_emails, 'You have been tagged');
+
+    //         if(count($receiver_emails) > 0) {
+    //             $notification_message = $notification_message."<br><br>Click here to view: www.ampersandcrm.com";
+    //             send_email($notification_message, $receiver_emails, 'CRM ALERT - Tagged');
+    //         }
+
+    //         $untagged_receiver_emails = [];
+    //         if($untagged_user_ids != [""]) {
+    //             foreach($untagged_user_ids as $user_id) {
+    //                 array_push($untagged_receiver_emails, getUserEmail($user_id));
+    //             }
+    //         }
+    //         echo json_encode(array("Untagged user reciever mail "=> $untagged_receiver_emails));
+    //         // die();
+            
+    //         if(count($untagged_receiver_emails) > 0) {
+    //             $untagged_notification_message = 'You have been untagged from activity "'.$row['name'].'".';
+    //             send_email($untagged_notification_message, $untagged_receiver_emails, 'CRM ALERT - Untagged');
+    //         }
+
+
+
+
+    //         $count_query = "SELECT * FROM calls_cstm WHERE id_c='$activity_id'";
+    //         $result = $GLOBALS['db']->query($count_query);
+
+    //         $sub_query = "UPDATE calls_cstm SET tag_hidden_c = '$user_id_list' WHERE id_c='$activity_id'";
+    //         $GLOBALS['db']->query($sub_query);
+
+    //         echo json_encode(array("status"=> true, "message" => "Value Updated", "tagged_users" => $tagged_users_string, "untagged_users" => $untagged_users_string, "act_name"=>$row['name']));
+    //     } catch (Exception $e) {
+    //         echo json_encode(array("status" => false, "message" => "Some error occured", "name"=>""));
+    //     }
+    //     die();
+
+    // }
+    
     public function action_set_activity_for_tag(){
         try {
             $db = \DBManagerFactory::getInstance();
@@ -6117,17 +6218,7 @@ public function is_activity_reassignment_applicable($activity_id) {
             if ($_POST['tag_activity']) {
                 $user_id_list = $_POST['tag_activity'];
                 $user_id_list = implode(',',$user_id_list);
-            } else {
-                $sql ="SELECT calls.name
-                FROM calls 
-                WHERE id ='$activity_id' ";
-                $fetch_activity_info_result = $GLOBALS['db']->query($sql);
-                $row = $GLOBALS['db']->fetchByAssoc($fetch_activity_info_result);
-
-                echo json_encode(array("status" => false, "message" => "Nothing has been updated", "name" =>$row['name']));
-                die();
             }
-
 
             $sql ="SELECT calls.name, calls.created_by, calls_cstm.tag_hidden_c
             FROM calls 
@@ -6138,21 +6229,30 @@ public function is_activity_reassignment_applicable($activity_id) {
 
             
             $last_users_array = explode(',', $row['tag_hidden_c']);
-            $latest_users_array = $_POST['tag_activity'];
+            if ($_POST['tag_activity']){
+                $latest_users_array = $_POST['tag_activity'];
+            }else {
+                $latest_users_array =[];
+            }
+            
+            
             $untagged_user_ids = $tagged_user_ids = $untagged_names_arr = $tagged_names_arr = [];
 
             $untagged_user_ids = array_diff($last_users_array, $latest_users_array);
             $tagged_user_ids = array_diff($latest_users_array, $last_users_array);
 
-            foreach($untagged_user_ids as $id) {
-                array_push($untagged_names_arr, getUsername($id));
+            if($untagged_user_ids != [""]) {
+                foreach($untagged_user_ids as $id) {
+                    array_push($untagged_names_arr, getUsername($id));
+                } 
             }    
+                
             foreach($tagged_user_ids as $id) {
                 array_push($tagged_names_arr, getUsername($id));
             }     
 
-            $tagged_users_string = implode(',',$tagged_names_arr);
-            $untagged_users_string = implode(',',$untagged_names_arr);
+            $tagged_users_string = implode(', ',$tagged_names_arr);
+            $untagged_users_string = implode(', ',$untagged_names_arr);
 
             $activity_link = "index.php?action=DetailView&module=Calls&record=".$activity_id;
             $notification_message = 'You have been tagged for activity "'.$row['name'].'". Now you can edit /make changes.';
@@ -6170,11 +6270,21 @@ public function is_activity_reassignment_applicable($activity_id) {
             }
 
             $untagged_receiver_emails = [];
-            foreach($untagged_user_ids as $user_id) {
-                array_push($untagged_receiver_emails, getUserEmail($user_id));
+
+            // echo json_encode(array("status" => true, "untagged" => $untagged_user_ids, "tagged" => $receiver_emails));
+            // die();
+
+            if($untagged_user_ids != [""]) {
+                foreach($untagged_user_ids as $user_id) {
+                    array_push($untagged_receiver_emails, getUserEmail($user_id));
+                }
             }
+
             if(count($untagged_receiver_emails) > 0) {
                 $untagged_notification_message = 'You have been untagged from activity "'.$row['name'].'".';
+                
+                // echo json_encode(array("status" => true, "untagged" => $untagged_receiver_emails, "tagged" => $receiver_emails));
+                // die();
                 send_email($untagged_notification_message, $untagged_receiver_emails, 'CRM ALERT - Untagged');
             }
 
@@ -6193,6 +6303,9 @@ public function is_activity_reassignment_applicable($activity_id) {
         die();
 
     }
+    
+    
+    
     public function action_activity_tag_dialog_info()
     {
         try {
@@ -8290,6 +8403,9 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
                 if($row_lineage['user_lineage']!=0){
                     $assigned_user_id_approve =explode(',',$row_lineage['user_lineage']);
                     $team_lead = array_slice($assigned_user_id_approve, -1)[0];
+                    if($team_lead == $log_in_user_id){
+                        $team_lead = null;
+                    }
                 }else{
                     $team_lead = null;
                 }
@@ -8429,14 +8545,7 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
                 $user_id_list = $_POST['tag_document'];
                 $user_id_list = implode(',',$user_id_list);
             } else {
-                $sql ="SELECT document_name
-                FROM documents 
-                WHERE id ='$document_id' ";
-                $fetch_activity_info_result = $GLOBALS['db']->query($sql);
-                $row = $GLOBALS['db']->fetchByAssoc($fetch_activity_info_result);
-
-                echo json_encode(array("status" => false, "message" => "Nothing has been updated", "name" =>$row['document_name']));
-                die();
+                $latest_users_array = [];
             }
 
             $sql ="SELECT documents.document_name, documents.created_by, documents_cstm.tagged_hidden_c
@@ -8448,21 +8557,28 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
 
 
             $last_users_array = explode(',', $row['tagged_hidden_c']);
-            $latest_users_array = $_POST['tag_document'];
+             if ($_POST['tag_document']){
+                $latest_users_array = $_POST['tag_document'];
+            }else {
+                $latest_users_array =[];
+            }
+            // $latest_users_array = $_POST['tag_document'];
             $untagged_user_ids = $tagged_user_ids = $untagged_names_arr = $tagged_names_arr = [];
 
             $untagged_user_ids = array_diff($last_users_array, $latest_users_array);
             $tagged_user_ids = array_diff($latest_users_array, $last_users_array);
-
-            foreach($untagged_user_ids as $id) {
-                array_push($untagged_names_arr, getUsername($id));
-            }    
+            
+            if($untagged_user_ids != [""]) {
+                foreach($untagged_user_ids as $id) {
+                    array_push($untagged_names_arr, getUsername($id));
+                }  
+            }
             foreach($tagged_user_ids as $id) {
                 array_push($tagged_names_arr, getUsername($id));
             }     
 
-            $tagged_users_string = implode(',',$tagged_names_arr);
-            $untagged_users_string = implode(',',$untagged_names_arr);
+            $tagged_users_string = implode(', ',$tagged_names_arr);
+            $untagged_users_string = implode(', ',$untagged_names_arr);
 
             $document_link = "index.php?action=DetailView&module=Documents&record=".$document_id;
             // $notification_message = "You have been tagged. Now you can edit /make changes to document ".$row['document_name'];
@@ -8479,8 +8595,10 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
             }
 
             $untagged_receiver_emails = [];
-            foreach($untagged_user_ids as $user_id) {
-                array_push($untagged_receiver_emails, getUserEmail($user_id));
+            if($untagged_user_ids != [""]) {
+                foreach($untagged_user_ids as $user_id) {
+                    array_push($untagged_receiver_emails, getUserEmail($user_id));
+                }
             }
             if(count($untagged_receiver_emails) > 0) {
                 $untagged_notification_message = 'You have been untagged from document "'.$row['document_name'].'".';

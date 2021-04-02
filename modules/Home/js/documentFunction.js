@@ -683,6 +683,7 @@ function handleTagDialog(event) {
             success: function (data) {
                 // debugger;
                 // alert("Your note has been sent successfully!");
+                console.log("document check", data);
                 var parsed_data = JSON.parse(data);
                 var message = "";
 

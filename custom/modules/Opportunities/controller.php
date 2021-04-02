@@ -3556,13 +3556,22 @@ public function action_save_tagged_users_list(){
                                     				
                                     				$name_new=implode(',',$name_array);
                                     				$name_old=implode(',',$name_array_old);
-                                    				if($name_new!=""&&$name_old!=""){
+                                    				/*if($name_new!=""&&$name_old!=""){
                                     		$echo_name=$name_new.' has been tagged successfully.'.$name_old.' has been untagged successfully.';
                                     				}
                                     				if($name_new==""&&$name_old!=""){
                                     		$echo_name=$name_old.' has been untagged successfully.';
                                     				}
                                     				if($name_new!=""&&$name_old==""){
+                                    		$echo_name=$name_new.' has been tagged successfully.';
+                                    				}*/
+                                    				if(!empty(trim($name_new)) && !empty(trim($name_old))){
+                                    		$echo_name=$name_new.' has been tagged successfully.'.$name_old.' has been untagged successfully.';
+                                    				}
+                                    				if(!empty(trim($name_new)) && !empty(trim($name_old))){
+                                    		$echo_name=$name_old.' has been untagged successfully.';
+                                    				}
+                                    				if(!empty(trim($name_new)) && !empty(trim($name_old))){
                                     		$echo_name=$name_new.' has been tagged successfully.';
                                     				}
                                     		
@@ -3634,8 +3643,12 @@ public function action_save_tagged_users_list(){
                                     				}
                         
                         	$name_new=implode(',',$name_array);
-                        	$echo_name=$name_new.' has been tagged successfully.';
-                        	if($echo_name!=''){
+                        	
+                        	if(!empty(trim($name_new))){
+                        	    $echo_name=$name_new.' has been tagged successfully.';   
+                        	}
+                        	
+                        	if(!empty(trim($echo_name))){
                         	echo $echo_name;
                         	}
 				 }
