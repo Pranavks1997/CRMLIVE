@@ -32,8 +32,8 @@ class notify_tag_untag
 			    $tagged_users = $this->getTaggedUsersName($new_tagged_array);
 			    if (!empty($tagged_users)) {
 			    	
-				    //Send Notification To Respective TL
-				    $alert = BeanFactory::newBean('Alerts');
+				    //Send Notification To Respective Approver
+				    /*$alert = BeanFactory::newBean('Alerts');
 		            $alert->name = '';
 		            $alert->description = 'Document "'.$bean->document_name.'" has been tagged to - '.$tagged_users;
 		            $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$bean->id;
@@ -41,7 +41,7 @@ class notify_tag_untag
 		            $alert->assigned_user_id = $bean->user_id_c;
 		            $alert->type = 'info';
 		            $alert->is_read = 0;
-		            $alert->save();
+		            $alert->save();*/
 				    
 				    foreach ($new_tagged_array as $key => $user_id) {
 				    	$user = $this->getUserByID($user_id);
@@ -76,8 +76,8 @@ class notify_tag_untag
 		    	$untagged_users = $this->getTaggedUsersName($new_untagged_array);
 
 		    	if (!empty($untagged_users)) {
-			    	//Send Notification To Respective TL
-				    $alert = BeanFactory::newBean('Alerts');
+			    	//Send Notification To Respective Approver
+				    /*$alert = BeanFactory::newBean('Alerts');
 		            $alert->name = '';
 		            $alert->description = 'Document "'.$bean->document_name.'" has been untagged from - '.$untagged_users;
 		            $alert->url_redirect = 'index.php?action=DetailView&module=Documents&record='.$bean->id;
@@ -85,12 +85,12 @@ class notify_tag_untag
 		            $alert->assigned_user_id = $bean->user_id_c;
 		            $alert->type = 'info';
 		            $alert->is_read = 0;
-		            $alert->save();
+		            $alert->save();*/
 
 		            foreach ($new_untagged_array as $key => $user_id) {
 		            	$user = $this->getUserByID($user_id);
 				    	// Send Notification to newly untagged member
-				    	$alert = BeanFactory::newBean('Alerts');
+				    	/*$alert = BeanFactory::newBean('Alerts');
 		                $alert->name = '';
 		                $alert->description = 'You have been untagged from document "'.$bean->document_name.'"';
 		                $alert->url_redirect = 'index.php?action=listView&module=Documents';
@@ -98,7 +98,7 @@ class notify_tag_untag
 		                $alert->assigned_user_id = $user_id;
 		                $alert->type = 'info';
 		                $alert->is_read = 0;
-		                $alert->save();
+		                $alert->save();*/
 
 		                // Send email to newly untagged member
 		                $subject = 'CRM ALERT - Untagged';
