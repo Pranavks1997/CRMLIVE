@@ -27,8 +27,8 @@ class notify_tag_untag
 
 		    // Notify New Tagged Memers
 		    if (count($new_tagged_array)) {
-			    //Send Notification To Respective TL
-			    $alert = BeanFactory::newBean('Alerts');
+			    //Send Notification To Respective Approver
+			    /*$alert = BeanFactory::newBean('Alerts');
 	            $alert->name = '';
 	            $alert->description = 'Activity "'.$bean->name.'" has been tagged to - '.$this->getTaggedUsersName($new_tagged_array);
 	            $alert->url_redirect = 'index.php?action=DetailView&module=Calls&record='.$bean->id;
@@ -36,7 +36,7 @@ class notify_tag_untag
 	            $alert->assigned_user_id = $bean->user_id_c;
 	            $alert->type = 'info';
 	            $alert->is_read = 0;
-	            $alert->save();
+	            $alert->save();*/
 			    
 			    foreach ($new_tagged_array as $key => $user_id) {
 			    	$user = $this->getUserByID($user_id);
@@ -73,8 +73,8 @@ class notify_tag_untag
 
 		    //Notify New Untagged Members
 		    if(count($new_untagged_array)){
-		    	//Send Notification To Respective TL
-			    $alert = BeanFactory::newBean('Alerts');
+		    	//Send Notification To Respective Approver
+			    /*$alert = BeanFactory::newBean('Alerts');
 	            $alert->name = '';
 	            $alert->description = 'Activity "'.$bean->name.'" has been untagged from - '.$this->getTaggedUsersName($new_untagged_array);
 	            $alert->url_redirect = 'index.php?action=DetailView&module=Calls&record='.$bean->id;
@@ -82,12 +82,12 @@ class notify_tag_untag
 	            $alert->assigned_user_id = $bean->user_id_c;
 	            $alert->type = 'info';
 	            $alert->is_read = 0;
-	            $alert->save();
+	            $alert->save();*/
 
 	            foreach ($new_untagged_array as $key => $user_id) {
 	            	$user = $this->getUserByID($user_id);
 			    	// Send Notification to newly untagged member
-			    	$alert = BeanFactory::newBean('Alerts');
+			    	/*$alert = BeanFactory::newBean('Alerts');
 	                $alert->name = '';
 	                $alert->description = 'You have been untagged from activity "'.$bean->name.'"';
 	                $alert->url_redirect = 'index.php?action=listView&module=Calls';
@@ -95,7 +95,7 @@ class notify_tag_untag
 	                $alert->assigned_user_id = $user_id;
 	                $alert->type = 'info';
 	                $alert->is_read = 0;
-	                $alert->save();
+	                $alert->save();*/
 
 	                // Send email to newly untagged member
 	                if (!empty($user['user_name'])) {

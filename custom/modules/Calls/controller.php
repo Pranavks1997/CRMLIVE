@@ -1265,6 +1265,24 @@ public function action_approve(){
       
     }
 
+    // Get TL of assigned user
+    $sql = "SELECT * FROM `users_cstm` WHERE `id_c`='".$assigned_to."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $lineages_array = explode(',', $row['user_lineage']);
+    }
+    $tl_id = $lineages_array[count($lineages_array) - 1];
+
+    // Get TL Details
+    $sql = "SELECT * FROM `users` WHERE `id`='".$tl_id."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $tl_name = $row['first_name'].' '.$row['last_name'];
+      $tl_email = $row['user_name'];
+    }
+
     // If assigned to user exists
     if((bool)$assigned_to_name){
       // Send Notification to assigned user
@@ -1289,6 +1307,33 @@ public function action_approve(){
       $sql="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('$subject', '$body', '$to', '$created_at')";
 
       $GLOBALS['db']->query($sql);
+
+      // If logged in user is not TL 
+      if ($tl_id != $log_in_user_id) {
+        // Send Notification to TL  
+        $alert = BeanFactory::newBean('Alerts');
+        $alert->name = '';
+
+        $alert->description = 'Activity "'.$activity_name.'" is approved by "'.$current_user->first_name.' '.$current_user->last_name.'"';;
+
+        $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
+        $alert->target_module = 'Activities';
+        $alert->assigned_user_id = $tl_id;
+        $alert->type = 'info';
+        $alert->is_read = 0;
+        $alert->save();
+
+        // Send Email To TL
+        $subject = 'CRM ALERT - Approved';
+        $body = 'Activity "'.$activity_name.'" is approved by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
+        $created_at = date('Y-m-d H:i:s');
+        $to = $tl_email;
+
+        $sql="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('$subject', '$body', '$to', '$created_at')";
+
+        $GLOBALS['db']->query($sql);
+
+      }
 
       // Send Notifications and email to tagged users
       foreach ($tagged_users as $key => $user) {
@@ -1407,6 +1452,24 @@ public function action_reject(){
       
     }
 
+    // Get TL of assigned user
+    $sql = "SELECT * FROM `users_cstm` WHERE `id_c`='".$assigned_to."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $lineages_array = explode(',', $row['user_lineage']);
+    }
+    $tl_id = $lineages_array[count($lineages_array) - 1];
+
+    // Get TL Details
+    $sql = "SELECT * FROM `users` WHERE `id`='".$tl_id."';";
+    $result = $GLOBALS['db']->query($sql);
+
+    while ($row = $GLOBALS['db']->fetchByAssoc($result)) {
+      $tl_name = $row['first_name'].' '.$row['last_name'];
+      $tl_email = $row['user_name'];
+    }
+
     // If assigned to user exists
     if((bool)$assigned_to_name){
       // Send Notification to assigned user
@@ -1433,6 +1496,33 @@ public function action_reject(){
       $sql="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('$subject', '$body', '$to', '$created_at')";
 
       $GLOBALS['db']->query($sql);
+
+      // If logged in user is not TL
+      if ($tl_id != $log_in_user_id) {
+        // Send Notification to TL  
+        $alert = BeanFactory::newBean('Alerts');
+        $alert->name = '';
+
+        $alert->description = 'Activity "'.$activity_name.'" is rejected by "'.$current_user->first_name.' '.$current_user->last_name.'"';
+
+        $alert->url_redirect = $base_url.'index.php?action=DetailView&module=Calls&record='.$activity_id;
+        $alert->target_module = 'Activities';
+        $alert->assigned_user_id = $tl_id;
+        $alert->type = 'info';
+        $alert->is_read = 0;
+        $alert->save();
+
+        // Send Email To TL
+        $subject = 'CRM ALERT - Rejected';
+        $body = 'Activity "'.$activity_name.'" is rejected by "'.$current_user->first_name.' '.$current_user->last_name.'" <br><br> Click here to view: www.ampersandcrm.com';
+        $created_at = date('Y-m-d H:i:s');
+        $to = $tl_email;
+
+        $sql="INSERT INTO `email_queue` (`subject`, `body`, `to`, `created_at`) VALUES ('$subject', '$body', '$to', '$created_at')";
+
+        $GLOBALS['db']->query($sql);
+
+      }
 
       // Send Notifications and email to tagged users
       foreach ($tagged_users as $key => $user) {
