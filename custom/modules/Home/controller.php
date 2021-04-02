@@ -5692,6 +5692,7 @@ public function is_activity_reassignment_applicable($activity_id) {
                  $fetch_query = "SELECT c.*, cs.* FROM calls c JOIN activity_approval_table ap ON ap.acc_id = c.id LEFT JOIN calls_cstm cs ON c.id = cs.id_c WHERE c.deleted != 1 AND c.date_entered >= now() - interval '1200' day AND ap.id = '$notification_id'";
                  $result_query = $GLOBALS['db']->query($fetch_query);
                  $row = $GLOBALS['db']->fetchByAssoc($result_query);
+
  
                  //Assigned_user_id
                  $created_by_id_test = $row['created_by'];
@@ -5699,42 +5700,68 @@ public function is_activity_reassignment_applicable($activity_id) {
                  $result_lineage_query = $GLOBALS['db']->query($user_lineage_query);
                  $row_lineage = $GLOBALS['db']->fetchByAssoc($result_lineage_query); 
                  
+                 if($row_lineage['user_lineage']!=0){
+                    $assigned_user_id_approve =explode(',',$row_lineage['user_lineage']);
+                    $team_lead = array_slice($assigned_user_id_approve, -1)[0];
+                 }else{
+                     $team_lead = null;
+                 }
+                 
+
+                 if($row['tag_hidden_c']!=0){
+                    $tag_users = explode(',',$row['tag_hidden_c']);
+                    if($team_lead!=null){
+                        array_push($tag_users,$team_lead,$created_by_id_test);
+                    }else{
+                        array_push($tag_users,$created_by_id_test);
+                    }
+                     $assigned_user_id = $tag_users;
+                 }else{
+                     if($team_lead!=null){
+                        $assigned_user_id = [$team_lead,$created_by_id_test];
+                     }else{
+                        $assigned_user_id = [$created_by_id_test];
+                     }
+                    
+                 }
+                 
+
                  $link = 'index.php?module=Calls&action=DetailView&record='.$row['id'];
 
                  if($event =='Approve'){
-                     $assigned_user_id_approve =explode(',',$row_lineage['user_lineage']);
-                     array_push($assigned_user_id_approve,$row['created_by']);
-                     $assigned_user_id_approve = array_diff($assigned_user_id_approve, array($log_in_user_id) );
+                     // $assigned_user_id_approval = [$team_lead,$created_by_id_test];
+
+                    // array_push($assigned_user_id_approve,$row['created_by']);
+                     // $assigned_user_id_approve = array_diff($assigned_user_id_approve, array($log_in_user_id) );
  
                      // $description = "Activity ".'"'.$row['name'].'"'." created by ".'"'.getUsername($row['created_by']).'"'." has been approved by ".'"'.getUsername($log_in_user_id).'"';
                      $description = "Activity ".'"'.$row['name'].'"'." has been approved.";
                      $description_notification = "Activity ".'"'.$row['name'].'"'." is approved by ".'"'.getUsername($log_in_user_id).'".';
                      $description_email = "Activity ".'"'.$row['name'].'"'." is approved by ".'"'.getUsername($log_in_user_id).'".'."<br><br>Click here to view: www.ampersandcrm.com";
-                     send_notification('Activity', $row['name'], $description_notification,$assigned_user_id_approve,$link);
+                     send_notification('Activity', $row['name'], $description_notification,$assigned_user_id,$link);
                      $receiver_emails_approve = []; 
-                    foreach($assigned_user_id_approve as $user_id) {
+                    foreach($assigned_user_id as $user_id) {
                          array_push($receiver_emails_approve, getUserEmail($user_id));
                         }
                     
                     send_email($description_email,$receiver_emails_approve,'CRM ALERT - Approved');
                  }
                  if($event =='Reject'){
-                     // $assigned_user_id_reject =[$row['created_by'], $row['user_id_c']];
-                     $assigned_user_id_reject =[$row['created_by']];
+                     // $assigned_user_id_reject =[$team_lead,$created_by_id_test];
                      //$description = "Activity ".'"'.$row['name'].'"'." created by ".'"'.getUsername($row['created_by']).'"'." has been rejected by ".'"'.getUsername($log_in_user_id).'"';
                      $description = "Activity ".'"'.$row['name'].'"'." has been rejected.";
                      $description_notification = "Activity ".'"'.$row['name'].'"'." is rejected by ".'"'.getUsername($log_in_user_id).'".';
                      $description_email = "Activity ".'"'.$row['name'].'"'." is rejected by ".'"'.getUsername($log_in_user_id).'".'."<br><br>Click here to view: www.ampersandcrm.com";
-                     send_notification('Activity',$row['name'],$description_notification,$assigned_user_id_reject,$link);
+                     send_notification('Activity',$row['name'],$description_notification,$assigned_user_id,$link);
                     
                      $receiver_emails_reject = []; 
-                    foreach($assigned_user_id_reject as $user_id) {
+                    foreach($assigned_user_id as $user_id) {
                          array_push($receiver_emails_reject, getUserEmail($user_id));
                         }
                     send_email($description_email,$receiver_emails_reject,'CRM ALERT - Rejected');
                 }
 
-                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "description"=>$description));
+                echo json_encode(array("status"=>true,  "message" => "Status changed successfully.", "description"=>$description, "user"=>$assigned_user_id));
             }else{
                 echo json_encode(array("status"=>false, "message" => "Some error occured"));
             }
@@ -8180,42 +8207,70 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
                 $result_query = $GLOBALS['db']->query($fetch_query);
                 $row = $GLOBALS['db']->fetchByAssoc($result_query);
 
+                
+
                 //Assigned_user_id
                 $created_by_id_test = $row['created_by'];
                 $user_lineage_query ="SELECT user_lineage FROM users_cstm WHERE id_c ='$created_by_id_test'";
                 $result_lineage_query = $GLOBALS['db']->query($user_lineage_query);
                 $row_lineage = $GLOBALS['db']->fetchByAssoc($result_lineage_query); 
 
-                $link = "index.php?module=Documents&action=DetailView&record=".$row['id'];
-                if($event =='Approve'){
+                if($row_lineage['user_lineage']!=0){
                     $assigned_user_id_approve =explode(',',$row_lineage['user_lineage']);
-                    array_push($assigned_user_id_approve,$row['created_by']);
-                    $assigned_user_id_approve = array_diff($assigned_user_id_approve, array($log_in_user_id) );
+                    $team_lead = array_slice($assigned_user_id_approve, -1)[0];
+                }else{
+                    $team_lead = null;
+                }
+                if($row['tagged_hidden_c']!=0){
+                    $tag_users = explode(',',$row['tagged_hidden_c']);
+                    if($team_lead!=null){
+                        array_push($tag_users,$team_lead,$created_by_id_test);
+                    }else{
+                        array_push($tag_users,$created_by_id_test);
+                    }
+                     $assigned_user_id = $tag_users;
+                 }else{
+                     if($team_lead!=null){
+                        $assigned_user_id = [$team_lead,$created_by_id_test];
+                     }else{
+                        $assigned_user_id = [$created_by_id_test];
+                     }
+                    
+                 }
+                
+                
+                
+
+                $link = "index.php?module=Documents&action=DetailView&record=".$row['id'];
+
+                if($event =='Approve'){
+                    //$assigned_user_id_approval = [$team_lead,$created_by_id_test];
+                    //array_push($assigned_user_id_approve,$row['created_by']);
+                    //$assigned_user_id_approve = array_diff($assigned_user_id_approve, array($log_in_user_id) );
 
                     //$description = "Document ".'"'.$row['document_name'].'"'." uploaded by ".'"'.getUsername($row['created_by']).'"'." has been approved by ".'"'.getUsername($log_in_user_id).'"';
                     $description = "Document ".'"'.$row['document_name'].'"'." has been approved.";
                     $description_notification = "Document ".'"'.$row['document_name'].'"'." is approved by ".'"'.getUsername($log_in_user_id).'".';
                     $description_email = "Document ".'"'.$row['document_name'].'"'." is approved by ".'"'.getUsername($log_in_user_id).'".'."<br><br>Click here to view: www.ampersandcrm.com";
-                    send_notification('Document', $row['document_name'], $description_notification,$assigned_user_id_approve,$link);
+                    send_notification('Document', $row['document_name'], $description_notification, $assigned_user_id,$link);
                     
                     $receiver_emails_approve = []; 
-                    foreach($assigned_user_id_approve as $user_id) {
+                    foreach( $assigned_user_id as $user_id) {
                          array_push($receiver_emails_approve, getUserEmail($user_id));
                         }
                     
                     send_email($description_email,$receiver_emails_approve,'CRM ALERT - Approved');
                 }
                 if($event =='Reject'){
-                    //$assigned_user_id_reject =[$row['created_by'], $row['user_id_c']];
-                    $assigned_user_id_reject =[$row['created_by']];
+                    //$assigned_user_id_reject =[$team_lead,$created_by_id_test];
                     //$description = "Document ".'"'.$row['document_name'].'"'." uploaded by ".'"'.getUsername($row['created_by']).'"'." has been rejected by ".'"'.getUsername($log_in_user_id).'"';
                     $description = "Document ".'"'.$row['document_name'].'"'." has been rejected.";
                     $description_notification = "Document ".'"'.$row['document_name'].'"'." is rejected by ".'"'.getUsername($log_in_user_id).'".';
                     $description_email = "Document ".'"'.$row['document_name'].'"'." is rejected by ".'"'.getUsername($log_in_user_id).'".'."<br><br>Click here to view: www.ampersandcrm.com";
-                    send_notification('Document',$row['document_name'],$description_notification,$assigned_user_id_reject,$link);
+                    send_notification('Document',$row['document_name'],$description_notification,$assigned_user_id,$link);
                     
                     $receiver_emails_reject = []; 
-                    foreach($assigned_user_id_reject as $user_id) {
+                    foreach($assigned_user_id as $user_id) {
                          array_push($receiver_emails_reject, getUserEmail($user_id));
                         }
                     send_email($description_email,$receiver_emails_reject,'CRM ALERT - Rejected');
