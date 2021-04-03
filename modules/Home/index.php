@@ -864,12 +864,15 @@
         <div class="deselect-modal-content">
             <span class="deselectclose" onclick="handleNoteDialog('close')">&times;</span>
             <form >
+                
                 <div id="document_note_info">
 
                 </div>
+                
                 <div id="document_note_history">
 
                 </div>
+                
                 <br><div style="height: 20px;"></div>
                 <input type="hidden" id="doc_id" name= "doc_id" value="" />
 
