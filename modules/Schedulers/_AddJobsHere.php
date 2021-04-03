@@ -509,20 +509,20 @@ function activityReminder()
  function activityQuery($activity_id,$db){
     //  print_r($activity_id);
     //       die();
-    $get_activity_name_sql = 'SELECT * from calls WHERE id = "'.$activity_id.'"';
+    $get_activity_name_sql = 'SELECT * from calls LEFT JOIN calls_cstm on calls.id = calls_cstm.id_c WHERE id = "'.$activity_id.'"';
     $result = $db->query($get_activity_name_sql);
     $row = $GLOBALS['db']->fetchByAssoc($result);
     $created_by = $row['created_by'];
     $get_user_email = 'SELECT user_name from users where id = "'.$created_by.'"' ;
     $result1 = $db->query($get_user_email);
     $data = $GLOBALS['db']->fetchByAssoc($result1);
-  send_email($row['name'], $data['user_name'],'CRM ALERT- Activity Reminder');
-  $description = "Reminder for '".$row['name']."' is to be completed";
+  send_email($row['name'], $data['user_name'],'CRM ALERT- Activity Reminder',$row['activity_date_c']);
+  $description = "Activity '".$row['name']."' is to be completed before '". $row['activity_date_c'] ."'";
   $link = "index.php?module=Calls&action=DetailView&record=".$row['id'];
   send_notification('Activities',$row['name'],$description,[$row['assigned_user_id']],$link);
 }
- function send_email($activity_name,$email,$subject){
-            $template = "Reminder for '$activity_name' is to be completed. <br><br>Click here to view: www.ampersandcrm.com";
+ function send_email($activity_name,$email,$subject,$due_date){
+            $template = "Activity '$activity_name' is to be completed before '$due_date'. <br><br>Click here to view: www.ampersandcrm.com";
             require_once('include/SugarPHPMailer.php');
             include_once('include/utils/db_utils.php');
             $emailObj = new Email();  

@@ -117,3 +117,24 @@ jQuery(document).ready(function($){
         return csu.join();
     }
 })
+
+$('#note,#assigned_to_new_c').keydown(function (e) {
+ if (event.keyCode == 13 && !event.shiftKey) {
+     
+            event.preventDefault(); 
+            switch (this.id) {
+                case 'note':
+                    handleNoteDialog('submit');
+                    break;
+                
+                case 'assigned_to_new_c':
+                    break;
+                
+                default:
+                    // code
+            }
+            //Stops enter from creating a new line
+            
+            
+        }
+});

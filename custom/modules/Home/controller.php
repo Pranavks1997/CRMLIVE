@@ -8296,7 +8296,7 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
             $notes_history = '
                 
                 <hr class="deselectsolid" style="border-bottom: 1px solid black;">
-                <section class="deselectsection">
+                <section class="deselectsection" style="overflow-y: scroll; min-height: 15vh; max-height:25vh;">
                 <table align="centered" width="100%">
                     <thead>
                     <tr class="tabname">

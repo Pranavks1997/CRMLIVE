@@ -502,6 +502,7 @@ function isEmptyOrSpaces(str) {
     return str === null || str.match(/^ *$/) !== null;
 }
 
+
 function handleNoteDialog(event) {
 
 
@@ -514,7 +515,7 @@ function handleNoteDialog(event) {
         // var hidden_note_id = document.getElementById('hidden_note_value').value;
         var doc_id = document.getElementById('doc_id').value;
         var note = document.getElementById('note').value;
-        if (isEmptyOrSpaces(note)) {
+        if (isEmptyOrSpaces(note) ) {
             return false;
             exit();
         }
