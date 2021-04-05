@@ -308,7 +308,7 @@
                             
                         </li>
                     {/foreach}
-                      {foreach from=$groupTabs item=modules key=group name=groupList}
+                    {*{foreach from=$groupTabs item=modules key=group name=groupList}
                         {capture name=extraparams assign=extraparams}parentTab={$group}{/capture}
                         <li class="topnav {if $smarty.foreach.groupList.last}all{/if}">
                             <span class="notCurrentTabLeft">&nbsp;</span><span id="check_dept" class="notCurrentTab">
@@ -330,7 +330,7 @@
                                 {/foreach}
                             </ul>
                         </li>
-                    {/foreach}
+                    {/foreach}*}
                     {foreach from=$groupTabs item=modules key=group name=groupList}
                         {capture name=extraparams assign=extraparams}parentTab={$group}{/capture}
                         <li class="topnav {if $smarty.foreach.groupList.last}all{/if}">
@@ -624,6 +624,9 @@
                                 {$APP.LBL_PROFILE}
                             </a>
                         </li>
+                        <li role="presentation">
+                            <a role="menuitem" id="" href='index.php?module=Accounts&action=index' class='utilsLink'>Departments</a>
+                        </li>
                         {foreach from=$GCLS item=GCL name=gcl key=gcl_key}
                             <li role="presentation">
                                 <a id="{$gcl_key}_link"
@@ -696,6 +699,11 @@
                         <span class="suitepicon suitepicon-action-current-user"></span>
                     </button>
                     <ul class="dropdown-menu user-dropdown user-menu" role="menu" aria-labelledby="dropdownMenu2">
+                        <li role="presentation">
+                            <a href='index.php?module=Users&action=EditView&record={$CURRENT_USER_ID}'>
+                                {$APP.LBL_PROFILE}
+                            </a>
+                        </li>
                         <li role="presentation">
                             <a href='index.php?module=Users&action=EditView&record={$CURRENT_USER_ID}'>
                                 {$APP.LBL_PROFILE}
@@ -777,6 +785,9 @@
                             <a href='index.php?module=Users&action=EditView&record={$CURRENT_USER_ID}'>
                                 {$APP.LBL_PROFILE}
                             </a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" id="" href='index.php?module=Accounts&action=index' class='utilsLink'>Departments</a>
                         </li>
                         {foreach from=$GCLS item=GCL name=gcl key=gcl_key}
                             <li role="presentation">
