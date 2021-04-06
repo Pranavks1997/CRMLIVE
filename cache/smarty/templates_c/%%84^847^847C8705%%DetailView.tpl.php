@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-04-02 18:14:24
+<?php /* Smarty version 2.6.31, created on 2021-04-06 16:46:45
          compiled from cache/themes/SuiteP/modules/Opportunities/DetailView.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 38, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 47, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 142, false),array('function', 'multienum_to_array', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 731, false),array('function', 'sugar_number_format', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 1443, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 135, false),array('modifier', 'escape', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 798, false),array('modifier', 'url2html', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 798, false),array('modifier', 'nl2br', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 798, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 38, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 47, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 142, false),array('function', 'multienum_to_array', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 762, false),array('function', 'sugar_number_format', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 1474, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 135, false),array('modifier', 'escape', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 829, false),array('modifier', 'url2html', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 829, false),array('modifier', 'nl2br', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 829, false),)), $this); ?>
 
 
 <script language="javascript">
@@ -294,6 +294,42 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_inclu
 
 
 <div class="col-xs-12 col-sm-6 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label col-2-label">
+
+
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_DUE_DATE','module' => 'Opportunities'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+</div>
+
+
+<div class="col-xs-12 col-sm-8 detail-view-field" type="date" field="due_date_c" >
+
+<?php if (! $this->_tpl_vars['fields']['due_date_c']['hidden']): ?>
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+
+<?php if (! empty ( $this->_tpl_vars['vardef']['date_formatted_value'] )): ?>
+<?php $this->assign('value', "{".($this->_tpl_vars['vardef']).".date_formatted_value"); ?> }
+<?php else: ?>
+<?php if (strlen ( $this->_tpl_vars['fields']['due_date_c']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['due_date_c']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['due_date_c']['value']); ?>
+<?php endif; ?>
+<?php endif; ?>
+<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['due_date_c']['name']; ?>
+"><?php echo $this->_tpl_vars['value']; ?>
+</span>
+<?php endif; ?>
+
+</div>
+
+
 </div>
 
 </div>

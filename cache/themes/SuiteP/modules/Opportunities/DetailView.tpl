@@ -231,6 +231,37 @@
 
 
 <div class="col-xs-12 col-sm-6 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-4 label col-2-label">
+
+
+{capture name="label" assign="label"}{sugar_translate label='LBL_DUE_DATE' module='Opportunities'}{/capture}
+{$label|strip_semicolon}:
+</div>
+
+
+<div class="col-xs-12 col-sm-8 detail-view-field" type="date" field="due_date_c" >
+
+{if !$fields.due_date_c.hidden}
+{counter name="panelFieldCount" print=false}
+
+
+{if !empty($vardef.date_formatted_value) }
+{assign var="value" value={$vardef.date_formatted_value} }
+{else}
+{if strlen($fields.due_date_c.value) <= 0}
+{assign var="value" value=$fields.due_date_c.default_value }
+{else}
+{assign var="value" value=$fields.due_date_c.value }
+{/if}
+{/if}
+<span class="sugar_field" id="{$fields.due_date_c.name}">{$value}</span>
+{/if}
+
+</div>
+
+
 </div>
 
 </div>
