@@ -162,13 +162,14 @@ $GLOBALS['app_list_strings']['Interaction_type']=array (
 $GLOBALS['app_list_strings']['parent_type_display']=array (
   'Calls' => 'Activity',
   'Accounts' => 'Department',
-  'Documents' => 'Documents',
+  'Documents' => 'Document',
   'Opportunities' => 'Opportunity',
-  'Project' => 'Project',
 );
+
 $GLOBALS['app_list_strings']['document_template_type_dom']=array (
   'Select' => 'Select',
   'research_intelligence' => 'Research and Intelligence',
   'sales' => 'Sales',
   'entity_documents' => 'Entity Documents',
+  'Others' => 'Others',
 );

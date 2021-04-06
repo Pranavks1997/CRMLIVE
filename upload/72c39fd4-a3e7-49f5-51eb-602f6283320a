@@ -1,0 +1,8 @@
+netsh interface ipv4 set address name="Wi-Fi" source=static address=192.168.89.43 mask=255.255.254.0 gateway=192.168.89.254
+
+netsh interface ipv4 add dnsserver "Wi-Fi" address=192.168.90.11 index=1
+
+netsh interface ipv4 add dnsserver "Wi-Fi" address=192.168.90.10 index=2
+
+
+

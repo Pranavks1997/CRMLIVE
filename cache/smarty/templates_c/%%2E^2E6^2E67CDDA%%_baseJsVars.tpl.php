@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-03-23 18:38:03
+<?php /* Smarty version 2.6.31, created on 2021-04-03 05:18:21
          compiled from modules/Emails/templates/_baseJsVars.tpl */ ?>
 
 <script type="text/javascript" language="Javascript">

@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.31, created on 2021-03-23 18:38:03
+<?php /* Smarty version 2.6.31, created on 2021-04-03 05:18:21
          compiled from modules/Emails/templates/overlay.tpl */ ?>
 <div id="SUGAR.email2.e2overlay" style="visibility:hidden; position:absolute; top:0px; background-color:#fff;">
 	<div class="ydlg-hd" id="overlayTitle"></div>
