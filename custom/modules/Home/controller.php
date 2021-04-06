@@ -845,7 +845,7 @@ class HomeController extends SugarController{
             if($db->query($updateOpportunity)==TRUE){
                 if($Approved){
                     if(!$this->checkPendingAndRejectedApprovals($id, $_POST['changed-status'])){
-                        $updateOpportunity = "UPDATE opportunities_cstm SET status_c = '$changedStatus' WHERE id_c = '$id'";
+                        $updateOpportunity = "UPDATE opportunities_cstm SET status_c = '$changedStatus', due_date_c = '' WHERE id_c = '$id'";
                         $db->query($updateOpportunity);
                         
                          $sql_assigned_id = "SELECT assigned_user_id FROM opportunities WHERE id = '$id'";
