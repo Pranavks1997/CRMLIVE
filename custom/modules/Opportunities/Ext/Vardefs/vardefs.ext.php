@@ -617,6 +617,12 @@ $dictionary['Opportunity']['fields']['sales_stage']['merge_filter']='disabled';
 
  
 
+ // created: 2021-04-06 09:50:57
+$dictionary['Opportunity']['fields']['due_date_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['due_date_c']['labelValue']='Due Date';
+
+ 
+
  // created: 2021-03-02 11:35:00
 $dictionary['Opportunity']['fields']['source_details_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['source_details_c']['labelValue']='Source Details';

@@ -135,7 +135,11 @@ array (
         3 => 
         array (
           0 => 'opportunity_type',
-          1 => '',
+          1 => 
+          array (
+            'name' => 'due_date_c',
+            'label' => 'LBL_DUE_DATE',
+          ),
         ),
         4 => 
         array (
