@@ -845,7 +845,7 @@ class HomeController extends SugarController{
             if($db->query($updateOpportunity)==TRUE){
                 if($Approved){
                     if(!$this->checkPendingAndRejectedApprovals($id, $_POST['changed-status'])){
-                        $updateOpportunity = "UPDATE opportunities_cstm SET status_c = '$changedStatus' WHERE id_c = '$id'";
+                        $updateOpportunity = "UPDATE opportunities_cstm SET status_c = '$changedStatus', due_date_c = '' WHERE id_c = '$id'";
                         $db->query($updateOpportunity);
                         
                          $sql_assigned_id = "SELECT assigned_user_id FROM opportunities WHERE id = '$id'";
@@ -1770,6 +1770,7 @@ class HomeController extends SugarController{
         $fields = array();
 
         $default = array(
+            'opportunity Type'              => 'opportunity_type',
             'name'                  => 'Opportunity Name',
             'Primary-Responsbility' => 'Primary Responsibility',
             //'Amount'                => 'Amount (in Cr/Mn)',
@@ -3437,7 +3438,14 @@ class HomeController extends SugarController{
 
         $query .= $this->getFilterQuery();  //get filter query if any;
 
-        // echo $query;
+        if(!$this->is_mc($log_in_user_id)) {
+
+            $query .= "AND (opportunities.assigned_user_id IN(
+                SELECT users.id from users LEFT JOIN users_cstm on users.id = users_cstm.id_c WHERE users_cstm.user_lineage LIKE '%$log_in_user_id%') OR opportunities.assigned_user_id = '$log_in_user_id')";    
+        
+        }
+
+
 
         $columnFields = $this->opportunityColumns('Dropped');
         foreach($columnFields['default'] as $key => $field){
@@ -3505,6 +3513,7 @@ class HomeController extends SugarController{
             }
 
             $data[] = array(
+                beautify_label( $row['opportunity_type'] ),
                 $row['name'],
                 str_replace( '<i class="fa fa-arrow-right"></i>', '-', $full_name),
                 // $this->beautify_amount( $row['budget_allocated_oppertunity_c'] ),
