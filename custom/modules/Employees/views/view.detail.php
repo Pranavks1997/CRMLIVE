@@ -42,27 +42,19 @@ if (!defined('sugarEntry') || !sugarEntry) {
  * display the words "Powered by SugarCRM" and "Supercharged by SuiteCRM".
  */
 
-/*********************************************************************************
 
- * Description: This file is used to override the default Meta-data DetailView behavior
- * to provide customization specific to the Campaigns module.
- * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
- * All Rights Reserved.
- * Contributor(s): ______________________________________..
- ********************************************************************************/
 
-class OpportunitiesViewEdit extends ViewEdit
+class EmployeesViewDetail extends ViewDetail
 {
     public function __construct()
     {
         parent::__construct();
-       
     }
 
     /**
      * @deprecated deprecated since version 7.6, PHP4 Style Constructors are deprecated and will be remove in 7.8, please update your code, use __construct instead
      */
-    public function OpportunitiesViewEdit()
+    public function EmployeesViewDetail()
     {
         $deprecatedMessage = 'PHP4 Style Constructors are deprecated and will be remove in 7.8, please update your code';
         if (isset($GLOBALS['log'])) {
@@ -70,79 +62,99 @@ class OpportunitiesViewEdit extends ViewEdit
         } else {
             trigger_error($deprecatedMessage, E_USER_DEPRECATED);
         }
-        
+        self::__construct();
     }
 
+
+    /**
+     * Return the "breadcrumbs" to display at the top of the page
+     *
+     * @param  bool $show_help optional, true if we show the help links
+     * @return HTML string containing breadcrumb title
+     */
+    public function getModuleTitle($show_help = true)
+    {
+        global $sugar_version, $sugar_flavor, $server_unique_key, $current_language, $action, $current_user;
+
+        $theTitle = "<div class='moduleTitle'>\n";
+
+        $module = preg_replace("/ /", "", $this->module);
+
+        $params = $this->_getModuleTitleParams();
+        $count = count($params);
+        $index = 0;
+
+        if (SugarThemeRegistry::current()->directionality == "rtl") {
+            $params = array_reverse($params);
+        }
+
+        $paramString = '';
+        foreach ($params as $parm) {
+            $index++;
+            $paramString .= $parm;
+            if ($index < $count) {
+                $paramString .= $this->getBreadCrumbSymbol();
+            }
+        }
+
+        if (!empty($paramString)) {
+            $theTitle .= "<h2> $paramString </h2>\n";
+        }
+
+        if ($show_help) {
+            $theTitle .= "<span class='utils'>";
+            if (is_admin($current_user) || is_admin_for_module($current_user, $this->module)) {
+                $createImageURL = SugarThemeRegistry::current()->getImageURL('create-record.gif');
+                $theTitle .= <<<EOHTML
+&nbsp;
+<a href="index.php?module={$module}&action=EditView&return_module={$module}&return_action=DetailView" class="utilsLink">
+<img src='{$createImageURL}' alt='{$GLOBALS['app_strings']['LNK_CREATE']}'></a>
+<a href="index.php?module={$module}&action=EditView&return_module={$module}&return_action=DetailView" class="utilsLink">
+{$GLOBALS['app_strings']['LNK_CREATE']}
+</a>
+EOHTML;
+            }
+        }
+
+        $theTitle .= "</span></div>\n";
+        return $theTitle;
+    }
 
     public function display()
     {
-        echo file_get_contents("custom/modules/Opportunities/form.html");
-        echo file_get_contents("custom/modules/Opportunities/other_multi_select_user/m-select.html");
-        echo '<link rel="stylesheet" type="text/css" href="custom/modules/Opportunities/custom.css">';
-
+        if (is_admin($GLOBALS['current_user']) || $_REQUEST['record'] == $GLOBALS['current_user']->id) {
+            $this->ss->assign('DISPLAY_EDIT', true);
+        }
+        if (is_admin($GLOBALS['current_user'])) {
+            $this->ss->assign('DISPLAY_DUPLICATE', true);
+        }
         global $current_user;
+        
         // Check if logged in user is admin or not sales person
         if($current_user->is_admin || !$this->isSalesPerson()){
             echo "<script>
-                $('#toolbar').find('li.topnav:eq(0) ul li ul li:eq(0)').hide()
+                $('#opp_hide').hide()
             </script>";
         }
-        
-        if(!empty($this->bean->id)){
-			$this->ss->assign('ATTACHMENTS',$this->getAttachments($this->bean->id,'Opportunity'));
-			
-		}
-		$this->ss->assign('FILEUPLOAD','custom/include/tpls/editview.tpl');
-		parent::display();
-	}
-	
-    function getAttachments($module_id,$module_name){
-    
-	global $db;
-// 	$db = \DBManagerFactory::getInstance();
-	if(isset($module_id)){
-		$sql = 'SELECT id,filename,value FROM custom_documents where module_name = "'.$module_name.'" AND module_id = "'.$module_id.'" AND deleted = 0';
-		$res = $GLOBALS['db']->query($sql);
-		$attachments = array();
-		while($row = $db->fetchByAssoc($res)){
-		$attachments[] = $row;
-		}
-		return $attachments;
-	}
-        
-        global $app_list_strings;
-        $json = getJSONobj();
-        $prob_array = $json->encode($app_list_strings['sales_probability_dom']);
-        $prePopProb = '';
-        if (empty($this->bean->id) && empty($_REQUEST['probability'])) {
-            $prePopProb = 'document.getElementsByName(\'sales_stage\')[0].onchange();';
+
+        $showDeleteButton = false;
+        if ($_REQUEST['record'] != $GLOBALS['current_user']->id && $GLOBALS['current_user']->isAdminForModule('Users')) {
+            $showDeleteButton = true;
+            if (empty($this->bean->user_name)) { //Indicates just employee
+                $deleteWarning = $GLOBALS['mod_strings']['LBL_DELETE_EMPLOYEE_CONFIRM'];
+            } else {
+                $deleteWarning = $GLOBALS['mod_strings']['LBL_DELETE_USER_CONFIRM'];
+            }
+            $this->ss->assign('DELETE_WARNING', $deleteWarning);
         }
-        $probability_script=<<<EOQ
-	<script>
-	prob_array = $prob_array;
-	document.getElementsByName('sales_stage')[0].onchange = function() {
-			if(typeof(document.getElementsByName('sales_stage')[0].value) != "undefined" && prob_array[document.getElementsByName('sales_stage')[0].value]
-			&& typeof(document.getElementsByName('probability')[0]) != "undefined"
-			) {
-				document.getElementsByName('probability')[0].value = prob_array[document.getElementsByName('sales_stage')[0].value];
-				SUGAR.util.callOnChangeListers(document.getElementsByName('probability')[0]);
+        $this->ss->assign('DISPLAY_DELETE', $showDeleteButton);
 
-			}
-		};
-	$prePopProb
-	</script>
-EOQ;
-
-        $this->ss->assign('PROBABILITY_SCRIPT', $probability_script);
         parent::display();
     }
-
 
     // Function to check if logged in user is salesperson or not
     private function isSalesPerson(){
         global $current_user;
         return (bool)in_array('^sales^', explode(',', $current_user->teamfunction_c));
-    } 
-    
-    
+    }
 }

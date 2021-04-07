@@ -42,27 +42,19 @@ if (!defined('sugarEntry') || !sugarEntry) {
  * display the words "Powered by SugarCRM" and "Supercharged by SuiteCRM".
  */
 
-/*********************************************************************************
 
- * Description: This file is used to override the default Meta-data DetailView behavior
- * to provide customization specific to the Campaigns module.
- * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
- * All Rights Reserved.
- * Contributor(s): ______________________________________..
- ********************************************************************************/
-
-class OpportunitiesViewEdit extends ViewEdit
+class EmployeesViewEdit extends ViewEdit
 {
+    public $useForSubpanel = true;
     public function __construct()
     {
         parent::__construct();
-       
     }
 
     /**
      * @deprecated deprecated since version 7.6, PHP4 Style Constructors are deprecated and will be remove in 7.8, please update your code, use __construct instead
      */
-    public function OpportunitiesViewEdit()
+    public function EmployeesViewEdit()
     {
         $deprecatedMessage = 'PHP4 Style Constructors are deprecated and will be remove in 7.8, please update your code';
         if (isset($GLOBALS['log'])) {
@@ -70,79 +62,66 @@ class OpportunitiesViewEdit extends ViewEdit
         } else {
             trigger_error($deprecatedMessage, E_USER_DEPRECATED);
         }
-        
+        self::__construct();
     }
 
 
     public function display()
     {
-        echo file_get_contents("custom/modules/Opportunities/form.html");
-        echo file_get_contents("custom/modules/Opportunities/other_multi_select_user/m-select.html");
-        echo '<link rel="stylesheet" type="text/css" href="custom/modules/Opportunities/custom.css">';
+        if (is_admin($GLOBALS['current_user'])) {
+            $json = getJSONobj();
+            require_once('include/QuickSearchDefaults.php');
+            $qsd = QuickSearchDefaults::getQuickSearchDefaults();
+            $sqs_objects = array('EditView_reports_to_name' => $qsd->getQSUser());
+            $sqs_objects['EditView_reports_to_name']['populate_list'] = array('reports_to_name', 'reports_to_id');
+            $quicksearch_js = '<script type="text/javascript" language="javascript">sqs_objects = ' . $json->encode($sqs_objects) . '; enableQS();</script>';
+
+            $this->ss->assign('REPORTS_TO_JS', $quicksearch_js);
+            $this->ss->assign('EDIT_REPORTS_TO', true);
+        }
 
         global $current_user;
         // Check if logged in user is admin or not sales person
         if($current_user->is_admin || !$this->isSalesPerson()){
             echo "<script>
-                $('#toolbar').find('li.topnav:eq(0) ul li ul li:eq(0)').hide()
+                $('#opp_hide').hide()
             </script>";
         }
-        
-        if(!empty($this->bean->id)){
-			$this->ss->assign('ATTACHMENTS',$this->getAttachments($this->bean->id,'Opportunity'));
-			
-		}
-		$this->ss->assign('FILEUPLOAD','custom/include/tpls/editview.tpl');
-		parent::display();
-	}
-	
-    function getAttachments($module_id,$module_name){
-    
-	global $db;
-// 	$db = \DBManagerFactory::getInstance();
-	if(isset($module_id)){
-		$sql = 'SELECT id,filename,value FROM custom_documents where module_name = "'.$module_name.'" AND module_id = "'.$module_id.'" AND deleted = 0';
-		$res = $GLOBALS['db']->query($sql);
-		$attachments = array();
-		while($row = $db->fetchByAssoc($res)){
-		$attachments[] = $row;
-		}
-		return $attachments;
-	}
-        
-        global $app_list_strings;
-        $json = getJSONobj();
-        $prob_array = $json->encode($app_list_strings['sales_probability_dom']);
-        $prePopProb = '';
-        if (empty($this->bean->id) && empty($_REQUEST['probability'])) {
-            $prePopProb = 'document.getElementsByName(\'sales_stage\')[0].onchange();';
+
+
+        //retrieve employee bean if it is not already in focus
+        if (empty($this->bean->id)  && !empty($_REQUEST['record'])) {
+            $this->bean->retrieve($_REQUEST['record']);
         }
-        $probability_script=<<<EOQ
-	<script>
-	prob_array = $prob_array;
-	document.getElementsByName('sales_stage')[0].onchange = function() {
-			if(typeof(document.getElementsByName('sales_stage')[0].value) != "undefined" && prob_array[document.getElementsByName('sales_stage')[0].value]
-			&& typeof(document.getElementsByName('probability')[0]) != "undefined"
-			) {
-				document.getElementsByName('probability')[0].value = prob_array[document.getElementsByName('sales_stage')[0].value];
-				SUGAR.util.callOnChangeListers(document.getElementsByName('probability')[0]);
+        //populate values for non admin users
+        if (!empty($this->bean->id)) {
+            global $app_list_strings;
+            if (!empty($this->bean->status)) {
+                $this->ss->assign('STATUS_READONLY', $app_list_strings['user_status_dom'][$this->bean->status]);
+            }
+            if (!empty($this->bean->employee_status)) {
+                $this->ss->assign('EMPLOYEE_STATUS_READONLY', $app_list_strings['employee_status_dom'][$this->bean->employee_status]);
+            }
+            if (!empty($this->bean->reports_to_id)) {
+                $reportsToUser = get_assigned_user_name($this->bean->reports_to_id);
+                $reportsToUserField = "<input type='text' name='reports_to_name' id='reports_to_name' value='{$reportsToUser}' disabled>\n";
+                $reportsToUserField .= "<input type='hidden' name='reports_to_id' id='reports_to_id' value='{$this->bean->reports_to_id}'>";
+                $this->ss->assign('REPORTS_TO_READONLY', $reportsToUserField);
+            }
+            if (!empty($this->bean->title)) {
+                $this->ss->assign('TITLE_READONLY', $this->bean->title);
+            }
+            if (!empty($this->bean->department)) {
+                $this->ss->assign('DEPT_READONLY', $this->bean->department);
+            }
+        }
 
-			}
-		};
-	$prePopProb
-	</script>
-EOQ;
-
-        $this->ss->assign('PROBABILITY_SCRIPT', $probability_script);
         parent::display();
     }
-
 
     // Function to check if logged in user is salesperson or not
     private function isSalesPerson(){
         global $current_user;
         return (bool)in_array('^sales^', explode(',', $current_user->teamfunction_c));
-    } 
-    
-    
+    }
 }
