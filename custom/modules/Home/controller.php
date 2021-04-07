@@ -3438,11 +3438,14 @@ class HomeController extends SugarController{
 
         $query .= $this->getFilterQuery();  //get filter query if any;
 
-        if(!$this->is_mc($log_in_user_id)) {
+        if($log_in_user_id != "1" ) {     // if not admin
 
-            $query .= "AND (opportunities.assigned_user_id IN(
+            if($this->is_mc($log_in_user_id) == "no") { // if not mc
+
+                $query .= "AND (opportunities.assigned_user_id IN(
                 SELECT users.id from users LEFT JOIN users_cstm on users.id = users_cstm.id_c WHERE users_cstm.user_lineage LIKE '%$log_in_user_id%') OR opportunities.assigned_user_id = '$log_in_user_id')";    
         
+            }        
         }
 
 
