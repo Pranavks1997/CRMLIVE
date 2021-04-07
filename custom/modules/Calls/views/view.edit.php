@@ -68,9 +68,19 @@ class CallsViewEdit extends ViewEdit
      */
     public function display()
     {
-         echo file_get_contents("custom/modules/Calls/other_multi_select_user/m-select.html");
-         echo file_get_contents("custom/modules/Opportunities/form.html");
+        echo file_get_contents("custom/modules/Calls/other_multi_select_user/m-select.html");
+        echo file_get_contents("custom/modules/Opportunities/form.html");
         echo '<link rel="stylesheet" type="text/css" href="custom/modules/Calls/editview.css">';
+        
+        global $current_user;
+
+        // Check if logged in user is admin or not sales person
+        if($current_user->is_admin || !$this->isSalesPerson()){
+            echo "<script>
+                $('#opp_hide').hide()
+            </script>";
+        } 
+
         global $json;
         $json = getJSONobj();
         $json_config = new json_config();
@@ -92,4 +102,10 @@ class CallsViewEdit extends ViewEdit
         } //if
         parent::display();
     }
+
+    // Function to check if logged in user is salesperson or not
+    private function isSalesPerson(){
+        global $current_user;
+        return (bool)in_array('^sales^', explode(',', $current_user->teamfunction_c));
+    } 
 }

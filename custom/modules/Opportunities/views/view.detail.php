@@ -38,6 +38,13 @@ public function display(){
 
     		unset($_SESSION['flash'][$log_in_user_id]);
     	}
+
+    	// Check if logged in user is admin or not sales person
+        if($current_user->is_admin || !$this->isSalesPerson()){
+        	echo "<script>
+        		$('#toolbar').find('li.topnav:eq(0) ul li ul li:eq(0)').hide()
+        	</script>";
+        } 
 	 
 		if(!empty($this->bean->id)){
 			$this->ss->assign('ATTACHMENTS',$this->getAttachments($this->bean->id,'Opportunity'));
@@ -48,20 +55,26 @@ public function display(){
 		
 	}
 
-function getAttachments($module_id,$module_name){
-	global $db;
-	if(isset($module_id)){
-		$sql = 'SELECT id,filename,value FROM custom_documents WHERE module_name = "'.$module_name.'" AND module_id = "'.$module_id.'" AND deleted = 0';
-		$res = $GLOBALS['db']->query($sql);
-		$attachments = array();
-		while($row = $db->fetchByAssoc($res)){
-			$attachments[] = $row;
+	function getAttachments($module_id,$module_name){
+		global $db;
+		if(isset($module_id)){
+			$sql = 'SELECT id,filename,value FROM custom_documents WHERE module_name = "'.$module_name.'" AND module_id = "'.$module_id.'" AND deleted = 0';
+			$res = $GLOBALS['db']->query($sql);
+			$attachments = array();
+			while($row = $db->fetchByAssoc($res)){
+				$attachments[] = $row;
+			}
+			return $attachments;
 		}
-		return $attachments;
-	}
 	
-// 	$this->ss->assign('FILEUPLOAD','custom/include/tpls/detailview.tpl');
-// 		parent::display();
-}
+		// 	$this->ss->assign('FILEUPLOAD','custom/include/tpls/detailview.tpl');
+		// 		parent::display();
+	}
+
+	// Function to check if logged in user is salesperson or not
+    private function isSalesPerson(){
+        global $current_user;
+        return (bool)in_array('^sales^', explode(',', $current_user->teamfunction_c));
+    } 
 
  }
