@@ -1939,7 +1939,7 @@ public function action_approve(){
                     		
                    if($value>0)	{
                     			       
-                    			        $sql77="UPDATE opportunities_cstm SET status_c='".$next_status."',due_date_c='' WHERE id_c='".$opportunity_id."'";
+                    			        $sql77="UPDATE opportunities_cstm SET status_c='".$next_status."' WHERE id_c='".$opportunity_id."'";
               
                     			 
                     			    
@@ -1988,7 +1988,7 @@ public function action_approve(){
                    
                    if($status=="Lead"||$status=="QualifiedLead"||$status=="QualifiedBid"||$status=="Drop"){
                        
-                        $sql7="UPDATE opportunities_cstm SET status_c='".$next_status."' ,due_date_c='' WHERE id_c='".$opportunity_id."'";
+                        $sql7="UPDATE opportunities_cstm SET status_c='".$next_status."' WHERE id_c='".$opportunity_id."'";
               
                     			 
                     			    
@@ -2007,7 +2007,7 @@ public function action_approve(){
                else  if($rfp_eoi_published=='yes'){
                    if($status=="Lead"||$status=="QualifiedBid"||$status=="Drop"){
                        
-                        $sql7="UPDATE opportunities_cstm SET status_c='".$next_status."',,due_date_c='' WHERE id_c='".$opportunity_id."'";
+                        $sql7="UPDATE opportunities_cstm SET status_c='".$next_status."' WHERE id_c='".$opportunity_id."'";
               
                     			 
                     			    
@@ -2027,7 +2027,7 @@ public function action_approve(){
                    
                    if($status=="Lead"||$status=="QualifiedLead"||$status=="QualifiedDpr"){
                        
-                        $sql7="UPDATE opportunities_cstm SET status_c='".$next_status."',due_date_c='' WHERE id_c='".$opportunity_id."'";
+                        $sql7="UPDATE opportunities_cstm SET status_c='".$next_status."' WHERE id_c='".$opportunity_id."'";
               
                     			 
                     			    
@@ -2140,7 +2140,7 @@ public function action_approve(){
                     			    
                    if($value>0)	{
                     			       
-                    			        $sql7="UPDATE opportunities_cstm SET status_c='".$next_status."' ,due_date_c='' WHERE id_c='".$opportunity_id."'";
+                    			        $sql7="UPDATE opportunities_cstm SET status_c='".$next_status."' WHERE id_c='".$opportunity_id."'";
               
                     			 
                     			    
@@ -2242,7 +2242,7 @@ public function action_approve(){
                     			//echo $value;
                    if($value>0)	{
                     			       
-                    			        $sql7="UPDATE opportunities_cstm SET status_c='".$next_status."',due_date_c='' WHERE id_c='".$opportunity_id."'";
+                    			        $sql7="UPDATE opportunities_cstm SET status_c='".$next_status."' WHERE id_c='".$opportunity_id."'";
               
                     			 
                     			    

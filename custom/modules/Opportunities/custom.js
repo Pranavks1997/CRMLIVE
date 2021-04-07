@@ -1024,13 +1024,6 @@ $( ".module-title-text" ).replaceWith( '<h2 class="module-title-text"> CREATE Op
               );
                }
                
-     if ($("[data-label=LBL_DUE_DATE] span").text() == "") {
-               
-             $("[data-label=LBL_DUE_DATE]").append(
-              "<span style='color:red;'>*</span>"
-              );
-               }
-               
      if ($("[data-label=LBL_TYPE] span").text() == "") {
                
              $("[data-label=LBL_TYPE]").append(
@@ -1298,15 +1291,7 @@ $( ".module-title-text" ).replaceWith( '<h2 class="module-title-text"> CREATE Op
       var alert_validation = [];
       
      
-       if($("#due_date_c").val() == ""){
-        
-      if ( $("#status_c").val()!="Closed"){
-        validate = false;
-           alert_validation.push("Due Date");
-           $("#due_date_c").css("background-color", "Red");
-      }
       
-      }
       
    //-----------------onload lead status validation for all cases----------------       
     if ((form_validation == "yes" || form_validation == "no" || form_validation == "not_required" || form_validation == "select")&&$("#status_c").val()=="Lead" ) {
@@ -4490,7 +4475,7 @@ $( ".module-title-text" ).replaceWith( '<h2 class="module-title-text"> CREATE Op
    $("option[value='Dropped']").attr("disabled", true);
    $("option[value='Drop']").attr("disabled", true);
    $( ".label:contains('Bid Files:'),.downloadAttachment,.remove_attachment,.multiple_file,#add_button" ).show(); 
-     $("[data-label=LBL_DUE_DATE] span").empty();
+   
   
     }
           
@@ -4999,7 +4984,6 @@ if ( $("#rfporeoipublished_c").val()=='yes' && $("#status_c").val()=="Lead"){
     $("option[value='Drop']").attr("disabled", true);
           
    $( ".panel-heading:contains('Bid')").hide();
-     $("[data-label=LBL_DUE_DATE] span").empty();
    
   
           
@@ -5041,7 +5025,6 @@ if ( $("#rfporeoipublished_c").val()=='yes' && $("#status_c").val()=="Lead"){
      $( ".label:contains('Bid Files:'),.downloadAttachment,.remove_attachment,.multiple_file,#add_button" ).show(); 
      $("[data-label=LBL_BID_CHECKLIST]").hide();
     $("#bid_checklist_c").hide();
-      $("[data-label=LBL_DUE_DATE] span").empty();
     }
         
    //-----------------onload status closed for yes and not required---------END-------- 
@@ -5150,7 +5133,6 @@ if ( $("#rfporeoipublished_c").val()=='yes' && $("#status_c").val()=="Lead"){
   
             $("#status_c option[value='Qualified']").show();
             $("#status_c option[value='QualifiedDpr']").show();
-            $("#status_c option[value='QualifiedBid']").show();
            
             $("#filename_file").attr("disabled",true);     
               
@@ -5929,7 +5911,6 @@ if ( $("#rfporeoipublished_c").val()=='yes' && $("#status_c").val()=="Lead"){
 //****************************************************************************************************************
 
  //---------------------------for disabling date buttons
- 
     $("#scope_budget_projected_c_trigger").hide();
     $("#rfp_eoi_projected_c_trigger").hide();
     $("#rfp_eoi_published_projected_c_trigger").hide();
@@ -5940,9 +5921,6 @@ if ( $("#rfporeoipublished_c").val()=='yes' && $("#status_c").val()=="Lead"){
     $("#work_order_achieved_c_trigger").hide();
     $("#project_implementation_start_c_trigger").hide();
     $("#project_implementation_end_c_trigger").hide();
-    $("#due_date_c_trigger").hide();
-    
-    
     
  //------------------------------------------scope--------------------------   
     var scope;
@@ -6009,17 +5987,6 @@ if ( $("#rfporeoipublished_c").val()=='yes' && $("#status_c").val()=="Lead"){
     
     //------------------------ making date default values-------------------------------
     $(function(){
-      $("#due_date_c").prop("readonly",true).datepicker({
-    dateFormat : 'dd/mm/yy',
-    changeMonth: true,
-    changeYear: true,
-    mindate:0,
-    onSelect: function(date1) {
-     
-    }
-       
-      });
-     
     $("#scope_budget_projected_c").prop("readonly",true).datepicker({
     dateFormat : 'dd/mm/yy',
     changeMonth: true,
@@ -6713,11 +6680,6 @@ $("#name").on("click", function () {
 $("#state_c").on("click", function () {
   if ($("#state_c").css("background-color", "Red")) {
     $("#state_c").css("background-color", "#d8f5ee");
-  }
-});
-$("#due_date_c").on("click", function () {
-  if ($("#due_date_c").css("background-color", "Red")) {
-    $("#due_date_c").css("background-color", "#d8f5ee");
   }
 });
 

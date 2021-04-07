@@ -8057,8 +8057,7 @@ $(document).ready(function(){
          if(data.status==true) {
       //  alert("in");
              $('#status_c').val(data.next_status);
-             
-              $('#due_date_c').val(''); 
+              
           //   alert(data.next_status);
            
             

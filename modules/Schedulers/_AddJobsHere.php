@@ -86,8 +86,7 @@ $job_strings = array(
     17 => 'syncGoogleCalendar',
     18 => 'runElasticSearchIndexerScheduler',
     19 => 'activityDate',
-    20 => 'sendEmailQueue',
-    21 => 'dueDate'
+    20 => 'sendEmailQueue'
 );
 
 /**
@@ -552,186 +551,6 @@ function send_notification($module,$name,$description,$users,$redirectUrl){
         $alert->save();
     }
 }
-
-//opportunity due date
-function dueDate(){
-        try{
-            echo 'due date is running';
-           
-            
-            $db = \DBManagerFactory::getInstance();
-            $GLOBALS['db'];
-            $sql = 'SELECT  opportunities_cstm.id_c,
-                            opportunities_cstm.due_date_c,
-                            opportunities.name,
-                            opportunities_cstm.status_c,
-                            opportunities.assigned_user_id,
-                            users_cstm.user_lineage FROM opportunities_cstm 
-                            LEFT JOIN opportunities ON opportunities.id=opportunities_cstm.id_c
-                            LEFT JOIN users_cstm ON users_cstm.id_c=opportunities.assigned_user_id 
-                        WHERE   CURRENT_DATE > due_date_c OR 
-                                CURRENT_DATE = due_date_c ';
-                                
-            $result = $GLOBALS['db']->query($sql);
-
-            if($result->num_rows>0){
-                while($rows = $GLOBALS['db']->fetchByAssoc($result))
-                {
-                    // Send Notification to assigned user
-                        $alert = BeanFactory::newBean('Alerts');
-                        $alert->name = '';
-                        $alert->description = 'Opportunity "'.$rows['name'].'" due date is crossed.';
-                        $alert->url_redirect = 'index.php?action=DetailView&module=Calls&record='.$rows['id_c'];
-                        $alert->target_module = 'Opportunities';
-                        $alert->assigned_user_id = $rows['assigned_user_id'];
-                        $alert->type = 'info';
-                        $alert->is_read = 0;
-                        $alert->save();
-                        
-                        $assigned_user = getUserByID($rows['assigned_user_id']);
-                
-                        // Send email to assigned user
-                        $template = 'Opportunity "'.$rows['name'].'" due date is crossed. <br><br>Click here to view: www.ampersandcrm.com';
-                
-                        $emailObj = new Email();  
-                        $defaults = $emailObj->getSystemDefaultEmail();
-                
-                        $mail = new SugarPHPMailer();  
-                        $mail->setMailerForSystem();  
-                        $mail->From = $defaults['email'];  
-                        $mail->FromName = $defaults['name'];  
-                        $mail->Subject = 'CRM ALERT - Due Date alert';
-                        $mail->Body =$template;
-                        $mail->IsHTML(true); 
-                        $mail->prepForOutbound();  
-                        $mail->AddAddress($assigned_user['user_name']);
-                        @$mail->Send();
-                
-                        // Get linage users
-                        $linage_users = explode(',', $rows['user_lineage']);
-                        foreach ($linage_users as $key => $user_id) {
-                            $linage_user = getUserByID($user_id);
-                            //Send Notification to linage user
-                            $alert = BeanFactory::newBean('Alerts');
-                            $alert->name = '';
-                            $alert->description = 'Opportunity "'.$rows['name'].'" due date is crossed.';
-                            $alert->url_redirect = 'index.php?action=DetailView&module=Calls&record='.$rows['id_c'];
-                            $alert->target_module = 'Opportunities';
-                            $alert->assigned_user_id = $user_id;
-                            $alert->type = 'info';
-                            $alert->is_read = 0;
-                            $alert->save();
-                
-                            //Send Email to linage user
-                            $template = 'Opportunity "'.$rows['name'].'" due date is crossed. <br><br>Click here to view: www.ampersandcrm.com';
-                
-                            $emailObj = new Email();  
-                            $defaults = $emailObj->getSystemDefaultEmail();
-                
-                            $mail = new SugarPHPMailer();  
-                            $mail->setMailerForSystem();  
-                            $mail->From = $defaults['email'];  
-                            $mail->FromName = $defaults['name'];  
-                            $mail->Subject = 'CRM ALERT - Due Date alert';
-                            $mail->Body =$template;
-                            $mail->IsHTML(true); 
-                            $mail->prepForOutbound();  
-                            $mail->AddAddress($linage_user['user_name']);
-                            @$mail->Send();
-                        }
-                                  
-                    }
-            }
-            
-            $sql_due_date_approach = 'SELECT    opportunities_cstm.id_c,
-                                                opportunities_cstm.due_date_c,
-                                                opportunities_cstm.status_c,
-                                                opportunities.assigned_user_id,
-                                                opportunities.name,
-                                                users_cstm.user_lineage FROM opportunities_cstm 
-                                                LEFT JOIN opportunities ON opportunities.id=opportunities_cstm.id_c
-                                                LEFT JOIN users_cstm ON users_cstm.id_c=opportunities.assigned_user_id 
-                                            WHERE   due_date_c=CURRENT_DATE + 1';
-                                
-            $result_due_date_approach = $GLOBALS['db']->query($sql_due_date_approach);
-
-            if($result_due_date_approach->num_rows>0){
-                while($row = $GLOBALS['db']->fetchByAssoc($result_due_date_approach))
-                {
-                   // Send Notification to assigned user
-                        $alert = BeanFactory::newBean('Alerts');
-                        $alert->name = '';
-                        $alert->description = 'Opportunity "'.$row['name'].'" due date is approching.';
-                        $alert->url_redirect = 'index.php?action=DetailView&module=Calls&record='.$row['id_c'];
-                        $alert->target_module = 'Opportunities';
-                        $alert->assigned_user_id = $row['assigned_user_id'];
-                        $alert->type = 'info';
-                        $alert->is_read = 0;
-                        $alert->save();
-                        
-                        $assigned_user = getUserByID($row['assigned_user_id']);
-                
-                        // Send email to assigned user
-                        $template = 'Opportunity "'.$row['name'].'" due date is approching. <br><br>Click here to view: www.ampersandcrm.com';
-                
-                        $emailObj = new Email();  
-                        $defaults = $emailObj->getSystemDefaultEmail();
-                
-                        $mail = new SugarPHPMailer();  
-                        $mail->setMailerForSystem();  
-                        $mail->From = $defaults['email'];  
-                        $mail->FromName = $defaults['name'];  
-                        $mail->Subject = 'CRM ALERT - Due Date alert';
-                        $mail->Body =$template;
-                        $mail->IsHTML(true); 
-                        $mail->prepForOutbound();  
-                        $mail->AddAddress($assigned_user['user_name']);
-                        @$mail->Send();
-                
-                        // Get linage users
-                        $linage_users = explode(',', $row['user_lineage']);
-                        foreach ($linage_users as $key => $user_id) {
-                            $linage_user = getUserByID($user_id);
-                            //Send Notification to linage user
-                            $alert = BeanFactory::newBean('Alerts');
-                            $alert->name = '';
-                            $alert->description = 'Opportunity "'.$row['name'].'" due date is approching.';
-                            $alert->url_redirect = 'index.php?action=DetailView&module=Calls&record='.$row['id_c'];
-                            $alert->target_module = 'Opportunities';
-                            $alert->assigned_user_id = $user_id;
-                            $alert->type = 'info';
-                            $alert->is_read = 0;
-                            $alert->save();
-                
-                            //Send Email to linage user
-                            $template = 'Opportunity "'.$row['name'].'" due date is approching. <br><br>Click here to view: www.ampersandcrm.com';
-                
-                            $emailObj = new Email();  
-                            $defaults = $emailObj->getSystemDefaultEmail();
-                
-                            $mail = new SugarPHPMailer();  
-                            $mail->setMailerForSystem();  
-                            $mail->From = $defaults['email'];  
-                            $mail->FromName = $defaults['name'];  
-                            $mail->Subject = 'CRM ALERT - Due Date alert';
-                            $mail->Body =$template;
-                            $mail->IsHTML(true); 
-                            $mail->prepForOutbound();  
-                            $mail->AddAddress($linage_user['user_name']);
-                            @$mail->Send();
-                        }
-                   
-                  
-                }
-            
-            }
-        }catch(Exception $e){
-            echo json_encode(array("status"=>false, "message" => "Some error occured"));
-        }
-        return true;
-    }
-
-
 function activityDate(){
         try{
             $db = \DBManagerFactory::getInstance();
@@ -909,7 +728,6 @@ function activityDate(){
     }
 
     function sendEmailQueue(){
-        
         $sql = "SELECT * FROM `email_queue` WHERE `send_status`='0';";
         $result = $GLOBALS['db']->query($sql);
 

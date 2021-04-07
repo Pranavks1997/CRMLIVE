@@ -414,7 +414,7 @@ onclick="SUGAR.clearRelateField(this.form, '{$fields.rfporeoipublished_c.name}-i
 <div class="col-xs-12 col-sm-8 edit-view-field " type="file" field="filename"  >
 {counter name="panelFieldCount" print=false}
 
-<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=zSGpyg0LVFUA_fRl-DlJZQ'></script>
+<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=hJl5NNF4w8crUwnVeBophg'></script>
 {if !empty($fields.filename.value) }
 {assign var=showRemove value=true}
 {else}
@@ -720,43 +720,6 @@ onclick="SUGAR.clearRelateField(this.form, '{$fields.opportunity_type.name}-inpu
 
 
 <div class="col-xs-12 col-sm-6 edit-view-row-item">
-
-
-<div class="col-xs-12 col-sm-4 label" data-label="LBL_DUE_DATE">
-
-{minify}
-{capture name="label" assign="label"}{sugar_translate label='LBL_DUE_DATE' module='Opportunities'}{/capture}
-{$label|strip_semicolon}:
-
-{/minify}
-</div>
-
-<div class="col-xs-12 col-sm-8 edit-view-field " type="date" field="due_date_c"  >
-{counter name="panelFieldCount" print=false}
-
-<span class="dateTime">
-{assign var=date_value value=$fields.due_date_c.value }
-<input class="date_input" autocomplete="off" type="text" name="{$fields.due_date_c.name}" id="{$fields.due_date_c.name}" value="{$date_value}" title=''  tabindex='0'    size="11" maxlength="10" >
-<button type="button" id="{$fields.due_date_c.name}_trigger" class="btn btn-danger" onclick="return false;"><span class="suitepicon suitepicon-module-calendar" alt="{$APP.LBL_ENTER_DATE}"></span></button>
-</span>
-<script type="text/javascript">
-Calendar.setup ({ldelim}
-inputField : "{$fields.due_date_c.name}",
-form : "EditView",
-ifFormat : "{$CALENDAR_FORMAT}",
-daFormat : "{$CALENDAR_FORMAT}",
-button : "{$fields.due_date_c.name}_trigger",
-singleClick : true,
-dateStr : "{$date_value}",
-startWeekday: {$CALENDAR_FDOW|default:'0'},
-step : 1,
-weekNumbers:false
-{rdelim}
-);
-</script>
-</div>
-
-<!-- [/hide] -->
 </div>
 <div class="clear"></div>
 <div class="clear"></div>
@@ -5285,7 +5248,6 @@ addToValidate('EditView', 'project_implementation_start_c', 'date', false,'{/lit
 addToValidate('EditView', 'influencersl2_c', 'relate', false,'{/literal}{sugar_translate label='LBL_INFLUENCERSL2' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'scope_budget_achieved_c', 'date', false,'{/literal}{sugar_translate label='LBL_SCOPE_BUDGET_ACHIEVED' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'untagged_users_comments_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_UNTAGGED_USERS_COMMENTS' module='Opportunities' for_js=true}{literal}' );
-addToValidate('EditView', 'due_date_c', 'date', false,'{/literal}{sugar_translate label='LBL_DUE_DATE' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'source_details_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_SOURCE_DETAILS' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'budget_allocated_oppertunity_c', 'float', false,'{/literal}{sugar_translate label='LBL_BUDGET_ALLOCATED_OPPERTUNITY' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'untagged_hidden_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_UNTAGGED_HIDDEN' module='Opportunities' for_js=true}{literal}' );

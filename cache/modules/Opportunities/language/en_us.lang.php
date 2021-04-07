@@ -1,5 +1,5 @@
 <?php
-// created: 2021-04-06 18:23:01
+// created: 2021-04-02 21:24:12
 $mod_strings = array (
   'LBL_ID' => 'ID',
   'LBL_DATE_ENTERED' => 'Date Created',
@@ -178,7 +178,6 @@ $mod_strings = array (
   'LBL_EXPECTED_INFLOW' => 'Expected Inflow',
   'LBL_CRITICAL' => 'Critical',
   'LBL_OPPORTUNITIES_DOCUMENTS_1_FROM_DOCUMENTS_TITLE' => 'Documents',
-  'LBL_DUE_DATE' => 'Due Date',
   'LBL_OPPORTUNITIES_USERS_2_FROM_USERS_TITLE' => 'Untag Users',
   '‘LBL_FILE_MIME_TYPE’' => 'File Mime Type',
   '‘LBL_FILE_URL’' => 'File URL',

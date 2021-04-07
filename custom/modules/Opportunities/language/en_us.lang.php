@@ -1,5 +1,5 @@
 <?php
-// created: 2021-04-06 09:50:57
+// created: 2021-03-18 10:47:33
 $mod_strings = array (
   'LBL_ACCOUNTS' => 'Departments',
   'LBL_RFP/EOIPUBLISHED' => 'RFP/EOI Published',
@@ -113,5 +113,4 @@ $mod_strings = array (
   'LBL_EXPECTED_INFLOW' => 'Expected Inflow',
   'LBL_CRITICAL' => 'Critical',
   'LBL_OPPORTUNITIES_DOCUMENTS_1_FROM_DOCUMENTS_TITLE' => 'Documents',
-  'LBL_DUE_DATE' => 'Due Date',
 );
