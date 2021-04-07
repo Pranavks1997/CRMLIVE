@@ -36,4 +36,6 @@ $sugar_config['SAML_logouturl'] = '';
 $sugar_config['SAML_X509Cert'] = '';
 $sugar_config['authenticationClass'] = '';
 $sugar_config['admin_export_only'] = true;
+
+$sugar_config['disableAjaxUI'] =true;
 /***CONFIGURATOR***/
