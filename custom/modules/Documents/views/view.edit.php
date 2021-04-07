@@ -83,6 +83,14 @@ class DocumentsViewEdit extends ViewEdit
          echo '<script type="text/javascript" src="custom/modules/Documents/view_edit.js"></script>';
         global $app_list_strings, $mod_strings;
 
+        global $current_user;
+        // Check if logged in user is admin or not sales person
+        if($current_user->is_admin || !$this->isSalesPerson()){
+            echo "<script>
+                $('#opp_hide').hide()
+            </script>";
+        } 
+
         $load_signed=false;
         if ((isset($_REQUEST['load_signed_id']) && !empty($_REQUEST['load_signed_id']))) {
             $load_signed=true;
@@ -210,6 +218,12 @@ class DocumentsViewEdit extends ViewEdit
 		}
 		return $attachments;
 	}
+    }
+
+    // Function to check if logged in user is salesperson or not
+    private function isSalesPerson(){
+        global $current_user;
+        return (bool)in_array('^sales^', explode(',', $current_user->teamfunction_c));
     }
     
 }
