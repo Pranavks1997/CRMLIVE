@@ -443,9 +443,7 @@ $(document).on('click', '#open_bidChecklist', function(){
     			   $(this).find("td:eq(1)").text(new_value);
     			});
     		 
-    			$(this).closest('tr').remove();          
-
-          $('#mtenth  .row_add').trigger('blur')
+    			$(this).closest('tr').remove();
     		}
     }else{
       alert('Last row delete not allowed');
