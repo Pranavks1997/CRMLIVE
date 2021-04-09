@@ -25,7 +25,7 @@
                 $tagged_users = ($tagged_user_query_fetch_row['user_id']) ? $tagged_user_query_fetch_row['user_id'] : '';
         ?>
         <tr>
-            <td class="table-data"><a href="index.php?action=DetailView&module=Opportunities&record=<?php echo $row['id']?>"><?php echo $row['name'];
+            <td class="table-data"><a href="index.php?action=DetailView&module=Opportunities&record=<?php echo $row['id']?>"><?php echo ucwords($row['name']);
             if ((strpos($tagged_users, $log_in_user_id) !== false) && $log_in_user_id != 1) { ?>
             <i class="fa fa-tag" style="font-size: 12px; color:green"></i>
             <?php } ?></a></td>
