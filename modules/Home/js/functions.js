@@ -504,11 +504,11 @@ function commitPendingFilter() {
 }
 
 $('#search-column1').keyup(function () {
-    var text = $(this).val().toUpperCase();
+    var text = $(this).val(); //.toUpperCase();
     searchColumns(text);
 });
 $('#search-column2').keyup(function () {
-    var text = $(this).val().toUpperCase();
+    var text = $(this).val(); //.toUpperCase();
     searchColumns(text);
 });
 
@@ -517,19 +517,23 @@ function searchColumns(text) {
     //case-insensitive
     class1 = "opportunity-settings";
     class2 = "pending-settings";
-    jQuery.expr[':'].contains = function (a, i, m) {
-        return jQuery(a).text().toUpperCase()
-            .indexOf(m[3].toUpperCase()) >= 0;
-    };
+
+    $.extend($.expr[':'], {
+        'containsi': function(elem, i, match, array) {
+          return (elem.textContent || elem.innerText || '').toLowerCase()
+              .indexOf((match[3] || "").toLowerCase()) >= 0;
+        }
+    });
+
     //hiding other that matching
     if (text != '') {
         $("#" + class1 + " #sortable2 li")
             .hide()
-            .filter(':contains("' + text + '")')
+            .filter(':containsi("' + text + '")')
             .show();
         $("#" + class2 + " #sortable2 li")
             .hide()
-            .filter(':contains("' + text + '")')
+            .filter(':containsi("' + text + '")')
             .show();
     }
     else {

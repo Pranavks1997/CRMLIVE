@@ -54,27 +54,19 @@ class HomeController extends SugarController{
                     $preferred_opportunity_columns = ['new_department_c', 'REP-EOI-Published', 'Closed-Date', 'Closed-by', 'Date-Created'];
                 }
                 
-                $all_label_array = ['new_department_c', 'REP-EOI-Published', 'Closed-Date', 'Closed-by', 'Date-Created'];
 
-                $differnce_result = array_diff($preferred_opportunity_columns,$get_data);
-                // $differnce_result1 = array_diff($get_data, $preferred_opportunity_columns);
-
-                if(count($differnce_result) > 0) {
-
-                    if ( ($key = array_search("name", $get_data)) !== false ) {
-                        unset($get_data[$key]);
-                    } 
-                    if ( ($key = array_search("Primary-Responsbility", $get_data)) !== false ) {
-                        unset($get_data[$key]);
-                    }
-
-                    $columns_string = rtrim(implode(',', $get_data));
-                    $query = "UPDATE users_cstm SET preferred_opportunity_columns = '$columns_string' WHERE id_c = '$log_in_user_id'";
-                    $response = $GLOBALS['db']->query($query);
-
+                if ( ($key = array_search("name", $get_data)) !== false ) {
+                    unset($get_data[$key]);
+                } 
+                if ( ($key = array_search("Primary-Responsbility", $get_data)) !== false ) {
+                    unset($get_data[$key]);
                 }
 
-            } 
+                $columns_string = rtrim(implode(',', $get_data));
+                $query = "UPDATE users_cstm SET preferred_opportunity_columns = '$columns_string' WHERE id_c = '$log_in_user_id'";
+                $response = $GLOBALS['db']->query($query);
+
+            }
 
             // Jy code block ends
 
