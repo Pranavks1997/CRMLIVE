@@ -1804,7 +1804,7 @@ class HomeController extends SugarController{
         $fields = array();
 
         $default = array(
-            'opportunity Type'              => 'opportunity_type',
+            'opportunity_type'              => 'Opportunity Type',
             'name'                  => 'Opportunity Name',
             'Primary-Responsbility' => 'Primary Responsibility',
             //'Amount'                => 'Amount (in Cr/Mn)',
@@ -3259,6 +3259,8 @@ class HomeController extends SugarController{
     }
 
     function getMultipleApproverNames($approvers){
+        $approvers = ltrim($approvers, ',');
+        $approvers = rtrim($approvers, ',');
         $approvers = explode(',', $approvers);
         $data = '';
         $i = 0;
@@ -3753,7 +3755,7 @@ class HomeController extends SugarController{
 
             $data[] = array(
                 beautify_label( $row['opportunity_type'] ),
-                $row['name'],
+                ucwords($row['name']),
                 str_replace( '<i class="fa fa-arrow-right"></i>', '-', $full_name),
                 // $this->beautify_amount( $row['budget_allocated_oppertunity_c'] ),
                 beautify_label( $row['new_department_c'] ),
