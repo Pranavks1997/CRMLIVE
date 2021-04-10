@@ -38,6 +38,39 @@ class HomeController extends SugarController{
             $dropped    = isset($_GET['dropped']) ? $_GET['dropped'] : '';
             $isCritical = isset($_GET['isCritical']) ? $_GET['isCritical'] : false;
 
+            // Jy code block    
+
+            if(isset($_GET['customColumns']) && $_GET['customColumns']) {
+                $get_data = $_GET['customColumns'];
+
+                $query = "SELECT preferred_opportunity_columns from users LEFT JOIN users_cstm ON users.id = users_cstm.id_c WHERE id = '$log_in_user_id'";
+                $result = $GLOBALS['db']->query($query);
+                $user_row = $GLOBALS['db']->fetchByAssoc($result);
+
+                if($user_row['preferred_opportunity_columns']) {
+                    $preferred_columns_str = $user_row['preferred_opportunity_columns'];
+                    $preferred_opportunity_columns = explode(',', $preferred_columns_str);
+                } else {
+                    $preferred_opportunity_columns = ['new_department_c', 'REP-EOI-Published', 'Closed-Date', 'Closed-by', 'Date-Created'];
+                }
+                
+
+                if ( ($key = array_search("name", $get_data)) !== false ) {
+                    unset($get_data[$key]);
+                } 
+                if ( ($key = array_search("Primary-Responsbility", $get_data)) !== false ) {
+                    unset($get_data[$key]);
+                }
+
+                $columns_string = rtrim(implode(',', $get_data));
+                $query = "UPDATE users_cstm SET preferred_opportunity_columns = '$columns_string' WHERE id_c = '$log_in_user_id'";
+                $response = $GLOBALS['db']->query($query);
+
+            }
+
+            // Jy code block ends
+
+
             /* getting column filters to variables */
             $columnAmount                   = isset( $_GET['Amount'] ) ? $_GET['Amount'] : '';
             $columnREPEOI                   = isset( $_GET['REP-EOI-Published'] ) ? $_GET['REP-EOI-Published'] : '';
@@ -1730,7 +1763,8 @@ class HomeController extends SugarController{
             <input type="hidden" name="settings-type" class="settings-type" value="" />
             <input type="hidden" name="settings-type-value" class="settings-type-value" value="" />';
         }
-        $columnFields = $this->opportunityColumns($status);
+        // $columnFields = $this->opportunityColumns($status);
+        $columnFields = $this->opportunityColumnsForSettings($status);
         $i = 0;
         foreach($columnFields['default'] as $key => $field){
             $style = '';
@@ -1770,7 +1804,7 @@ class HomeController extends SugarController{
         $fields = array();
 
         $default = array(
-            'opportunity Type'              => 'opportunity_type',
+            'opportunity_type'              => 'Opportunity Type',
             'name'                  => 'Opportunity Name',
             'Primary-Responsbility' => 'Primary Responsibility',
             //'Amount'                => 'Amount (in Cr/Mn)',
@@ -1884,6 +1918,207 @@ class HomeController extends SugarController{
 
         return $fields;
     }
+
+    // Jy code block for opprtunity settings starts
+
+    function opportunityColumnsForSettings($status = null){
+        $fields = array();
+
+        global $current_user;
+        $log_in_user_id = $current_user->id;
+
+        $query = "SELECT preferred_opportunity_columns from users LEFT JOIN users_cstm ON users.id = users_cstm.id_c WHERE id = '$log_in_user_id'";
+        $result = $GLOBALS['db']->query($query);
+        $user_row = $GLOBALS['db']->fetchByAssoc($result);
+
+        if($user_row['preferred_opportunity_columns']) {
+            $preferred_columns_str = $user_row['preferred_opportunity_columns'];
+            $preferred_opportunity_columns = explode(',', $preferred_columns_str);
+        } else {
+            $preferred_opportunity_columns = ['new_department_c', 'REP-EOI-Published', 'Closed-Date', 'Closed-by', 'Date-Created'];
+        }
+
+        $all_label_array = ['new_department_c', 'REP-EOI-Published', 'Closed-Date', 'Closed-by', 'Date-Created', 'multiple_approver_c', 'state_c', 'source_c', 'non_financial_consideration_c', 'segment_c', 'product_service_c', 'international_c'];
+
+
+        // $default["opportunity_type"] = "Opportunity Type";
+        $default["name"] = "Opportunity Name";
+        $default["Primary-Responsbility"] = "Primary Responsibility";
+
+        foreach ($preferred_opportunity_columns as $key => $value) {
+            $default[$value] = $this->getOpportunityColumnsFilteredNames($value);
+        }
+
+
+        $addons = array();
+        foreach ($all_label_array as $key => $value) {
+            if(!in_array($value, $preferred_opportunity_columns)) {
+                $addons[$value] = $this->getOpportunityColumnsFilteredNames($value);
+            }
+        }
+
+        $default2 = $addons;
+
+        $QualifiedLead = array(
+            'total_input_value'             => 'Amount (Cr/Mn)',
+            'sector_c'                      => 'Sector',
+            'product_service_c'             => 'Product/ Service',
+            'sub_sector_c'                  => 'Sub Sector',
+            'scope_budget_projected_c'      => 'DPR/Scope & Budget Accepted (Projected)',
+            'rfp_eoi_projected_c'           => 'RFP/EOI Initiated Drafting (Projected)',
+            'rfp_eoi_published_projected_c' => 'RFP/EOI Published (Projected)',
+            'work_order_projected_c'        => 'Work Order (Projected)'
+        );
+        $QualifiedLead = array_merge($default2, $QualifiedLead);
+
+        $QualifiedOpportunity = array(
+            'budget_head_amount_c'                     => 'Budget Head Amount (In Cr)',
+            'budget_allocated_oppertunity_c'    => 'Budget Allocated For Opportunity (in Cr)',
+            'project_implementation_start_c'    => 'Project Implementation Start Date',
+            'project_implementation_end_c'      => 'Project Implementation End Date',
+            'selection_c'                       => 'Selection/Funding/Timing',
+            /*'funding_c'                         => 'Funding',
+            'timing_button_c'                   => 'Timing',*/
+        );
+        $QualifiedOpportunity = array_merge($QualifiedLead, $QualifiedOpportunity);
+
+        $QualifiedDPR = array(
+            'submissionstatus_c' => 'Submission Status'
+        );
+        $QualifiedDPR = array_merge($QualifiedOpportunity, $QualifiedDPR);
+
+        $QualifiedBid = array(
+            'closure_status_c'  => 'Closure Status'
+        );
+        $QualifiedBid = array_merge($QualifiedDPR, $QualifiedBid);
+
+        $fields['default'] = $default;
+        switch($status){
+            case 'Lead':
+                $fields['addons'] = $default2;
+                break;
+            case 'QualifiedLead':
+                $fields['addons'] = $QualifiedLead;
+                break;
+            case 'qualifylead':
+                $fields['addons'] = $QualifiedLead;
+                break;
+
+            case 'Qualified':
+                $fields['addons'] = $QualifiedOpportunity;
+                break;
+            case 'qualifyOpportunity':
+                $fields['addons'] = $QualifiedOpportunity;
+                break;
+
+            case 'QualifiedDpr':
+                $fields['addons'] = $QualifiedDPR;
+                break;
+            case 'qualifyDpr':
+                $fields['addons'] = $QualifiedDPR;
+                break;
+
+            case 'QualifiedBid':
+                $fields['addons'] = $QualifiedBid;
+                break;
+            case 'qualifyBid':
+                $fields['addons'] = $QualifiedBid;
+                break;
+
+            case 'Closed':
+                $fields['addons'] = $QualifiedBid;
+                break;
+            case 'closure':
+                $fields['addons'] = $QualifiedBid;
+                break;
+            case 'ClosedWin':
+                $fields['addons'] = $QualifiedBid;
+                break;
+            case 'ClosedLost':
+                $fields['addons'] = $QualifiedBid;
+                break;
+            case 'Dropped':
+                $fields['addons'] = $QualifiedBid;
+                break;
+            case 'Dropping':
+                $fields['addons'] = $QualifiedBid;
+                break;
+
+            default:
+                $fields['addons'] = $default2;
+                break;
+        }
+
+        return $fields;
+    }
+
+
+    function getOpportunityColumnsFilteredNames($dbname) {
+        if($dbname == 'opportunity_type') {
+            return "Opportunity Type";
+        } elseif($dbname == 'name'){
+            return "Opportunity Name";
+        } elseif ($dbname == 'Primary-Responsbility') {
+            return "Primary Responsibility";
+        } elseif ($dbname == 'new_department_c') {
+            return "Department";
+        } elseif ($dbname == 'REP-EOI-Published') {
+            return "RFP/EOI Published";
+        } elseif ($dbname == 'Closed-Date') {
+            return "Modified Date";
+        } elseif ($dbname == 'Closed-by') {
+            return "Modified By";
+        } elseif ($dbname == 'Date-Created') {
+            return "Created Date";
+        } elseif ($dbname == 'Amount') {
+            return "Amount (in Cr/Mn)";
+        } elseif ($dbname == 'multiple_approver_c') {
+            return "Approver";
+        } elseif ($dbname == 'state_c') {
+            return "State";
+        } elseif ($dbname == 'source_c') {
+            return "Source";
+        } elseif ($dbname == 'non_financial_consideration_c') {
+            return "Non Financial Consideration";
+        } elseif ($dbname == 'segment_c') {
+            return "Segment";
+        } elseif ($dbname == 'product_service_c') {
+            return "Product/ Service";
+        } elseif ($dbname == 'international_c') {
+            return "International Opportunity";
+        }
+    }
+
+
+    public function action_get_preferred_opportunity_columns() {
+
+        try {
+            $db = \DBManagerFactory::getInstance();
+            $GLOBALS['db'];
+            global $current_user;
+            $log_in_user_id = $current_user->id;
+
+            $query = "SELECT preferred_opportunity_columns from users LEFT JOIN users_cstm ON users.id = users_cstm.id_c WHERE id = '$log_in_user_id'";
+            $result = $GLOBALS['db']->query($query);
+            $user_row = $GLOBALS['db']->fetchByAssoc($result);
+
+            if($user_row['preferred_opportunity_columns']) {
+                $preferred_columns_str = $user_row['preferred_opportunity_columns'];
+                $preferred_opportunity_columns = explode(',', $preferred_columns_str);
+            } else {
+                $preferred_opportunity_columns = ['new_department_c', 'REP-EOI-Published', 'Closed-Date', 'Closed-by', 'Date-Created'];
+            }
+
+            echo json_encode(array("status" => true, "data" => $preferred_opportunity_columns));
+            die();
+        } catch (Exception $e) {
+            echo json_encode(array("status" => false, "message" => "Some error occured"));
+        }
+        die();
+
+    }
+
+    // Jy code block for opprtunity settings ends
 
     function getColumnFiltersHeader($columnFilter){
 
@@ -3024,6 +3259,8 @@ class HomeController extends SugarController{
     }
 
     function getMultipleApproverNames($approvers){
+        $approvers = ltrim($approvers, ',');
+        $approvers = rtrim($approvers, ',');
         $approvers = explode(',', $approvers);
         $data = '';
         $i = 0;
@@ -3451,6 +3688,7 @@ class HomeController extends SugarController{
 
 
         $columnFields = $this->opportunityColumns('Dropped');
+        // $headers[] = "Opportunity Type";
         foreach($columnFields['default'] as $key => $field){
             $headers[] = $field;
         }
@@ -3517,7 +3755,7 @@ class HomeController extends SugarController{
 
             $data[] = array(
                 beautify_label( $row['opportunity_type'] ),
-                $row['name'],
+                ucwords($row['name']),
                 str_replace( '<i class="fa fa-arrow-right"></i>', '-', $full_name),
                 // $this->beautify_amount( $row['budget_allocated_oppertunity_c'] ),
                 beautify_label( $row['new_department_c'] ),
@@ -3573,7 +3811,7 @@ class HomeController extends SugarController{
         $fp = fopen("php://output", 'w');
         if($fp){
             header('Content-Type: text/csv');
-            header('Content-Disposition: attachment; filename="'.$filename.'".csv"');
+            header('Content-Disposition: attachment; filename="'.$filename.'.csv"');
             fputcsv($fp, array_values($headers));
             foreach($data as $d){
                 fputcsv($fp, array_values($d));
@@ -8793,7 +9031,7 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
         $fp = fopen("php://output", 'w');
         if($fp){
             header('Content-Type: text/csv');
-            header('Content-Disposition: attachment; filename="'.$filename.'".csv"');
+            header('Content-Disposition: attachment; filename="'.$filename.'.csv"');
             fputcsv($fp, array_values($headers));
             foreach($data as $d){
                 fputcsv($fp, array_values($d));

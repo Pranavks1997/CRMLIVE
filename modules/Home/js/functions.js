@@ -504,11 +504,11 @@ function commitPendingFilter() {
 }
 
 $('#search-column1').keyup(function () {
-    var text = $(this).val().toUpperCase();
+    var text = $(this).val(); //.toUpperCase();
     searchColumns(text);
 });
 $('#search-column2').keyup(function () {
-    var text = $(this).val().toUpperCase();
+    var text = $(this).val(); //.toUpperCase();
     searchColumns(text);
 });
 
@@ -517,19 +517,23 @@ function searchColumns(text) {
     //case-insensitive
     class1 = "opportunity-settings";
     class2 = "pending-settings";
-    jQuery.expr[':'].contains = function (a, i, m) {
-        return jQuery(a).text().toUpperCase()
-            .indexOf(m[3].toUpperCase()) >= 0;
-    };
+
+    $.extend($.expr[':'], {
+        'containsi': function(elem, i, match, array) {
+          return (elem.textContent || elem.innerText || '').toLowerCase()
+              .indexOf((match[3] || "").toLowerCase()) >= 0;
+        }
+    });
+
     //hiding other that matching
     if (text != '') {
         $("#" + class1 + " #sortable2 li")
             .hide()
-            .filter(':contains("' + text + '")')
+            .filter(':containsi("' + text + '")')
             .show();
         $("#" + class2 + " #sortable2 li")
             .hide()
-            .filter(':contains("' + text + '")')
+            .filter(':containsi("' + text + '")')
             .show();
     }
     else {
@@ -791,7 +795,28 @@ function getDefaultColumns(type) {
         var DefaultColumns = '<form class="pending-settings-form sort-column">';
     }
 
-    DefaultColumns += '<input type="hidden" name="settings-section" class="settings-section" value=""> <input type="hidden" name="settings-type" class="settings-type" value=""> <input type="hidden" name="settings-type-value" class="settings-type-value" value=""> <ul id="sortable1" class="sortable1 connectedSortable ui-sortable"> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="new_department_c" value="new_department_c" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customColumns[]" value="new_department_c" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Department</label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="REP-EOI-Published" value="REP-EOI-Published" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customColumns[]" value="REP-EOI-Published" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> RFP/EOI Published</label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="Closed-Date" value="Closed-Date" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customColumns[]" value="Closed-Date" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified Date</label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="Closed-by" value="Closed-by" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customColumns[]" value="Closed-by" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified By</label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="Date-Created" value="Date-Created" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customColumns[]" value="Date-Created" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Created Date</label> </li></ul>';
+    // DefaultColumns += '<input type="hidden" name="settings-section" class="settings-section" value=""> <input type="hidden" name="settings-type" class="settings-type" value=""> <input type="hidden" name="settings-type-value" class="settings-type-value" value=""> <ul id="sortable1" class="sortable1 connectedSortable ui-sortable"> <li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="new_department_c" value="new_department_c" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customColumns[]" value="new_department_c" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Department</label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="REP-EOI-Published" value="REP-EOI-Published" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customColumns[]" value="REP-EOI-Published" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> RFP/EOI Published</label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="Closed-Date" value="Closed-Date" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customColumns[]" value="Closed-Date" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified Date</label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="Closed-by" value="Closed-by" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customColumns[]" value="Closed-by" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Modified By</label> </li><li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="Date-Created" value="Date-Created" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customColumns[]" value="Date-Created" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Created Date</label> </li></ul>';
+   
+    // Jy code block starts [Gets default columns from db]
+
+    DefaultColumns += '<input type="hidden" name="settings-section" class="settings-section" value=""> <input type="hidden" name="settings-type" class="settings-type" value=""> <input type="hidden" name="settings-type-value" class="settings-type-value" value=""> <ul id="sortable1" class="sortable1 connectedSortable ui-sortable">';
+
+    $.ajax({
+        url: 'index.php?module=Home&action=get_preferred_opportunity_columns',
+        type: 'GET',
+        async: false,
+        success: function (data) {
+            var parsed_data = JSON.parse(data);
+            $.each(parsed_data.data, function( index, value ) {
+                DefaultColumns += '<li class="ui-sortable-handle"> <input class="settingInputs" type="checkbox" id="name-select" name="'+ value +'" value="new_department_c" checked="True" style="display: none"> <input class="settingInputs" type="checkbox" id="name-select" name="customColumns[]" value="'+value+'" checked="True" style="display: none"> <label style="color: #837E7C; font-family: Arial; font-size: 13px;" for="name"> Department</label> </li>'
+            });
+
+            DefaultColumns += '</ul>';
+        }
+    });
+
+    // Jy code block ends
+
     html.html(DefaultColumns);
     initSortable();
 }
