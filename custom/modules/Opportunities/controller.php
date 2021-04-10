@@ -4746,6 +4746,183 @@ public function action_l1_l2_audit_trail(){
 }
 
 
+// Check if current user is accessible to comments or not
+public function action_comments_access(){
+    global $current_user;
+    $opp_id = $_REQUEST['opp_id'];
+    
+    // check if current user is mc or not 
+    $sql_mc = "SELECT
+                    COUNT(*) as mc
+                FROM
+                    `users_cstm`
+                LEFT JOIN users ON
+                    users_cstm.id_c = users.id
+                WHERE
+                    `mc_c` = 'yes'
+                    AND users.deleted = 0
+                    AND id_c = '$current_user->id'";
+    
+    $result_mc = $GLOBALS['db']->query($sql_mc);
+    $is_mc = 0;
+
+    while($row_mc = $GLOBALS['db']->fetchByAssoc($result_mc) ){
+        $is_mc = $row_mc['mc'];
+    }
+    
+    // Check if current user is bid or commericial head
+    /*$sql = "SELECT
+            	users.id,
+            	users.employee_status,
+            	users.deleted,
+            	users_cstm.bid_commercial_head_c,
+            	CONCAT(IFNULL(users.first_name, ''), ' ', IFNULL(users.last_name, '')) AS fullname
+            FROM
+            	users
+            INNER JOIN users_cstm ON
+            	users_cstm.id_c = users.id
+            WHERE
+                users.id = '$current_user->id'
+            	AND users.employee_status = 'Active'
+            	AND users.deleted = 0
+            	AND users_cstm.bid_commercial_head_c IN ('bid_team_head', 'commercial_team_head')";
+            	
+    $result = $GLOBALS['db']->query($sql);
+    $bid = [];
+    while($row = $GLOBALS['db']->fetchByAssoc($result) ){
+        $bid[] = $row;
+    }*/
+    
+    
+    // Check if current user is in lineage or not
+    $sql = "SELECT
+            	*
+            FROM
+            	opportunities
+            WHERE
+            	id = '$opp_id'";
+            	
+    $result = $GLOBALS['db']->query($sql);
+    
+    while($row = $GLOBALS['db']->fetchByAssoc($result) ){
+        $assigned_id = $row['assigned_user_id'];
+    }
+    
+    $sql = "SELECT
+            	*
+            FROM
+            	users_cstm
+            WHERE
+            	id_c = '$assigned_id'
+            	AND FIND_IN_SET('$current_user->id', user_lineage)";
+    
+    $result = $GLOBALS['db']->query($sql);
+    
+    $opportunity = [];
+    
+    while($row = $GLOBALS['db']->fetchByAssoc($result) ){
+        $opportunity[] = $row;
+    }
+    
+    // Check if current user is in approvers or not
+    
+    $sql = "SELECT
+            	*
+            FROM
+            	opportunities_cstm
+            WHERE
+            	id_c = '$opp_id'
+            	AND FIND_IN_SET('$current_user->id', multiple_approver_c) ;";
+            	
+    
+    $result = $GLOBALS['db']->query($sql);
+    $approvers = [];
+    while($row = $GLOBALS['db']->fetchByAssoc($result) ){
+        $approvers[] = $row;
+    }
+    
+    // If current user is mc or lineage or approver
+    if($is_mc || count($opportunity) || count($approvers)){
+        exit(json_encode(['accessible' => true]));
+    }
+    else{
+        exit(json_encode(['accessible' => false]));
+    }
+}
+
+
+
+// Insert Team Lead / MC comments
+function action_save_comment()
+{
+    global $current_user;
+	$log_in_user_id = $current_user->id;
+	
+	
+    $id = $_REQUEST['opp_id'];
+    $created_by = $current_user->id;
+    $opp_description = $_REQUEST['write_note_c'];
+
+    $db = \DBManagerFactory::getInstance();
+    $GLOBALS['db'];
+    
+    $sql='SELECT * FROM description_opportunity WHERE opp_id="'.$id.'" AND id=(SELECT MAX(id) FROM description_opportunity WHERE opp_id="'.$id.'")';
+    $result = $GLOBALS['db']->query($sql);
+    
+    while($row = $GLOBALS['db']->fetchByAssoc($result)){	
+	    $latest_description = $row['description'];
+	}
+		
+
+	if($opp_description != $latest_description){
+	    $sql = 'INSERT INTO `description_opportunity`(`opp_id`, `description`, `user_id`) VALUES ("'.$id.'","'.$opp_description.'","'.$created_by.'")';
+	    
+	    $GLOBALS['db']->query($sql);
+	}
+	
+	exit(json_encode(['type' => 'success', 'message' => 'Note has been saved successfully.']));
+            
+}
+
+
+
+// Retrive Team Lead / MC comments
+
+public function action_get_comments(){
+    
+    try{
+        $opp_id = $_POST['opp_id'];
+        
+        $name = array();
+        $date = array();
+        $description = array();
+            
+            
+        $db = \DBManagerFactory::getInstance();
+        $GLOBALS['db'];
+        $sql = 'SELECT CONCAT(users.first_name," ",users.last_name) as name,DATE_FORMAT(description_opportunity.date_time, "%d/%m/%Y") as "date_time",description_opportunity.description   FROM description_opportunity INNER JOIN users on users.id=description_opportunity.user_id WHERE description_opportunity.opp_id="'.$opp_id.'" ORDER BY `date_time` DESC';
+        
+        $result = $GLOBALS['db']->query($sql);
+        
+        while($row = $GLOBALS['db']->fetchByAssoc($result) ){
+          array_push($name, $row['name']);
+          array_push($date,$row['date_time']);
+          array_push($description,$row['description']);
+        }
+        
+         $combined = array_map(function($b,$c,$d) { return  '<b>['.$b.' : '.$c.' ]</b> :- '.$d; }, $name,$date, $description);
+        
+        
+        
+          echo json_encode(array("status"=>true, "opp_status" => $combined));
+      }
+      catch(Exception $e){
+        echo json_encode(array("status"=>false, "message" => "Some error occured"));
+      }
+      exit();
+}
+
+
 
 
 //-------------------------------------------------------l1 and l2------------------------------------------------------------------------
@@ -4893,5 +5070,6 @@ public function action_l1_l2_audit_trail(){
 //------------------------------------------END---------------------------
 
 //===========================Write code above this line=========================================    
+
 }
 ?>

@@ -480,6 +480,8 @@ $('#whole_subpanel_history').remove();
   //  //--------------------------------------International-----END-------------------------------------------------------------------    
        
        $( ".panel-heading:contains('Tag And Untag Users')").hide();
+        $( ".panel-heading:contains('Team Lead/MC Comments')").hide();
+        $("#top-panel-7").hide() ;
   
   // //*****************************************************Dummy*****************************************************************************************
   //   //---------------------------hiding the tab based on the rfp==no and status---------------------------

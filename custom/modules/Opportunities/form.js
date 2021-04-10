@@ -249,6 +249,12 @@ $(document).on('click', '#open_bidChecklist', function(){
       var stage=$("#stage").val();
       var milestone=$("#milestone").val();
        var select_value = $("#chec").val();
+       if(select_value=='expense'){
+         select_value='Expense';
+       }
+        if(select_value=='income'){
+         select_value='Income';
+       }
       var last_sno = Number($('#mtenth tbody tr:last-child td:eq(1)').html());
        var id_no =Number($('#mtenth tbody tr:last').attr('id'));
       if (stage!='' && milestone!=''){
@@ -346,6 +352,7 @@ $(document).on('click', '#open_bidChecklist', function(){
     
     }
    $('#mtenth tbody .addition:last').find('td:last-child input').attr('readonly',true);
+   $('#stage,#milestone').val('');
       }else{
           
           alert("Please fille Stage and Milestone before inserting new row");
@@ -444,6 +451,8 @@ $(document).on('click', '#open_bidChecklist', function(){
     			});
     		 
     			$(this).closest('tr').remove();
+    			
+    			$('#mtenth  .row_add').trigger('blur');
     		}
     }else{
       alert('Last row delete not allowed');

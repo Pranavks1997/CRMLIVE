@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-04-06 17:02:23
+<?php /* Smarty version 2.6.31, created on 2021-04-09 14:53:32
          compiled from cache/themes/SuiteP/modules/Opportunities/EditView.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('modifier', 'escape', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 49, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 138, false),array('modifier', 'lookup', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 178, false),array('modifier', 'count', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 280, false),array('modifier', 'default', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 751, false),array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 68, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 76, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 145, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 153, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 181, false),array('function', 'html_radios', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 1487, false),array('function', 'multienum_to_array', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 2218, false),array('function', 'html_checkboxes', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 2220, false),array('function', 'sugar_number_format', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 2466, false),array('function', 'sugar_getscript', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 5126, false),array('block', 'minify', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 136, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('modifier', 'escape', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 49, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 140, false),array('modifier', 'lookup', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 180, false),array('modifier', 'count', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 282, false),array('modifier', 'default', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 753, false),array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 68, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 76, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 147, false),array('function', 'html_options', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 155, false),array('function', 'sugar_getimagepath', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 183, false),array('function', 'html_radios', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 1489, false),array('function', 'multienum_to_array', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 2220, false),array('function', 'html_checkboxes', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 2222, false),array('function', 'sugar_number_format', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 2468, false),array('function', 'sugar_getscript', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 5252, false),array('block', 'minify', 'cache/themes/SuiteP/modules/Opportunities/EditView.tpl', 138, false),)), $this); ?>
 
 
 <script>
@@ -141,6 +141,8 @@ if(custom_check_form('EditView'))SUGAR.ajaxUI.submitForm(_form);return false;" c
 
 </a>
 </li>
+
+
 
 
 
@@ -615,7 +617,7 @@ SUGAR.AutoComplete.<?php echo $this->_tpl_vars['ac_key']; ?>
 <?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
 
 
-<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=zSGpyg0LVFUA_fRl-DlJZQ'></script>
+<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=M9osD4ergxNxZ7ta1VqM-Q'></script>
 <?php if (! empty ( $this->_tpl_vars['fields']['filename']['value'] )): ?>
 <?php $this->assign('showRemove', true); ?>
 <?php else: ?>
@@ -6935,12 +6937,157 @@ title='' tabindex="0"
 <div class="panel-heading ">
 <a class="" role="button" data-toggle="collapse-edit" aria-expanded="false">
 <div class="col-xs-10 col-sm-11 col-md-11">
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_EDITVIEW_PANEL10','module' => 'Opportunities'), $this);?>
+
+</div>
+</a>
+</div>
+<div class="panel-body panel-collapse collapse in panelContainer" id="detailpanel_6" data-id="LBL_EDITVIEW_PANEL10">
+<div class="tab-content">
+<!-- tab_panel_content.tpl -->
+<div class="row edit-view-row">
+
+
+
+<div class="col-xs-12 col-sm-12 edit-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label" data-label="LBL_NOTE">
+
+<?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_NOTE','module' => 'Opportunities'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+
+<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="text" field="note_c" colspan='3' >
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<?php if (empty ( $this->_tpl_vars['fields']['note_c']['value'] )): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['note_c']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['note_c']['value']); ?>
+<?php endif; ?>
+<textarea  id='<?php echo $this->_tpl_vars['fields']['note_c']['name']; ?>
+' name='<?php echo $this->_tpl_vars['fields']['note_c']['name']; ?>
+'
+rows="5"
+cols="50"
+title='' tabindex="0" 
+ ><?php echo $this->_tpl_vars['value']; ?>
+</textarea>
+<?php echo ''; ?>
+
+</div>
+
+<!-- [/hide] -->
+</div>
+<div class="clear"></div>
+
+
+
+<div class="col-xs-12 col-sm-12 edit-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label" data-label="LBL_WRITE_NOTE">
+
+<?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_WRITE_NOTE','module' => 'Opportunities'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+
+<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="text" field="write_note_c" colspan='3' >
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<?php if (empty ( $this->_tpl_vars['fields']['write_note_c']['value'] )): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['write_note_c']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['write_note_c']['value']); ?>
+<?php endif; ?>
+<textarea  id='<?php echo $this->_tpl_vars['fields']['write_note_c']['name']; ?>
+' name='<?php echo $this->_tpl_vars['fields']['write_note_c']['name']; ?>
+'
+rows="5"
+cols="50"
+title='' tabindex="0" 
+ ><?php echo $this->_tpl_vars['value']; ?>
+</textarea>
+<?php echo ''; ?>
+
+</div>
+
+<!-- [/hide] -->
+</div>
+<div class="clear"></div>
+
+
+
+<div class="col-xs-12 col-sm-12 edit-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label" data-label="LBL_POST_NOTE">
+
+<?php $this->_tag_stack[] = array('minify', array()); $_block_repeat=true;smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_POST_NOTE','module' => 'Opportunities'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+
+<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_minify($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="varchar" field="post_note_c" colspan='3' >
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<?php if (strlen ( $this->_tpl_vars['fields']['post_note_c']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['post_note_c']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['post_note_c']['value']); ?>
+<?php endif; ?>  
+<input type='text' name='<?php echo $this->_tpl_vars['fields']['post_note_c']['name']; ?>
+' 
+id='<?php echo $this->_tpl_vars['fields']['post_note_c']['name']; ?>
+' size='30' 
+maxlength='255' 
+value='<?php echo $this->_tpl_vars['value']; ?>
+' title=''      >
+</div>
+
+<!-- [/hide] -->
+</div>
+
+
+<div class="col-xs-12 col-sm-6 edit-view-row-item">
+</div>
+<div class="clear"></div>
+<div class="clear"></div>
+</div>                    </div>
+</div>
+</div>
+
+
+
+
+<div class="panel panel-default tab-panel-0" style="display: block;">
+<div class="panel-heading ">
+<a class="" role="button" data-toggle="collapse-edit" aria-expanded="false">
+<div class="col-xs-10 col-sm-11 col-md-11">
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_EDITVIEW_PANEL9','module' => 'Opportunities'), $this);?>
 
 </div>
 </a>
 </div>
-<div class="panel-body panel-collapse collapse in panelContainer" id="detailpanel_6" data-id="LBL_EDITVIEW_PANEL9">
+<div class="panel-body panel-collapse collapse in panelContainer" id="detailpanel_7" data-id="LBL_EDITVIEW_PANEL9">
 <div class="tab-content">
 <!-- tab_panel_content.tpl -->
 <div class="row edit-view-row">
@@ -7441,6 +7588,9 @@ addToValidate(\'EditView\', \'rfp_eoi_projected_c\', \'date\', false,\''; ?>
 addToValidate(\'EditView\', \'jjwg_maps_address_c\', \'varchar\', false,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_JJWG_MAPS_ADDRESS','module' => 'Opportunities','for_js' => true), $this);?>
 <?php echo '\' );
+addToValidate(\'EditView\', \'note_c\', \'text\', false,\''; ?>
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_NOTE','module' => 'Opportunities','for_js' => true), $this);?>
+<?php echo '\' );
 addToValidate(\'EditView\', \'work_order_achieved_c\', \'date\', false,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_WORK_ORDER_ACHIEVED','module' => 'Opportunities','for_js' => true), $this);?>
 <?php echo '\' );
@@ -7461,6 +7611,9 @@ addToValidate(\'EditView\', \'select_approver_c\', \'relate\', false,\''; ?>
 <?php echo '\' );
 addToValidate(\'EditView\', \'non_financial_radio_c\', \'radioenum\', false,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_NON_FINANCIAL_RADIO','module' => 'Opportunities','for_js' => true), $this);?>
+<?php echo '\' );
+addToValidate(\'EditView\', \'post_note_c\', \'varchar\', false,\''; ?>
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_POST_NOTE','module' => 'Opportunities','for_js' => true), $this);?>
 <?php echo '\' );
 addToValidate(\'EditView\', \'budget_source_c\', \'varchar\', false,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_BUDGET_SOURCE','module' => 'Opportunities','for_js' => true), $this);?>
@@ -7530,6 +7683,9 @@ addToValidate(\'EditView\', \'submissionstatus_c\', \'enum\', false,\''; ?>
 <?php echo '\' );
 addToValidate(\'EditView\', \'budget_head_c\', \'varchar\', false,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_BUDGET_HEAD','module' => 'Opportunities','for_js' => true), $this);?>
+<?php echo '\' );
+addToValidate(\'EditView\', \'write_note_c\', \'text\', false,\''; ?>
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_WRITE_NOTE','module' => 'Opportunities','for_js' => true), $this);?>
 <?php echo '\' );
 addToValidate(\'EditView\', \'selection_c\', \'enum\', false,\''; ?>
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_SELECTION','module' => 'Opportunities','for_js' => true), $this);?>
