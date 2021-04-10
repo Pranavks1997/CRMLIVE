@@ -18,6 +18,15 @@ $hook_array['before_save'] = Array();
 $hook_array['before_save'][] = Array(90, 'Attachments', 'custom/modules/Opportunities/uploadAttchments.php','cls_attachments', 'fn_attachments'); 
 
 $hook_array['after_save'] = Array();
+
+/*$hook_array['after_save'][] = Array(
+    80,
+    'Retrieve and compare values',
+    'custom/modules/Opportunities/comments.php',
+    'comments',
+    'comments_save'
+);*/
+
 $hook_array['after_save'][] = Array(
     81,
     'Retrieve and compare values',

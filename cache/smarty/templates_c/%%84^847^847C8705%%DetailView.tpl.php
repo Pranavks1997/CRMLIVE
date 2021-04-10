@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.31, created on 2021-04-06 16:46:45
+<?php /* Smarty version 2.6.31, created on 2021-04-09 14:43:45
          compiled from cache/themes/SuiteP/modules/Opportunities/DetailView.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 38, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 47, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 142, false),array('function', 'multienum_to_array', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 762, false),array('function', 'sugar_number_format', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 1474, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 135, false),array('modifier', 'escape', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 829, false),array('modifier', 'url2html', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 829, false),array('modifier', 'nl2br', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 829, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_include', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 38, false),array('function', 'sugar_translate', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 47, false),array('function', 'counter', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 144, false),array('function', 'multienum_to_array', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 764, false),array('function', 'sugar_number_format', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 1476, false),array('modifier', 'strip_semicolon', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 137, false),array('modifier', 'escape', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 831, false),array('modifier', 'url2html', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 831, false),array('modifier', 'nl2br', 'cache/themes/SuiteP/modules/Opportunities/DetailView.tpl', 831, false),)), $this); ?>
 
 
 <script language="javascript">
@@ -76,6 +76,8 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'sugar_inclu
 
 </a>
 </li>
+
+
 
 
 
@@ -4849,12 +4851,296 @@ unset($_smarty_tpl_vars);
 <div class="panel-heading ">
 <a class="" role="button" data-toggle="collapse" href="#top-panel-6" aria-expanded="false">
 <div class="col-xs-10 col-sm-11 col-md-11">
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_EDITVIEW_PANEL10','module' => 'Opportunities'), $this);?>
+
+</div>
+</a>
+</div>
+<div class="panel-body panel-collapse collapse in panelContainer" id="top-panel-6"  data-id="LBL_EDITVIEW_PANEL10">
+<div class="tab-content">
+<!-- TAB CONTENT -->
+
+
+
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-12 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label col-1-label">
+
+
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_NOTE','module' => 'Opportunities'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+</div>
+
+
+<div class="col-xs-12 col-sm-10 detail-view-field" type="text" field="note_c" colspan='3'>
+
+<?php if (! $this->_tpl_vars['fields']['note_c']['hidden']): ?>
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<span class="sugar_field" id="<?php echo ((is_array($_tmp=((is_array($_tmp=((is_array($_tmp=$this->_tpl_vars['fields']['note_c']['name'])) ? $this->_run_mod_handler('escape', true, $_tmp, 'html') : smarty_modifier_escape($_tmp, 'html')))) ? $this->_run_mod_handler('url2html', true, $_tmp) : url2html($_tmp)))) ? $this->_run_mod_handler('nl2br', true, $_tmp) : smarty_modifier_nl2br($_tmp)); ?>
+"><?php echo ((is_array($_tmp=((is_array($_tmp=((is_array($_tmp=((is_array($_tmp=$this->_tpl_vars['fields']['note_c']['value'])) ? $this->_run_mod_handler('escape', true, $_tmp, 'html') : smarty_modifier_escape($_tmp, 'html')))) ? $this->_run_mod_handler('escape', true, $_tmp, 'html_entity_decode') : smarty_modifier_escape($_tmp, 'html_entity_decode')))) ? $this->_run_mod_handler('url2html', true, $_tmp) : url2html($_tmp)))) ? $this->_run_mod_handler('nl2br', true, $_tmp) : smarty_modifier_nl2br($_tmp)); ?>
+</span>
+<?php endif; ?>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-12 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label col-1-label">
+
+
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_WRITE_NOTE','module' => 'Opportunities'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+</div>
+
+
+<div class="col-xs-12 col-sm-10 detail-view-field" type="text" field="write_note_c" colspan='3'>
+
+<?php if (! $this->_tpl_vars['fields']['write_note_c']['hidden']): ?>
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<span class="sugar_field" id="<?php echo ((is_array($_tmp=((is_array($_tmp=((is_array($_tmp=$this->_tpl_vars['fields']['write_note_c']['name'])) ? $this->_run_mod_handler('escape', true, $_tmp, 'html') : smarty_modifier_escape($_tmp, 'html')))) ? $this->_run_mod_handler('url2html', true, $_tmp) : url2html($_tmp)))) ? $this->_run_mod_handler('nl2br', true, $_tmp) : smarty_modifier_nl2br($_tmp)); ?>
+"><?php echo ((is_array($_tmp=((is_array($_tmp=((is_array($_tmp=((is_array($_tmp=$this->_tpl_vars['fields']['write_note_c']['value'])) ? $this->_run_mod_handler('escape', true, $_tmp, 'html') : smarty_modifier_escape($_tmp, 'html')))) ? $this->_run_mod_handler('escape', true, $_tmp, 'html_entity_decode') : smarty_modifier_escape($_tmp, 'html_entity_decode')))) ? $this->_run_mod_handler('url2html', true, $_tmp) : url2html($_tmp)))) ? $this->_run_mod_handler('nl2br', true, $_tmp) : smarty_modifier_nl2br($_tmp)); ?>
+</span>
+<?php endif; ?>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-12 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label col-1-label">
+
+
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_POST_NOTE','module' => 'Opportunities'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+</div>
+
+
+<div class="col-xs-12 col-sm-10 detail-view-field" type="varchar" field="post_note_c" colspan='3'>
+
+<?php if (! $this->_tpl_vars['fields']['post_note_c']['hidden']): ?>
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<?php if (strlen ( $this->_tpl_vars['fields']['post_note_c']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['post_note_c']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['post_note_c']['value']); ?>
+<?php endif; ?> 
+<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['post_note_c']['name']; ?>
+"><?php echo $this->_tpl_vars['fields']['post_note_c']['value']; ?>
+</span>
+<?php endif; ?>
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+</div>
+
+</div>
+                                </div>
+</div>
+</div>
+<?php else: ?>
+
+<div class="panel panel-default tab-panel-0" style="display: block;">
+<div class="panel-heading ">
+<a class="" role="button" data-toggle="collapse" href="#top-panel-6" aria-expanded="false">
+<div class="col-xs-10 col-sm-11 col-md-11">
+<?php echo smarty_function_sugar_translate(array('label' => 'LBL_EDITVIEW_PANEL10','module' => 'Opportunities'), $this);?>
+
+</div>
+</a>
+</div>
+<div class="panel-body panel-collapse collapse in panelContainer" id="top-panel-6" data-id="LBL_EDITVIEW_PANEL10">
+<div class="tab-content">
+<!-- TAB CONTENT -->
+
+
+
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-12 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label col-1-label">
+
+
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_NOTE','module' => 'Opportunities'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+</div>
+
+
+<div class="col-xs-12 col-sm-10 detail-view-field" type="text" field="note_c" colspan='3'>
+
+<?php if (! $this->_tpl_vars['fields']['note_c']['hidden']): ?>
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<span class="sugar_field" id="<?php echo ((is_array($_tmp=((is_array($_tmp=((is_array($_tmp=$this->_tpl_vars['fields']['note_c']['name'])) ? $this->_run_mod_handler('escape', true, $_tmp, 'html') : smarty_modifier_escape($_tmp, 'html')))) ? $this->_run_mod_handler('url2html', true, $_tmp) : url2html($_tmp)))) ? $this->_run_mod_handler('nl2br', true, $_tmp) : smarty_modifier_nl2br($_tmp)); ?>
+"><?php echo ((is_array($_tmp=((is_array($_tmp=((is_array($_tmp=((is_array($_tmp=$this->_tpl_vars['fields']['note_c']['value'])) ? $this->_run_mod_handler('escape', true, $_tmp, 'html') : smarty_modifier_escape($_tmp, 'html')))) ? $this->_run_mod_handler('escape', true, $_tmp, 'html_entity_decode') : smarty_modifier_escape($_tmp, 'html_entity_decode')))) ? $this->_run_mod_handler('url2html', true, $_tmp) : url2html($_tmp)))) ? $this->_run_mod_handler('nl2br', true, $_tmp) : smarty_modifier_nl2br($_tmp)); ?>
+</span>
+<?php endif; ?>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-12 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label col-1-label">
+
+
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_WRITE_NOTE','module' => 'Opportunities'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+</div>
+
+
+<div class="col-xs-12 col-sm-10 detail-view-field" type="text" field="write_note_c" colspan='3'>
+
+<?php if (! $this->_tpl_vars['fields']['write_note_c']['hidden']): ?>
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<span class="sugar_field" id="<?php echo ((is_array($_tmp=((is_array($_tmp=((is_array($_tmp=$this->_tpl_vars['fields']['write_note_c']['name'])) ? $this->_run_mod_handler('escape', true, $_tmp, 'html') : smarty_modifier_escape($_tmp, 'html')))) ? $this->_run_mod_handler('url2html', true, $_tmp) : url2html($_tmp)))) ? $this->_run_mod_handler('nl2br', true, $_tmp) : smarty_modifier_nl2br($_tmp)); ?>
+"><?php echo ((is_array($_tmp=((is_array($_tmp=((is_array($_tmp=((is_array($_tmp=$this->_tpl_vars['fields']['write_note_c']['value'])) ? $this->_run_mod_handler('escape', true, $_tmp, 'html') : smarty_modifier_escape($_tmp, 'html')))) ? $this->_run_mod_handler('escape', true, $_tmp, 'html_entity_decode') : smarty_modifier_escape($_tmp, 'html_entity_decode')))) ? $this->_run_mod_handler('url2html', true, $_tmp) : url2html($_tmp)))) ? $this->_run_mod_handler('nl2br', true, $_tmp) : smarty_modifier_nl2br($_tmp)); ?>
+</span>
+<?php endif; ?>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-12 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label col-1-label">
+
+
+<?php ob_start(); ?><?php echo smarty_function_sugar_translate(array('label' => 'LBL_POST_NOTE','module' => 'Opportunities'), $this);?>
+<?php $this->_smarty_vars['capture']['label'] = ob_get_contents();  $this->assign('label', ob_get_contents());ob_end_clean(); ?>
+<?php echo ((is_array($_tmp=$this->_tpl_vars['label'])) ? $this->_run_mod_handler('strip_semicolon', true, $_tmp) : smarty_modifier_strip_semicolon($_tmp)); ?>
+:
+</div>
+
+
+<div class="col-xs-12 col-sm-10 detail-view-field" type="varchar" field="post_note_c" colspan='3'>
+
+<?php if (! $this->_tpl_vars['fields']['post_note_c']['hidden']): ?>
+<?php echo smarty_function_counter(array('name' => 'panelFieldCount','print' => false), $this);?>
+
+
+<?php if (strlen ( $this->_tpl_vars['fields']['post_note_c']['value'] ) <= 0): ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['post_note_c']['default_value']); ?>
+<?php else: ?>
+<?php $this->assign('value', $this->_tpl_vars['fields']['post_note_c']['value']); ?>
+<?php endif; ?> 
+<span class="sugar_field" id="<?php echo $this->_tpl_vars['fields']['post_note_c']['name']; ?>
+"><?php echo $this->_tpl_vars['fields']['post_note_c']['value']; ?>
+</span>
+<?php endif; ?>
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+</div>
+
+</div>
+                            </div>
+</div>
+</div>
+<?php endif; ?>
+
+
+
+
+
+<?php if ($this->_tpl_vars['config']['enable_action_menu'] && $this->_tpl_vars['config']['enable_action_menu'] != false): ?>
+
+<div class="panel panel-default tab-panel-0" style="display: block;">
+<div class="panel-heading ">
+<a class="" role="button" data-toggle="collapse" href="#top-panel-7" aria-expanded="false">
+<div class="col-xs-10 col-sm-11 col-md-11">
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_EDITVIEW_PANEL9','module' => 'Opportunities'), $this);?>
 
 </div>
 </a>
 </div>
-<div class="panel-body panel-collapse collapse in panelContainer" id="top-panel-6"  data-id="LBL_EDITVIEW_PANEL9">
+<div class="panel-body panel-collapse collapse in panelContainer" id="top-panel-7"  data-id="LBL_EDITVIEW_PANEL9">
 <div class="tab-content">
 <!-- TAB CONTENT -->
 
@@ -5059,14 +5345,14 @@ unset($_smarty_tpl_vars);
 
 <div class="panel panel-default tab-panel-0" style="display: block;">
 <div class="panel-heading ">
-<a class="" role="button" data-toggle="collapse" href="#top-panel-6" aria-expanded="false">
+<a class="" role="button" data-toggle="collapse" href="#top-panel-7" aria-expanded="false">
 <div class="col-xs-10 col-sm-11 col-md-11">
 <?php echo smarty_function_sugar_translate(array('label' => 'LBL_EDITVIEW_PANEL9','module' => 'Opportunities'), $this);?>
 
 </div>
 </a>
 </div>
-<div class="panel-body panel-collapse collapse in panelContainer" id="top-panel-6" data-id="LBL_EDITVIEW_PANEL9">
+<div class="panel-body panel-collapse collapse in panelContainer" id="top-panel-7" data-id="LBL_EDITVIEW_PANEL9">
 <div class="tab-content">
 <!-- TAB CONTENT -->
 

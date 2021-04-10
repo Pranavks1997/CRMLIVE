@@ -65,6 +65,11 @@ array (
           'newTab' => false,
           'panelDefault' => 'expanded',
         ),
+        'LBL_EDITVIEW_PANEL10' => 
+        array (
+          'newTab' => false,
+          'panelDefault' => 'expanded',
+        ),
         'LBL_EDITVIEW_PANEL9' => 
         array (
           'newTab' => false,
@@ -515,6 +520,35 @@ array (
             'name' => 'comments_c',
             'studio' => 'visible',
             'label' => 'LBL_COMMENTS',
+          ),
+        ),
+      ),
+      'lbl_editview_panel10' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            'name' => 'note_c',
+            'studio' => 'visible',
+            'label' => 'LBL_NOTE',
+          ),
+        ),
+        1 => 
+        array (
+          0 => 
+          array (
+            'name' => 'write_note_c',
+            'studio' => 'visible',
+            'label' => 'LBL_WRITE_NOTE',
+          ),
+        ),
+        2 => 
+        array (
+          0 => 
+          array (
+            'name' => 'post_note_c',
+            'label' => 'LBL_POST_NOTE',
           ),
         ),
       ),
