@@ -3811,7 +3811,7 @@ class HomeController extends SugarController{
         $fp = fopen("php://output", 'w');
         if($fp){
             header('Content-Type: text/csv');
-            header('Content-Disposition: attachment; filename="'.$filename.'".csv"');
+            header('Content-Disposition: attachment; filename="'.$filename.'.csv"');
             fputcsv($fp, array_values($headers));
             foreach($data as $d){
                 fputcsv($fp, array_values($d));
@@ -9031,7 +9031,7 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
         $fp = fopen("php://output", 'w');
         if($fp){
             header('Content-Type: text/csv');
-            header('Content-Disposition: attachment; filename="'.$filename.'".csv"');
+            header('Content-Disposition: attachment; filename="'.$filename.'.csv"');
             fputcsv($fp, array_values($headers));
             foreach($data as $d){
                 fputcsv($fp, array_values($d));
