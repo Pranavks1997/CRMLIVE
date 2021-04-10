@@ -49,4 +49,22 @@ div[type=radioenum] {
    padding-top: 10px;
 }
 
+#note_c {
+   background: white;
+    border: 1px solid black;
+   
+    padding: 4px;
+    width: 120%;
+    height: 110px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-align: justify;
+   
+    
+}
+
+#post_note_c{
+    margin-left: 25%;
+}
+
 

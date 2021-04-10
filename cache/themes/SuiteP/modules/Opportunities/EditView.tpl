@@ -96,6 +96,8 @@ if(custom_check_form('EditView'))SUGAR.ajaxUI.submitForm(_form);return false;" c
 
 
 
+
+
 </ul>
 <div class="clearfix"></div>
 <div class="tab-content">
@@ -414,7 +416,7 @@ onclick="SUGAR.clearRelateField(this.form, '{$fields.rfporeoipublished_c.name}-i
 <div class="col-xs-12 col-sm-8 edit-view-field " type="file" field="filename"  >
 {counter name="panelFieldCount" print=false}
 
-<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=zSGpyg0LVFUA_fRl-DlJZQ'></script>
+<script type="text/javascript" src='include/SugarFields/Fields/File/SugarFieldFile.js?v=M9osD4ergxNxZ7ta1VqM-Q'></script>
 {if !empty($fields.filename.value) }
 {assign var=showRemove value=true}
 {else}
@@ -4916,11 +4918,135 @@ title='' tabindex="0"
 <div class="panel-heading ">
 <a class="" role="button" data-toggle="collapse-edit" aria-expanded="false">
 <div class="col-xs-10 col-sm-11 col-md-11">
+{sugar_translate label='LBL_EDITVIEW_PANEL10' module='Opportunities'}
+</div>
+</a>
+</div>
+<div class="panel-body panel-collapse collapse in panelContainer" id="detailpanel_6" data-id="LBL_EDITVIEW_PANEL10">
+<div class="tab-content">
+<!-- tab_panel_content.tpl -->
+<div class="row edit-view-row">
+
+
+
+<div class="col-xs-12 col-sm-12 edit-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label" data-label="LBL_NOTE">
+
+{minify}
+{capture name="label" assign="label"}{sugar_translate label='LBL_NOTE' module='Opportunities'}{/capture}
+{$label|strip_semicolon}:
+
+{/minify}
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="text" field="note_c" colspan='3' >
+{counter name="panelFieldCount" print=false}
+
+{if empty($fields.note_c.value)}
+{assign var="value" value=$fields.note_c.default_value }
+{else}
+{assign var="value" value=$fields.note_c.value }
+{/if}
+<textarea  id='{$fields.note_c.name}' name='{$fields.note_c.name}'
+rows="5"
+cols="50"
+title='' tabindex="0" 
+ >{$value}</textarea>
+{literal}{/literal}
+</div>
+
+<!-- [/hide] -->
+</div>
+<div class="clear"></div>
+
+
+
+<div class="col-xs-12 col-sm-12 edit-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label" data-label="LBL_WRITE_NOTE">
+
+{minify}
+{capture name="label" assign="label"}{sugar_translate label='LBL_WRITE_NOTE' module='Opportunities'}{/capture}
+{$label|strip_semicolon}:
+
+{/minify}
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="text" field="write_note_c" colspan='3' >
+{counter name="panelFieldCount" print=false}
+
+{if empty($fields.write_note_c.value)}
+{assign var="value" value=$fields.write_note_c.default_value }
+{else}
+{assign var="value" value=$fields.write_note_c.value }
+{/if}
+<textarea  id='{$fields.write_note_c.name}' name='{$fields.write_note_c.name}'
+rows="5"
+cols="50"
+title='' tabindex="0" 
+ >{$value}</textarea>
+{literal}{/literal}
+</div>
+
+<!-- [/hide] -->
+</div>
+<div class="clear"></div>
+
+
+
+<div class="col-xs-12 col-sm-12 edit-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label" data-label="LBL_POST_NOTE">
+
+{minify}
+{capture name="label" assign="label"}{sugar_translate label='LBL_POST_NOTE' module='Opportunities'}{/capture}
+{$label|strip_semicolon}:
+
+{/minify}
+</div>
+
+<div class="col-xs-12 col-sm-8 edit-view-field " type="varchar" field="post_note_c" colspan='3' >
+{counter name="panelFieldCount" print=false}
+
+{if strlen($fields.post_note_c.value) <= 0}
+{assign var="value" value=$fields.post_note_c.default_value }
+{else}
+{assign var="value" value=$fields.post_note_c.value }
+{/if}  
+<input type='text' name='{$fields.post_note_c.name}' 
+id='{$fields.post_note_c.name}' size='30' 
+maxlength='255' 
+value='{$value}' title=''      >
+</div>
+
+<!-- [/hide] -->
+</div>
+
+
+<div class="col-xs-12 col-sm-6 edit-view-row-item">
+</div>
+<div class="clear"></div>
+<div class="clear"></div>
+</div>                    </div>
+</div>
+</div>
+
+
+
+
+<div class="panel panel-default tab-panel-0" style="display: block;">
+<div class="panel-heading ">
+<a class="" role="button" data-toggle="collapse-edit" aria-expanded="false">
+<div class="col-xs-10 col-sm-11 col-md-11">
 {sugar_translate label='LBL_EDITVIEW_PANEL9' module='Opportunities'}
 </div>
 </a>
 </div>
-<div class="panel-body panel-collapse collapse in panelContainer" id="detailpanel_6" data-id="LBL_EDITVIEW_PANEL9">
+<div class="panel-body panel-collapse collapse in panelContainer" id="detailpanel_7" data-id="LBL_EDITVIEW_PANEL9">
 <div class="tab-content">
 <!-- tab_panel_content.tpl -->
 <div class="row edit-view-row">
@@ -5247,6 +5373,7 @@ addToValidate('EditView', 'project_scope_c', 'text', false,'{/literal}{sugar_tra
 addToValidate('EditView', 'expected_inflow_c', 'date', false,'{/literal}{sugar_translate label='LBL_EXPECTED_INFLOW' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'rfp_eoi_projected_c', 'date', false,'{/literal}{sugar_translate label='LBL_RFP_EOI_PROJECTED' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'jjwg_maps_address_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_JJWG_MAPS_ADDRESS' module='Opportunities' for_js=true}{literal}' );
+addToValidate('EditView', 'note_c', 'text', false,'{/literal}{sugar_translate label='LBL_NOTE' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'work_order_achieved_c', 'date', false,'{/literal}{sugar_translate label='LBL_WORK_ORDER_ACHIEVED' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'country_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_COUNTRY' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'rfp_eoi_published_achieved_c', 'date', false,'{/literal}{sugar_translate label='LBL_RFP_EOI_PUBLISHED_ACHIEVED' module='Opportunities' for_js=true}{literal}' );
@@ -5254,6 +5381,7 @@ addToValidate('EditView', 'bid_strategy_c', 'varchar', false,'{/literal}{sugar_t
 addToValidate('EditView', 'rfp_eoi_summary_c', 'text', false,'{/literal}{sugar_translate label='LBL_RFP_EOI_SUMMARY' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'select_approver_c', 'relate', false,'{/literal}{sugar_translate label='LBL_SELECT_APPROVER' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'non_financial_radio_c', 'radioenum', false,'{/literal}{sugar_translate label='LBL_NON_FINANCIAL_RADIO' module='Opportunities' for_js=true}{literal}' );
+addToValidate('EditView', 'post_note_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_POST_NOTE' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'budget_source_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_BUDGET_SOURCE' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'new_department_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_NEW_DEPARTMENT' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'tagged_hiden_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_TAGGED_HIDEN' module='Opportunities' for_js=true}{literal}' );
@@ -5277,6 +5405,7 @@ addToValidate('EditView', 'financial_feasibility_l3_c', 'varchar', false,'{/lite
 addToValidate('EditView', 'scope_budget_projected_c', 'date', false,'{/literal}{sugar_translate label='LBL_SCOPE_BUDGET_PROJECTED' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'submissionstatus_c', 'enum', false,'{/literal}{sugar_translate label='LBL_SUBMISSIONSTATUS' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'budget_head_c', 'varchar', false,'{/literal}{sugar_translate label='LBL_BUDGET_HEAD' module='Opportunities' for_js=true}{literal}' );
+addToValidate('EditView', 'write_note_c', 'text', false,'{/literal}{sugar_translate label='LBL_WRITE_NOTE' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'selection_c', 'enum', false,'{/literal}{sugar_translate label='LBL_SELECTION' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'closure_status_c', 'enum', false,'{/literal}{sugar_translate label='LBL_CLOSURE_STATUS' module='Opportunities' for_js=true}{literal}' );
 addToValidate('EditView', 'timing_button_c', 'enum', false,'{/literal}{sugar_translate label='LBL_TIMING_BUTTON' module='Opportunities' for_js=true}{literal}' );

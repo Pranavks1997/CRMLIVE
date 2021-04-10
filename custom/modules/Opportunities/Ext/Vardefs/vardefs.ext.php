@@ -245,6 +245,12 @@ $dictionary['Opportunity']['fields']['jjwg_maps_address_c']['inline_edit']=1;
 
  
 
+ // created: 2021-04-08 12:11:42
+$dictionary['Opportunity']['fields']['note_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['note_c']['labelValue']='Note';
+
+ 
+
  // created: 2021-02-05 07:28:08
 $dictionary['Opportunity']['fields']['assigned_to_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['assigned_to_c']['labelValue']='Assigned to';
@@ -295,6 +301,12 @@ $dictionary['Opportunity']['fields']['select_approver_c']['labelValue']='Approve
  // created: 2021-03-02 11:14:34
 $dictionary['Opportunity']['fields']['non_financial_radio_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['non_financial_radio_c']['labelValue']='Non Financial Consideration ';
+
+ 
+
+ // created: 2021-04-09 13:41:48
+$dictionary['Opportunity']['fields']['post_note_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['post_note_c']['labelValue']='Post Note';
 
  
 
@@ -540,6 +552,12 @@ $dictionary['Opportunity']['fields']['test_c']['labelValue']='test';
  // created: 2021-03-02 11:36:58
 $dictionary['Opportunity']['fields']['budget_head_c']['inline_edit']='1';
 $dictionary['Opportunity']['fields']['budget_head_c']['labelValue']='Budget Head';
+
+ 
+
+ // created: 2021-04-08 12:12:49
+$dictionary['Opportunity']['fields']['write_note_c']['inline_edit']='1';
+$dictionary['Opportunity']['fields']['write_note_c']['labelValue']='Write Note';
 
  
 

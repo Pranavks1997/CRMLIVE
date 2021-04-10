@@ -66,6 +66,8 @@
 
 
 
+
+
 {if $config.enable_action_menu and $config.enable_action_menu != false}
 <li id="tab-actions" class="dropdown">
 <a class="dropdown-toggle" data-toggle="dropdown" href="#">ACTIONS<span class="suitepicon suitepicon-action-caret"></span></a>
@@ -4178,11 +4180,263 @@
 <div class="panel-heading ">
 <a class="" role="button" data-toggle="collapse" href="#top-panel-6" aria-expanded="false">
 <div class="col-xs-10 col-sm-11 col-md-11">
+{sugar_translate label='LBL_EDITVIEW_PANEL10' module='Opportunities'}
+</div>
+</a>
+</div>
+<div class="panel-body panel-collapse collapse in panelContainer" id="top-panel-6"  data-id="LBL_EDITVIEW_PANEL10">
+<div class="tab-content">
+<!-- TAB CONTENT -->
+
+
+
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-12 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label col-1-label">
+
+
+{capture name="label" assign="label"}{sugar_translate label='LBL_NOTE' module='Opportunities'}{/capture}
+{$label|strip_semicolon}:
+</div>
+
+
+<div class="col-xs-12 col-sm-10 detail-view-field" type="text" field="note_c" colspan='3'>
+
+{if !$fields.note_c.hidden}
+{counter name="panelFieldCount" print=false}
+
+<span class="sugar_field" id="{$fields.note_c.name|escape:'html'|url2html|nl2br}">{$fields.note_c.value|escape:'html'|escape:'html_entity_decode'|url2html|nl2br}</span>
+{/if}
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-12 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label col-1-label">
+
+
+{capture name="label" assign="label"}{sugar_translate label='LBL_WRITE_NOTE' module='Opportunities'}{/capture}
+{$label|strip_semicolon}:
+</div>
+
+
+<div class="col-xs-12 col-sm-10 detail-view-field" type="text" field="write_note_c" colspan='3'>
+
+{if !$fields.write_note_c.hidden}
+{counter name="panelFieldCount" print=false}
+
+<span class="sugar_field" id="{$fields.write_note_c.name|escape:'html'|url2html|nl2br}">{$fields.write_note_c.value|escape:'html'|escape:'html_entity_decode'|url2html|nl2br}</span>
+{/if}
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-12 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label col-1-label">
+
+
+{capture name="label" assign="label"}{sugar_translate label='LBL_POST_NOTE' module='Opportunities'}{/capture}
+{$label|strip_semicolon}:
+</div>
+
+
+<div class="col-xs-12 col-sm-10 detail-view-field" type="varchar" field="post_note_c" colspan='3'>
+
+{if !$fields.post_note_c.hidden}
+{counter name="panelFieldCount" print=false}
+
+{if strlen($fields.post_note_c.value) <= 0}
+{assign var="value" value=$fields.post_note_c.default_value }
+{else}
+{assign var="value" value=$fields.post_note_c.value }
+{/if} 
+<span class="sugar_field" id="{$fields.post_note_c.name}">{$fields.post_note_c.value}</span>
+{/if}
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+</div>
+
+</div>
+                                </div>
+</div>
+</div>
+{else}
+
+<div class="panel panel-default tab-panel-0" style="display: block;">
+<div class="panel-heading ">
+<a class="" role="button" data-toggle="collapse" href="#top-panel-6" aria-expanded="false">
+<div class="col-xs-10 col-sm-11 col-md-11">
+{sugar_translate label='LBL_EDITVIEW_PANEL10' module='Opportunities'}
+</div>
+</a>
+</div>
+<div class="panel-body panel-collapse collapse in panelContainer" id="top-panel-6" data-id="LBL_EDITVIEW_PANEL10">
+<div class="tab-content">
+<!-- TAB CONTENT -->
+
+
+
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-12 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label col-1-label">
+
+
+{capture name="label" assign="label"}{sugar_translate label='LBL_NOTE' module='Opportunities'}{/capture}
+{$label|strip_semicolon}:
+</div>
+
+
+<div class="col-xs-12 col-sm-10 detail-view-field" type="text" field="note_c" colspan='3'>
+
+{if !$fields.note_c.hidden}
+{counter name="panelFieldCount" print=false}
+
+<span class="sugar_field" id="{$fields.note_c.name|escape:'html'|url2html|nl2br}">{$fields.note_c.value|escape:'html'|escape:'html_entity_decode'|url2html|nl2br}</span>
+{/if}
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-12 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label col-1-label">
+
+
+{capture name="label" assign="label"}{sugar_translate label='LBL_WRITE_NOTE' module='Opportunities'}{/capture}
+{$label|strip_semicolon}:
+</div>
+
+
+<div class="col-xs-12 col-sm-10 detail-view-field" type="text" field="write_note_c" colspan='3'>
+
+{if !$fields.write_note_c.hidden}
+{counter name="panelFieldCount" print=false}
+
+<span class="sugar_field" id="{$fields.write_note_c.name|escape:'html'|url2html|nl2br}">{$fields.write_note_c.value|escape:'html'|escape:'html_entity_decode'|url2html|nl2br}</span>
+{/if}
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<div class="row detail-view-row">
+
+
+
+<div class="col-xs-12 col-sm-12 detail-view-row-item">
+
+
+<div class="col-xs-12 col-sm-2 label col-1-label">
+
+
+{capture name="label" assign="label"}{sugar_translate label='LBL_POST_NOTE' module='Opportunities'}{/capture}
+{$label|strip_semicolon}:
+</div>
+
+
+<div class="col-xs-12 col-sm-10 detail-view-field" type="varchar" field="post_note_c" colspan='3'>
+
+{if !$fields.post_note_c.hidden}
+{counter name="panelFieldCount" print=false}
+
+{if strlen($fields.post_note_c.value) <= 0}
+{assign var="value" value=$fields.post_note_c.default_value }
+{else}
+{assign var="value" value=$fields.post_note_c.value }
+{/if} 
+<span class="sugar_field" id="{$fields.post_note_c.name}">{$fields.post_note_c.value}</span>
+{/if}
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="col-xs-12 col-sm-6 detail-view-row-item">
+</div>
+
+</div>
+                            </div>
+</div>
+</div>
+{/if}
+
+
+
+
+
+{if $config.enable_action_menu and $config.enable_action_menu != false}
+
+<div class="panel panel-default tab-panel-0" style="display: block;">
+<div class="panel-heading ">
+<a class="" role="button" data-toggle="collapse" href="#top-panel-7" aria-expanded="false">
+<div class="col-xs-10 col-sm-11 col-md-11">
 {sugar_translate label='LBL_EDITVIEW_PANEL9' module='Opportunities'}
 </div>
 </a>
 </div>
-<div class="panel-body panel-collapse collapse in panelContainer" id="top-panel-6"  data-id="LBL_EDITVIEW_PANEL9">
+<div class="panel-body panel-collapse collapse in panelContainer" id="top-panel-7"  data-id="LBL_EDITVIEW_PANEL9">
 <div class="tab-content">
 <!-- TAB CONTENT -->
 
@@ -4362,13 +4616,13 @@
 
 <div class="panel panel-default tab-panel-0" style="display: block;">
 <div class="panel-heading ">
-<a class="" role="button" data-toggle="collapse" href="#top-panel-6" aria-expanded="false">
+<a class="" role="button" data-toggle="collapse" href="#top-panel-7" aria-expanded="false">
 <div class="col-xs-10 col-sm-11 col-md-11">
 {sugar_translate label='LBL_EDITVIEW_PANEL9' module='Opportunities'}
 </div>
 </a>
 </div>
-<div class="panel-body panel-collapse collapse in panelContainer" id="top-panel-6" data-id="LBL_EDITVIEW_PANEL9">
+<div class="panel-body panel-collapse collapse in panelContainer" id="top-panel-7" data-id="LBL_EDITVIEW_PANEL9">
 <div class="tab-content">
 <!-- TAB CONTENT -->
 

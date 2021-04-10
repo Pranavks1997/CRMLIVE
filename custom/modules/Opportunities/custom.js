@@ -219,6 +219,7 @@ $('#multiple_approver_c').hide();
  if(opps_id ==""){
                          $('#detailpanel_6').hide();
                           $( ".panel-heading:contains('Tag And Untag Users')").hide();
+                           $( ".panel-heading:contains('Team Lead/MC Comments')").hide();
 
            
  } 
@@ -732,7 +733,7 @@ $('#timing_button_c').find('option').css('background-color','white');
      $(document).on('click', '#close2', function(){
       
       
-      
+      $('#stage,#milestone').val('');
       
          //----for l1 and l2 audit trai--------------------------------------------------
             var start_year=$('#startYear').val();
@@ -3469,6 +3470,10 @@ $( ".module-title-text" ).replaceWith( '<h2 class="module-title-text"> CREATE Op
   
   $('#financial_feasibility_l3_c').replaceWith('<button type="button" class="button" id="financial_feasibility_l3_c">Add L3 Details</button>');
   
+  $('#post_note_c').replaceWith('<button type="button" class="button" id="post_note_c">Post Note</button>');
+  
+  $('[data-label="LBL_POST_NOTE"]').hide();
+  
   $("#bid_checklist_c").replaceWith('<button type="button" class="button" id="bid_checklist_c">Bid Checklist</button>');
   
     $("#bid_checklist_c").on('click',function(){
@@ -3818,7 +3823,7 @@ $( ".module-title-text" ).replaceWith( '<h2 class="module-title-text"> CREATE Op
         $("#detailpanel_3").hide();
         $("#detailpanel_4").hide();
         $("#detailpanel_5").hide();
-        
+        $("#detailpanel_7").hide() ; 
         $("#status_c").attr("disabled",false);
         //$("option[value='Lead']").attr("disabled", true);
   $("option[value='QualifiedLead']").attr("disabled", true);
@@ -3945,7 +3950,7 @@ $( ".module-title-text" ).replaceWith( '<h2 class="module-title-text"> CREATE Op
               $("#detailpanel_4").hide() ;
               $("#detailpanel_5").hide() ;
              
-              $("#detailpanel_7").hide() ;
+             // $("#detailpanel_7").hide() ;
               $("#financial_feasibility_l1_c").attr("disabled",true);
               $("#budget_source_c").attr("disabled",true);
               $("#budget_head_c").attr("disabled",true);
@@ -4812,7 +4817,7 @@ if ( $("#rfporeoipublished_c").val()=='yes' && $("#status_c").val()=="Lead"){
               $("#detailpanel_4").hide() ;
               $("#detailpanel_5").hide() ;
              
-              $("#detailpanel_7").hide() ;
+            //  $("#detailpanel_7").hide() ;
               
               $("#financial_feasibility_l1_c").attr("disabled",true);
               $("#budget_source_c").attr("disabled",true);
@@ -5083,8 +5088,8 @@ if ( $("#rfporeoipublished_c").val()=='yes' && $("#status_c").val()=="Lead"){
               $("#detailpanel_3").hide() ;
               $("#detailpanel_4").hide() ;
               $("#detailpanel_5").hide() ;
-             
-              $("#detailpanel_7").hide() ;
+           //  $("#detailpanel_6").hide() ;
+             // $("#detailpanel_7").hide() ;
               
               $("#financial_feasibility_l1_c").attr("disabled",true);
               $("#budget_source_c").attr("disabled",true);
@@ -5223,6 +5228,8 @@ if ( $("#rfporeoipublished_c").val()=='yes' && $("#status_c").val()=="Lead"){
               $("#detailpanel_3").hide() ;
               $("#detailpanel_4").hide() ;
               $("#detailpanel_5").hide() ;
+               $("#detailpanel_6").hide() ;
+                $("#detailpanel_7").hide() ;
              
                $("#status_c").val("Lead");
               $("#applyfor_c").val('qualifylead');

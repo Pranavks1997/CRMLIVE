@@ -52,16 +52,85 @@ $(document).ready(function(){
     $('input[name="reject_button"]').hide();
  
  //--------- hiding button edit mode -----------------END-------------------------------
- 
- 
- 
- 
+
+
  
  //-----------------------------------For Approve or reject or Send for approval button---------------------------
  var opp_id=$('#EditView input[name=record]').val();
    //alert(opp_id);
     
  if (opp_id!=''){
+
+  // AJAX to check if current user is accessible to comments section or not
+  $.ajax({
+   url: 'index.php?module=Opportunities&action=comments_access',
+   type: 'POST',
+   dataType: "JSON",
+   data:{
+    opp_id: opp_id  
+   },
+   success: function(response){
+    
+     $('#write_note_c').attr('readonly', !response.accessible)
+     $('#post_note_c').attr('disabled', !response.accessible)
+    
+   }
+  })  
+  
+  // AJAX to save Team Lead / MC comments
+  $(document).on('click', '#post_note_c', function(){
+   
+   if($.trim($('#write_note_c').val()) != ''){
+    $.ajax({
+     url: 'index.php?module=Opportunities&action=save_comment',
+     type: 'POST',
+     dataType: "JSON",
+     data: {
+      opp_id: opp_id,
+      write_note_c: $('#write_note_c').val()
+     },
+     success: function(response){
+      alert(response.message)
+      // AJAX to retrive Team Lead / MC comments
+      $.ajax({
+       url: 'index.php?module=Opportunities&action=get_comments',
+       type: 'POST',
+       dataType: "JSON",
+       data: {
+        opp_id: opp_id
+       },
+       success: function(response){
+        if(response.status){
+        // $('#note_c').attr('readonly', true).html(response.opp_status.join('\r\n'))
+         $('#note_c').replaceWith('<div id="note_c">'+response.opp_status.join('<br>')+'</div>');
+       
+         $('#write_note_c').val('')
+        }
+       }
+      })
+     }
+    }) 
+   }
+   
+  })
+  
+  // AJAX to retrive Team Lead / MC comments
+  $.ajax({
+   url: 'index.php?module=Opportunities&action=get_comments',
+   type: 'POST',
+   dataType: "JSON",
+   data: {
+    opp_id: opp_id
+   },
+   success: function(response){
+    if(response.status){
+    // $('#note_c').attr('readonly', true).html(response.opp_status.join('\r\n'))
+     $('#note_c').replaceWith('<div id="note_c">'+response.opp_status.join('<br>')+'</div>');
+   
+     $('#write_note_c').val('')
+    }
+   }
+  })
   
    var status=$('#status_c').val();
       var rfp_eoi_published=$('#rfporeoipublished_c').val();

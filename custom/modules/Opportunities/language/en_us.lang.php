@@ -1,5 +1,5 @@
 <?php
-// created: 2021-04-06 09:50:57
+// created: 2021-04-09 13:41:48
 $mod_strings = array (
   'LBL_ACCOUNTS' => 'Departments',
   'LBL_RFP/EOIPUBLISHED' => 'RFP/EOI Published',
@@ -73,7 +73,7 @@ $mod_strings = array (
   'LBL_INFLUENCERSL2' => 'Influencers(L2)',
   'LBL_DETAILVIEW_PANEL10' => 'Influencers',
   'LBL_COMMENTS' => 'Comments',
-  'LBL_EDITVIEW_PANEL10' => 'New Panel 10',
+  'LBL_EDITVIEW_PANEL10' => 'Team Lead/MC Comments',
   'LBL_RISK' => 'Risk',
   'LBL_SELECTION' => 'Selection',
   'LBL_FUNDING' => 'Funding',
@@ -114,4 +114,7 @@ $mod_strings = array (
   'LBL_CRITICAL' => 'Critical',
   'LBL_OPPORTUNITIES_DOCUMENTS_1_FROM_DOCUMENTS_TITLE' => 'Documents',
   'LBL_DUE_DATE' => 'Due Date',
+  'LBL_NOTE' => 'Note',
+  'LBL_WRITE_NOTE' => 'Write Note',
+  'LBL_POST_NOTE' => 'Post Note',
 );
