@@ -294,8 +294,9 @@ class HomeController extends SugarController{
         $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
         // $query = "SELECT count(*) as delegate FROM users WHERE id = '$log_in_user_id' AND reports_to_id != '' ";
-        $is_reporting_manager_query = "SELECT count(*) as reporting_manager FROM users WHERE reports_to_id = '$log_in_user_id' ";
-        $result1 = $GLOBALS['db']->query($is_reporting_manager_query);
+
+        $result1 = getQuery('count(*) as reporting_manager', 'users', 'reports_to_id = "'.$log_in_user_id.'"');
+
         $result1 = $GLOBALS['db']->fetchByAssoc($result1);
         $query = "SELECT count(*) as delegate FROM users_cstm WHERE id_c = '$log_in_user_id' AND (teamheirarchy_c = 'team_lead' OR mc_c = 'yes')";
         $result = $GLOBALS['db']->query($query);
@@ -402,8 +403,9 @@ class HomeController extends SugarController{
     }
 
     public function get_user_details_by_id($user_id) {
-        $fetch_query = "SELECT * from users WHERE id='$user_id'";
-        $fetch_user = $GLOBALS['db']->query($fetch_query);
+
+        $fetch_user = getQuery('*', 'users', 'id = "'.$user_id.'"');
+
         $fetch_user_result = $GLOBALS['db']->fetchByAssoc($fetch_user);
         $user = $fetch_user_result;
         return $user;
@@ -606,8 +608,9 @@ class HomeController extends SugarController{
     function getTaggedMembers($id){
         $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
-        $query = "SELECT opportunities_users_2users_idb FROM opportunities_users_2_c WHERE opportunities_users_2opportunities_ida = '$id'";
-        $data = $GLOBALS['db']->query($query);
+
+        $data = getQuery('opportunities_users_2users_idb', 'opportunities_users_2_c', 'opportunities_users_2opportunities_ida = "'.$id.'"');
+
         $usersArray = array();
         while($d = $GLOBALS['db']->fetchByAssoc($data)){
             array_push($usersArray, $d['opportunities_users_2users_idb']);
@@ -624,8 +627,9 @@ class HomeController extends SugarController{
     function getModifiedUser($id){
         $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
-        $query = "SELECT first_name, last_name FROM users WHERE id = '$id'";
-        $data = $GLOBALS['db']->query($query);
+
+        $data = getQuery('first_name, last_name', 'users', 'id = "'.$id.'"');
+
         $user = '';
         while($row = $GLOBALS['db']->fetchByAssoc($data)){
             $user .= $row['first_name'].' '.$row['last_name'];
@@ -654,8 +658,9 @@ class HomeController extends SugarController{
                 $ChangedStatus = $this->getChangeStatus($row['status_c'], $row['rfporeoipublished_c']);
 
                 $created_by_id = $row['assigned_user_id'];
-                $user_name_fetch = "SELECT * FROM users WHERE id='$created_by_id'";
-                $user_name_fetch_result = $GLOBALS['db']->query($user_name_fetch);
+
+                $user_name_fetch_result = getQuery('*', 'users', 'id = "'.$created_by_id.'"');
+
                 $user_name_fetch_row = $GLOBALS['db']->fetchByAssoc($user_name_fetch_result);
 
                 $user_name = $user_name_fetch_row['user_name'];
@@ -847,8 +852,9 @@ class HomeController extends SugarController{
             $db = \DBManagerFactory::getInstance();
             $GLOBALS['db'];
 
-            $opportunityDetails = "SELECT rfporeoipublished_c FROM opportunities_cstm WHERE id_c = '$id'";
-            $result = $GLOBALS['db']->query($opportunityDetails);
+
+            $result = getQuery('rfporeoipublished_c', 'opportunities_cstm', 'id_c = "'.$id.'"');
+
             $opportunity = $GLOBALS['db']->fetchByAssoc($result);
 
             $changedStatus = $this->getApprovalStatus($changedStatus, $opportunity['rfporeoipublished_c']);
@@ -881,8 +887,8 @@ class HomeController extends SugarController{
                         $updateOpportunity = "UPDATE opportunities_cstm SET status_c = '$changedStatus', due_date_c = '' WHERE id_c = '$id'";
                         $db->query($updateOpportunity);
                         
-                         $sql_assigned_id = "SELECT assigned_user_id FROM opportunities WHERE id = '$id'";
-                         $result_assigned_id = $db->query($sql_assigned_id);
+                         $result_assigned_id = getQuery('assigned_user_id', 'opportunities', 'id = "'.$id.'"');
+
                          while ($row_assigned_id = mysqli_fetch_assoc($result_assigned_id)){
                                $assigned_id=$row_assigned_id['assigned_user_id'];
                             }
@@ -1095,8 +1101,9 @@ class HomeController extends SugarController{
         $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
 
-        $delegateQuery = "SELECT count(*) as count FROM approval_table WHERE delegate_id = '$userID' AND opp_id = '$oppID'";
-        $count = $GLOBALS['db']->query($delegateQuery);
+
+        $count = getQuery('count(*) as count', 'approval_table', 'delegate_id = "'.$userID.'" AND opp_id = "'.$oppID.'"');
+
         $count = $GLOBALS['db']->fetchByAssoc($count);
         return $count['count'];
     }
@@ -1223,8 +1230,8 @@ class HomeController extends SugarController{
             $oppID = $_POST['oppID']; 
             $data = '<span class="close-sequence-flow">×</span><div class="wrap padding-tb black-color">';
 
-            $query = "SELECT name,created_by,assigned_user_id,date_entered FROM opportunities WHERE id = '$oppID'";
-            $result = $GLOBALS['db']->query($query);
+            $result = getQuery('name,created_by,assigned_user_id,date_entered', 'opportunities', 'id = "'.$oppID.'"');
+
             $result = $GLOBALS['db']->fetchByAssoc($result);
             $created_by = $result['created_by'];
             $created_date = substr($result['date_entered'],0,10);
@@ -1394,8 +1401,9 @@ class HomeController extends SugarController{
                 break;
         }
         if($statusChar == 'CW'){
-            $query = "SELECT closure_status_c FROM opportunities_cstm WHERE id_c = '$oppID'";
-            $result = $GLOBALS['db']->query($query);
+
+            $result = getQuery('closure_status_c', 'opportunities_cstm', 'id_c = "'.$oppID.'"');
+
             $result = $GLOBALS['db']->fetchByAssoc($result);
             if($result['closure_status_c'] == 'won'){
                 $statusChar = 'CW';
@@ -1652,8 +1660,7 @@ class HomeController extends SugarController{
     public function get_closed_by($row) {
         if (!empty($row['date_modified'])) {
             $modified_user_id = $row['modified_user_id'];
-            $modified_user_query = "SELECT * FROM users WHERE id='$modified_user_id'";
-            $modified_user_query_fetch = $GLOBALS['db']->query($modified_user_query);
+            $modified_user_query_fetch = getQuery('*', 'users', 'id = "'.$modified_user_id.'"');
             $modified_user_query_fetch_row = $GLOBALS['db']->fetchByAssoc($modified_user_query_fetch);
             $closed_by_first_name = $modified_user_query_fetch_row['first_name'];
             $closed_by_last_name = $modified_user_query_fetch_row['last_name'];
@@ -1665,12 +1672,12 @@ class HomeController extends SugarController{
         $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
         if ($is_global == true) {
-            $query = "SELECT user_id FROM tagged_user WHERE opp_id = '$opportunity_id'";
+            $query = getQuery('user_id', 'tagged_user', 'opp_id = "'.$opportunity_id.'"');
         } else {
-            $query = "SELECT user_id FROM untagged_user WHERE opp_id = '$opportunity_id'";
+            $query = getQuery('user_id', 'untagged_user', 'opp_id = "'.$opportunity_id.'"');
         }
-        $result = $GLOBALS['db']->query($query);
-        $result_row = $GLOBALS['db']->fetchByAssoc($result);
+        $result_row = $GLOBALS['db']->fetchByAssoc($query);
+
         if ($useridreq) {
             $str1 = $this->multi_id_select_name_map($result_row['user_id']);
             $res = $result_row['user_id'];
@@ -1689,8 +1696,8 @@ class HomeController extends SugarController{
             $fetch_query = "SELECT * FROM users WHERE deleted = 0 AND `id` != '$log_in_user_id' AND `id` != '1' ORDER BY `users`.`first_name` ASC";
             $result = $GLOBALS['db']->query($fetch_query);
             $data = '';
-            $tagged_user_query = "SELECT * from tagged_user where opp_id = '$opportunity_id'";
-            $result1 = $GLOBALS['db']->query($tagged_user_query);
+
+            $result1 = getQuery('*', 'tagged_user', 'opp_id = "'.$opportunity_id.'"');
             $tagged_user_row = $result1->fetch_assoc();
             $tagged_user_array = explode(',', $tagged_user_row['user_id']);
             if ($result->num_rows > 0) {
@@ -1826,97 +1833,9 @@ class HomeController extends SugarController{
             'international_c'               => 'International Opportunity'
         );
 
-        $QualifiedLead = array(
-            'total_input_value'             => 'Amount (Cr/Mn)',
-            'sector_c'                      => 'Sector',
-            'product_service_c'             => 'Product/ Service',
-            'sub_sector_c'                  => 'Sub Sector',
-            'scope_budget_projected_c'      => 'DPR/Scope & Budget Accepted (Projected)',
-            'rfp_eoi_projected_c'           => 'RFP/EOI Initiated Drafting (Projected)',
-            'rfp_eoi_published_projected_c' => 'RFP/EOI Published (Projected)',
-            'work_order_projected_c'        => 'Work Order (Projected)'
-        );
-        $QualifiedLead = array_merge($default2, $QualifiedLead);
+        return $this->fetch_opportunity_dashboard_fields($default, $default2, $status);
 
-        $QualifiedOpportunity = array(
-            'budget_head_amount_c'                     => 'Budget Head Amount (In Cr)',
-            'budget_allocated_oppertunity_c'    => 'Budget Allocated For Opportunity (in Cr)',
-            'project_implementation_start_c'    => 'Project Implementation Start Date',
-            'project_implementation_end_c'      => 'Project Implementation End Date',
-            'selection_c'                       => 'Selection/Funding/Timing',
-            /*'funding_c'                         => 'Funding',
-            'timing_button_c'                   => 'Timing',*/
-        );
-        $QualifiedOpportunity = array_merge($QualifiedLead, $QualifiedOpportunity);
 
-        $QualifiedDPR = array(
-            'submissionstatus_c' => 'Submission Status'
-        );
-        $QualifiedDPR = array_merge($QualifiedOpportunity, $QualifiedDPR);
-
-        $QualifiedBid = array(
-            'closure_status_c'  => 'Closure Status'
-        );
-        $QualifiedBid = array_merge($QualifiedDPR, $QualifiedBid);
-
-        $fields['default'] = $default;
-        switch($status){
-            case 'Lead':
-                $fields['addons'] = $default2;
-                break;
-            case 'QualifiedLead':
-                $fields['addons'] = $QualifiedLead;
-                break;
-            case 'qualifylead':
-                $fields['addons'] = $QualifiedLead;
-                break;
-
-            case 'Qualified':
-                $fields['addons'] = $QualifiedOpportunity;
-                break;
-            case 'qualifyOpportunity':
-                $fields['addons'] = $QualifiedOpportunity;
-                break;
-
-            case 'QualifiedDpr':
-                $fields['addons'] = $QualifiedDPR;
-                break;
-            case 'qualifyDpr':
-                $fields['addons'] = $QualifiedDPR;
-                break;
-
-            case 'QualifiedBid':
-                $fields['addons'] = $QualifiedBid;
-                break;
-            case 'qualifyBid':
-                $fields['addons'] = $QualifiedBid;
-                break;
-
-            case 'Closed':
-                $fields['addons'] = $QualifiedBid;
-                break;
-            case 'closure':
-                $fields['addons'] = $QualifiedBid;
-                break;
-            case 'ClosedWin':
-                $fields['addons'] = $QualifiedBid;
-                break;
-            case 'ClosedLost':
-                $fields['addons'] = $QualifiedBid;
-                break;
-            case 'Dropped':
-                $fields['addons'] = $QualifiedBid;
-                break;
-            case 'Dropping':
-                $fields['addons'] = $QualifiedBid;
-                break;
-
-            default:
-                $fields['addons'] = $default2;
-                break;
-        }
-
-        return $fields;
     }
 
     // Jy code block for opprtunity settings starts
@@ -1957,7 +1876,13 @@ class HomeController extends SugarController{
             }
         }
 
-        $default2 = $addons;
+        // $default2 = $addons;
+
+        return $this->fetch_opportunity_dashboard_fields($default, $addons, $status);
+
+    }
+
+    function fetch_opportunity_dashboard_fields($default, $default2, $status) {
 
         $QualifiedLead = array(
             'total_input_value'             => 'Amount (Cr/Mn)',
@@ -3513,8 +3438,7 @@ class HomeController extends SugarController{
             $id = $_GET['id'];
             $GLOBALS['db'];
 
-            $get_data_query="SELECT critical_c FROM opportunities_cstm WHERE id_c = '$id'";
-            $result = $GLOBALS['db']->query($get_data_query);
+            $result = getQuery('critical_c', 'opportunities_cstm', 'id_c = "'.$id.'"');
             $fetch = $GLOBALS['db']->fetchByAssoc($result);
             $fetch['critical_c'] ='yes';
 
@@ -3601,8 +3525,7 @@ class HomeController extends SugarController{
         $db = \DBManagerFactory::getInstance();
         $GLOBALS['db'];
         $is_mc = $this->is_mc($log_in_user_id);
-        $query = "SELECT critical_c FROM opportunities_cstm WHERE id_c = '$opp_id'";
-        $result = $GLOBALS['db']->query($query);
+        $result = getQuery('critical_c', 'opportunities_cstm', 'id_c = "'.$opp_id.'"');
         $fetch = $GLOBALS['db']->fetchByAssoc($result);
 
         $array_critical_data = explode(',',trim($fetch['critical_c']));
@@ -3911,8 +3834,7 @@ public function action_new_assigned_list(){
             
            
             
-            $sql5='SELECT * FROM opportunities WHERE id="'.$opportunity_id.'"';
-                $result5 = $GLOBALS['db']->query($sql5);
+            $result5 = getQuery('*', 'opportunities', 'id = "'.$opportunity_id.'"');
             while($row5 = $GLOBALS['db']->fetchByAssoc($result5)) 
             {
                 $created_by=$row5['assigned_user_id']; 
@@ -8546,7 +8468,7 @@ $update_activty_querry="UPDATE `calls` SET `assigned_user_id`='".$assigned_id."'
             $notes_history = '
                 
                 <hr class="deselectsolid" style="border-bottom: 1px solid black;">
-                <section class="deselectsection" style="overflow-y: scroll; min-height: 15vh; max-height:25vh;">
+                <section class="deselectsection" style="overflow-y: scroll; min-height: 15vh; max-height:24vh;">
                 <table align="centered" width="100%">
                     <thead>
                     <tr class="tabname">
