@@ -3,6 +3,73 @@ if (!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 require_once ('include/MVC/Controller/SugarController.php');
 
+
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Collection/Cells.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Collection/CellsFactory.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Shared/StringHelper.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/IComparable.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Worksheet/Dimension.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Worksheet/ColumnDimension.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Worksheet/RowDimension.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Worksheet/Protection.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Worksheet/SheetView.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Worksheet/HeaderFooter.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Worksheet/PageMargins.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Worksheet/PageSetup.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Worksheet/AutoFilter.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Cell/Coordinate.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Cell/IValueBinder.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Cell/DefaultValueBinder.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Cell/Cell.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Cell/DataType.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Worksheet/CellIterator.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Worksheet/RowCellIterator.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Worksheet/Row.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Worksheet/RowIterator.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Worksheet/Worksheet.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Calculation/Engine/Logger.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Calculation/Engine/CyclicReferenceStack.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Calculation/Category.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Calculation/Calculation.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Document/Properties.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Document/Security.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Style/Supervisor.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Style/Protection.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Style/NumberFormat/Formatter.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Style/NumberFormat.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Style/Alignment.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Style/Border.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Style/Borders.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Style/Fill.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Style/Color.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Style/Font.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Style/Style.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Spreadsheet.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Shared/File.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/IOFactory.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Reader/IReadFilter.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Reader/DefaultReadFilter.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Reader/IReader.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Reader/BaseReader.php';
+include 'PhpSpreadsheet-master/simple-cache-1.0.1/src/CacheInterface.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Collection/Memory.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Settings.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Reader/Security/XmlScanner.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/ReferenceHelper.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Reader/Xlsx/BaseParserClass.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Reader/Xlsx/Theme.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Reader/Xlsx/Styles.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Reader/Xlsx/Properties.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Shared/Date.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Style/Conditional.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Reader/Xlsx/ConditionalStyles.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Reader/Xlsx/SheetViews.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Reader/Xlsx/SheetViewOptions.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Reader/Xlsx/ColumnAndRowAttributes.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Reader/Xlsx/PageSetup.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Reader/Xlsx/Hyperlinks.php';
+include 'PhpSpreadsheet-master/src/PhpSpreadsheet/Reader/Xlsx.php';
+
 class OpportunitiesController extends SugarController
 
 {
@@ -5436,6 +5503,342 @@ class OpportunitiesController extends SugarController
 
     //------------------------------------------END---------------------------
     //===========================Write code above this line=========================================
+
+    private function isAccountExists($name){
+        $db = \DBManagerFactory::getInstance();
+
+        $sql = "SELECT id FROM accounts WHERE name = '$name'";
+
+        $result = $GLOBALS['db']->query($sql);
+
+        while ($row = $GLOBALS['db']->fetchByAssoc($result)){
+            return $row['id'];
+        }
+        return false;
+    }
     
+
+    private function getUserId($name){
+        $db = \DBManagerFactory::getInstance();
+
+        $sql = "SELECT id FROM users WHERE CONCAT(first_name, ' ', last_name) = '$name'";
+
+        $result = $GLOBALS['db']->query($sql);
+
+        while ($row = $GLOBALS['db']->fetchByAssoc($result)){
+            return $row['id'];
+        }
+        return false;
+
+    }
+
+    public function action_migrateDBAdd1(){    
+        try{ 
+            $sheet = "To be added 1";
+            ini_set('max_execution_time', -1);
+
+           /* ini_set('display_errors', 1);
+            ini_set('display_startup_errors', 1);
+            error_reporting(E_ALL);*/
+
+            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+            $reader->setLoadSheetsOnly([$sheet]);
+            $spreadsheet = $reader->load("sheet.xlsx");
+
+            $worksheet = $spreadsheet->getActiveSheet();
+            $data = [];
+            foreach ($worksheet->getRowIterator() AS $row) {
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
+                $cells = [];
+
+                foreach ($cellIterator as $cell) {
+                    $value = $cell->getValue();
+                    $value = preg_replace('/^\p{Z}+|\p{Z}+$/u', '', $value);
+                    $cells[] = trim($value);
+                }
+                if (isset($keys)) {
+                    $data[] = array_combine($keys, $cells);
+                } else {
+                    foreach ($cells as $key => $cell) {
+                        $cells[$key] = trim(preg_replace("![^a-z0-9]+!i", "-", strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $cell)))), '-');
+                    }
+
+                    $keys = $cells;
+                }
+            }
+
+            /*echo "<pre>";
+            print_r ($data);
+            echo "</pre>";die;*/
+
+            foreach ($data as $key => $value) {
+                if($key) break; // Insert only first data
+
+
+                $comment = explode('-', $value['comment']);
+                // $status_c = str_replace(' ', '', $comment[0]);
+                $status_c = str_replace('Opportunity', '', str_replace(' ', '', ucwords(strtolower($comment[0]))));
+
+                $status_c = ($status_c == 'Operational' || $status_c == 'New' || $status_c == '') ? 'Lead' : $status_c;
+
+                $closure_status_c = isset($comment[1]) ? strtolower(str_replace(' ', '', $comment[1])) : null;
+
+                $rfporeoipublished_c = trim(preg_replace("![^a-z0-9]+!i", "_", strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $value['rfp-eoi-published'])))), '_');
+
+                $source_c = ($value['source'] == 'NA' || $value['source'] == 'NSDC' || $value['source'] == '') ? null : str_replace(' ', '', $value['source']);
+
+
+                // $opportunity_type = ($value['opportunity-type'] == 'Global') ? 'global' : 'non_global';
+                $opportunity_type = '';
+
+                if($value['opportunity-type'] == 'Global'){
+                    $opportunity_type = 'global';                    
+                }
+                else if($value['opportunity-type'] == 'Non Global'){
+                    $opportunity_type = 'non_global';
+                }
+                else{
+                    $opportunity_type = '';   
+                }
+
+                $assigned_user_id = $this->getUserId($value['assigned-to']);
+                $approver = $this->getUserId($value['approver']);
+
+                $bean = BeanFactory::newBean('Opportunities');   //Create bean  using module name 
+                $bean->name = $value['name'];   //Populate bean fields
+                $bean->created_by = (!$assigned_user_id) ? $approver : $assigned_user_id;
+                $bean->assigned_user_id = (!$assigned_user_id) ? $approver : $assigned_user_id;
+                $bean->opportunity_type = $opportunity_type;
+                $bean->user_id2_c = $approver;
+                $bean->multiple_approver_c = (!$approver) ? '' : $approver;
+                $bean->rfporeoipublished_c = ($rfporeoipublished_c != 'yes' && $rfporeoipublished_c != 'no') ? 'not_required' : $rfporeoipublished_c;
+                $bean->status_c = $status_c;
+                $bean->closure_status_c = $closure_status_c;
+                $bean->new_department_c = $value['department'];
+                $bean->source_c = $source_c;
+                $bean->sector_c = $value['sector'];
+                $bean->sub_sector_c = $value['sub-sector'] == 'Setup of Studio' ? '' : $value['sub-sector'];
+                $bean->segment_c = $value['segment'];
+                $bean->product_service_c = ($value['product-service'] == 'RPL Certification' || $value['product-service'] == 'Equipment') ? '' : $value['product-service'];
+                // $bean->description = isset($value['remarks-if-any']) ? $value['remarks-if-any'] : null;
+
+
+                $bean->save();   //Save
+                $opportunity_id = $bean->id;
+
+                $accounts_id = $this->isAccountExists($value['department']);
+                // If department not exists on accounts table
+                if(!$accounts_id){
+                    // Insert into accounts table
+                    $bean = BeanFactory::newBean('Accounts'); //Create bean  using module name
+                    $bean->name = $value['department']; //Populate bean fields
+                    $bean->opportunity_id = $opportunity_id;
+                    $bean->save();
+
+                    $accounts_id = $bean->id;
+                }
+                else{
+                    // Update accounts table
+                    $bean = BeanFactory::getBean('Accounts', $accounts_id);
+                    $bean->opportunity_id = $opportunity_id;
+                    $bean->save();
+
+                    $accounts_id = $bean->id;
+                }
+
+
+                echo $opportunity_id."<br>";
+                file_put_contents($sheet.'.log', $opportunity_id."\n", FILE_APPEND);
+
+                $user = (!$assigned_user_id) ? $approver : $assigned_user_id;
+
+                $sql = "UPDATE opportunities SET created_by = '".$user."', modified_user_id = '".$user."' WHERE id = '".$opportunity_id."'";
+
+                $result = $GLOBALS['db']->query($sql);
+             
+                // exit(json_encode(array("status"=>true, "message" => "Data inserted")));
+
+            }
+            die;
+    
+        }catch(Exception $e){
+            exit(json_encode(array("status"=>false, "message" => "Some error occured")));
+        }
+
+    }
+
+
+    public function action_removeOpp()
+    {
+
+        $sheet = "To be added 1";
+        ini_set('max_execution_time', -1);
+        $data = file_get_contents($sheet.'.log');
+
+        $ids = explode("\n", $data);
+
+        array_walk($ids, function(&$value, $key) { $value = "'".$value."'"; } );
+
+        $ids = implode(',', $ids);
+        echo "<pre>";
+        print_r ($ids);
+        echo "</pre>";die;
+
+        // $ids = str_replace("\n", ",", $data);
+
+
+        /*$sql = "DELETE FROM ";
+
+        $result = $GLOBALS['db']->query($sql);*/
+        
+    }
+
+
+    private function getOpportunityID($name){
+        $db = \DBManagerFactory::getInstance();
+
+        $sql = "SELECT id FROM opportunities WHERE name = '$name'";
+
+        $result = $GLOBALS['db']->query($sql);
+
+        while ($row = $GLOBALS['db']->fetchByAssoc($result)){
+            return $row['id'];
+        }
+        return false;
+    }
+
+    public function action_migrateDBRet1(){
+        try{ 
+
+            $sheet = "To be retained 1";
+            ini_set('max_execution_time', -1);
+
+            /*ini_set('display_errors', 1);
+            ini_set('display_startup_errors', 1);
+            error_reporting(E_ALL);*/
+
+            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+            $reader->setLoadSheetsOnly([$sheet]);
+            $spreadsheet = $reader->load("sheet.xlsx");
+
+            $worksheet = $spreadsheet->getActiveSheet();
+
+            $data = [];
+            foreach ($worksheet->getRowIterator() AS $row) {
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
+                $cells = [];
+
+                foreach ($cellIterator as $key => $cell) {
+                    $value = $cell->getValue();
+                    // if(empty($value)) break;
+                    $value = preg_replace('/^\p{Z}+|\p{Z}+$/u', '', $value);
+                    $cells[] = trim($value);
+                    if($key == 22) break;
+                }
+                if (isset($keys)) {
+                    $data[] = array_combine($keys, $cells);
+                } else {
+                    foreach ($cells as $key => $cell) {
+                        $cells[$key] = trim(preg_replace("![^a-z0-9]+!i", "-", strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $cell)))), '-');
+                    }
+                    $keys = $cells;
+                }
+            }
+            /*echo "<pre>";
+            print_r ($data);
+            echo "</pre>";die;*/
+
+            foreach ($data as $key => $value) {
+                if($key) break; // insert / update only first data
+
+                if($value['s-n'] == 'x') break;
+
+                $opp_id = $this->getOpportunityID($value['name']);
+
+                /*echo "<pre>";
+                print_r ($value);
+                echo "</pre>";die;*/
+
+                // If opportunity exists
+                if($opp_id && $value['rename'] != 'x'){
+                    // update name
+                    $bean = BeanFactory::getBean('Opportunities', $opp_id);
+                    $bean->name = $value['rename'];
+                    $bean->save();
+
+                    $opportunity_id = $opp_id;
+                }
+                else{
+                    //insert name
+                    $rfporeoipublished_c = trim(preg_replace("![^a-z0-9]+!i", "_", strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $value['rfp-eoi-published'])))), '_');
+
+                    $status_c = str_replace('Opportunity', '', str_replace(' ', '', ucwords(strtolower($value['change-status']))));
+
+                    $source_c = str_replace(' ', '', $value['source']);
+
+                    $assigned_user_id = $this->getUserId($value['assigned-to']);
+                    $approver = $this->getUserId($value['approver']);
+
+                    // insert new opportunity
+                    $bean = BeanFactory::newBean('Opportunities'); //Create bean  using module name
+                    $bean->name = $value['name'];
+                    $bean->created_by = (!$assigned_user_id) ? $approver : $assigned_user_id;;
+                    $bean->assigned_user_id = (!$assigned_user_id) ? $approver : $assigned_user_id;
+                    $bean->opportunity_type = ($value['opportunity-type'] == 'Global') ? 'global' : 'non_global';
+                    $bean->user_id2_c = $approver;
+                    $bean->multiple_approver_c = $approver;
+                    $bean->rfporeoipublished_c = $rfporeoipublished_c;
+                    $bean->status_c = $status_c;
+                    $bean->new_department_c = $value['department'];
+                    $bean->source_c = $source_c;
+                    $bean->sector_c = $value['sector'];
+                    $bean->sub_sector_c = $value['sub-sector'];
+                    $bean->segment_c = $value['segment'];
+                    $bean->product_service_c = $value['product-service'];
+
+                    $bean->save();
+
+                    $opportunity_id = $bean->id;
+                    $accounts_id = $this->isAccountExists($value['department']);
+                    // If department not exists on accounts table
+                    if(!$accounts_id){
+                        // Insert into accounts table
+                        $bean = BeanFactory::newBean('Accounts'); //Create bean  using module name
+                        $bean->name = $value['department']; //Populate bean fields
+                        $bean->opportunity_id = $opportunity_id;
+                        $bean->save();
+
+                        $accounts_id = $bean->id;
+                    }
+                    else{
+                        // Update accounts table
+                        $bean = BeanFactory::getBean('Accounts', $accounts_id);
+                        $bean->opportunity_id = $opportunity_id;
+                        $bean->save();
+
+                        $accounts_id = $bean->id;
+                    }
+
+                    $user = (!$assigned_user_id) ? $approver : $assigned_user_id;
+
+                    $sql = "UPDATE opportunities SET created_by = '".$user."', modified_user_id = '".$user."' WHERE id = '".$opportunity_id."'";
+
+                    $result = $GLOBALS['db']->query($sql);
+
+
+                }
+
+                echo $opportunity_id."<br>";
+                file_put_contents($sheet.'.log', $opportunity_id."\n", FILE_APPEND);
+            }
+
+            die;
+
+        }catch(Exception $e){
+            exit(json_encode(array("status"=>false, "message" => "Some error occured")));
+        }
+    }
 }
 ?>
